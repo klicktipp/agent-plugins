@@ -1,0 +1,47 @@
+{
+  "name": "klicktipp",
+  "version": "0.1.0",
+  "description": "KlickTipp toolkit: read and write the product data of a KlickTipp account — contacts, tags, custom fields, opt-in processes, signatures and email newsletters — over the KlickTipp MCP server.",
+  "author": {
+    "name": "KlickTipp",
+    "url": "https://www.klick-tipp.com"
+  },
+  "homepage": "https://github.com/klicktipp/agent-plugins/tree/main/plugins/klicktipp",
+  "repository": "https://github.com/klicktipp/agent-plugins",
+  "license": "Proprietary",
+  "keywords": [
+    "klicktipp",
+    "mcp",
+    "contacts",
+    "subscribers",
+    "tags",
+    "custom-fields",
+    "newsletter",
+    "opt-in",
+    "marketing-automation"
+  ],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "KlickTipp",
+    "shortDescription": "Work with the product data of a KlickTipp account — contacts, tags, fields and newsletters.",
+    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth) and exposes the product API as tools: search and read contacts, subscribe/unsubscribe and enrich them, manage manual tags and custom field definitions, inspect opt-in processes and their redirect URLs, read signatures, and take an email newsletter from draft through content, audience, sender configuration and test send. Newsletter activation reaches real recipients and is a separate, explicitly approved tool call.",
+    "developerName": "KlickTipp",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://app.klicktipp.com",
+    "privacyPolicyURL": "https://www.klick-tipp.com/datenschutz",
+    "termsOfServiceURL": "https://www.klick-tipp.com/agb",
+    "defaultPrompt": [
+      "Find the contact test@example.com and show me its tags and fields.",
+      "Create a manual tag \"Webinar 2026\" and describe what it is for.",
+      "Draft a newsletter for everyone tagged \"Webinar 2026\" and send me a test."
+    ],
+    "brandColor": "#ea8b00",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg"
+  }
+}

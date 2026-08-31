@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "klicktipp": {
+      "type": "http",
+      "url": "https://mcp.klicktipp.com/mcp"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+KlickTipp Agent Plugin License
+Copyright (c) 2026 KlickTipp GmbH. All rights reserved.
+
+This repository contains the official KlickTipp plugin package for AI coding
+agents and assistants. It is proprietary software, published so that agent
+platforms and their users can install and inspect it.
+
+1. Permitted use
+   You may download, copy, install and run this plugin package for the purpose
+   of accessing KlickTipp services with an AI agent, and you may inspect and
+   redistribute it unmodified, including as part of an agent platform's plugin
+   directory.
+
+2. Restrictions
+   You may not sell this package, publish a modified copy of it under the
+   KlickTipp name, or use the KlickTipp name, logo or brand marks other than to
+   identify this package. The KlickTipp brand mark in `assets/` is a trademark
+   of KlickTipp GmbH and is licensed for no purpose beyond displaying this
+   plugin.
+
+3. Service, not software
+   The plugin only mediates access to the hosted KlickTipp MCP server. Use of
+   that service requires a KlickTipp account and is governed by the KlickTipp
+   terms of service (https://www.klick-tipp.com/agb) and privacy policy
+   (https://www.klick-tipp.com/datenschutz), not by this license.
+
+4. No warranty
+   THE PACKAGE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   KLICKTIPP GMBH BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE PACKAGE OR ITS USE.
+
+Questions: support@klick-tipp.com

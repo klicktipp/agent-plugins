@@ -1,0 +1,33 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install the Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      # The official validator: it is what the plugin directory runs on the
+      # repository it pulls from, so a failure here is a rejected submission.
+      - name: claude plugin validate
+        run: |
+          claude plugin validate .
+          claude plugin validate plugins/klicktipp
+
+      # Invariants the validator does not know about. The Claude and the Codex
+      # manifest are two files describing one plugin; if they drift, one of the
+      # two directories ships something we did not mean to publish.
+      - name: Manifests agree
+        run: python3 .github/scripts/check_manifests.py

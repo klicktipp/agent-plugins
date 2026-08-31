@@ -1,0 +1,25 @@
+{
+  "name": "klicktipp",
+  "displayName": "KlickTipp",
+  "version": "0.1.0",
+  "description": "KlickTipp toolkit: read and write the product data of a KlickTipp account — contacts, tags, custom fields, opt-in processes, signatures and email newsletters — over the KlickTipp MCP server.",
+  "author": {
+    "name": "KlickTipp",
+    "url": "https://www.klick-tipp.com"
+  },
+  "homepage": "https://github.com/klicktipp/agent-plugins/tree/main/plugins/klicktipp",
+  "repository": "https://github.com/klicktipp/agent-plugins",
+  "license": "Proprietary",
+  "keywords": [
+    "klicktipp",
+    "mcp",
+    "contacts",
+    "subscribers",
+    "tags",
+    "custom-fields",
+    "newsletter",
+    "opt-in",
+    "marketing-automation"
+  ],
+  "mcpServers": "./.mcp.json"
+}
