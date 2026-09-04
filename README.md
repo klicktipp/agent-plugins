@@ -1,7 +1,7 @@
 # KlickTipp agent plugins
 
 The official KlickTipp plugin marketplace for AI coding agents. One plugin,
-[`plugins/klicktipp`](plugins/klicktipp): it writes, configures and sends
+[`plugins/klicktipp`](plugins/klicktipp): it writes, reviews and prepares
 KlickTipp email newsletters from your agent, and reads the opt-in processes of
 the account, over the hosted KlickTipp MCP server.
 
@@ -21,7 +21,7 @@ interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 |---|---|
 | Plugin | `klicktipp` |
 | Endpoint | `https://mcp.klicktipp.com/mcp` |
-| Tools | newsletters (draft, content, audience, sender, test send, dispatch, delivery status) and opt-in processes |
+| Tools | newsletters (draft, drag-and-drop content, audience, sender, test send, dispatch confirmation) and opt-in processes |
 | Skill | `email-erstellung` — HTML the KlickTipp email editor can import as editable blocks |
 | Agents | Claude Code and the Claude directory (`.claude-plugin/`), Codex and ChatGPT (`.codex-plugin/`) |
 | Requires | a KlickTipp account |

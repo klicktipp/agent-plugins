@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KlickTipp für KI-Agenten</title>
-<meta name="description" content="Das offizielle KlickTipp-Plugin für Claude und Codex: Newsletter schreiben, konfigurieren und versenden, Opt-in-Prozesse lesen — direkt aus dem Agenten.">
+<meta name="description" content="Das offizielle KlickTipp-Plugin für Claude und Codex: Newsletter schreiben, prüfen und zum Versand vorbereiten, Opt-in-Prozesse lesen — direkt aus dem Agenten.">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <style>
 :root {
@@ -96,9 +96,9 @@ footer a { color: inherit; }
     </div>
     <h1>KlickTipp für KI-Agenten</h1>
     <p class="lede">
-      Newsletter schreiben, konfigurieren und versenden, Opt-in-Prozesse lesen — direkt aus Claude
-      oder Codex, über den gehosteten KlickTipp-MCP-Server. Ein Plugin, kein API-Schlüssel, eine
-      Anmeldung.
+      Newsletter schreiben, prüfen und zum Versand vorbereiten, Opt-in-Prozesse lesen — direkt aus
+      Claude oder Codex, über den gehosteten KlickTipp-MCP-Server. Ein Plugin, kein API-Schlüssel,
+      eine Anmeldung. Den Versand selbst bestätigt immer ein Mensch in KlickTipp.
     </p>
   </div>
 </header>
@@ -155,18 +155,26 @@ claude mcp login plugin:klicktipp:klicktipp</code></pre>
     <tr><th>Werkzeug</th><th>Wofür</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>search-newsletters</code></td><td>Newsletter des Kontos finden</td></tr>
-    <tr><td><code>get-newsletter</code></td><td>einen lesen, mit Inhalt und Konfiguration</td></tr>
-    <tr><td><code>create-newsletter-draft</code></td><td>einen Entwurf anlegen</td></tr>
-    <tr><td><code>update-newsletter-draft</code></td><td>Inhalt und Betreff des Entwurfs ändern</td></tr>
-    <tr><td><code>configure-newsletter-delivery</code></td><td>Empfängerkreis, Absender, Zeitpunkt</td></tr>
-    <tr><td><code>send-newsletter-test</code></td><td>Testversand an dich selbst</td></tr>
-    <tr><td><code>activate-newsletter</code></td><td>den Newsletter an den Versand übergeben</td></tr>
-    <tr><td><code>get-newsletter-delivery-status</code></td><td>verfolgen, was danach passiert ist</td></tr>
-    <tr><td><code>delete-newsletter-draft</code></td><td>einen Entwurf verwerfen</td></tr>
+    <tr><td><code>email-newsletter-search</code></td><td>Newsletter finden, neueste zuerst, nach Name und Versandzustand eingegrenzt</td></tr>
+    <tr><td><code>email-newsletter-get</code></td><td>einen lesen; Projektionen liefern Metadaten, Empfängerkreis, Inhalt, Versandkonfiguration und Versandstand</td></tr>
+    <tr><td><code>email-newsletter-draft-create</code></td><td>einen Entwurf anlegen, mit Name und erstem Betreff</td></tr>
+    <tr><td><code>email-newsletter-draft-update</code></td><td>Name, interne Notiz und Empfängerkreis eines Entwurfs</td></tr>
+    <tr><td><code>email-newsletter-draft-delete</code></td><td>einen Entwurf verwerfen</td></tr>
+    <tr><td><code>email-newsletter-content-replace</code></td><td>den Drag-and-drop-Inhalt ersetzen, gebunden an die gelesene Revision</td></tr>
+    <tr><td><code>email-newsletter-content-publish</code></td><td>den geprüften Inhalt zu dem machen, den ein Versand sendet</td></tr>
+    <tr><td><code>email-newsletter-delivery-configure</code></td><td>Absendername, Absenderadresse, Antwortadresse, Signatur</td></tr>
+    <tr><td><code>email-newsletter-test-send</code></td><td>Testversand an die Kontoadresse oder eine verifizierte Absenderadresse</td></tr>
+    <tr><td><code>email-newsletter-send</code></td><td>den echten Versand vorbereiten und eine Bestätigungs-URL zurückgeben</td></tr>
   </tbody>
 </table>
 </div>
+
+<p>
+  Ein eigenes Werkzeug für den Versandstand gibt es nicht: wo ein Newsletter mit seinem Versand
+  steht, ist die Projektion <code>deliveryStatus</code> von <code>email-newsletter-get</code>.
+  Der Betreff wird einmal geschrieben, beim Anlegen — danach ändert man ihn im
+  KlickTipp-Editor und liest ihn über die Projektion <code>metadata</code>.
+</p>
 
 <h3>Opt-in</h3>
 
@@ -203,18 +211,50 @@ claude mcp login plugin:klicktipp:klicktipp</code></pre>
 
 <p>
   Lesende Werkzeuge laufen ohne Rückfrage. Jedes schreibende ist so gekennzeichnet, dass der Agent
-  vorher fragt. Die Newsletter-Aktivierung — das einzige Werkzeug, das echte Menschen erreicht —
-  verlangt zusätzlich ein ausdrückliches Bestätigungsargument und kann deshalb nicht als
-  Nebenwirkung einer anderen Bitte auslösen.
+  vorher fragt.
 </p>
 
 <div class="note">
   <p>
-    <strong>Zwei Punkte, die man vorher wissen sollte.</strong> Die Newsletter-Aktivierung übergibt
-    eine E-Mail an den Versand an echte Empfänger und ist nicht zurückholbar. Und die
-    Weiterleitungs-URL eines Abonnenten enthält dessen Kennung, E-Mail-Adresse, Liste,
-    Abonnentenschlüssel und Empfehlungslink — die Antwort dieses Werkzeugs ist ein
-    personenbezogenes Datum und geht durch den Anbieter des Agenten.
+    <strong>Kein Werkzeug versendet einen Newsletter.</strong>
+    <code>email-newsletter-send</code> prüft Konto, Berechtigung, Inhalt, Empfängerkreis und
+    Absender, nennt den Empfängerschätzwert und gibt eine kurzlebige, einmal verwendbare
+    Bestätigungs-URL zurück. Erst wenn du sie in KlickTipp öffnest und dort bestätigst, ist der
+    Newsletter übergeben — dieser Schritt erreicht echte Empfänger und ist nicht zurückholbar.
+    Ändert sich vorher ein gebundener Wert oder läuft der Link ab, wird die Bestätigung abgelehnt
+    und muss neu vorbereitet werden.
+  </p>
+</div>
+
+<p>
+  Drei Schreibvorgänge haben kein Zurück, und der Agent soll vorher sagen, was sie kosten:
+</p>
+
+<ul>
+  <li>
+    <strong><code>email-newsletter-content-replace</code></strong> wandelt nur HTML. Social-Icons
+    kommen als verlinkte Bilder zurück, Tabellen als einfaches Markup, Video als Vorschaubild,
+    Add-ons als ihre gerenderte Ausgabe; Webfonts, Zeilen-Hintergrundbilder und eigene
+    Head-Styles fallen weg; <strong>KlickTipp-Entscheidungen und KI-Blöcke werden
+    unwiederbringlich gelöscht.</strong> Was genau es beim jeweiligen Newsletter kostet, steht
+    beim Lesen in <code>replaceWarnings</code>.
+  </li>
+  <li>
+    <strong><code>email-newsletter-content-publish</code></strong> ändert, was echte Empfänger
+    bekommen würden.
+  </li>
+  <li>
+    <strong><code>email-newsletter-draft-delete</code></strong> löscht den Entwurf samt E-Mail,
+    Empfängerbedingungen und System-Tags.
+  </li>
+</ul>
+
+<div class="note">
+  <p>
+    <strong>Personenbezug.</strong> Die Weiterleitungs-URL eines Abonnenten enthält dessen
+    Kennung, E-Mail-Adresse, Liste, Abonnentenschlüssel und Empfehlungslink — die Antwort von
+    <code>get-subscription-redirect-url</code> ist damit ein personenbezogenes Datum und geht
+    durch den Anbieter des Agenten.
   </p>
 </div>
 

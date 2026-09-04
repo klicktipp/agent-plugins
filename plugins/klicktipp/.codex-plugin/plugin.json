@@ -1,7 +1,7 @@
 {
   "name": "klicktipp",
   "version": "0.1.0",
-  "description": "KlickTipp toolkit: take an email newsletter from draft through content, audience, sender configuration and test send to dispatch, and read the opt-in processes of a KlickTipp account — over the KlickTipp MCP server.",
+  "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, drag-and-drop content, audience, sender, test sends and the dispatch confirmation — and read the opt-in processes of the account, over the KlickTipp MCP server.",
   "author": {
     "name": "KlickTipp",
     "url": "https://www.klick-tipp.com"
@@ -24,8 +24,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "KlickTipp",
-    "shortDescription": "Write, configure and send KlickTipp email newsletters, and read the account's opt-in processes.",
-    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth) and exposes two parts of the KlickTipp product API as tools. Newsletters: search and read them, create and update a draft, configure content, audience and sender, send a test, activate the newsletter for dispatch and follow its delivery status. Opt-in: read the account's opt-in processes and their configuration, and resolve the pending or thank-you URL a subscriber is redirected to. Activation reaches real recipients and is a separate, explicitly approved tool call.",
+    "shortDescription": "Write and prepare KlickTipp email newsletters, and read the account's opt-in processes. The actual dispatch is always confirmed by a person in KlickTipp.",
+    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth) and exposes two parts of the KlickTipp product API as tools. Newsletters: search them, read one through projections for metadata, audience, drag-and-drop content, delivery configuration and dispatch state, create and update a draft, replace and publish its content, configure sender and reply address, send a test to a verified address, and prepare the real dispatch. Preparing the dispatch sends nothing: it validates everything, states who would receive the newsletter, and returns a short-lived single-use confirmation URL that only the logged-in person can open and confirm in KlickTipp. Opt-in: read the account's opt-in processes and their configuration, and resolve the pending or thank-you URL a subscriber is redirected to.",
     "developerName": "KlickTipp",
     "category": "Developer Tools",
     "capabilities": [
@@ -38,8 +38,8 @@
     "termsOfServiceURL": "https://www.klick-tipp.com/agb",
     "defaultPrompt": [
       "Show me my opt-in processes and which of them use double opt-in.",
-      "Draft a newsletter for the subscribers of my webinar list and send me a test.",
-      "What is the delivery status of the newsletter I sent last?"
+      "Create a newsletter draft for my webinar list and send a test to my own address.",
+      "Where does my last newsletter stand — was it sent, and to how many people?"
     ],
     "brandColor": "#ea8b00",
     "composerIcon": "./assets/logo.svg",

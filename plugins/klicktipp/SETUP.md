@@ -76,10 +76,24 @@ claude mcp remove klicktipp --scope user
 
 ## Before writing anything
 
-Tools that write reach a live customer account. `activate-newsletter` hands a
-newsletter over for dispatch to real recipients and cannot be taken back; it
-requires an explicit approval argument, so it never fires as a side effect —
-pass that argument only after the user has approved this specific dispatch.
+Tools that write reach a live customer account.
+
+**No tool sends a newsletter.** `email-newsletter-send` only prepares the
+dispatch and returns a short-lived single-use confirmation URL. Hand that URL to
+the user along with what confirming it will do — subject, who receives it (mode
+`all_contacts` means every active contact of the account), the recipient
+estimate, sender and moment. Opening and confirming it is theirs to do, and that
+step cannot be taken back.
+
+Three writes have no undo. Say what they cost before calling them:
+
+- `email-newsletter-content-replace` — read the newsletter first and pass its
+  `replaceWarnings` to the user verbatim enough to be understood. KlickTipp
+  decisions and AI blocks are deleted beyond recovery.
+- `email-newsletter-content-publish` — changes what real recipients would
+  receive.
+- `email-newsletter-draft-delete` — only for a draft the user explicitly asked
+  to delete.
 
 `get-subscription-redirect-url` returns a URL that identifies a subscriber
 (subscriber ID, email address, list, subscriber key, referral link). Treat its
