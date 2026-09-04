@@ -42,7 +42,7 @@ this is a one-time step per machine.
 Ask for something harmless and read-only, and confirm the account is the one the
 user expects:
 
-> Search my opt-in processes.
+> Show me my opt-in processes.
 
 If that returns a list, the connection is live. If it still fails with `401`,
 the login did not complete — repeat it rather than changing the configuration.
@@ -76,8 +76,12 @@ claude mcp remove klicktipp --scope user
 
 ## Before writing anything
 
-Tools that write reach a live customer account, and some reach real people:
-`subscribe` may send a confirmation message, `unsubscribe` ends delivery, and
-`activate-newsletter` hands a newsletter over for dispatch and cannot be taken
-back. Those tools require an explicit approval argument, so they never fire as a
-side effect — pass it only after the user has approved that specific effect.
+Tools that write reach a live customer account. `activate-newsletter` hands a
+newsletter over for dispatch to real recipients and cannot be taken back; it
+requires an explicit approval argument, so it never fires as a side effect —
+pass that argument only after the user has approved this specific dispatch.
+
+`get-subscription-redirect-url` returns a URL that identifies a subscriber
+(subscriber ID, email address, list, subscriber key, referral link). Treat its
+result as personal data: use it, do not repeat it back in full unless the user
+asked for the URL itself.

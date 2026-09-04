@@ -11,7 +11,7 @@
     {
       "name": "klicktipp",
       "source": "./plugins/klicktipp",
-      "description": "KlickTipp toolkit: read and write the product data of a KlickTipp account — contacts, tags, custom fields, opt-in processes, signatures and email newsletters — over the KlickTipp MCP server.",
+      "description": "KlickTipp toolkit: take an email newsletter from draft through content, audience, sender configuration and test send to dispatch, and read the opt-in processes of a KlickTipp account — over the KlickTipp MCP server.",
       "category": "productivity"
     }
   ]

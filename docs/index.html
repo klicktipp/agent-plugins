@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KlickTipp für KI-Agenten</title>
+<meta name="description" content="Das offizielle KlickTipp-Plugin für Claude und Codex: Newsletter schreiben, konfigurieren und versenden, Opt-in-Prozesse lesen — direkt aus dem Agenten.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --bg-soft: #f7f7f5;
+  --fg: #1c2c3e;
+  --fg-soft: #55606e;
+  --line: #e2e2dd;
+  --brand: #ea8b00;
+  --code-bg: #f2f2ef;
+  --warn-bg: #fdf5e6;
+  --warn-line: #ea8b00;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14181d;
+    --bg-soft: #1b2027;
+    --fg: #e8eaed;
+    --fg-soft: #a3abb6;
+    --line: #2c333c;
+    --code-bg: #1b2027;
+    --warn-bg: #241c0d;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.wrap { max-width: 46rem; margin: 0 auto; padding: 0 1.4rem 5rem; }
+header { border-bottom: 1px solid var(--line); background: var(--bg-soft); }
+header .wrap { padding: 3.2rem 1.4rem 2.6rem; }
+.mark { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.6rem; }
+.mark img { width: 40px; height: 40px; border-radius: 9px; display: block; }
+.mark span { font-weight: 600; letter-spacing: -.01em; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 .8rem; }
+.lede { font-size: 1.14rem; color: var(--fg-soft); margin: 0; max-width: 34rem; }
+h2 { font-size: 1.35rem; letter-spacing: -.01em; margin: 3rem 0 .9rem; }
+h3 { font-size: 1.02rem; margin: 2rem 0 .5rem; }
+p, ul, ol { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.3rem; }
+li { margin-bottom: .35rem; }
+a { color: var(--brand); text-underline-offset: 2px; }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .88em;
+  background: var(--code-bg);
+  padding: .12em .38em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: .9rem 1rem;
+  overflow-x: auto;
+  margin: 0 0 1rem;
+}
+pre code { background: none; padding: 0; font-size: .86rem; line-height: 1.6; }
+.table-scroll { overflow-x: auto; margin: 0 0 1rem; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .55rem .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; white-space: nowrap; }
+.note {
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn-line);
+  border-radius: 0 6px 6px 0;
+  padding: .9rem 1.1rem;
+  margin: 0 0 1.2rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note strong { font-weight: 600; }
+footer { border-top: 1px solid var(--line); margin-top: 4rem; }
+footer .wrap { padding: 2rem 1.4rem; color: var(--fg-soft); font-size: .92rem; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="mark">
+      <img src="logo.svg" alt="">
+      <span>KlickTipp</span>
+    </div>
+    <h1>KlickTipp für KI-Agenten</h1>
+    <p class="lede">
+      Newsletter schreiben, konfigurieren und versenden, Opt-in-Prozesse lesen — direkt aus Claude
+      oder Codex, über den gehosteten KlickTipp-MCP-Server. Ein Plugin, kein API-Schlüssel, eine
+      Anmeldung.
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<h2>Installieren</h2>
+
+<p>Voraussetzung ist ein KlickTipp-Konto. In <strong>Claude Code</strong>:</p>
+
+<pre><code>claude plugin marketplace add klicktipp/agent-plugins
+claude plugin install klicktipp@klicktipp
+claude mcp login plugin:klicktipp:klicktipp</code></pre>
+
+<p>
+  In <strong>Codex</strong> zeigst du die Plugin-Konfiguration auf das Verzeichnis
+  <code>plugins/klicktipp</code> des <a href="https://github.com/klicktipp/agent-plugins">Repositories</a>.
+  Beide Varianten lesen dieselbe <code>.mcp.json</code> und sprechen denselben Endpunkt:
+  <code>https://mcp.klicktipp.com/mcp</code>.
+</p>
+
+<h3>Die einmalige Anmeldung</h3>
+
+<p>
+  Im Paket steckt kein Schlüssel und kein Token. Der Endpunkt liegt hinter OAuth: beim ersten
+  Zugriff öffnet sich ein Browserfenster, du meldest dich mit deinen KlickTipp-Zugangsdaten an und
+  bestätigst den Zugriff. Danach wird das Token gespeichert und selbstständig erneuert — pro
+  Rechner einmal.
+</p>
+
+<div class="note">
+  <p>
+    <strong>Vor der Anmeldung antwortet der Server mit <code>401</code>.</strong> Die Werkzeugliste
+    kann leer bleiben und Aufrufe scheitern mit einem Authentifizierungsfehler. Das ist der
+    erwartete Vorlauf der Anmeldung und kein Defekt — melde dich an, statt die Konfiguration zu
+    ändern.
+  </p>
+</div>
+
+<p>
+  Der Server eines installierten Plugins ist eine eigene Verbindung mit eigenem, vorangestelltem
+  Namen. <code>claude mcp login klicktipp</code> allein wird abgelehnt; es muss
+  <code>plugin:klicktipp:klicktipp</code> sein. In Claude Code führt <code>/mcp</code> zum selben
+  Ziel.
+</p>
+
+<h2>Was das Plugin mitbringt</h2>
+
+<h3>Newsletter</h3>
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th>Werkzeug</th><th>Wofür</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>search-newsletters</code></td><td>Newsletter des Kontos finden</td></tr>
+    <tr><td><code>get-newsletter</code></td><td>einen lesen, mit Inhalt und Konfiguration</td></tr>
+    <tr><td><code>create-newsletter-draft</code></td><td>einen Entwurf anlegen</td></tr>
+    <tr><td><code>update-newsletter-draft</code></td><td>Inhalt und Betreff des Entwurfs ändern</td></tr>
+    <tr><td><code>configure-newsletter-delivery</code></td><td>Empfängerkreis, Absender, Zeitpunkt</td></tr>
+    <tr><td><code>send-newsletter-test</code></td><td>Testversand an dich selbst</td></tr>
+    <tr><td><code>activate-newsletter</code></td><td>den Newsletter an den Versand übergeben</td></tr>
+    <tr><td><code>get-newsletter-delivery-status</code></td><td>verfolgen, was danach passiert ist</td></tr>
+    <tr><td><code>delete-newsletter-draft</code></td><td>einen Entwurf verwerfen</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Opt-in</h3>
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th>Werkzeug</th><th>Wofür</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>search-opt-in-processes</code></td><td>die Opt-in-Prozesse des Kontos auflisten</td></tr>
+    <tr><td><code>get-opt-in-process</code></td><td>die vollständige Konfiguration eines Prozesses lesen</td></tr>
+    <tr><td><code>get-subscription-redirect-url</code></td><td>die Pending- oder Danke-Seite auflösen, auf die ein Abonnent weitergeleitet wird</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Der Skill E-Mail-Erstellung</h3>
+
+<p>
+  Mit dabei ist ein Skill, der HTML für den <strong>HTML-Import des KlickTipp-E-Mail-Editors</strong>
+  erzeugt. Dieser Import ist kein allgemeiner HTML-Parser: er mappt vorhandene Struktur auf die
+  Blocktypen, die er kennt. HTML, das nicht darauf hin geschrieben wurde, landet als eine große,
+  unteilbare Textwüste im Editor — importiert, aber nicht mehr bearbeitbar. Der Skill kodiert,
+  welche Struktur der Importer erwartet und welche Elemente sich per HTML überhaupt stabil
+  erzeugen lassen.
+</p>
+
+<h2>Wie es mit deinen Daten umgeht</h2>
+
+<p>
+  Alles passiert in dem KlickTipp-Konto, zu dem die Anmeldung gehört, oder in einem Unterkonto,
+  das dieses Konto führen darf. Ein Werkzeug erweitert nie, was ein Unterkonto ohnehin dürfte.
+</p>
+
+<p>
+  Lesende Werkzeuge laufen ohne Rückfrage. Jedes schreibende ist so gekennzeichnet, dass der Agent
+  vorher fragt. Die Newsletter-Aktivierung — das einzige Werkzeug, das echte Menschen erreicht —
+  verlangt zusätzlich ein ausdrückliches Bestätigungsargument und kann deshalb nicht als
+  Nebenwirkung einer anderen Bitte auslösen.
+</p>
+
+<div class="note">
+  <p>
+    <strong>Zwei Punkte, die man vorher wissen sollte.</strong> Die Newsletter-Aktivierung übergibt
+    eine E-Mail an den Versand an echte Empfänger und ist nicht zurückholbar. Und die
+    Weiterleitungs-URL eines Abonnenten enthält dessen Kennung, E-Mail-Adresse, Liste,
+    Abonnentenschlüssel und Empfehlungslink — die Antwort dieses Werkzeugs ist ein
+    personenbezogenes Datum und geht durch den Anbieter des Agenten.
+  </p>
+</div>
+
+<p>
+  Was dabei verarbeitet wird, regelt die
+  <a href="https://www.klick-tipp.com/datenschutz">KlickTipp-Datenschutzerklärung</a>; die Nutzung
+  des Dienstes die <a href="https://www.klick-tipp.com/agb">AGB</a>. Für die Verarbeitung durch den
+  Agenten selbst gilt zusätzlich die Erklärung seines Anbieters.
+</p>
+
+<h2>Wenn es nicht geht</h2>
+
+<h3>Die Anmeldung in der Claude-Desktop-App scheitert</h3>
+
+<p>
+  Das ist derzeit erwartbar und liegt nicht am Plugin: die App registriert sich als OAuth-Client in
+  einer Form, die der KlickTipp-Anmeldedienst ablehnt, der Authorize-Request endet mit
+  <code>HTTP 400</code>. Zwei Wege tragen bis zur Behebung — das Plugin im Terminal installieren
+  und dort anmelden, oder den MCP-Server ohne Plugin von Hand eintragen:
+</p>
+
+<pre><code>claude mcp add --scope user --transport http klicktipp https://mcp.klicktipp.com/mcp
+claude mcp login klicktipp</code></pre>
+
+<p>
+  Ein von Hand eingetragener Server wird auch von der Desktop-App benutzt, ein Plugin-Server nicht.
+  Laufen beide Wege gleichzeitig, hast du dieselben Werkzeuge doppelt; dann einen der beiden
+  entfernen.
+</p>
+
+<h3>Alle Aufrufe scheitern mit 401</h3>
+
+<p>Die Anmeldung ist nicht durchgelaufen. Wiederhole sie, statt die Konfiguration zu ändern.</p>
+
+<h3>Ein Werkzeug meldet, das Konto sei nicht erreichbar</h3>
+
+<p>
+  Dann gehört das angesprochene Konto nicht zu deiner Anmeldung, oder es ist ein Unterkonto, für
+  das dein Konto die nötige Berechtigung nicht führt.
+</p>
+
+<h2>Hilfe</h2>
+
+<p>
+  Fragen zum Plugin und zum MCP-Zugang: <a href="mailto:support@klick-tipp.com">support@klick-tipp.com</a>.
+  Der Quellcode des Pakets liegt offen unter
+  <a href="https://github.com/klicktipp/agent-plugins">github.com/klicktipp/agent-plugins</a>.
+</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    © KlickTipp ·
+    <a href="https://www.klick-tipp.com/datenschutz">Datenschutz</a> ·
+    <a href="https://www.klick-tipp.com/agb">AGB</a> ·
+    <a href="https://www.klick-tipp.com">klick-tipp.com</a>
+  </div>
+</footer>
+
+</body>
+</html>

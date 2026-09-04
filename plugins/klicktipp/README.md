@@ -1,8 +1,8 @@
 # KlickTipp
 
-Work with the product data of a KlickTipp account from your agent — contacts,
-tags, custom fields, opt-in processes, signatures and email newsletters — over
-the hosted KlickTipp MCP server at `https://mcp.klicktipp.com/mcp`.
+Write, configure and send KlickTipp email newsletters from your agent, and read
+the opt-in processes of the account — over the hosted KlickTipp MCP server at
+`https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
 once, interactively, on first use. See [SETUP.md](SETUP.md).
@@ -24,29 +24,49 @@ Both targets read the same `.mcp.json`.
 
 ## Tools
 
-- **Contacts** — `search-contacts`, `get-contact`, `subscribe`, `unsubscribe`, `enrich-contact`
-- **Tags** — search/get/create/update/delete manual tags, assign and remove them
-- **Custom fields** — search/get/create/update/delete field definitions
-- **Newsletters** — search, get, create/update draft, configure delivery, test send, `activate-newsletter`, delivery status, delete draft
-- **Opt-in** — `search-opt-in-processes`, `get-opt-in-process`, `get-subscription-redirect-url`
-- **Signatures** — `search-signatures`, `get-signature`
+**Newsletters**
 
-Read tools run without a prompt. Every write tool is annotated so your agent asks
-first, and the three that reach a real person — `subscribe`, `unsubscribe` and
-`activate-newsletter` — additionally require an explicit approval argument, so
-they can never fire as a side effect of some other request.
+| | |
+|---|---|
+| `search-newsletters` | find newsletters of the account |
+| `get-newsletter` | read one, with its content and configuration |
+| `create-newsletter-draft` · `update-newsletter-draft` · `delete-newsletter-draft` | work on a draft |
+| `configure-newsletter-delivery` | audience, sender and schedule |
+| `send-newsletter-test` | test send, to yourself |
+| `activate-newsletter` | hand the newsletter over for dispatch |
+| `get-newsletter-delivery-status` | follow what happened after that |
+
+**Opt-in**
+
+| | |
+|---|---|
+| `search-opt-in-processes` | list the account's opt-in processes |
+| `get-opt-in-process` | read the full configuration of one |
+| `get-subscription-redirect-url` | resolve the pending or thank-you URL a subscriber is redirected to |
+
+## Skill
+
+`skills/email-erstellung` — writes HTML that the KlickTipp email editor's HTML
+import turns back into editable drag-and-drop blocks instead of one
+undividable wall of text. In German, like the editor itself.
 
 ## What it touches
 
 Everything happens inside the KlickTipp account the login belongs to, or a
-subaccount that account may support. `activate-newsletter` **hands a newsletter
-over for dispatch to real recipients and cannot be taken back.**
+subaccount that account may support. Read tools run without a prompt; every
+write tool is annotated so your agent asks first.
 
-`get-subscription-redirect-url` returns a URL that identifies a subscriber (it
-carries subscriber ID, email address, list, subscriber key and referral link) —
-treat its result as personal data.
+`activate-newsletter` **hands a newsletter over for dispatch to real recipients
+and cannot be taken back.** It requires an explicit approval argument, so it can
+never fire as a side effect of some other request.
+
+`get-subscription-redirect-url` returns a URL that identifies a subscriber — it
+carries subscriber ID, email address, list, subscriber key and referral link.
+Treat its result as personal data.
 
 ## Support
 
-support@klick-tipp.com · [Privacy policy](https://www.klick-tipp.com/datenschutz)
-· [Terms](https://www.klick-tipp.com/agb)
+support@klick-tipp.com ·
+[Documentation](https://klicktipp.github.io/agent-plugins/) ·
+[Privacy policy](https://www.klick-tipp.com/datenschutz) ·
+[Terms](https://www.klick-tipp.com/agb)
