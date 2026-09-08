@@ -104,19 +104,24 @@ und ein geratener Wert an so einer Stelle hat den Editor schon einmal zum Abstur
 Trennlinie, Abstand, Social-Links, Menü, Icons, Tabelle und Add-ons haben kein einzelnes
 Inhaltsfeld: hinzufügen und entfernen geht, bearbeitet werden sie im Editor.
 
-**Hinzufügen: der Baustein trägt Editor-Standardwerte, und das sagst du.** `addModule` legt einen
-Baustein mit den **Standardwerten des Editors** an — Schrift, Farben, Abstände, Rahmen aus dem
-Editor, nicht aus diesem Newsletter. In einem gestalteten Newsletter fällt so ein Block sofort auf,
-und du kannst ihn über die Werkzeuge nicht angleichen: das Bearbeiten schreibt Inhalt, keine
-Gestaltung. Darum gilt:
+**Hinzufügen: der Baustein übernimmt die Gestaltung seiner Nachbarn — von selbst.** `addModule`
+liest die Gestaltung vom **nächstgelegenen Baustein derselben Art** ab: erst dieselbe Spalte, dann
+dieselbe Zeile, dann irgendeiner im Newsletter. Schrift, Größe, Farbe, Zeilenhöhe und Innenabstand
+kommen also aus dem Newsletter, in den der Baustein fällt. Das musst du nicht steuern und sollst du
+nicht überschreiben — der Server macht es, weil er das Dokument sieht.
 
-1. Füge den Baustein hinzu und **sag dem Nutzer im selben Zug**, dass er die Gestaltung des Editors
-   trägt und im Editor angeglichen werden kann — am besten mit dem Hinweis, welcher vorhandene
-   Baustein derselben Art als Vorbild dient („der neue Absatz sieht anders aus als die übrigen; im
-   Editor kannst du ihn in zwei Klicks angleichen"). Melde nie ein fertiges Ergebnis.
-2. Geht es um mehr als einen Satz Gestaltung — ein ganzer Abschnitt, ein Layout, eine Zeile —, ist
-   der Editor der ehrlichere Weg. Sag das, statt einen Block hinzuzufügen, der auffällt.
-3. Mehrere neue Bausteine auf einmal: **ein** Schreibvorgang mit mehreren `addModule`-Operationen in
+**Und deshalb: schick kein gestaltetes HTML.** Was du in `html` oder `text` schreibst, ist der
+**Inhalt**, nicht das Aussehen. Ein `style`-Attribut, eine `font-family`, ein `<font>`-Tag oder eine
+Größenangabe in deinem Markup schlägt die Gestaltung des Bausteins und macht genau die gemischten
+Schriften, die eine Person danach im Editor einzeln nachziehen muss. Schreibe schlichtes Markup:
+`<p>`, `<strong>`, `<em>`, `<a href="…">`, `<ul>`/`<li>`, `<br>`. Nichts weiter.
+
+Zwei Dinge bleiben:
+
+1. Hat der Newsletter **keinen** Baustein dieser Art, gibt es nichts abzulesen — dann trägt der neue
+   Baustein die Werte seines Startzustands. Sag das dem Nutzer in dem Fall, statt ein fertiges
+   Ergebnis zu melden.
+2. Mehrere neue Bausteine auf einmal: **ein** Schreibvorgang mit mehreren `addModule`-Operationen in
    derselben Liste, nicht ein Aufruf pro Block. Jeder Schreibvorgang erneuert die Revision; wer pro
    Block schreibt, muss zwischendurch jedes Mal neu lesen.
 
