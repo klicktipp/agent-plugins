@@ -37,11 +37,13 @@ zusätzlich eine Bestätigung in KlickTipp. Wird die Revision zwischendurch ung�
 Editor gespeichert hat, lies von vorn — niemals mit der alten Revision erneut versuchen. Nach jedem
 Schreiben sind Dokument *und* Revision neu: eine uuid aus einem früheren Aufruf ist tot.
 
-**Benennen statt ersetzen.** Für eine Änderung, die du benennen kannst, gibt es das Bearbeiten:
-Inhalt eines Bausteins setzen, Baustein entfernen, Baustein hinzufügen — adressiert per `uuid`,
-beim Hinzufügen über die `uuid` der **Spalte**, weil ein neuer Baustein noch keine hat. Es kostet
-nur, was du änderst: Gestaltung, Layout, Entscheidungen und KI-Blöcke bleiben unangetastet, weil
-keine Konvertierung stattfindet.
+**Benennen statt ersetzen.** Für eine Änderung, die du benennen kannst, gibt es das Bearbeiten —
+fünf Operationen: Inhalt eines Bausteins setzen (`setContent`), Baustein hinzufügen (`addModule`),
+Baustein entfernen (`removeModule`), Baustein verschieben (`moveModule`) und eine Zeile anlegen
+(`addRow`). Adressiert wird per `uuid`; beim Hinzufügen über die `uuid` der **Spalte**, weil ein
+neuer Baustein noch keine hat, und `addRow` adressiert gar nichts, weil es das anlegt, was es
+platziert. Es kostet nur, was du änderst: Gestaltung, Layout, Entscheidungen und KI-Blöcke bleiben
+unangetastet, weil keine Konvertierung stattfindet.
 
 Einen Vollersatz gibt es nicht mehr. Es gibt zwei Schreibwege, und sie haben verschiedene
 Aufgaben: `email-newsletter-content-import` holt ein Design herein, das **nur** als HTML existiert —
@@ -50,12 +52,34 @@ geändertes HTML durch den Import, um eine Änderung anzubringen: der Newsletter
 Dokument, und die Konvertierung kostet ihn seine Bausteine (siehe „Was ein HTML-Import kostet").
 Kein Undo, in beiden Fällen.
 
-Was sich mit dem Bearbeiten **nicht** machen lässt, sagst du offen, statt es zu umgehen: die
-Reihenfolge von Bausteinen ändern, Zeilen und Spalten anlegen, Gestaltung und Layout, und die
-Bausteinarten, deren Inhalt kein einzelnes Feld ist. Dafür ist der Editor der Weg. Ein **frischer
-Entwurf ohne Zeile und Spalte** lässt sich deshalb über die Werkzeuge nicht bebauen — `addModule`
-braucht die `uuid` einer Spalte. Nimm dort einen Newsletter mit Vorlage als Ausgangspunkt oder
-importiere ein HTML-Design, statt es zu versuchen.
+**Struktur: Zeile anlegen, Baustein verschieben.** `addRow` legt eine Zeile mit gleich breiten,
+leeren Spalten an — `columns` sagt wie viele, eine ohne Angabe. Erlaubt sind nur Zahlen, die das
+Zwölfer-Raster des Editors teilen: **1, 2, 3, 4 oder 6**. Eine schiefe Teilung wie 5+7 gibt es in
+gespeicherten Newslettern, sie entsteht aber im Editor, nicht hier. `position` setzt die Zeile
+zwischen die vorhandenen, von null gezählt; ohne Angabe kommt sie ans Ende. Die neue Zeile
+übernimmt Hintergrund und Breite von der Zeile, die der Newsletter schon hat — bei einem leeren
+Entwurf die Breite aus dem Dokument —, damit sie nicht auffällt.
+
+`moveModule` verschiebt einen Baustein: mit `toUuid` in eine andere Spalte, ohne `toUuid` nur an eine
+andere Stelle seiner eigenen, `position` von null gezählt. Nimm dafür nie „entfernen und neu
+hinzufügen": dabei bekommt der Baustein Editor-Standardwerte und eine neue `uuid`, und ein Add-on
+verliert seine Konfiguration. Verschieben bewegt denselben Baustein.
+
+**So bebaust du einen frischen Entwurf** — der hat weder Zeile noch Spalte, und `addModule` braucht
+eine Spalte:
+
+1. `addRow` (mit der gewünschten Spaltenzahl).
+2. **Neu lesen.** Jeder Schreibvorgang macht die Revision ungültig, und erst die Leseantwort nennt
+   die `uuid`s der neuen Zeile und Spalten.
+3. `addModule` in die neue Spalte — mehrere Bausteine in **einem** Aufruf.
+
+Liegt das Design bereits als HTML vor, ist der Import der kürzere Weg: er baut Zeilen und Spalten in
+einem Schritt.
+
+Was das Bearbeiten weiterhin **nicht** kann, sagst du offen, statt es zu umgehen: Gestaltung und
+Layout ändern — Farben, Abstände, Schriften, Spaltenbreiten einer bestehenden Zeile —, eine Zeile
+entfernen, und die Bausteinarten, deren Inhalt kein einzelnes Feld ist. Dafür ist der Editor der
+Weg.
 
 **Welches Feld welche Bausteinart hat.** Die erlaubten Felder folgen aus der Art des adressierten
 Bausteins, nicht aus dem Namen der Operation:
