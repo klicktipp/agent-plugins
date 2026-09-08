@@ -67,6 +67,7 @@ Bausteins, nicht aus dem Namen der Operation:
 | Button | `label`, `href` |
 | Bild | `src`, `alt`, `href` |
 | Video | `src` (die Video-URL), `thumbSrc` (das Vorschaubild) |
+| Personalisierte E-Mail | `prompt` (die Anweisung), `name` (optional) |
 
 **Beim Video gehören die zwei Felder zusammen.** `src` ist das Ziel des Klicks, `thumbSrc` das, was
 der Empfänger sieht — kein E-Mail-Client spielt ein Video im Postfach ab, deshalb ist ein Video ohne
@@ -104,14 +105,23 @@ uuid, die der erste Schritt vergibt, also lies nach dem Hinzufügen einmal neu o
 im nächsten Aufruf. Ein Video ohne diese zwei Werte ist ein leerer Baustein, und den als „Video
 hinzugefügt" zu melden ist irreführend.
 
-**Add-ons kommen unkonfiguriert.** Ein Add-on (Countdown, Kontaktkarte, Wowing-Video, KI-Text)
-wird ohne Einstellungen eingefügt: Countdown-Ziel,
-Kontaktdaten und KI-Anweisung entstehen im Editor. Der KI-Textbaustein setzt außerdem voraus, dass
-das Konto das Add-on überhaupt hat. Die personalisierte E-Mail wird im Newsletter-Editor **nicht zum
-Einfügen angeboten** — nur in Automationen —, also füge sie dort auch nicht ein: eine Person könnte
-sie selbst nicht hinzufügen und nach einem Entfernen nicht zurückholen. Vorhandene bleiben gültig
-und funktionieren; lass sie in Ruhe. Nicht hinzufügbar sind außerdem Formular, Karussell,
-Merge-Inhalt und Leerbaustein.
+**Add-ons kommen unkonfiguriert — mit einer Ausnahme.** Ein Add-on (Countdown, Kontaktkarte,
+Wowing-Video, KI-Text) wird ohne Einstellungen eingefügt: Countdown-Ziel, Kontaktdaten und
+KI-Anweisung entstehen im Editor. Der KI-Textbaustein setzt außerdem voraus, dass das Konto das
+Add-on überhaupt hat. Nicht hinzufügbar sind Formular, Karussell, Merge-Inhalt und Leerbaustein.
+
+**Die personalisierte E-Mail ist die Ausnahme: sie wird vollständig geschrieben.** Ihr Feld heißt
+`prompt` — die Anweisung, aus der beim Versand je Empfänger ein Text entsteht —, und diese Anweisung
+**ist** der Baustein: ohne sie wird das Hinzufügen abgelehnt, weil ein Baustein ohne Anweisung im
+fertig aussehenden Newsletter einen Platzhalter rendert und nichts erzeugt. Denselben `prompt` setzt
+du auch bei einem vorhandenen Baustein neu, der Baustein bleibt dabei derselbe. Welche Datenfelder
+und Tags die Anweisung nutzen darf, wird im KlickTipp-Editor gewählt, nicht hier.
+
+**Sag beim Hinzufügen aber eines dazu:** der Newsletter-Editor bietet diesen Baustein im Einfügen-Menü
+**nicht** an — nur Automationen tun das. Eine Person kann ihn dort also nicht selbst anlegen und nach
+einem Entfernen nicht zurückholen. Füge ihn deshalb nur ein, wenn er ausdrücklich bestellt ist, und
+nenne diesen Punkt im selben Zug. Vorhandene Bausteine bleiben in jedem Fall gültig und
+funktionieren; ohne Auftrag lass sie in Ruhe.
 
 **Ersetzen ist kein Aufräumen.** Wenn du neuen Text in einen bestehenden Newsletter einsetzen
 sollst — aus einer Datei, einem Briefing, einer Nachricht —, dann bekommen genau die Bausteine
