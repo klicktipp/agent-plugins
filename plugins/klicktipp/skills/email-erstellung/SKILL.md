@@ -66,8 +66,17 @@ Bausteins, nicht aus dem Namen der Operation:
 | Text, Absatz, **Liste**, eigenes HTML | `html` (bei einer Liste das `<ul>`/`<ol>`-Markup) |
 | Button | `label`, `href` |
 | Bild | `src`, `alt`, `href` |
+| Video | `src` (die Video-URL), `thumbSrc` (das Vorschaubild) |
 
-Trennlinie, Abstand, Social-Links, Menü, Icons, Tabelle, Video und Add-ons haben kein einzelnes
+**Beim Video gehören die zwei Felder zusammen.** `src` ist das Ziel des Klicks, `thumbSrc` das, was
+der Empfänger sieht — kein E-Mail-Client spielt ein Video im Postfach ab, deshalb ist ein Video ohne
+Vorschaubild im Editor ein leerer Kasten. Setze beide in **einer** Operation. Bei YouTube ist das
+Vorschaubild aus der Video-ID ableitbar: `https://i.ytimg.com/vi/<ID>/hqdefault.jpg` gibt es immer,
+`maxresdefault.jpg` nur bei hochauflösenden Videos — im Zweifel `hqdefault`. Wie der Baustein
+rendert (`video.mode`, „thumbnail") ist **kein** Feld: dafür gibt es keinen belegten zweiten Wert,
+und ein geratener Wert an so einer Stelle hat den Editor schon einmal zum Absturz gebracht.
+
+Trennlinie, Abstand, Social-Links, Menü, Icons, Tabelle und Add-ons haben kein einzelnes
 Inhaltsfeld: hinzufügen und entfernen geht, bearbeitet werden sie im Editor.
 
 **Hinzufügen: der Baustein trägt Editor-Standardwerte, und das sagst du.** `addModule` legt einen
@@ -88,6 +97,12 @@ Gestaltung. Darum gilt:
 
 Positionieren geht über `position` in derselben Spalte — von null gezählt, ohne Angabe wird
 angehängt. Zwischen Spalten oder Zeilen verschieben geht nicht.
+
+**Ein neuer Video-Baustein ist in einem Zug fertig.** `addModule` mit `kind: "video"` und im
+selben Aufruf ein `setContent` mit `src` und `thumbSrc` auf die neue uuid — dafür brauchst du die
+uuid, die der erste Schritt vergibt, also lies nach dem Hinzufügen einmal neu oder setze die Inhalte
+im nächsten Aufruf. Ein Video ohne diese zwei Werte ist ein leerer Baustein, und den als „Video
+hinzugefügt" zu melden ist irreführend.
 
 **Add-ons kommen unkonfiguriert.** Ein Add-on (Countdown, Kontaktkarte, Wowing-Video, KI-Text)
 wird ohne Einstellungen eingefügt: Countdown-Ziel,
