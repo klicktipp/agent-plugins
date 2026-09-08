@@ -1,0 +1,82 @@
+{
+  "_comment": [
+    "Key skeleton of a stored drag-and-drop editor document, page-rooted form. Values are",
+    "placeholders; what matters here are the key names, the nesting and which levels carry style.",
+    "The second valid shape is this document without the 'page' wrapper -- the editor's save",
+    "callback returns the page itself, and it is stored unchanged. Normalize before reading:",
+    "page = document['page'] if that key holds an object, else the document.",
+    "An email created without a body stores nothing at all; read that as",
+    "{\"page\":{\"body\":{\"webFonts\":[]},\"rows\":[]}}.",
+    "'kt-decisions' and 'kt-ai-blocks' are KlickTipp's own keys, not the editor's: they are",
+    "stripped before rendering, so an HTML round trip deletes them."
+  ],
+  "page": {
+    "title": "",
+    "description": "",
+    "template": { "name": "template-base", "type": "basic", "version": "2.0.0" },
+    "body": {
+      "type": "mailup-bee-page-properties",
+      "container": { "style": { "background-color": "#ffffff" } },
+      "content": {
+        "computedStyle": { "linkColor": "#0068A5", "messageBackgroundColor": "transparent", "messageWidth": "500px" },
+        "style": { "color": "#000000", "font-family": "Arial, Helvetica, sans-serif" }
+      },
+      "webFonts": []
+    },
+    "rows": [
+      {
+        "type": "one-column-empty",
+        "uuid": "00000000-0000-0000-0000-000000000000",
+        "empty": false,
+        "locked": false,
+        "synced": false,
+        "container": {
+          "style": {
+            "background-color": "transparent",
+            "background-image": "none",
+            "background-repeat": "no-repeat",
+            "background-position": "top left"
+          }
+        },
+        "content": {
+          "computedStyle": { "rowColStackOnMobile": true, "rowReverseColStackOnMobile": false },
+          "style": { "background-color": "transparent", "color": "#000000", "width": "500px" }
+        },
+        "columns": [
+          {
+            "grid-columns": 12,
+            "uuid": "00000000-0000-0000-0000-000000000001",
+            "style": {
+              "background-color": "transparent",
+              "border-bottom": "0px solid transparent",
+              "padding-top": "5px",
+              "padding-bottom": "5px"
+            },
+            "modules": [
+              {
+                "type": "mailup-bee-newsletter-modules-heading",
+                "uuid": "00000000-0000-0000-0000-000000000002",
+                "locked": false,
+                "descriptor": {
+                  "heading": { "title": "h1", "text": "<span>Headline</span>", "style": {} },
+                  "style": { "padding-top": "10px", "padding-bottom": "10px" },
+                  "computedStyle": {}
+                }
+              },
+              {
+                "type": "mailup-bee-newsletter-modules-addon",
+                "uuid": "00000000-0000-0000-0000-000000000003",
+                "descriptor": {
+                  "_comment": "Every add-on shares this type; the concrete one comes from the handle.",
+                  "contentDialog": { "id": "countdown-handle" }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "comments": {},
+  "kt-decisions": []
+}

@@ -181,11 +181,12 @@ Versand", ist das Text, den jemand geschrieben hat. Melde solche Stellen, statt 
 
 ## Referenzdateien neben diesem Skill
 
-Für Aufgaben, die die gespeicherte Bausteinstruktur betreffen — Analyse, Migration, Auswertung —
-liegen im Ordner `reference/`:
+Im Ordner `reference/` liegen:
 
 | Datei | Inhalt |
 | --- | --- |
+| `professional-template.html` | **eine vollständige, importfertige E-Mail als Ausgangspunkt jeder Generierung** |
+| `professional-template.md` | wie man sie anpasst: Typoskala, Abstandsskala, was ersetzt wird und was nie |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `module-inventory.json` | die Bausteinarten mit ihrem Produktbegriff und den Kosten eines Roundtrips |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |
@@ -205,8 +206,18 @@ Zwei Fallen, die dort ausführlich stehen und beim Lesen sofort greifen:
 - Das Generierungs-Schema kennt zehn Bausteintypen, ein gespeichertes Dokument neunzehn plus
   Add-ons. Gespeicherte Newsletter dagegen zu validieren lehnt die Mehrheit ab.
 
-Im normalen Ablauf brauchst du die Dateien nicht: die Werkzeuge geben HTML zurück, und die Regeln
-oben und unten genügen.
+Die vier JSON-Dateien und der Schema-Katalog betreffen nur die gespeicherte Bausteinstruktur —
+Analyse, Migration, Auswertung. Im normalen Ablauf brauchst du sie nicht.
+
+**Das Template dagegen ist der Regelweg, wenn eine E-Mail entstehen soll.** Fang nicht mit einem
+leeren Dokument an: lies `professional-template.html`, übernimm es und tausche Inhalte. Es hält jede
+Regel dieses Skills schon ein — Grundgerüst, 600px-Zeilen, Spalten- und Blockklassen, Inline-Styles,
+die Pflicht-Platzhalter der Fußzeile — und es benutzt ausschließlich die Bausteinarten, die der
+Importer verlässlich in bearbeitbare Blöcke zurückverwandelt. `professional-template.md` sagt, was
+du ändern darfst und welche Werte zusammengehören: eine E-Mail wirkt professionell durch eine
+konsequente Typo- und Abstandsskala, nicht durch Dekoration. Ein selbst zusammengebautes Layout
+schreib nur, wenn die Aufgabe eine Struktur verlangt, die das Template nicht hergibt — und dann mit
+denselben Werten.
 
 ## Bestehendes HTML bearbeiten
 

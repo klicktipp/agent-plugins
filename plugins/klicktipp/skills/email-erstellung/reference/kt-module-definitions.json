@@ -1,0 +1,144 @@
+{
+  "_comment": [
+    "The KlickTipp-only parts of a stored editor document. The editor itself does not know them:",
+    "they are added by KlickTipp, live next to 'page' (decisions and AI blocks) or inside a module",
+    "(add-ons), and they are the parts an HTML round trip cannot preserve.",
+    "Both top-level keys are removed before the document is rendered to HTML. So they are not in the",
+    "HTML anyone edits, and a full content replacement DELETES them -- not degrades them. Announce",
+    "that before replacing; nothing an editing agent does can preserve them."
+  ],
+
+  "kt-decisions": {
+    "_comment": [
+      "Conditional content. The definitions sit in this top-level array; the *place* they apply to is",
+      "marked inside the content with HTML comments carrying the same id:",
+      "<!--DECISION_START(42)--> … <!--DECISION_END(42)-->.",
+      "Markers without their definition are meaningless, which is the second reason a round trip",
+      "loses conditional content even when the markers survive.",
+      "Consumers walk decision.segments[].conditions[] and read 'type' plus 'entity' to find out",
+      "which tag, product or other entity a newsletter depends on."
+    ],
+    "shape": [
+      {
+        "id": "42",
+        "name": "name given by the user",
+        "description": "description given by the user",
+        "decision": {
+          "segments": [
+            {
+              "conditions": [
+                {
+                  "type": "the condition option, e.g. an entity class name",
+                  "condition": "the chosen condition of that option",
+                  "entity": 0,
+                  "op": "operator of the chosen condition",
+                  "timeframe": "id of the chosen timeframe",
+                  "value": 0,
+                  "action": "id of the chosen action",
+                  "field": 0,
+                  "conditionOpAND": true
+                }
+              ],
+              "conditionsOpAND": true
+            }
+          ],
+          "segmentsOpAND": true
+        }
+      }
+    ],
+    "notes": {
+      "entity": "0 when the chosen condition needs no entity; otherwise the id of the referenced entity.",
+      "conditionsOpAND": "true = all conditions of the segment are AND-joined, false = OR.",
+      "segmentsOpAND": "true = all segments are AND-joined, false = OR.",
+      "emptyIsNormal": "An empty array means the newsletter has no conditional content."
+    }
+  },
+
+  "kt-ai-blocks": {
+    "_comment": [
+      "Blocks whose text is generated per recipient. The array holds the instructions, one entry per",
+      "block; the rendered result is what a round trip brings back, so the instruction is lost and",
+      "the text stops being generated."
+    ],
+    "shape": [
+      {
+        "id": "block id",
+        "name": "name given by the user",
+        "userPrompt": "the instruction the user wrote",
+        "fieldIds": ["ids of the contact fields the instruction may use"],
+        "tagIds": [0]
+      }
+    ],
+    "notes": {
+      "fieldIds": "Strings. Empty when the instruction uses no contact field.",
+      "tagIds": "Integers. Empty when the instruction is not restricted by tags.",
+      "malformed": "A non-empty value that is not a list of objects is broken data, not an empty state."
+    }
+  },
+
+  "addOnModules": {
+    "_comment": [
+      "KlickTipp add-ons are ordinary modules of the single 'addon' kind -- countdown, contact card,",
+      "Wowing video, AI text, personalized email and signature are indistinguishable by type. The",
+      "concrete add-on is named in 'moduleInternal.uid' -- a sibling of 'descriptor', NOT inside it,",
+      "and 'moduleInternal.configurationUi.contentDialogId' repeats the same handle. An earlier",
+      "version of this file put it under 'descriptor.contentDialog.id', which matches nothing in a",
+      "real document; the path below was read off stored newsletters. A rule written against the",
+      "type matches all add-ons or none.",
+      "A round trip brings back the rendered output; the add-on itself is gone."
+    ],
+    "typeKind": "addon",
+    "handlePath": "moduleInternal.uid",
+    "handles": {
+      "countdown-handle": "countdown",
+      "vcard-handle": "contact card",
+      "wowing-handle": "Wowing video",
+      "smartcopywriter-handle": "AI text",
+      "personalized-email": "personalized email",
+      "signatureaddon": "signature"
+    },
+    "availability": {
+      "_comment": [
+        "Which add-ons an account is even offered is decided when the editor is configured, not by",
+        "the document. Read off the client's own editor configuration:",
+        "- AI text appears only with the 'smart-copy-writer-access' flag; without it the add-on is",
+        "  filtered out of the editor configuration entirely.",
+        "- The personalized email is switched off unless the email is used in an automation: the",
+        "  entry stays in the configuration but is not offered for insertion, so blocks already in a",
+        "  newsletter keep working while no new one can be added there by a person. Newsletters",
+        "  carrying one exist and are legitimate; leave them alone.",
+        "An add-on inserted past those rules sits in a newsletter the account cannot open, configure",
+        "or switch off -- so a tool that writes documents has to honour them itself."
+      ],
+      "smartcopywriter-handle": "requires the smart-copy-writer-access flag",
+      "personalized-email": "automations only, never a newsletter"
+    },
+    "displayFieldsAreNotContent": {
+      "_comment": [
+        "A stored add-on module also carries 'entity', 'placeholder', 'ctaLabel' and a base64 'icon'",
+        "inside 'moduleInternal'. Those are a snapshot: the editor is handed label, call-to-action",
+        "and placeholder from KlickTipp's own configuration on every load, translated per account",
+        "language -- and one stored newsletter was found carrying resolved German text while another",
+        "carried the untranslated keys. So they say nothing about the add-on and must not be copied",
+        "into a new block: doing so freezes one account's language into another's newsletter.",
+        "What identifies an add-on is 'uid' plus 'configurationUi.contentDialogId'. Nothing else."
+      ]
+    },
+    "shape": {
+      "type": "<module type prefix>addon",
+      "uuid": "…",
+      "descriptor": { "…": "the add-on's own descriptor" },
+      "moduleInternal": {
+        "uid": "countdown-handle",
+        "configurationUi": { "contentDialogId": "countdown-handle" }
+      }
+    }
+  },
+
+  "customerFacingTerms": {
+    "_comment": "What to call these things in anything a person reads. Never the keys or handles.",
+    "kt-decisions": "KlickTipp decision / conditional content",
+    "kt-ai-blocks": "AI block",
+    "addon": "add-on, named by its handle above"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "_comment": [
+    "Inventory of the drag-and-drop editor's module kinds, the product term each one is called by, and what an HTML round trip costs it. Generated from the platform's own constants; the kinds are the module list of the editor SDK the app loads.",
+    "A stored module type is the prefix plus the kind, e.g. prefix + 'social'.",
+    "Terms are what a person reads. The kind and the prefix are internal identifiers and must not appear in customer-facing text."
+  ],
+  "moduleTypePrefix": "mailup-bee-newsletter-modules-",
+  "kinds": {
+    "heading": {
+      "term": "heading",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "paragraph": {
+      "term": "text",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "text": {
+      "term": "text",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "image": {
+      "term": "image",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "button": {
+      "term": "button",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "list": {
+      "term": "list",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "spacer": {
+      "term": "spacer",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "empty": {
+      "term": "empty",
+      "roundTrip": "carried",
+      "costsItsBlock": false
+    },
+    "divider": {
+      "term": "divider",
+      "roundTrip": "comes back as a styled line; the divider block is gone",
+      "costsItsBlock": true
+    },
+    "menu": {
+      "term": "menu",
+      "roundTrip": "comes back as links; the editable menu is gone",
+      "costsItsBlock": true
+    },
+    "social": {
+      "term": "social links",
+      "roundTrip": "comes back as images with links; the editable block is gone",
+      "costsItsBlock": true
+    },
+    "icons": {
+      "term": "icon",
+      "roundTrip": "comes back as images with links; the editable block is gone",
+      "costsItsBlock": true
+    },
+    "html": {
+      "term": "custom HTML",
+      "roundTrip": "comes back as the markup it renders to; the code block is gone",
+      "costsItsBlock": true
+    },
+    "video": {
+      "term": "video",
+      "roundTrip": "comes back as a preview image with a link; the video block is gone",
+      "costsItsBlock": true
+    },
+    "table": {
+      "term": "table",
+      "roundTrip": "comes back as plain markup; the editable table is gone",
+      "costsItsBlock": true
+    },
+    "form": {
+      "term": "form",
+      "roundTrip": "comes back as markup; the form no longer works",
+      "costsItsBlock": true
+    },
+    "carousel": {
+      "term": "carousel",
+      "roundTrip": "comes back as the visible slide; the rest of the carousel is lost",
+      "costsItsBlock": true
+    },
+    "merge-content": {
+      "term": "merge content",
+      "roundTrip": "comes back as its resolved content; the merge block is gone",
+      "costsItsBlock": true
+    },
+    "addon": {
+      "term": "add-on",
+      "roundTrip": "comes back as its rendered output; the add-on is gone",
+      "costsItsBlock": true
+    }
+  },
+  "addOnHandles": {
+    "countdown-handle": "countdown",
+    "vcard-handle": "contact card",
+    "wowing-handle": "Wowing video",
+    "smartcopywriter-handle": "AI text",
+    "personalized-email": "personalized email",
+    "signatureaddon": "signature"
+  },
+  "pageLevelCosts": {
+    "webFonts": "The web fonts of this newsletter are not carried through a replacement.",
+    "backgroundImage": "A row background image is not carried through a replacement.",
+    "headStyles": "The own head styles of this newsletter are not carried through a replacement."
+  },
+  "unknownKindRule": "A type outside 'kinds' is a provider addition nobody reviewed. Report it as unknown; keep it apart from a kind that is known and costly.",
+  "addOnTrap": "Every add-on is stored as the 'addon' kind. Name the concrete add-on from the content-dialog handle inside the module, never from the type."
+}
