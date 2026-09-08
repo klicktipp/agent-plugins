@@ -13,6 +13,12 @@ unteilbare Textwüste im Editor — importiert, aber nicht mehr bearbeitbar.
 Dieser Skill kodiert, welche Struktur der Importer erwartet, welche Editor-Elemente sich per HTML
 überhaupt stabil erzeugen lassen und welche man besser nach dem Import von Hand ergänzt.
 
+## Bearbeiten vs. neu bauen
+
+Liegt schon HTML vor, ist der Skill konservativ: er ändert nur Inhalte — Texte, Links, Bild-URLs,
+Variablen — und lässt Struktur, Klassen und Styles Zeichen für Zeichen stehen. Design ändert er
+nur auf ausdrückliche Ansage. Das hält eine bereits im Editor verifizierte Vorlage verifiziert.
+
 ## Was er nicht kann
 
 - **Keine Landingpages, keine Webseiten.** Die Importer-API ist auf E-Mail-Templates ausgelegt.

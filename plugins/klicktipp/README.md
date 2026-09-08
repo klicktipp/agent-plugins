@@ -33,7 +33,8 @@ Both targets read the same `.mcp.json`.
 | `email-newsletter-draft-create` | create a draft with its name and initial subject |
 | `email-newsletter-draft-update` | name, internal note and audience of a draft |
 | `email-newsletter-draft-delete` | discard a draft |
-| `email-newsletter-content-replace` | replace the drag-and-drop body, bound to the revision you read |
+| `email-newsletter-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
+| `email-newsletter-content-edit` | change named blocks of the stored document -- the tool for every later change |
 | `email-newsletter-content-publish` | make the reviewed body the one a dispatch would send |
 | `email-newsletter-delivery-configure` | sender name, sender address, reply address, signature |
 | `email-newsletter-test-send` | test send to the account's own or a verified sender address |
@@ -69,13 +70,18 @@ to be prepared.
 Three writes have no undo, and the agent is expected to say so before it calls
 them:
 
-- `email-newsletter-content-replace` converts HTML only. Social icons come back
-  as linked images, tables as plain markup, video as a preview image, add-ons as
-  their rendered output; web fonts, row background images and own head styles are
-  dropped; **KlickTipp decisions and AI blocks are deleted beyond recovery.** The
-  `content` projection of `email-newsletter-get` lists exactly what a replacement
-  would cost for the newsletter at hand, as `replaceWarnings` — those belong in
-  front of the user, not summarised away.
+- `email-newsletter-content-import` converts HTML only, and it is the entry for a
+  design that exists as HTML and nowhere else -- not a way to change a newsletter.
+  Social icons come back as linked images, tables as plain markup, video as a
+  preview image, add-ons as their rendered output; web fonts, row background
+  images and own head styles are dropped; **KlickTipp decisions and AI blocks are
+  deleted beyond recovery.** The `content` projection of `email-newsletter-get`
+  lists exactly what an import would cost for the newsletter at hand, as
+  `importWarnings` — those belong in front of the user, not summarised away.
+- `email-newsletter-content-edit` converts nothing, so no block loses its styling
+  or its editability, but removing a block cannot be undone either. It is the tool
+  for a change that can be named, and the one to prefer over an import on a
+  newsletter that already carries a design.
 - `email-newsletter-content-publish` changes what real recipients would receive.
 - `email-newsletter-draft-delete` removes the draft with its email, audience
   conditions and system tags.
@@ -88,8 +94,9 @@ Treat its result as personal data.
 
 `skills/email-erstellung` — writes HTML that the KlickTipp email editor's HTML
 import turns back into editable drag-and-drop blocks instead of one undividable
-wall of text. That is the HTML `email-newsletter-content-replace` expects. In
-German, like the editor itself.
+wall of text. That is the HTML `email-newsletter-content-import` expects. It also
+explains what the newsletter tools hand back -- the stored block document, not
+HTML -- and how to change it block by block. In German, like the editor itself.
 
 ## Support
 

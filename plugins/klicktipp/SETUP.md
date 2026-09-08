@@ -85,11 +85,15 @@ the user along with what confirming it will do — subject, who receives it (mod
 estimate, sender and moment. Opening and confirming it is theirs to do, and that
 step cannot be taken back.
 
-Three writes have no undo. Say what they cost before calling them:
+Four writes have no undo. Say what they cost before calling them:
 
-- `email-newsletter-content-replace` — read the newsletter first and pass its
-  `replaceWarnings` to the user verbatim enough to be understood. KlickTipp
-  decisions and AI blocks are deleted beyond recovery.
+- `email-newsletter-content-import` — only to bring in a design that exists as
+  HTML and nowhere else. Read the newsletter first and pass its `importWarnings`
+  to the user verbatim enough to be understood. KlickTipp decisions and AI blocks
+  are deleted beyond recovery.
+- `email-newsletter-content-edit` — the tool for every change to a newsletter
+  that already carries a design; it converts nothing, but a removed block does
+  not come back.
 - `email-newsletter-content-publish` — changes what real recipients would
   receive.
 - `email-newsletter-draft-delete` — only for a draft the user explicitly asked

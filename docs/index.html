@@ -160,7 +160,8 @@ claude mcp login plugin:klicktipp:klicktipp</code></pre>
     <tr><td><code>email-newsletter-draft-create</code></td><td>einen Entwurf anlegen, mit Name und erstem Betreff</td></tr>
     <tr><td><code>email-newsletter-draft-update</code></td><td>Name, interne Notiz und Empfängerkreis eines Entwurfs</td></tr>
     <tr><td><code>email-newsletter-draft-delete</code></td><td>einen Entwurf verwerfen</td></tr>
-    <tr><td><code>email-newsletter-content-replace</code></td><td>den Drag-and-drop-Inhalt ersetzen, gebunden an die gelesene Revision</td></tr>
+    <tr><td><code>email-newsletter-content-import</code></td><td>ein Design hereinholen, das nur als HTML existiert — einmalig, gebunden an die gelesene Revision</td></tr>
+    <tr><td><code>email-newsletter-content-edit</code></td><td>benannte Bausteine des gespeicherten Dokuments ändern — das Werkzeug für jede spätere Änderung</td></tr>
     <tr><td><code>email-newsletter-content-publish</code></td><td>den geprüften Inhalt zu dem machen, den ein Versand sendet</td></tr>
     <tr><td><code>email-newsletter-delivery-configure</code></td><td>Absendername, Absenderadresse, Antwortadresse, Signatur</td></tr>
     <tr><td><code>email-newsletter-test-send</code></td><td>Testversand an die Kontoadresse oder eine verifizierte Absenderadresse</td></tr>
@@ -227,17 +228,24 @@ claude mcp login plugin:klicktipp:klicktipp</code></pre>
 </div>
 
 <p>
-  Drei Schreibvorgänge haben kein Zurück, und der Agent soll vorher sagen, was sie kosten:
+  Vier Schreibvorgänge haben kein Zurück, und der Agent soll vorher sagen, was sie kosten:
 </p>
 
 <ul>
   <li>
-    <strong><code>email-newsletter-content-replace</code></strong> wandelt nur HTML. Social-Icons
-    kommen als verlinkte Bilder zurück, Tabellen als einfaches Markup, Video als Vorschaubild,
-    Add-ons als ihre gerenderte Ausgabe; Webfonts, Zeilen-Hintergrundbilder und eigene
-    Head-Styles fallen weg; <strong>KlickTipp-Entscheidungen und KI-Blöcke werden
+    <strong><code>email-newsletter-content-import</code></strong> wandelt nur HTML und ist der
+    Eingang für ein Design, das nur als HTML existiert — kein Weg, einen Newsletter zu ändern.
+    Social-Icons kommen als verlinkte Bilder zurück, Tabellen als einfaches Markup, Video als
+    Vorschaubild, Add-ons als ihre gerenderte Ausgabe; Webfonts, Zeilen-Hintergrundbilder und
+    eigene Head-Styles fallen weg; <strong>KlickTipp-Entscheidungen und KI-Blöcke werden
     unwiederbringlich gelöscht.</strong> Was genau es beim jeweiligen Newsletter kostet, steht
-    beim Lesen in <code>replaceWarnings</code>.
+    beim Lesen in <code>importWarnings</code>.
+  </li>
+  <li>
+    <strong><code>email-newsletter-content-edit</code></strong> wandelt nichts: kein Baustein
+    verliert Gestaltung oder Bearbeitbarkeit, und eine geänderte Überschrift kostet eine geänderte
+    Überschrift. Ein entfernter Baustein kommt trotzdem nicht zurück. Für jede Änderung an einem
+    gestalteten Newsletter ist das der Weg, nicht der Import.
   </li>
   <li>
     <strong><code>email-newsletter-content-publish</code></strong> ändert, was echte Empfänger
