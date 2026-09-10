@@ -104,22 +104,33 @@ und ein geratener Wert an so einer Stelle hat den Editor schon einmal zum Abstur
 Trennlinie, Abstand, Social-Links, Menü, Icons, Tabelle und Add-ons haben kein einzelnes
 Inhaltsfeld: hinzufügen und entfernen geht, bearbeitet werden sie im Editor.
 
-**Hinzufügen: der Baustein übernimmt die Gestaltung seiner Nachbarn — von selbst.** `addModule`
-liest die Gestaltung vom **nächstgelegenen Baustein derselben Art** ab: erst dieselbe Spalte, dann
-dieselbe Zeile, dann irgendeiner im Newsletter. Schrift, Größe, Farbe, Zeilenhöhe und Innenabstand
-kommen also aus dem Newsletter, in den der Baustein fällt. Das musst du nicht steuern und sollst du
-nicht überschreiben — der Server macht es, weil er das Dokument sieht.
+**Text ändern heißt Wörter tauschen — das gespeicherte Markup bleibt.** Ein Textbaustein trägt
+seine Gestaltung zum großen Teil **im `html` selbst**: ein Wrapper-`<div class="txtTinyMce-wrapper"
+style="font-size:…">`, darin `<p style="font-size:16px;line-height:24px;…">`, oft `<span
+style="color:…">`. Das Objekt `text.style`/`paragraph.style` daneben kennt nur Farbe, Schrift und
+Zeilenhöhe. Wer für ein `setContent` ein nacktes `<p>Neuer Text</p>` schickt, wirft also die
+Schriftgröße, die Zeilenhöhe und die Farben des Bausteins weg — der Editor zeigt dann seine
+Voreinstellung, und die E-Mail sieht nicht mehr aus wie vorher. Darum: nimm das **gelesene `html`
+des Bausteins** als Vorlage, behalte Wrapper, `<p style=…>`, `<span style=…>`, `<strong>`, `<a>`
+und Attribute wie `data-mce-style` unverändert und tausche **nur die Wörter**. Kein Aufräumen, keine
+Vereinheitlichung, keine „unnötige" Verschachtelung entfernen. Braucht der neue Text mehr Absätze
+als der alte, wiederhole das vorhandene `<p style=…>` mit seinem Stil; braucht er weniger, lass
+Absätze weg. Bei einer Überschrift gilt dasselbe für `text` (dort steckt der Text in `<span>`s).
 
-**Und deshalb: schick kein gestaltetes HTML.** Was du in `html` oder `text` schreibst, ist der
-**Inhalt**, nicht das Aussehen. Ein `style`-Attribut, eine `font-family`, ein `<font>`-Tag oder eine
-Größenangabe in deinem Markup schlägt die Gestaltung des Bausteins und macht genau die gemischten
-Schriften, die eine Person danach im Editor einzeln nachziehen muss. Schreibe schlichtes Markup:
-`<p>`, `<strong>`, `<em>`, `<a href="…">`, `<ul>`/`<li>`, `<br>`. Nichts weiter.
+**Hinzufügen: der neue Baustein sieht aus wie sein Nachbar — auf zwei Wegen zugleich.** Der Server
+kopiert bei `addModule` das `style`-Objekt und den Innenabstand vom nächstgelegenen Baustein
+derselben Art (erst dieselbe Spalte, dann dieselbe Zeile, dann irgendeiner im Newsletter). Was im
+`html` steckt — Wrapper, `<p style=…>`, Schriftgrößen —, kopiert er **nicht**; das ist dein Teil:
+nimm das `html` des Nachbarbausteins derselben Art (bevorzugt aus derselben Zeile oder dem
+Abschnitt, in den der neue Block kommt — nicht die Vorschauzeile, nicht den Footer) als Vorlage und
+ersetze nur die Wörter. Erfinde nichts: keine Werte, die nicht im Dokument stehen, keine
+`font-family` aus dem Kopf, keine Größen, die du für passend hältst.
 
 Zwei Dinge bleiben:
 
 1. Hat der Newsletter **keinen** Baustein dieser Art, gibt es nichts abzulesen — dann trägt der neue
-   Baustein die Werte seines Startzustands. Sag das dem Nutzer in dem Fall, statt ein fertiges
+   Baustein die Werte seines Startzustands, und dein `html` kommt ohne Vorlage: dann schlichtes
+   Markup (`<p>`, `<strong>`, `<a href>`), nichts erfunden. Sag das dem Nutzer, statt ein fertiges
    Ergebnis zu melden.
 2. Mehrere neue Bausteine auf einmal: **ein** Schreibvorgang mit mehreren `addModule`-Operationen in
    derselben Liste, nicht ein Aufruf pro Block. Jeder Schreibvorgang erneuert die Revision; wer pro
