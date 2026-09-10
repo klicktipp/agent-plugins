@@ -1,0 +1,96 @@
+# Publishes a GitHub release the moment a version tag is pushed:
+#
+#   git tag 0.5.1 && git push origin 0.5.1
+#
+# The tag is the version. It has to match what both manifests carry and it has
+# to have a CHANGELOG.md section — a release with the wrong version in it, or
+# with no notes, is worse than no release, so either one fails the run before
+# anything is published.
+
+name: release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to (re)publish the release for
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Name the version
+        id: v
+        run: echo "version=${{ inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: The tag is the manifest version
+        run: |
+          for f in plugins/klicktipp/.claude-plugin/plugin.json \
+                   plugins/klicktipp/.codex-plugin/plugin.json; do
+            have=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$f")
+            if [ "$have" != "${{ steps.v.outputs.version }}" ]; then
+              echo "$f says $have, the tag says ${{ steps.v.outputs.version }}" >&2
+              exit 1
+            fi
+          done
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install the Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      # the same gate as the validate workflow: a tag must not publish
+      # something that would be rejected from the plugin directory
+      - name: claude plugin validate
+        run: |
+          claude plugin validate .
+          claude plugin validate plugins/klicktipp
+
+      - name: Manifests agree
+        run: python3 .github/scripts/check_manifests.py
+
+      - name: Release notes from the changelog
+        run: |
+          python3 .github/scripts/release_notes.py "${{ steps.v.outputs.version }}" > notes.md
+          cat notes.md
+
+      # the archive holds the plugin directory itself, so it unpacks to
+      # klicktipp/ and installs as a drop-in without a nested folder
+      - name: Archive the plugin
+        run: |
+          mkdir -p stage dist
+          cp -R plugins/klicktipp stage/klicktipp
+          find stage -name .DS_Store -delete
+          (cd stage && zip -qr "../dist/klicktipp-${{ steps.v.outputs.version }}.zip" klicktipp)
+          unzip -l "dist/klicktipp-${{ steps.v.outputs.version }}.zip" | tail -3
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ steps.v.outputs.version }}"
+          if gh release view "$version" >/dev/null 2>&1; then
+            gh release edit "$version" --title "$version" --notes-file notes.md
+            gh release upload "$version" "dist/klicktipp-$version.zip" --clobber
+          else
+            gh release create "$version" "dist/klicktipp-$version.zip" \
+              --title "$version" --notes-file notes.md
+          fi

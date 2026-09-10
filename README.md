@@ -31,6 +31,7 @@ interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 ```
 .claude-plugin/marketplace.json     the marketplace this repository is
 docs/                               the documentation site, published as GitHub Pages
+CHANGELOG.md                        one entry per released version, and the release notes
 plugins/klicktipp/
 ├── .claude-plugin/plugin.json      manifest for Claude
 ├── .codex-plugin/plugin.json       manifest for Codex/ChatGPT, kept at the same version
@@ -46,6 +47,21 @@ Both manifests are validated on every push by
 plugin validate` plus the invariants it does not cover — that the two manifests
 stay at the same version and carry the fields a public listing needs, and that
 the published plugin points nowhere but production.
+
+## Releasing
+
+A pushed version tag publishes the release — nothing else to do:
+
+```bash
+git tag 0.5.1 && git push origin 0.5.1
+```
+
+[`.github/workflows/release.yml`](.github/workflows/release.yml) checks that the
+tag equals the version in both manifests, revalidates the plugin, takes the
+release notes from the tag's [`CHANGELOG.md`](CHANGELOG.md) section, and attaches
+`klicktipp-<tag>.zip` — the plugin directory itself, so it unpacks to
+`klicktipp/`. A tag without a changelog section, or one that disagrees with the
+manifests, fails the run and publishes nothing.
 
 ## Where this comes from
 
