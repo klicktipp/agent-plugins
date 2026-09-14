@@ -1,6 +1,60 @@
-# Professionelles E-Mail-Template
+# Die Vorlagen
 
-`professional-template.html` ist eine vollständige, importfertige E-Mail. Sie ist der
+Drei importfertige E-Mails in `../assets/`, **kein** Pflichtsatz von dreien: sie sind
+Ausgangspunkte, keine Schablonen. Welche du nimmst, entscheidet die Aufgabe.
+
+| Datei | Wofür | Zeilen |
+| --- | --- | --- |
+| `professional-template.html` | der Allrounder: Vorspann, Bild, Fließtext mit Liste, Button, zwei Spalten, Fuß | 8 |
+| `template-announcement.html` | **eine** Nachricht, **ein** Ziel: Ankündigung, Einladung, Produktstart | 5 |
+| `template-digest.html` | mehrere Themen nebeneinander: Rundbrief, Monatsrückblick, Lesetipps | 6 |
+
+Die zwei kürzeren sind aus denselben Zeilen gebaut wie der Allrounder — dieselbe Mechanik,
+andere Zusammenstellung und ein anderes Farbklima. Was unten über Anpassen, Werte und Grenzen
+steht, gilt für alle drei.
+
+## Wähle selbst
+
+Welche der drei es wird, entscheidest **du** aus dem Auftrag — leg keine Auswahl vor und frag
+nicht nach. Eine Ankündigung, eine Einladung, ein Produktstart: `template-announcement.html`. Ein
+Rundbrief mit mehreren Themen: `template-digest.html`. Alles andere: der Allrounder. Nenne
+hinterher in einem Satz, welche du genommen hast und warum; wer anderer Meinung ist, sagt es dann
+— und hat etwas Fertiges vor sich statt einer Rückfrage.
+
+Dasselbe gilt für alles Gestalterische darunter: Farbklima, Reihenfolge und Anzahl der Zeilen,
+Typoskala, Bildauswahl. Gefragt wird nur, wo etwas verloren geht (ein Import über bestehenden
+Inhalt, ein entfernter Baustein) oder wo eine Rechtsfrage dranhängt (die Lizenz eines Stockfotos
+schränkt erkennbare Personen ein).
+
+## Sei nicht die Vorlage
+
+**Zwei Newsletter desselben Kunden sollen nicht wie derselbe Newsletter aussehen.** Die Vorlagen
+lösen die Mechanik — Grid, Abstände, Fußzeile, importsichere Bausteine —, nicht die Gestaltung.
+Die kommt von dir, und dafür gibt es Spielraum:
+
+- **Die Zeilen sind Bausteine, keine Reihenfolge.** Lass weg, was die Aufgabe nicht braucht,
+  wiederhole, was sie mehrfach braucht, stell um, wo es der Inhalt verlangt. Ein Rückblick mit
+  fünf Themen ist fünfmal dieselbe Zeile.
+- **Die Farben gehören zur Marke, nicht zur Vorlage.** Grundfarbe, Akzent für Button und Links,
+  der Wechsel heller Flächen — nimm, was die Marke des Kunden vorgibt, oder frag danach. Die drei
+  Dateien zeigen drei Farbklimata; keines ist gesetzt.
+- **Die Typoskala darf mitwandern**, solange sie eine Skala bleibt: ein Verhältnis zwischen H1,
+  H2 und Fließtext, nicht fünf Größen ohne Ordnung.
+- **Bildsprache entscheidet mehr als Layout.** Ein Foto über die volle Breite wirkt anders als drei
+  kleine — such danach, statt den Platzhalter nur zu ersetzen.
+
+Was **nicht** zur Kreativität gehört, weil es nicht Geschmack ist, sondern Mechanik: das
+Grundgerüst, die Zwölfer-Spalten, die Blockklassen, die Inline-Styles, die Pflicht-Platzhalter im
+Fuß und die Beschränkung auf die importsicheren Bausteinarten. Wer daran dreht, bekommt keinen
+eigenen Stil, sondern einen Newsletter, den der Editor nicht mehr bearbeiten kann.
+
+Und die eine Regel, die keine Geschmacksfrage ist: **eine E-Mail wirkt professionell durch
+Abstände und eine konsequente Typografie, nicht durch Dekoration.** Kein Rahmen, kein Schatten,
+keine Farbfläche, die nach Vorlage aussieht.
+
+## Der Allrounder im Detail
+
+`../assets/professional-template.html` ist die vollständigste der drei. Sie ist der
 **Ausgangspunkt für eine Generierung**: Struktur, Abstände, Typografie und Farben stehen, du
 tauschst Inhalte. Das ist der schnellere und sicherere Weg als ein Template von null zu schreiben —
 jede Regel aus `SKILL.md` ist hier schon eingehalten.
@@ -76,10 +130,20 @@ schief.
 - **Texte** in den `<h1>`, `<h2>`, `<h3>`, `<p>` und `<li>`. Länge grob halten: eine H1 über zwei
   Zeilen bricht das Verhältnis zum Vorspann.
 - **Logo** (`https://placehold.co/360x80/...`) und **Bild** (`https://placehold.co/1200x600/...`)
-  gegen echte, öffentlich erreichbare HTTPS-URLs. Bilder werden beim Import **nicht** in den
-  Dateimanager geladen, sondern von ihrer Quelle geladen — eine interne oder passwortgeschützte URL
-  bleibt im Editor leer. Das Bild ist mit `width="600"` und `max-width:600px` doppelt begrenzt; ein
-  Motiv mit 1200px Breite bleibt auf Retina-Displays scharf.
+  gegen echte URLs **aus dem Konto**. Woher sie kommen, in dieser Reihenfolge: `email-image-search`
+  durchsuchen — Logo, Produktfoto, Teambild liegen in der Mediathek und in keinem Stockarchiv —,
+  sonst `email-image-stock-search` (Pexels und Pixabay, dieselben Archive wie im Editor) und das
+  gewählte Foto mit `sourceUrl` und `fileName` durch `email-image-upload` schicken; eigenes
+  Material lädst du direkt hoch.
+
+  **Das muss vor dem Import passieren**, und der Grund steht schon hier: Bilder werden beim Import
+  **nicht** in den Dateimanager geladen, sondern von ihrer Quelle geladen. Eine Provider-URL im
+  Template bleibt also für immer eine Provider-URL — jedes Empfängerpostfach kontaktiert einen
+  Dritten, und die E-Mail bricht an dem Tag, an dem das Foto dort verschwindet. Eine interne oder
+  passwortgeschützte URL bleibt im Editor leer.
+
+  Das Bild ist mit `width="600"` und `max-width:600px` doppelt begrenzt; ein Motiv mit 1200px
+  Breite bleibt auf Retina-Displays scharf.
 - **`alt`-Texte** — ein Satz, der das Bild ersetzt, keine Dateibezeichnung. Rund ein Drittel aller
   Empfänger sieht Bilder erst nach einem Klick.
 - **Button**: `href` und Beschriftung. Eine E-Mail hat **einen** Button; ein zweiter halbiert die
@@ -126,8 +190,9 @@ schief.
 4. Ist der Button ein Button-Block und kein verlinkter Text?
 5. Stimmen die Innenabstände? Der Importer normalisiert Paddings, und mit jedem weiteren
    HTML-Durchlauf verschieben sie sich weiter. Kleine Korrekturen im Editor sind normal — dafür ist
-   der Import auch nur der **Eingang**: jede weitere Änderung läuft danach über
-   `email-newsletter-content-edit` und kostet nichts mehr.
+   der Import auch nur der **Eingang**: jede weitere Änderung läuft danach über die Block-Werkzeuge
+   (`email-paragraph-add`, `email-text-write`, `email-image-write`, die `*-style-write`-Familie) und
+   kostet keinen weiteren HTML-Durchlauf.
 
 ## Was das Template bewusst nicht hat
 

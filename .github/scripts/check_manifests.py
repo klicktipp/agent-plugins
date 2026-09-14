@@ -95,11 +95,16 @@ def main():
         if not source.is_dir():
             fail(f"marketplace.json: source '{entries[0].get('source')}' is not a directory")
 
+    # Codex reads the same directory, so a skills declaration that only one of
+    # the two manifests carries ships the skills to one audience and not the other
     for declared, path in (("skills", "skills"),):
-        if claude.get(declared) and not (PLUGIN / path).is_dir():
-            fail(f"claude manifest declares '{declared}' but {path}/ does not exist")
-        if (PLUGIN / path).is_dir() and not claude.get(declared):
-            fail(f"{path}/ exists but the claude manifest does not declare '{declared}'")
+        for label, m in (("claude", claude), ("codex", codex)):
+            if m.get(declared) and not (PLUGIN / path).is_dir():
+                fail(f"{label} manifest declares '{declared}' but {path}/ does not exist")
+            if (PLUGIN / path).is_dir() and not m.get(declared):
+                fail(f"{path}/ exists but the {label} manifest does not declare '{declared}'")
+        if claude.get(declared) != codex.get(declared):
+            fail(f"'{declared}' differs between the Claude and the Codex manifest")
 
     return report()
 
