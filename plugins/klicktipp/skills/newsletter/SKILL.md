@@ -1,6 +1,6 @@
 ---
 name: newsletter
-description: Der Lebenszyklus eines KlickTipp-Newsletters von aussen nach innen — Entwurf anlegen, Betreff und Zielgruppe setzen, Absender und Signatur konfigurieren, Testversand, und die Aktivierung, die ein Mensch bestaetigt. Nutze diesen Skill, wenn ein Newsletter angelegt, gesucht, umbenannt, terminiert, getestet, verschickt oder geloescht werden soll, wenn gefragt wird "wie viele erreiche ich damit", wenn ein Versand nicht startet oder ein Newsletter sich nicht mehr bearbeiten laesst, und immer dann, wenn jemand einen Newsletter "rausschicken" oder "fertig machen" will — auch wenn nur vom Inhalt die Rede ist, denn Inhalt allein verschickt nichts. Fuer den Inhalt selbst (HTML, Bausteine, Gestaltung) ist der Skill `email` zustaendig; dieser hier ist die Huelle darum.
+description: Der Lebenszyklus eines KlickTipp-Newsletters von aussen nach innen — Entwurf anlegen, Betreff, Pre-Header und Zielgruppe setzen, Absender und Signatur konfigurieren, Testversand, und die Aktivierung, die ein Mensch bestaetigt. Nutze diesen Skill, wenn ein Newsletter angelegt, gesucht, umbenannt, terminiert, getestet, verschickt oder geloescht werden soll, wenn der Pre-Header beziehungsweise die Vorschauzeile im Posteingang gesetzt werden soll, wenn ein Splittest beziehungsweise A/B-Test angelegt werden soll oder Testarme (Varianten) hinzugefuegt, geaendert oder entfernt werden sollen, wenn gefragt wird "wie viele erreiche ich damit", wenn ein Versand nicht startet oder ein Newsletter sich nicht mehr bearbeiten laesst, und immer dann, wenn jemand einen Newsletter "rausschicken" oder "fertig machen" will — auch wenn nur vom Inhalt die Rede ist, denn Inhalt allein verschickt nichts. Fuer den Inhalt selbst (HTML, Bausteine, Gestaltung) ist der Skill `email` zustaendig; dieser hier ist die Huelle darum.
 prerequisites: None
 ---
 
@@ -25,6 +25,7 @@ der vorige hinterlassen hat.
 | 1 | Entwurf anlegen | `email-newsletter-draft-create` |
 | 2 | Inhalt schreiben | → Skill `email` |
 | 3 | Betreff und Zielgruppe setzen | `email-newsletter-draft-update` |
+| 3a | *nur beim Splittest:* weitere Testarme und ihre Betreffzeilen | `email-split-test-variant-*` |
 | 4 | Absender, Antwortadresse, Signatur | `email-newsletter-delivery-configure` |
 | 5 | Testversand und Prüfung | `email-newsletter-test-send` |
 | 6 | Aktivierung vorbereiten | `email-newsletter-send` |
@@ -35,22 +36,76 @@ Schritt 2 bis 5 sind in der Reihenfolge frei. Schritt 1, 6 und 7 nicht.
 ## 1. Entwurf anlegen
 
 `email-newsletter-draft-create` nimmt `name` (Pflicht, das ist die interne Bezeichnung), optional
-`subject` und `notes`. Der Entwurf ist danach **inert**: keine Zielgruppe, kein Inhalt, kein
+`subject`, `notes` und `preheader`. Der Entwurf ist danach **inert**: keine Zielgruppe, kein Inhalt, kein
 Absender, kein Termin. Er kann niemanden erreichen.
 
 Nutze `name` für etwas, das in der Übersicht wiederzufinden ist („Februar-Aktion 2026"), nicht für
 den Betreff. Der Betreff ist, was die Empfängerin im Posteingang liest, und steht in `subject`.
+
+Der **Pre-Header** ist die Zeile, die viele Programme im Posteingang hinter dem Betreff zeigen. Ohne
+ihn nimmt sich das Programm die ersten Wörter des Inhalts, und das ist selten das, was werben soll.
+Höchstens 120 Zeichen, ohne HTML. Er lässt sich **direkt beim Anlegen** mitgeben und später jederzeit
+mit `email-newsletter-draft-update` ändern — beide Wege schreiben dasselbe Feld.
+
+### Wenn der Newsletter aus fertigem HTML entsteht
+
+Der Import überträgt weder Betreff noch Pre-Header — er ersetzt nur das Baustein-Dokument. Ein
+`<title>` landet nirgends, und ein verstecktes Preheader-`<div>` wirft der Konverter weg. Wer darauf
+wartet, bekommt einen Newsletter mit leerem Pre-Header und einem Betreff aus dem Nichts.
+
+**Lies das HTML deshalb, bevor du importierst, und nimm die beiden Zeilen mit ins `draft-create`.**
+Es liegt dir ohnehin vor — du willst es gleich hochladen:
+
+| Woher | Wohin |
+| --- | --- |
+| `<title>` | `name` **und** Vorschlag für `subject` |
+| `<meta name="description">` | `preheader` |
+| versteckte Preheader-Zeile (`<div class="preheader">`, `display:none`) | `preheader`, falls kein `<meta>` da ist |
+
+Damit stehen alle drei schon beim Anlegen, und der spätere `draft-update` entfällt — samt der
+Revisions-Invalidierung, die er auslösen würde.
+
+**Der `<title>` bedient beide Felder, aber nicht gleich gut.** Als `name` ist er fast immer richtig:
+die interne Bezeichnung soll wiederfindbar sein, und genau dafür hat der Mensch den Titel vergeben —
+„Newsletter Vorlage Final v3" ist eine brauchbare Bezeichnung und eine schlechte Betreffzeile.
+Übernimm ihn als `name` also direkt, und leg ihn für `subject` nur als **Vorschlag** vor.
+
+Der Name muss im Konto **eindeutig** sein. Kollidiert er, häng etwas Unterscheidendes an
+(Datum, Kampagne), statt den Fehler an den Nutzer durchzureichen.
+
+Beim Betreff ist das Vorlegen keine Höflichkeit, sondern Pflicht: die Werkzeuge verbieten
+ausdrücklich, einen Betreff auszudenken. Ein aus dem Quell-HTML gelesener ist **kein Erfinden,
+sondern Vorschlagen** — er stammt vom Menschen, der das HTML geschrieben hat —, aber er ist eben
+oft der Arbeitstitel. Fehlt eine der Zeilen im HTML, frag danach, statt die Lücke zu füllen.
+
+### Splittest
+
+Ein Splittest wird **beim Anlegen entschieden und nie danach** — `email-newsletter-draft-create`
+nimmt dafür ein `splitTest`-Objekt. Danach hat der Newsletter keine einzelne E-Mail mehr: jeder
+Testarm ist eine eigene, `email-newsletter-draft-update` weist einen Betreff ab, und jeder Arm wird
+über seine eigene `editorUrl` angesprochen.
+
+Alles dazu steht im Skill `splittest` — die Felder, die Arm-Werkzeuge, und warum ein neuer Arm fast
+immer eine Kopie sein sollte. Geh dorthin, sobald ein A/B-Test im Spiel ist.
 
 ## 2. Inhalt
 
 Nicht hier. `email-newsletter-get` liefert `emailId` und `contentUrl` — damit weiter im Skill
 `email`. Komm zurück, wenn der Inhalt steht.
 
-## 3. Betreff und Zielgruppe
+## 3. Betreff, Pre-Header und Zielgruppe
 
-`email-newsletter-draft-update` schreibt `name`, `note`, `subject` und `audience`. Es schreibt
-**nur** diese vier: Absender, Signatur und Sendetermin sind bewusst nicht erreichbar, ein Versuch
-wird abgewiesen statt still ignoriert.
+`email-newsletter-draft-update` schreibt `name`, `note`, `subject`, `preheader` und `audience`. Es
+schreibt **nur** diese fünf: Absender, Signatur und Sendetermin sind bewusst nicht erreichbar, ein
+Versuch wird abgewiesen statt still ignoriert.
+
+Der Pre-Header ist hier nachträglich änderbar, auch wenn er schon bei `draft-create` gesetzt wurde.
+
+**Der Pre-Header gehört nicht zum Inhalt.** Er sitzt neben dem Betreff an der E-Mail, nicht im
+Baustein-Dokument — ein HTML-Import kann ihn also nicht setzen, und eine versteckte Vorschauzeile im
+importierten HTML wirft der Konverter weg. Wer ihn ändern will, ändert ihn hier.
+
+Ein leerer String entfernt ihn, ein weggelassener Wert lässt ihn stehen.
 
 `audience` ist ein Objekt mit `mode`:
 
@@ -58,6 +113,11 @@ wird abgewiesen statt still ignoriert.
 - `saved_audience` — dazu `audienceId`
 - `tag_conditions` — dazu `includeTagIds` / `excludeTagIds` und `includeTagsMatch` /
   `excludeTagsMatch`; zusammen höchstens 50 Tags
+
+**Betreff und Pre-Header machen gelesene `contentRevision`-Werte ungültig.** Beide hängen an der
+E-Mail, und die Revision bindet sie neben dem Dokument. Wer danach Inhalt schreiben will, liest die
+Revision neu — sonst wird der Schreibvorgang als „geändert" abgewiesen. Die Antwort sagt es in
+`contentRevisionInvalidated`.
 
 **Die Zielgruppe wird ersetzt, nicht ergänzt.** Wer „nimm noch Tag X dazu" umsetzt, muss die
 bestehende Zielgruppe erst mit `email-newsletter-get` und `include: ["audience"]` lesen und die

@@ -53,6 +53,15 @@ Both targets read the same `.mcp.json`.
 Each block tool names the blocks it may touch by their `uuid`, so a change reaches
 exactly one block and leaves the rest of the design untouched.
 
+**Split tests**
+
+| | |
+|---|---|
+| `email-split-test-configure` | make a newsletter a split test, and set how the winner is found |
+| `email-split-test-variant-add` | add a test arm, or copy an existing one |
+| `email-split-test-variant-update` | change an arm, its subject line above all |
+| `email-split-test-variant-remove` | take an arm out |
+
 **Opt-in**
 
 | | |
@@ -115,7 +124,19 @@ drag-and-drop blocks rather than one undividable wall of text — the HTML
 `skills/newsletter` — the hull around that content: draft, audience, sender and
 reply address, test send, and the dispatch confirmation.
 
-Both are in German, like the editor itself.
+`skills/splittest` — A/B tests: make a newsletter a split test, add and copy
+test arms, set a subject line per arm, and read what changes once a newsletter
+is one.
+
+`skills/dashboard` — reads the numbers of an account — reach, delivery, opens,
+clicks, bounces, unsubscribes of the last dispatches — and builds a dashboard
+out of them. Read-only: it creates, changes and sends nothing.
+
+`skills/email-template-generator` — writes the plain business emails that are
+not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
+no layout.
+
+All of them are in German, like the editor itself.
 
 ## Support
 

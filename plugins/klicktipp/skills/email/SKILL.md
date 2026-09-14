@@ -1,6 +1,6 @@
 ---
 name: email
-description: Erzeugt importfähiges E-Mail-HTML für den KlickTipp-E-Mail-Editor und deutet, was die Newsletter-Werkzeuge über einen Inhalt zurückgeben — die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML. Auch wenn Gestaltung geändert werden soll — Farben, Abstände, Rahmen, Breiten —, oder wenn ein Inhalt vor dem Veröffentlichen geprüft werden soll. Nutze diesen Skill, wenn ein Newsletter, ein E-Mail-Template, ein Mailing-Layout oder ein HTML-Baustein für KlickTipp entstehen soll — auch für „bau mir eine schöne, professionelle E-Mail": dafür gibt es eine fertige, importfähige Vorlage samt Typo- und Abstandsskala, wenn Inhalte einer bestehenden E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter „ohne Inhalt" oder unlesbar gemeldet wird obwohl im Editor etwas zu sehen ist, wenn Warnungen zu Bausteinen zu deuten sind, oder wenn geklärt werden soll, welche Editor-Elemente sich per HTML-Import überhaupt stabil erzeugen lassen. Nicht für Landingpages oder allgemeine Webseiten.
+description: Erzeugt importfähiges E-Mail-HTML für den KlickTipp-E-Mail-Editor und deutet, was die Newsletter-Werkzeuge über einen Inhalt zurückgeben — die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML. Auch wenn Gestaltung geändert werden soll — Farben, Abstände, Rahmen, Breiten —, oder wenn ein Inhalt vor dem Veröffentlichen geprüft werden soll. Nutze diesen Skill, wenn ein Newsletter, ein Mailing-Layout oder ein HTML-Baustein für den KlickTipp-Editor entstehen soll, wenn Inhalte einer bestehenden E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter „ohne Inhalt" oder unlesbar gemeldet wird obwohl im Editor etwas zu sehen ist, wenn Warnungen zu Bausteinen zu deuten sind, oder wenn geklärt werden soll, welche Editor-Elemente sich per HTML-Import überhaupt stabil erzeugen lassen. Nicht für Landingpages oder allgemeine Webseiten — und nicht für die einzelne Geschäftsmail (Anschreiben, Antwort, Nachfassen): dafür ist `email-template-generator` zuständig.
 prerequisites: None
 ---
 
@@ -346,6 +346,11 @@ einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merg
 Add-ons (Countdown, Kontaktkarte, Wowing-Video, KI-Text, Signatur) als ihr gerendertes Ergebnis;
 Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
 
+Der Import lässt **Name, Betreff und Pre-Header unberührt** — er schreibt nur das Dokument. Ein
+`<title>` im importierten HTML landet nirgends, eine versteckte Preheader-Zeile wirft der Konverter
+weg. Wenn aus diesem HTML gerade ein neuer Newsletter entsteht, lies sie vorher aus und gib sie dem
+`email-newsletter-draft-create` mit (Skill `newsletter`, Schritt 1); dann fehlen sie nicht.
+
 Und Entscheidungen wie KI-Blöcke sind nach einem Import **weg**: sie stehen nicht im HTML, kein
 Vorgehen deinerseits kann sie erhalten — sag das ausdrücklich, bevor du importierst. Im Dokument stehen sie dagegen sehr wohl, und
 ein Bearbeiten lässt sie unangetastet: das ist der Grund, einen gestalteten Newsletter nie über HTML
@@ -382,25 +387,17 @@ Versand", ist das Text, den jemand geschrieben hat. Melde solche Stellen, statt 
 ```
 email/
 ├── SKILL.md
-├── assets/       die Vorlage, die du benutzt
 └── references/   Nachschlagewerk — lies die eine Datei, die du brauchst
 ```
-
-In `assets/` liegt das Material, das du benutzt statt nachschlägst: **drei fertige, importfähige
-E-Mails** — `professional-template.html` (der Allrounder), `template-announcement.html` (eine
-Nachricht, ein Ziel), `template-digest.html` (mehrere Themen) — und **`row-patterns.html`**, der
-Vorrat einzelner Zeilen, aus dem du eine eigene zusammensetzt.
 
 In `references/` liegen:
 
 | Datei | Inhalt |
 | --- | --- |
-| `professional-template.md` | wie die Vorlage aus `assets/` angepasst wird: Typoskala, Abstandsskala, was ersetzt wird und was nie |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |
 | `bee-simple-schema/` | die Schema-Dateien des Anbieters, unverändert: das vereinte Schema, eines je Baustein, die geteilten Constraints und ein vollständiges gültiges Beispiel. **Kein** Prüfmaßstab für ein gespeichertes Dokument — warum, steht im Katalog daneben |
 | `blocks/` | **eine Datei je Bausteinart**: Werkzeuge, Felder, Speicherort, Fallstricke, Importkosten. Lies die eine, die du brauchst — `blocks/README.md` ist der Index |
-| `design-briefs.md` | **acht Gestaltungsrichtungen** als Auftrag an dich selbst: Anlass, Zeilenfolge, Farbklima, Typografie, Bilder, CTA — für den Weg „selbst entwerfen" statt „Vorlage kopieren" |
 | `html-authoring.md` | **die zwingenden Regeln für Import-HTML**: Grundgerüst, Zwölfer-Grid, Blockklassen, CSS und Bilder, KlickTipp-Variablen, Pflicht-Footer, Qualitätscheck |
 | `content-replacement.md` | Vorgehen für „hier ist der neue Text“: die Zuordnung vor dem Schreiben, die vier Fälle, die kein reines Ersetzen sind, und was nie mitgeändert wird |
 | `simple-schema-catalog.md` | was sonst zu jener Familie gehört — und warum sie kein gespeichertes Dokument prüfen darf |
@@ -423,51 +420,39 @@ Analyse, Migration, Auswertung. Im normalen Ablauf brauchst du sie nicht.
 
 ## Eine neue E-Mail entstehen lassen
 
-Es gibt zwei Wege, und sie unterscheiden sich nicht im Ergebnis, sondern darin, was sie kosten.
+Der Weg ist **Baustein für Baustein**: `email-row-add` legt die Zeile an, dann je Baustein ein
+`email-<art>-add`. Nichts wird konvertiert — es gibt keine `importWarnings`, und jeder Block ist von
+der ersten Sekunde an bearbeitbar.
 
-| | **Template importieren** | **Baustein für Baustein bauen** |
-| --- | --- | --- |
-| Wie | `assets/professional-template.html` anpassen, einmal durch `email-content-import` | `email-row-add`, dann je Baustein ein `email-<art>-add` |
-| Aufrufe | einer | einer je Zeile und je Baustein |
-| Konvertierung | ja — kostet, was `importWarnings` auflistet | keine |
-| Gestaltung | steht: Typoskala, Abstände, Farben, Fußzeile | musst du selbst setzen, sonst erbt jeder Baustein den Startzustand |
-| Wann | **der Regelfall**: eine ganze E-Mail soll entstehen | wenn eine bestehende E-Mail ergänzt wird, oder wenn die Struktur ist, was das Template nicht hergibt |
+Was dieser Weg **nicht** mitbringt, ist Gestaltung. Ein leerer Entwurf hat keinen Baustein, von dem
+ein neuer sein Aussehen abschauen könnte — jeder Block landet mit seinem Startzustand, und ohne
+Gegenmaßnahme sieht das Ergebnis zusammengewürfelt aus, egal wie gut die Texte sind. Setz
+Typografie, Abstände und Farben deshalb selbst, und zwar **für alle Bausteine gemeinsam**:
+`email-page-style-write` für die Seite, `email-row-style-write` je Zeile, `email-block-style-write`
+für den einzelnen Block. Eine E-Mail wirkt professionell durch Abstände und konsequente
+Typografie, nicht durch Dekoration; eine halb umgestellte Skala sieht schlechter aus als gar keine.
 
-**Der Regelweg ist das Template.** Fang nicht mit einem leeren Dokument an und bau auch keine
-ganze E-Mail aus Add-Aufrufen zusammen: Ein leerer Entwurf hat keinen Baustein, von dem ein neuer
-sein Aussehen abschauen könnte — jeder Block landet mit seinem Startzustand, und das Ergebnis
-sieht zusammengewürfelt aus, egal wie gut die Texte sind.
+Liegt bereits HTML vor — von einer Agentur, aus einem anderen Werkzeug —, ist
+`email-content-import` der Weg dafür (siehe „Bestehendes HTML bearbeiten" und die zwingenden
+Regeln in `references/html-authoring.md`). **Schreib aber kein HTML, nur um es dann zu
+importieren.** Die Konvertierung kostet, was `importWarnings` auflistet, und was du gerade gebaut
+hast, ist bereits ein Dokument — die Bausteinwerkzeuge kommen ohne Umweg ans Ziel.
 
 ### So generierst du eine
 
-0. **Entscheide zuerst, ob du entwirfst oder anpasst.** Eine der drei Vorlagen ist der schnelle
-   Weg und passt für den Normalfall. Verlangt die Aufgabe etwas Eigenes — ein Anlass, den keine
-   Vorlage trifft, eine Marke mit eigenem Auftritt, oder schlicht der zweite Newsletter desselben
-   Kunden, der nicht wie der erste aussehen soll —, dann **entwirf**: nimm eine Richtung aus
-   `references/design-briefs.md` und setz sie aus `assets/row-patterns.html` zusammen. Dieselbe
-   Mechanik, freie Gestaltung. Auch das entscheidest du selbst, ohne Rückfrage.
-
-1. **Die passende Vorlage wählen — selbst, ohne Rückfrage.** Eine Nachricht mit einem Ziel:
-   `template-announcement.html`. Mehrere Themen: `template-digest.html`. Sonst
-   `professional-template.html`. **Leg dem Nutzer keine Auswahl vor und frag nicht, welche er
-   möchte**: Der Auftrag sagt, worum es geht, und daraus folgt die Vorlage. Sag hinterher in einem
-   Satz, welche du genommen hast und warum — das kann er korrigieren, wenn er anderer Meinung ist,
-   und hat dann etwas Fertiges vor sich statt einer Frage. Dasselbe gilt für Farben, Reihenfolge
-   der Zeilen und Bildsprache: entscheide, statt zu fragen.
-
-   Lies die gewählte Vorlage zusammen mit `references/html-authoring.md`. Jede der drei hält die
-   Regeln bereits ein — Grundgerüst, 600-px-Zeilen, Spalten- und Blockklassen, Inline-Styles, die
-   Pflicht-Platzhalter der Fußzeile — und benutzt **ausschließlich** die Bausteinarten, die der
-   Importer verlässlich in bearbeitbare Blöcke zurückverwandelt: Überschrift, Absatz, Bild, Button,
-   Liste, Abstand. Sobald du daran etwas änderst, gelten die Regeln für dich.
-2. **Inhalte tauschen, Struktur lassen.** Zeilen streichen, die der Auftrag nicht braucht;
-   vorhandene Zeilen wiederholen, wenn mehr Abschnitte nötig sind. Nichts erfinden, was das
-   Template nicht schon vormacht.
-3. **Werte, die zusammengehören, gemeinsam ändern.** `references/professional-template.md` nennt
-   die Typo- und Abstandsskala. Eine halb umgestellte Skala sieht schlechter aus als die
-   ursprüngliche — eine E-Mail wirkt professionell durch Abstände und konsequente Typografie, nicht
-   durch Dekoration.
-4. **Bilder besorgen — in dieser Reihenfolge.** Erst `email-image-search`: Logo, Produktfoto,
+1. **Entscheide selbst, ohne Rückfrage** — Reihenfolge der Zeilen, Farben, Bildsprache. Der
+   Auftrag sagt, worum es geht; daraus folgt die Gestaltung. Sag hinterher in einem Satz, was du
+   entschieden hast — das kann der Nutzer korrigieren und hat dann etwas Fertiges vor sich statt
+   einer Frage.
+2. **Zeile für Zeile bauen.** `email-row-add`, dann die Bausteine darin. Überschrift, Absatz, Bild,
+   Button, Liste, Abstand sind die Grundausstattung; Trennlinie, Menü, Social-Icons, Video,
+   Tabelle und eigenes HTML haben je ein eigenes Add-Werkzeug. Was jeder Baustein annimmt, steht
+   in `references/blocks/` — `blocks/README.md` ist der Index.
+3. **Gestaltung setzen, zusammenhängend.** Seite, Zeilen, Blöcke — mit den Style-Werkzeugen aus
+   dem Absatz oben, nicht Block für Block nach Gefühl.
+4. **Die Fußzeile gehört in jede E-Mail**: Abmeldelink und Anbieterkennzeichnung. Wer sie vergisst,
+   bekommt sie spätestens vom `email-content-check` vorgehalten — besser vorher.
+5. **Bilder besorgen — in dieser Reihenfolge.** Erst `email-image-search`: Logo, Produktfoto,
    Teambild liegen in der Mediathek des Kontos und in keinem Stockarchiv. Das Werkzeug **listet
    auf, es sucht nicht** — es gibt eine Seite der Bibliothek heraus, und mit `nextCursor` holst du
    die nächste. Eine Suchanfrage nimmt es nicht, weil der Speicher Dateinamen kennt und keine
@@ -483,36 +468,13 @@ sieht zusammengewürfelt aus, egal wie gut die Texte sind.
    Anfrage ohne Treffer liefert sie unverwandte Fotos. Schau an, was gekommen ist, und sag, was es
    zeigt, statt es als Fund zu präsentieren. Und **lass den Nutzer wählen**: die Lizenz verlangt
    keine Namensnennung, schränkt aber erkennbare Personen ein — das ist seine Entscheidung.
-5. **Einmal importieren** mit `email-content-import`. Die `importWarnings` der Leseantwort **vorher**
-   dem Nutzer vorlesen — der Import ist ein Vollersatz ohne Undo.
-6. **Danach nur noch benennen.** Jede weitere Änderung geht über die Bausteinwerkzeuge, nie über
-   einen zweiten Import: der Newsletter ist dann schon ein Dokument, und eine erneute Konvertierung
-   kostet ihn seine Bausteine.
-7. **`email-content-check`**, bevor veröffentlicht wird — und die Befunde weitergeben, statt still
+6. **`email-content-check`**, bevor veröffentlicht wird — und die Befunde weitergeben, statt still
    zu reparieren.
-
-Braucht die Aufgabe ein Element, das der Importer nicht sicher zurückverwandelt — Trennlinie, Menü,
-Social-Icons, Video, Tabelle, eigenes HTML —, dann **nach** dem Import mit dem Add-Werkzeug dieser
-Art ergänzen. So bleibt der Import auf den sicheren Bausteinarten und das Element trotzdem
-bearbeitbar.
 
 **Wo trotzdem gefragt wird**, weil es nicht Gestaltung ist: bevor ein Import bestehenden Inhalt
 ersetzt, bevor ein Baustein entfernt wird, und bei der Wahl eines Stockfotos — dessen Lizenz
 schränkt erkennbare Personen ein, und das ist die Entscheidung des Nutzers. Gestaltung entscheidest
 du, Verluste und Rechte entscheidet er.
-
-**Nimm die Vorlage als Ausgangspunkt, nicht als Schablone.** Zwei Newsletter desselben Kunden
-sollen nicht wie derselbe Newsletter aussehen. Die Vorlagen lösen die Mechanik — Grid, Abstände,
-Fußzeile, importsichere Bausteinarten —, die Gestaltung kommt von dir: Zeilen weglassen,
-wiederholen und umstellen, Farben aus der Marke des Kunden statt aus der Datei, eine Typoskala,
-die zum Anlass passt, und eine Bildsprache, die du suchst statt den Platzhalter zu ersetzen. Was
-dabei **nicht** zur Wahl steht, ist die Mechanik selbst: Grundgerüst, Zwölfer-Spalten,
-Blockklassen, Inline-Styles, Pflicht-Platzhalter. `references/professional-template.md` zieht die
-Linie im Einzelnen.
-
-**Ein Layout aus dem Nichts** — eigenes Grundgerüst, eigene Klassen — schreibst du nie. Die
-Mechanik kommt aus den Mustern, sonst importiert der Editor einen Klumpen. Die Gestaltung darüber
-ist frei und soll es sein.
 
 ## Bestehendes HTML bearbeiten
 
@@ -522,7 +484,9 @@ Zeichen identisch.
 
 Was Inhalt ist und geändert werden darf:
 
-- Texte, Überschriften, Listeneinträge, Tabellenzellen, Vorschau-/Preheader-Text.
+- Texte, Überschriften, Listeneinträge, Tabellenzellen, eine sichtbare Vorschauzeile im Dokument.
+  (Das **Pre-Header-Feld** der E-Mail liegt nicht im Dokument — es wird über
+  `email-newsletter-draft-update` gesetzt, Feld `preheader`.)
 - Button-Labels und Link-Ziele, `href`, `alt`-Texte, Bild-URLs.
 - KlickTipp-Variablen und Systemlinks.
 
@@ -558,8 +522,8 @@ Wenn kein bestehendes HTML vorliegt, gestaltest du frei nach den Regeln unten.
 
 ## Import-HTML schreiben
 
-Sobald du HTML erzeugst, das durch `email-content-import` geht — beim Generieren aus der Vorlage
-oder beim Bearbeiten vorhandenen E-Mail-HTMLs —, **lies zuerst `references/html-authoring.md`**.
+Sobald du HTML erzeugst, das durch `email-content-import` geht — beim Bearbeiten vorhandenen
+E-Mail-HTMLs oder wenn du fremdes HTML importfähig machst —, **lies zuerst `references/html-authoring.md`**.
 Dort stehen die zwingenden Regeln: Grundgerüst, das Zwölfer-Grid, die Blockklassen des Editors,
 was mit CSS und Bildern erlaubt ist, die KlickTipp-Variablen, der Pflicht-Footer, valides HTML und
 der Qualitätscheck vor der Ausgabe.
@@ -573,9 +537,13 @@ Für Änderungen über die Bausteinwerkzeuge gelten sie **nicht**: dort wird nic
 
 ## Output-Format
 
-Gib ausschließlich den fertigen HTML-Code in einem Code-Block aus. Füge keine Erklärungen oder
+Gilt für die beiden Wege, auf denen du HTML in der Hand hast — bestehendes E-Mail-HTML bearbeiten
+und fremdes HTML importfähig machen. Wer über die Bausteinwerkzeuge baut, gibt kein HTML aus,
+sondern berichtet, was er angelegt und entschieden hat.
+
+Gib dann ausschließlich den fertigen HTML-Code in einem Code-Block aus. Füge keine Erklärungen oder
 Markdown-Texte außerhalb des Code-Blocks hinzu.
 
 Bei einer Bearbeitung gib das vollständige HTML-Dokument aus, nicht ein Fragment oder Diff. Nur
-wenn ein Regelverstoß der Vorlage bewusst unangetastet blieb, eine erzwungene Korrektur nötig war
+wenn ein Regelverstoß des vorgelegten HTML bewusst unangetastet blieb, eine erzwungene Korrektur nötig war
 oder eine Layoutfrage offen ist, folgt darunter ein Hinweis von höchstens zwei Sätzen.

@@ -1,8 +1,7 @@
 # Import-HTML schreiben — die zwingenden Regeln
 
 Diese Regeln gelten, **wann immer du HTML erzeugst, das durch `email-content-import` geht**: beim
-Generieren einer neuen E-Mail aus der Vorlage in `../assets/professional-template.html` und beim
-Bearbeiten von vorhandenem E-Mail-HTML. Sie sind nicht optional — der Importer verwandelt nur
+Bearbeiten von vorhandenem E-Mail-HTML und wenn du fremdes HTML importfähig machst. Sie sind nicht optional — der Importer verwandelt nur
 HTML, das sie einhält, verlässlich in bearbeitbare Bausteine zurück.
 
 Für den anderen Weg — eine bestehende E-Mail über die Bausteinwerkzeuge ändern — gelten sie

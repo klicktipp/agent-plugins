@@ -8,6 +8,24 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.3 — 2026-09-14
+
+- **Split tests.** `email-split-test-configure` makes a newsletter a split test and says how the
+  winner is found; `email-split-test-variant-add`, `-update` and `-remove` manage the arms, with
+  the subject line per arm. The new `splittest` skill explains what changes once a newsletter is
+  one — a tool refusing with `split_test_not_supported` is almost never a defect, it is the wrong
+  address. (0.7.x)
+- **A newsletter's preheader** is documented, and name, subject and preheader are read out of the
+  HTML before it is imported. (0.7.x)
+- **New skill `dashboard`** — reads an account's numbers (reach, delivery, opens, clicks, bounces,
+  unsubscribes of the last dispatches) and builds a readable dashboard from them. Read-only: it
+  creates, changes and sends nothing. (0.8.0 – 0.8.2)
+- **New skill `email-template-generator`** — the plain business emails that are not newsletters:
+  cold outreach, support replies, follow-ups, declines. No HTML, no layout. (0.8.3)
+- Upstream the plugin is built one per environment, installable by either host, and production is
+  plainly `KlickTipp`. Nothing changes for this repository, which only ever ships production.
+  (0.7.x)
+
 ## 0.6.3 — 2026-09-11
 
 - **The content of an email is edited block by block.** `email-newsletter-content-edit` is gone;

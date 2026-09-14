@@ -21,8 +21,8 @@ interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 |---|---|
 | Plugin | `klicktipp` |
 | Endpoint | `https://mcp.klicktipp.com/mcp` |
-| Tools | newsletters (draft, drag-and-drop content, audience, sender, test send, dispatch confirmation) and opt-in processes |
-| Skills | `email` — the content of one email, block by block, and HTML the editor can import as editable blocks · `newsletter` — the hull around it: draft, audience, sender, dispatch |
+| Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation), split tests and opt-in processes |
+| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `dashboard` — the account's numbers as a readable dashboard · `email-template-generator` — plain business emails |
 | Agents | Claude Code and the Claude directory (`.claude-plugin/`), Codex and ChatGPT (`.codex-plugin/`) |
 | Requires | a KlickTipp account |
 
@@ -37,8 +37,8 @@ plugins/klicktipp/
 ├── .codex-plugin/plugin.json       manifest for Codex/ChatGPT, kept at the same version
 ├── .mcp.json                       the MCP server — both manifests read this one file
 ├── assets/logo.svg
-├── skills/email/                  the content of one email, shipped with the plugin
-├── skills/newsletter/              the hull around it: draft, audience, sender, dispatch
+├── skills/                        shipped with the plugin: email, newsletter,
+│                                   splittest, dashboard, email-template-generator
 ├── SETUP.md                        walks the agent through the one-time OAuth login
 └── README.md
 ```
