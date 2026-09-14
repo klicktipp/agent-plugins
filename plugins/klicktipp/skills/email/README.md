@@ -1,4 +1,4 @@
-# email-erstellung
+# email
 
 Erzeugt E-Mail-HTML, das der **HTML-Import des KlickTipp-E-Mail-Editors** möglichst verlustfrei in
 bearbeitbare Drag-and-Drop-Blöcke zurückverwandelt.

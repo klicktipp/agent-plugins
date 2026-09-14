@@ -33,12 +33,25 @@ Both targets read the same `.mcp.json`.
 | `email-newsletter-draft-create` | create a draft with its name and initial subject |
 | `email-newsletter-draft-update` | name, internal note and audience of a draft |
 | `email-newsletter-draft-delete` | discard a draft |
-| `email-newsletter-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
-| `email-newsletter-content-edit` | change named blocks of the stored document -- the tool for every later change |
-| `email-newsletter-content-publish` | make the reviewed body the one a dispatch would send |
 | `email-newsletter-delivery-configure` | sender name, sender address, reply address, signature |
 | `email-newsletter-test-send` | test send to the account's own or a verified sender address |
 | `email-newsletter-send` | prepare the real dispatch and return a confirmation URL |
+
+**Content of one email**
+
+| | |
+|---|---|
+| `email-get` | read the stored block document of a newsletter, block by block |
+| `email-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
+| `email-content-check` | review the assembled email before it is published |
+| `email-content-publish` | make the reviewed body the one a dispatch would send |
+| `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, countdown, contact card, HTML, AI text, personalized email |
+| `email-<block>-write` | change the content of an existing block of that kind |
+| `email-<block>-style-write` | change the styling of a block, a column, a row or the page |
+| `email-block-move`, `email-block-remove` | move a block within the document, or take it out |
+
+Each block tool names the blocks it may touch by their `uuid`, so a change reaches
+exactly one block and leaves the rest of the design untouched.
 
 **Opt-in**
 
@@ -70,7 +83,7 @@ to be prepared.
 Three writes have no undo, and the agent is expected to say so before it calls
 them:
 
-- `email-newsletter-content-import` converts HTML only, and it is the entry for a
+- `email-content-import` converts HTML only, and it is the entry for a
   design that exists as HTML and nowhere else -- not a way to change a newsletter.
   Social icons come back as linked images, tables as plain markup, video as a
   preview image, add-ons as their rendered output; web fonts, row background
@@ -78,11 +91,11 @@ them:
   deleted beyond recovery.** The `content` projection of `email-newsletter-get`
   lists exactly what an import would cost for the newsletter at hand, as
   `importWarnings` — those belong in front of the user, not summarised away.
-- `email-newsletter-content-edit` converts nothing, so no block loses its styling
-  or its editability, but removing a block cannot be undone either. It is the tool
-  for a change that can be named, and the one to prefer over an import on a
+- The block tools convert nothing, so no block loses its styling or its
+  editability, but `email-block-remove` cannot be undone either. They are the way
+  to make a change that can be named, and the ones to prefer over an import on a
   newsletter that already carries a design.
-- `email-newsletter-content-publish` changes what real recipients would receive.
+- `email-content-publish` changes what real recipients would receive.
 - `email-newsletter-draft-delete` removes the draft with its email, audience
   conditions and system tags.
 
@@ -90,13 +103,19 @@ them:
 carries subscriber ID, email address, list, subscriber key and referral link.
 Treat its result as personal data.
 
-## Skill
+## Skills
 
-`skills/email-erstellung` — writes HTML that the KlickTipp email editor's HTML
-import turns back into editable drag-and-drop blocks instead of one undividable
-wall of text. That is the HTML `email-newsletter-content-import` expects. It also
-explains what the newsletter tools hand back -- the stored block document, not
-HTML -- and how to change it block by block. In German, like the editor itself.
+`skills/email` — the content of one email: what each block is and which fields it
+takes, how to assemble a finished, professional email from a starting point, and
+how to change an existing one block by block instead of replacing it. It also
+writes HTML that the editor's HTML import turns back into editable
+drag-and-drop blocks rather than one undividable wall of text — the HTML
+`email-content-import` expects.
+
+`skills/newsletter` — the hull around that content: draft, audience, sender and
+reply address, test send, and the dispatch confirmation.
+
+Both are in German, like the editor itself.
 
 ## Support
 

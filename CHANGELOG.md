@@ -8,6 +8,28 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.6.3 — 2026-09-11
+
+- **The content of an email is edited block by block.** `email-newsletter-content-edit` is gone;
+  in its place a tool per block kind — `email-paragraph-add`, `email-button-write`,
+  `email-image-add`, `email-row-style-write`, `email-block-move`, `email-block-remove` and the
+  rest — each addressing blocks by their `uuid`. Reading is `email-get`, importing HTML
+  `email-content-import`, publishing `email-content-publish`, and `email-content-check` reviews
+  the assembled email before it goes out. (0.6.0)
+- **Two skills instead of one.** `email-erstellung` is split: `email` carries the content of one
+  email — what each block is, which fields it takes, how to assemble a finished email from a
+  starting point and how to change an existing one — and the new `newsletter` carries the hull
+  around it: draft, audience, sender and reply address, test send, dispatch confirmation. (0.6.0,
+  0.6.1)
+- The `email` skill ships a design brief and a parts bin rather than more templates, with the
+  per-kind styles documented per block, and it says what each block *is*, not only which fields it
+  has. (0.6.0)
+- The skill no longer makes the agent re-read after every write, and it says what fits into one
+  call. (0.6.0)
+- Fixes: no add-on blocks nobody asked for, the content check is performed rather than merely
+  offered, the image library lists rather than searches, and the block-tool corrections reached
+  the files the agent actually reads. (0.6.2, 0.6.3)
+
 ## 0.5.0 — 2026-09-09
 
 - Every environment gets its own MCP server name upstream; production keeps the unsuffixed one, so

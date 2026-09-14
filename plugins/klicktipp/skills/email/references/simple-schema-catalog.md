@@ -10,7 +10,7 @@ are exactly the traps:
 | | simple schema (generation input) | stored document (what an email holds) |
 | --- | --- | --- |
 | root | `template` with `rows`, `settings`, `metadata` | `page` with `body`, `rows` — or the page itself, unwrapped |
-| module identity | a short `type` such as `button`, `heading` | a prefixed type, kind appended (see `module-inventory.json`) |
+| module identity | a short `type` such as `button`, `heading` | a prefixed type, kind appended (see `blocks/`) |
 | module inventory | **10** types, see `typeOfModules` below | **19** kinds plus the add-ons |
 | content | properties on the module | inside the module's `descriptor` |
 | numbers | constrained (`padding` 0–60, `borderRadius` 0–60, `borderWidth` 0–30) | CSS strings such as `"10px"`, unconstrained |
@@ -20,7 +20,7 @@ The most consequential difference is the inventory. The simple schema's `typeOfM
 `button`, `divider`, `heading`, `html`, `icons`, `image`, `list`, `menu`, `paragraph`, `title` —
 and therefore **not** `social`, `table`, `form`, `carousel`, `merge-content`, `spacer`, `empty`,
 `video` or `addon`. A reader that treats it as the list of what an email can contain will refuse or
-misname most real newsletters. `module-inventory.json` next to this file is the inventory that
+misname most real newsletters. `blocks/` next to this file is the inventory that
 matches stored documents.
 
 Note also that `heading` and `title` both exist there, while a stored document uses `heading` for
@@ -31,8 +31,8 @@ the block and carries the level inside the descriptor.
 | File | Content |
 | --- | --- |
 | `document-skeleton.json` | key skeleton of a **stored** document, both shapes explained |
-| `module-inventory.json` | the stored module kinds, their product terms, and what a round trip costs each |
-| `simple-schema-definitions.json` | the upstream `definitions.schema.json`, verbatim — shared constraints of the simple schema family |
+| `blocks/` | one file per stored module kind: its product term, its tools, its fields, and what a round trip costs it |
+| `bee-simple-schema/` | the upstream schema files, verbatim and Apache-2.0 licensed: the unified schema, one per block, the shared `definitions.schema.json` and a complete valid example. See its README |
 
 ## The rest of the upstream catalog
 
