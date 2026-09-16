@@ -8,6 +8,14 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.12 — 2026-09-16
+
+- Three add-on blocks are held back on production: **countdown**, **contact card** and
+  **personalized email**. The first two add a block only the editor can finish; the personalized
+  email has no fallback at all, because the editor does not offer it in its insert menu either, so
+  on production it cannot be placed. The `email` skill says so where an agent actually stands when
+  it reaches for one — in the tool table, in the list of add tools and in each block's own file.
+
 ## 0.8.11 — 2026-09-16
 
 - **Corrected what production actually offers.** 0.8.3 and 0.8.10 listed the split-test tools and

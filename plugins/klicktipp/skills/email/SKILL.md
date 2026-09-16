@@ -84,13 +84,13 @@ Konvertierung stattfindet.
 | `email-image-write` | `src`, `alt`, `href` von Bildbausteinen; **nimmt ebenfalls eine Liste** |
 | `email-button-write` | `label` und `href` eines Buttons |
 | `email-video-write` | `src` und `thumbSrc` eines Videos |
-| `email-personalized-email-write` | `prompt` und `name` einer personalisierten E-Mail |
+| `email-personalized-email-write`² | `prompt` und `name` einer personalisierten E-Mail |
 | `email-menu-write` | die Einträge eines Menüs — **die Liste ersetzt die Liste** |
 | `email-social-write` | die Icons eines Social-Bausteins — dito |
 | `email-icons-write` | die Einträge eines Icon-Bausteins — dito |
 | `email-table-write` | die Zeilen einer Tabelle, jede Zelle Markup |
 | `email-row-add` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
-| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-countdown-add`, `email-contact-card-add`, `email-wowing-video-add`, `email-ai-text-add`, `email-personalized-email-add` |
+| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-countdown-add`¹, `email-contact-card-add`¹, `email-wowing-video-add`, `email-ai-text-add`, `email-personalized-email-add`² |
 | `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
 | `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
 | `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
@@ -101,6 +101,14 @@ Konvertierung stattfindet.
 | `email-spacer-style-write` | die Höhe von Abständen |
 | `email-divider-style-write` | Linie und Breite von Trennlinien |
 | `email-button-style-write` | Hintergrund, Textfarbe, Eckenradius, Rahmen und Innenabstand von Buttons |
+
+¹ Auf Production nicht freigeschaltet: beide legen ein Add-on an, das erst der Editor
+fertig macht. Dort antwortet der Aufruf mit „unknown tool" — verweise auf den Editor,
+statt einen Defekt zu suchen.
+
+² Ebenfalls nicht auf Production, und hier hilft der Verweis auf den Editor nicht: dessen
+Einfügen-Menü führt die personalisierte E-Mail nicht. Dort ist der Baustein im Newsletter
+nicht erreichbar.
 
 **Lies die `warnings` der Schreibantwort und gib sie weiter.** Ein Baustein wird auch dann
 gespeichert, wenn er so nichts zeigt — das ist Absicht, weil es ein legitimer Zwischenstand auf dem

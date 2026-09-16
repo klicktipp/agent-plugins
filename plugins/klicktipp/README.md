@@ -45,7 +45,7 @@ Both targets read the same `.mcp.json`.
 | `email-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
 | `email-content-check` | review the assembled email before it is published |
 | `email-content-publish` | make the reviewed body the one a dispatch would send |
-| `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, countdown, contact card, HTML, AI text, personalized email |
+| `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, HTML, AI text — countdown, contact card and personalized email are held back on production |
 | `email-<block>-write` | change the content of an existing block of that kind |
 | `email-<block>-style-write` | change the styling of a block, a column, a row or the page |
 | `email-block-move`, `email-block-remove` | move a block within the document, or take it out |
@@ -159,7 +159,8 @@ Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
 **What is not on production yet** — the split tests, the contact and tag tools,
-the image tools, and the `email-signature-*` family. All four are documented in
+the image tools, the `email-signature-*` family, and three add-on blocks:
+countdown, contact card and personalized email. All four are documented in
 the skills that use them, each with the note that an "unknown tool" there is the
 pending release and not a defect. What does work on production is picking an
 existing signature through `signatureId` in

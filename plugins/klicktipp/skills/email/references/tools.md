@@ -72,6 +72,14 @@ Speicherort und Stolperern — lies die eine, die du brauchst:
 · `email-table-add` · `email-countdown-add` · `email-contact-card-add` · `email-wowing-video-add` ·
 `email-personalized-email-add`
 
+`email-countdown-add` und `email-contact-card-add` gibt es **auf Production nicht** — beide legen
+einen Baustein an, den erst der Editor fertig macht, und bleiben zurück, bis sie ein Werkzeug zum
+Konfigurieren haben. Dort ist der Weg: der Nutzer legt das Add-on im Editor an.
+
+`email-personalized-email-add` und `email-personalized-email-write` fehlen dort ebenfalls, und für
+die beiden gibt es keinen Umweg über den Editor — der führt den Baustein im Einfügen-Menü nicht.
+Auf Production ist die personalisierte E-Mail im Newsletter damit gar nicht erreichbar.
+
 `email-row-add` antwortet mit `created`: die uuids der neuen Zeile und ihrer Spalten und die
 `contentRevision` für den nächsten Write — die gelesene ist verbraucht. Bauen heißt deshalb
 `email-row-add`, dann `email-<art>-add` in die dort genannte Spalte, ohne Lesen dazwischen.

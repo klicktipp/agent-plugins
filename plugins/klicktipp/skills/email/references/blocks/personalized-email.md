@@ -24,6 +24,8 @@ Beide Werkzeuge — Anlegen und Ändern — nehmen genau diese Felder.
 
 ## Worauf zu achten ist
 
+**Auf Production nicht freigeschaltet** — beide Werkzeuge. Anders als bei den übrigen Add-ons hilft hier kein Verweis auf den Editor: der bietet den Baustein im Einfügen-Menü gar nicht an. Auf Production ist die personalisierte E-Mail im Newsletter also schlicht nicht erreichbar; sag das, statt einen Umweg zu erfinden.
+
 `prompt` ist beim Anlegen **Pflicht** — die Anweisung *ist* der Baustein. Ohne sie rendert er einen Platzhalter in einen fertig aussehenden Newsletter und erzeugt nichts.
 
 Sag beim Hinzufügen dazu: der Newsletter-Editor bietet diesen Baustein im Einfügen-Menü **nicht** an, nur Automationen tun das. Eine Person kann ihn dort weder anlegen noch nach einem Entfernen zurückholen. Welche Datenfelder und Tags die Anweisung nutzen darf, wird im Editor gewählt.
