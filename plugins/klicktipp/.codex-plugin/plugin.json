@@ -1,7 +1,7 @@
 {
   "name": "klicktipp",
-  "version": "0.8.3",
-  "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, drag-and-drop content, audience, sender, test sends and the dispatch confirmation — and read the opt-in processes of the account, over the KlickTipp MCP server.",
+  "version": "0.8.10",
+  "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, split tests, audience, sender, test sends and the dispatch confirmation — and work with the account's contact data: contacts, manual tags, custom fields and opt-in processes, over the KlickTipp MCP server.",
   "author": {
     "name": "KlickTipp",
     "url": "https://www.klick-tipp.com"
@@ -24,8 +24,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "KlickTipp",
-    "shortDescription": "Write, review and prepare KlickTipp email newsletters block by block, and read the account's opt-in processes. The actual dispatch is always confirmed by a person in KlickTipp.",
-    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth) and exposes two parts of the KlickTipp product API as tools. The newsletter itself: search newsletters, read one through projections for metadata, audience, delivery configuration and dispatch state, create and update a draft, configure sender and reply address, send a test to a verified address, and prepare the real dispatch. Its content: read the stored block document, bring in a design that exists only as HTML, and then change it block by block — a tool per kind of block to add one, to rewrite its content, to restyle it, to move it or to take it out, each addressing a block by its uuid, so a change reaches exactly one block and the rest of the design stays as it is. Preparing the dispatch sends nothing: it validates everything, states who would receive the newsletter, and returns a short-lived single-use confirmation URL that only the logged-in person can open and confirm in KlickTipp. Split tests: make a newsletter a split test, add and copy test arms, set a subject line per arm, and remove one. Opt-in: read the account's opt-in processes and their configuration, and resolve the pending or thank-you URL a subscriber is redirected to. Five skills ship with the plugin: `email` for the content of one email, `newsletter` for the hull around it, `splittest` for A/B tests, `dashboard` for reading an account's numbers as a dashboard, and `email-template-generator` for the plain business emails that are not newsletters.",
+    "shortDescription": "Write, review and prepare KlickTipp email newsletters block by block, and work with the account's contacts, tags, fields and opt-in processes. The actual dispatch is always confirmed by a person in KlickTipp.",
+    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth) and exposes two parts of the KlickTipp product API as tools. The newsletter itself: search newsletters, read one through projections for metadata, audience, delivery configuration and dispatch state, create and update a draft, configure sender and reply address, send a test to a verified address, and prepare the real dispatch. Its content: read the stored block document, bring in a design that exists only as HTML, and then change it block by block — a tool per kind of block to add one, to rewrite its content, to restyle it, to move it or to take it out, each addressing a block by its uuid, so a change reaches exactly one block and the rest of the design stays as it is. Preparing the dispatch sends nothing: it validates everything, states who would receive the newsletter, and returns a short-lived single-use confirmation URL that only the logged-in person can open and confirm in KlickTipp. Split tests: make a newsletter a split test, add and copy test arms, set a subject line per arm, and remove one. Contacts: search and read contacts, subscribe and unsubscribe them, set field values, create and assign manual tags, and define custom fields. Opt-in: read the account's opt-in processes and their configuration, and resolve the pending or thank-you URL a subscriber is redirected to. Six skills ship with the plugin: `email` for the content of one email, `newsletter` for the hull around it, `splittest` for A/B tests, `crm` for the account's contact data, `dashboard` for reading an account's numbers as a dashboard, and `email-template-generator` for the plain business emails that are not newsletters. Each carries a reference of the tools it uses, with their pitfalls.",
     "developerName": "KlickTipp",
     "category": "Developer Tools",
     "capabilities": [
@@ -39,7 +39,7 @@
     "defaultPrompt": [
       "Show me my opt-in processes and which of them use double opt-in.",
       "Create a newsletter draft for my webinar list, write it, and send a test to my own address.",
-      "Change the headline and the button text of my last newsletter, and leave the rest as it is."
+      "Which contacts carry the tag 'Webinar 2026', and how many are there?"
     ],
     "brandColor": "#ea8b00",
     "composerIcon": "./assets/logo.svg",

@@ -1,7 +1,7 @@
 # KlickTipp
 
-Write, review and prepare KlickTipp email newsletters from your agent, and read
-the opt-in processes of the account — over the hosted KlickTipp MCP server at
+Write, review and prepare KlickTipp email newsletters from your agent, and work
+with the contact data of the account — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
@@ -62,12 +62,24 @@ exactly one block and leaves the rest of the design untouched.
 | `email-split-test-variant-update` | change an arm, its subject line above all |
 | `email-split-test-variant-remove` | take an arm out |
 
+**Contacts, tags and fields**
+
+| | |
+|---|---|
+| `search-contacts` · `get-contact` | find contacts by tag, field value or subscription, and read one |
+| `subscribe` · `unsubscribe` | take a contact into an opt-in process, or out of the account's mailings |
+| `enrich-contact` | set field values on a contact that already exists |
+| `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` · `delete-manual-tag` | the manual tags of the account |
+| `assign-manual-tag` · `remove-manual-tag` | put a manual tag on a contact, or take it off |
+| `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` · `delete-custom-field` | the custom field definitions |
+
 **Opt-in**
 
 | | |
 |---|---|
 | `search-opt-in-processes` | list the account's opt-in processes |
 | `get-opt-in-process` | read the full configuration of one |
+| `get-opt-in-confirmation-email` | read the confirmation email of a double opt-in process |
 | `get-subscription-redirect-url` | resolve the pending or thank-you URL a subscriber is redirected to |
 
 There is no separate delivery-status tool: where a newsletter stands with its
@@ -132,11 +144,22 @@ is one.
 clicks, bounces, unsubscribes of the last dispatches — and builds a dashboard
 out of them. Read-only: it creates, changes and sends nothing.
 
+`skills/crm` — the contact data of the account: find, read, subscribe and
+unsubscribe contacts, set field values, manage manual tags and custom field
+definitions, and read the opt-in processes behind them.
+
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
 no layout.
 
-All of them are in German, like the editor itself.
+Each skill carries a `references/` folder with the tools it uses, their answer
+shapes and their pitfalls. All of them are in German, like the editor itself.
+
+Signatures are documented in `skills/newsletter/references/tools.md` as the
+`email-signature-*` family, but they are **not released on production yet** — an
+"unknown tool" there is the pending release, not a defect. What does work on
+production is picking an existing signature through `signatureId` in
+`email-newsletter-delivery-configure`.
 
 ## Support
 

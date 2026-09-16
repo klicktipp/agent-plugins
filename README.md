@@ -2,7 +2,7 @@
 
 The official KlickTipp plugin marketplace for AI coding agents. One plugin,
 [`plugins/klicktipp`](plugins/klicktipp): it writes, reviews and prepares
-KlickTipp email newsletters from your agent, and reads the opt-in processes of
+KlickTipp email newsletters from your agent, and works with the contact data of
 the account, over the hosted KlickTipp MCP server.
 
 ```bash
@@ -21,8 +21,8 @@ interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 |---|---|
 | Plugin | `klicktipp` |
 | Endpoint | `https://mcp.klicktipp.com/mcp` |
-| Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation), split tests and opt-in processes |
-| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `dashboard` — the account's numbers as a readable dashboard · `email-template-generator` — plain business emails |
+| Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation), split tests, contacts, manual tags, custom fields and opt-in processes |
+| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `crm` — contacts, tags, fields, opt-in · `dashboard` — the account's numbers as a readable dashboard · `email-template-generator` — plain business emails |
 | Agents | Claude Code and the Claude directory (`.claude-plugin/`), Codex and ChatGPT (`.codex-plugin/`) |
 | Requires | a KlickTipp account |
 
@@ -37,8 +37,8 @@ plugins/klicktipp/
 ├── .codex-plugin/plugin.json       manifest for Codex/ChatGPT, kept at the same version
 ├── .mcp.json                       the MCP server — both manifests read this one file
 ├── assets/logo.svg
-├── skills/                        shipped with the plugin: email, newsletter,
-│                                   splittest, dashboard, email-template-generator
+├── skills/                        shipped with the plugin: email, newsletter, splittest,
+│                                   crm, dashboard, email-template-generator
 ├── SETUP.md                        walks the agent through the one-time OAuth login
 └── README.md
 ```

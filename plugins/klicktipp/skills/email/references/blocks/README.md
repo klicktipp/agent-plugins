@@ -21,8 +21,11 @@ neutraler Startzustand ableiten ließe. Sie bleiben beim Editor.
 
 - **Anlegen bringt den Inhalt mit.** Jedes `email-<art>-add` nimmt die Felder seiner Art. Lege nie
   leer an, um danach zu schreiben.
-- **Der neue Baustein sieht aus wie sein Nachbar** — der Server kopiert `style` und Innenabstand
-  vom nächstgelegenen Baustein derselben Art. Das **Markup** kopiert er nicht: das ist dein Teil.
+- **Der neue Baustein sieht aus wie der erste seiner Art** — der Server kopiert `style` und
+  Innenabstand vom *ersten* Baustein derselben Art (Spalte, dann Zeile, dann Newsletter), nicht vom
+  Nachbarn über der Einfügestelle. Das **Markup** kopiert er nicht: das ist dein Teil. Eine Reihe
+  von Adds erzeugt deshalb eine Reihe gleich aussehender Bausteine — einen ganzen Körper baut
+  `email-content-import`, nicht eine Kette von Adds.
 - **Entfernen und neu anlegen ist kein Ändern.** Dabei gehen Typografie, Add-on-Konfiguration und
   die `uuid` verloren. Siehe SKILL.md.
 - **Aussehen ist die Gestaltungsebene**, nicht der Inhalt: `email-block-style-write` und die drei

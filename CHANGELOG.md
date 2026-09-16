@@ -8,6 +8,26 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.10 — 2026-09-16
+
+- **Every skill carries its own tool reference.** A `references/` folder per skill holds the tools
+  that skill uses, the answer shapes they publish and the pitfalls they have — generated from the
+  tool list rather than remembered. Tools not released on production are marked as such instead of
+  by environment. (0.8.4 – 0.8.6)
+- **New skill `crm`** — the contact data of the account: find, read, subscribe and unsubscribe
+  contacts, set field values, manage manual tags and custom field definitions, and read the opt-in
+  processes behind them. The published tool table and the plugin description follow. (0.8.6)
+- Opt-in: changing and deleting a process is described, along with the redirect parameters, the
+  confirmation email and the tracking pixel. (0.8.9, 0.8.10)
+- `email`: the image folders and the two upload tools (the file with its form, the URL on its
+  own), the page font versus the row frame, and the content check now reporting unconfigured
+  add-ons. (0.8.7 – 0.8.10)
+- `splittest`: the read tool, which also takes an arm's email ID, plus what a test run turned up.
+  (0.8.8)
+- Signatures are documented as the `email-signature-*` family with their placeholder rules, but
+  they are **not released on production** — an "unknown tool" there is the pending release, not a
+  defect. (0.8.5)
+
 ## 0.8.3 — 2026-09-14
 
 - **Split tests.** `email-split-test-configure` makes a newsletter a split test and says how the

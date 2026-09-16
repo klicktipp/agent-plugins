@@ -1,8 +1,8 @@
 {
   "name": "klicktipp",
   "displayName": "KlickTipp",
-  "version": "0.8.3",
-  "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, drag-and-drop content, audience, sender, test sends and the dispatch confirmation — and read the opt-in processes of the account, over the KlickTipp MCP server.",
+  "version": "0.8.10",
+  "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, split tests, audience, sender, test sends and the dispatch confirmation — and work with the account's contact data: contacts, manual tags, custom fields and opt-in processes, over the KlickTipp MCP server.",
   "author": {
     "name": "KlickTipp",
     "url": "https://www.klick-tipp.com"

@@ -94,8 +94,8 @@ Konvertierung stattfindet.
 | `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
 | `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
 | `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
-| `email-page-style-write` | die Vorgaben der ganzen E-Mail: Grundfarbe, Nachrichtenhintergrund, Text- und Linkfarbe, Nachrichtenbreite |
-| `email-row-style-write` | Hintergrund des Bandes und des Inhaltsbereichs, Textfarbe, Inhaltsbreite, vertikale Ausrichtung, Stapeln und Sichtbarkeit je Gerät |
+| `email-page-style-write` | die Vorgaben der ganzen E-Mail: Grundfarbe, Nachrichtenhintergrund, Text- und Linkfarbe, **Schriftart**, Nachrichtenbreite |
+| `email-row-style-write` | Hintergrund des Bandes und des Inhaltsbereichs, Textfarbe, Inhaltsbreite, vertikale Ausrichtung, Stapeln und Sichtbarkeit je Gerät, **Innenabstand und Rahmen der Zeile** |
 | `email-column-style-write` | Hintergrund, Innenabstand und Rahmen auf vier Seiten |
 | `email-block-style-write` | Innenabstand, Ausrichtung und Sichtbarkeit je Gerät — für **jeden** Baustein |
 | `email-spacer-style-write` | die Höhe von Abständen |
@@ -164,7 +164,8 @@ Baustein.
 zum Umschreiben, auch wenn ein Add seinen Inhalt inzwischen mitbringt. Was dabei verloren geht:
 
 - **Die Typografie des Bausteins.** Sie steckt in seinem eigenen Markup. Beim Anlegen kopiert der
-  Server nur das `style`-Objekt und den Innenabstand vom Nachbarn, das `html` **nicht**.
+  Server nur das `style`-Objekt und den Innenabstand — und zwar vom *ersten* Baustein derselben Art,
+  nicht vom Nachbarn; das `html` kopiert er **nicht**.
 - **Die Konfiguration eines Add-ons.** Countdown-Ziel, Kontaktdaten, KI-Anweisung: ein neu
   eingefügtes Add-on kommt unkonfiguriert, und eingestellt wird es im Editor. Ein gelöschter
   konfigurierter Countdown ist weg.
@@ -271,9 +272,11 @@ Vereinheitlichung, keine „unnötige" Verschachtelung entfernen. Braucht der ne
 als der alte, wiederhole das vorhandene `<p style=…>` mit seinem Stil; braucht er weniger, lass
 Absätze weg. Bei einer Überschrift gilt dasselbe für `text` (dort steckt der Text in `<span>`s).
 
-**Hinzufügen: der neue Baustein sieht aus wie sein Nachbar — auf zwei Wegen zugleich.** Der Server
-kopiert beim Anlegen das `style`-Objekt und den Innenabstand vom nächstgelegenen Baustein
-derselben Art (erst dieselbe Spalte, dann dieselbe Zeile, dann irgendeiner im Newsletter). Was im
+**Hinzufügen: der neue Baustein sieht aus wie ein Baustein derselben Art — aber nicht unbedingt wie
+sein Nachbar.** Der Server kopiert beim Anlegen das `style`-Objekt und den Innenabstand vom
+**ersten** Baustein derselben Art, den er findet: erst in derselben Spalte, dann in derselben Zeile,
+dann irgendwo im Newsletter. *Erster*, nicht *nächstgelegener* — die Einfügeposition spielt dabei
+keine Rolle. Was im
 `html` steckt — Wrapper, `<p style=…>`, Schriftgrößen —, kopiert er **nicht**; das ist dein Teil:
 nimm das `html` des Nachbarbausteins derselben Art (bevorzugt aus derselben Zeile oder dem
 Abschnitt, in den der neue Block kommt — nicht die Vorschauzeile, nicht den Footer) als Vorlage und
@@ -289,6 +292,17 @@ Zwei Dinge bleiben:
 2. Mehrere neue Bausteine kosten mehrere Aufrufe: ein Add legt **einen** Baustein an und gibt die
    neue Revision zurück, mit der der nächste arbeitet. Da jedes Add seinen Inhalt mitnimmt, ist das
    ein Aufruf je Baustein — kein zweiter zum Füllen.
+3. **Eine Reihe von Adds macht eine Reihe gleicher Bausteine.** Sobald der erste neue Absatz in der
+   Spalte steht, ist *er* für den zweiten der erste seiner Art — und dessen Abstände wandern durch
+   die ganze Reihe. Zehn so eingefügte Absätze tragen alle dasselbe Padding, während ein gestalteter
+   Entwurf seine Abstände von Abschnitt zu Abschnitt variiert. Das ist als Design-Sprung sichtbar
+   und war es in der Praxis schon.
+
+**Deshalb: einen Körper nicht aus Adds zusammensetzen.** Entsteht eine E-Mail oder ein ganzer
+Abschnitt neu, ist `email-content-import` der Weg — ein Aufruf, eine Revision, und die Gestaltung
+kommt aus dem HTML statt aus einer Kette von Kopien. Die `*-add`-Werkzeuge sind für den **einzelnen
+zusätzlichen** Baustein in einem bestehenden Entwurf gedacht. Wer danach nur Wörter tauschen will,
+nimmt `email-text-write`: das schreibt in vorhandene Bausteine und rührt die Gestaltung nicht an.
 
 Wohin der neue Baustein kommt, sagt `position` innerhalb der Zielspalte — von null gezählt, ohne
 Angabe wird angehängt. In eine **andere** Spalte kommt ein bestehender Baustein mit
@@ -313,15 +327,22 @@ Verweise auf den Editor, statt einen Weg daran vorbei zu suchen.
 **Vor dem Veröffentlichen: `email-content-check`.** Es liest denselben Körper und antwortet mit
 einer Liste von Befunden, jeder mit der `uuid`, die zu ändern ist, und dem Werkzeug, das es ändert:
 Bild ohne Quelle, Bild ohne Alternativtext, Button ohne Ziel, Textbaustein ohne sichtbare Wörter,
-zu geringer Kontrast (WCAG unter 4.5:1) und ein fehlender KlickTipp-Platzhalter im Fuß. Es schreibt
-nichts und schickt nichts nach außen.
+**ein Add-on, das eingefügt aber nie konfiguriert wurde**, zu geringer Kontrast (WCAG unter 4.5:1)
+und ein fehlender KlickTipp-Platzhalter im Fuß. Es schreibt nichts und schickt nichts nach außen.
 
 Zwei Dinge dazu, die du beim Weitergeben nicht verdrehen darfst:
 
-- **Die Schweregrade sind die der Plattform.** Nur ein Bild ohne Quelle ist ein `error` — das ist
-  für jeden Empfänger sichtbar kaputt. Alles andere, auch ein fehlender `%Link:Unsubscribe%`, ist
-  eine `warning`: KlickTipp warnt beim Versand darüber, es verweigert ihn nicht. Sag also nicht,
-  der Newsletter „könne nicht raus", wenn er es kann.
+- **Die Schweregrade sind die der Plattform.** `error` sind genau zwei Befunde: ein Bild ohne
+  Quelle und ein **unkonfiguriertes Add-on**. Beide sind für jeden Empfänger sichtbar kaputt.
+  Alles andere, auch ein fehlender `%Link:Unsubscribe%`, ist eine `warning`: KlickTipp warnt beim
+  Versand darüber, es verweigert ihn nicht. Sag also nicht, der Newsletter „könne nicht raus",
+  wenn er es kann.
+- **Ein unkonfiguriertes Add-on kannst du nicht reparieren.** Ein Countdown, eine Kontaktkarte
+  oder ein Wowing-Video zeigt, was im KlickTipp-Editor *ausgewählt* wurde — das ist kein
+  schreibbares Feld, und kein Werkzeug hier setzt es. Bleiben also zwei Wege, und beide gehören
+  dem Nutzer: im Editor konfigurieren, oder den Block mit `email-block-remove` entfernen. Sag das
+  so, statt einen Weg daran vorbei zu suchen. Der Befund tritt auch dann auf, wenn im Block
+  Platzhaltertext steht — ein fertig aussehender Block kann hohl sein.
 - **Ein Befund ist eine Entscheidung, keine Aufgabe.** Ein zu blasser Text oder ein fehlender
   Abmeldelink kann so gewollt sein. Gib die Befunde weiter und frag, statt still zu reparieren.
 
@@ -339,6 +360,17 @@ Bearbeitbarkeit. Lies sie dem Nutzer vor, **bevor** du importierst, nie als Komm
 heute eine eigenständig gepflegte Textversion (`newsletter_content_plain_custom`). Steht dort etwas,
 führt kein Werkzeugweg daran vorbei; verweise auf den Editor.
 
+**Ein Import über bestehenden Inhalt wird beim ersten Aufruf abgewiesen** — mit Absicht. Die
+Antwort zählt auf, wie viele Zeilen und Bausteine der Newsletter hat und welcher Art sie sind, und
+ändert nichts. Erst ein zweiter Aufruf mit `replaceExistingContent: true` konvertiert. Zeig dem
+Nutzer diese Liste und lass ihn entscheiden: ein Import über einen gestalteten Newsletter nimmt
+jeden Baustein, sein Layout und die Identität jedes Blocks mit, und es gibt kein Zurück. Ein leerer
+Entwurf braucht keine Bestätigung.
+
+**Der Import veröffentlicht nicht.** Er speichert den Entwurf; der Versandinhalt ändert sich erst
+durch `email-content-publish`. Die Antwort nennt genau das in `nextAction` — lies es, statt nach
+dem Import „fertig" zu melden.
+
 **Was ein HTML-Import kostet** (`email-content-import`). Ein Import
 nimmt gerendertes HTML und nie das Dokument; je Baustein kommt zurück: Trennlinie als
 gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, Tabelle als
@@ -348,8 +380,7 @@ Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
 
 Der Import lässt **Name, Betreff und Pre-Header unberührt** — er schreibt nur das Dokument. Ein
 `<title>` im importierten HTML landet nirgends, eine versteckte Preheader-Zeile wirft der Konverter
-weg. Wenn aus diesem HTML gerade ein neuer Newsletter entsteht, lies sie vorher aus und gib sie dem
-`email-newsletter-draft-create` mit (Skill `newsletter`, Schritt 1); dann fehlen sie nicht.
+weg. Name, Betreff und Pre-Header setzt der Skill `newsletter` über seine eigenen Werkzeuge.
 
 Und Entscheidungen wie KI-Blöcke sind nach einem Import **weg**: sie stehen nicht im HTML, kein
 Vorgehen deinerseits kann sie erhalten — sag das ausdrücklich, bevor du importierst. Im Dokument stehen sie dagegen sehr wohl, und
@@ -394,6 +425,8 @@ In `references/` liegen:
 
 | Datei | Inhalt |
 | --- | --- |
+| `contracts.md` | **die veröffentlichten Verträge** aller 44 Werkzeuge dieses Skills, Wort für Wort: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung — generiert aus der Werkzeugliste des Servers |
+| `tools.md` | **alle Werkzeuge dieses Skills** — Inhalt lesen/prüfen/importieren/veröffentlichen, Bausteine, Gestaltung, Bilder: wofür, was sie nicht tun, Stolperer |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |
 | `bee-simple-schema/` | die Schema-Dateien des Anbieters, unverändert: das vereinte Schema, eines je Baustein, die geteilten Constraints und ein vollständiges gültiges Beispiel. **Kein** Prüfmaßstab für ein gespeichertes Dokument — warum, steht im Katalog daneben |
@@ -432,6 +465,24 @@ Typografie, Abstände und Farben deshalb selbst, und zwar **für alle Bausteine 
 für den einzelnen Block. Eine E-Mail wirkt professionell durch Abstände und konsequente
 Typografie, nicht durch Dekoration; eine halb umgestellte Skala sieht schlechter aus als gar keine.
 
+Zwei Dinge gehören dabei auf die richtige Ebene:
+
+**Die Schriftart setzt du einmal auf der Seite**, mit `fontFamily` in `email-page-style-write` —
+nicht je Baustein. Die Bausteine stehen im Startzustand auf `inherit`, greifen die Seitenvorgabe
+also von selbst. Angeboten sind nur Schriften, die jedes Mailprogramm hat: `Arial`, `Courier New`,
+`Georgia`, `Helvetica`, `Lucida Sans`, `Tahoma`, `Trebuchet MS`, `Verdana`. Du nennst den **Namen**,
+nicht den Stack — die Ausweichkette schreibt der Server. **Eine Webschrift wie Montserrat oder
+Roboto kannst du nicht setzen**: die braucht zusätzlich einen Eintrag in `page.body.webFonts` mit
+einer Google-Fonts-URL, damit der Editor den `<link>` erzeugt. Ohne den fällt sie beim Empfänger
+still auf eine Systemschrift zurück, und niemand sieht es. Wer eine Webschrift will, setzt sie im
+KlickTipp-Editor.
+
+**Einen Rahmen um eine Zeile setzt du auf der Zeile**, mit `borderTop`/`-Right`/`-Bottom`/`-Left`
+in `email-row-style-write` — nicht auf ihren Spalten. Ein Rahmen je Spalte zeichnet eine Box je
+Spalte, mit sichtbaren Nähten dazwischen, statt einer Linie um die ganze Zeile. Dasselbe gilt für
+den Innenabstand: `paddingTop` und Geschwister auf der Zeile halten den Inhalt von der Kante der
+Zeile weg, die Spalten-Variante nur von der Kante der Spalte.
+
 Liegt bereits HTML vor — von einer Agentur, aus einem anderen Werkzeug —, ist
 `email-content-import` der Weg dafür (siehe „Bestehendes HTML bearbeiten" und die zwingenden
 Regeln in `references/html-authoring.md`). **Schreib aber kein HTML, nur um es dann zu
@@ -461,7 +512,7 @@ hast, ist bereits ein Dokument — die Bausteinwerkzeuge kommen ohne Umweg ans Z
    Pixabay), die auch der Editor anbietet. Eigenes Material kommt über `email-image-upload` herein.
 
    **Eine Stock-URL darf nicht in den Newsletter.** Gib `sourceUrl` und `fileName` des gewählten
-   Fotos an `email-image-upload` und nimm die URL, die zurückkommt. Eine fremde URL lässt jedes
+   Fotos an `email-image-upload-from-url` und nimm die URL, die zurückkommt. Eine fremde URL lässt jedes
    Postfach einen Dritten kontaktieren und bricht an dem Tag, an dem das Foto dort verschwindet.
 
    Zwei Dinge, die dich sonst blamieren: Die Stock-Suche kommt **nie leer zurück** — zu einer

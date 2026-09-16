@@ -54,5 +54,7 @@ geändertes HTML durch den Import, um eine Änderung anzubringen.
 ## Vor dem Veröffentlichen
 
 `email-content-check` läuft in einem Aufruf über den ganzen Körper: Bilder ohne Alternativtext,
-Buttons ohne Ziel, leere Textbausteine, zu geringer Kontrast, fehlende Fuß-Platzhalter. Gib die
-Befunde weiter, statt still zu reparieren — ein blasser Text kann so gewollt sein.
+Buttons ohne Ziel, leere Textbausteine, nie konfigurierte Add-ons, zu geringer Kontrast, fehlende
+Fuß-Platzhalter. Gib die Befunde weiter, statt still zu reparieren — ein blasser Text kann so
+gewollt sein. Ein unkonfiguriertes Add-on ist die Ausnahme, die du gar nicht reparieren kannst:
+seine Auswahl trifft der Nutzer im Editor.

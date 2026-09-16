@@ -69,6 +69,8 @@ die Kampagnenart nennt — das wären zwei Angaben, die sich widersprechen könn
 
 | Was | Womit |
 | --- | --- |
+| Den Test ansehen: Einstellungen, Arme, ob er läuft | `email-split-test-get` |
+| Von einem Arm zurück zum Test finden | `email-split-test-get` mit `emailId` |
 | Testgröße, Zeitraum, Gewinner-Kriterium ändern | `email-split-test-configure` |
 | Arm hinzufügen (leer oder als Kopie) | `email-split-test-variant-add` |
 | Betreff, Pre-Header, Name eines Arms | `email-split-test-variant-update` |
@@ -87,6 +89,32 @@ und dann wird genau die eine Sache geändert, um die es geht.
 **Ein leerer Arm gegen eine fertige E-Mail misst nichts** — der Unterschied wäre der gesamte
 Inhalt, und das Ergebnis sagt nur, dass Menschen lieber eine E-Mail mit Inhalt lesen. Leer anlegen
 ergibt Sinn, wenn die Arme wirklich unabhängig entstehen sollen.
+
+**`copyFromEmailId` ist die `emailId` eines Arms *dieses* Tests** — aus `splitTestVariants`, nicht
+die ID des Newsletters, der als Vorlage gedient hat. Ein fremder Newsletter wird abgewiesen mit
+„Email … is not a test arm of campaign …". Das ist kein Fehler des Werkzeugs, sondern die falsche
+Zahl: `email-split-test-get` (oder `email-newsletter-get`) nennt die richtigen.
+
+### Den Inhalt eines Arms in einem Zug schreiben
+
+Ein Arm ist eine E-Mail, und sein Körper entsteht über den Skill `email` mit der `editorUrl` dieses
+Arms. **Dafür `email-content-import` nehmen, nicht Baustein für Baustein.**
+
+Der Grund ist nicht Geschwindigkeit, sondern das Ergebnis: Ein Block, der einzeln hinzugefügt wird,
+übernimmt sein Aussehen vom **ersten Block gleicher Art in der Spalte** — nicht vom Nachbarn über
+der Einfügestelle. Zehn Absätze nacheinander eingefügt bekommen deshalb alle dasselbe Padding, und
+der Rhythmus des Entwurfs, dessen Abstände sich von Abschnitt zu Abschnitt unterscheiden, ist weg.
+Trenner und Zwischenüberschriften, die eine Vorlage zwischen ihren Textblöcken hat, entstehen dabei
+ohnehin nicht.
+
+`email-content-import` baut das Dokument in einem Aufruf und in einer Revision. Danach einzelne
+Stellen mit `email-text-write` ändern — das schreibt in vorhandene Blöcke und rührt die Gestaltung
+nicht an. Die `*-add`-Werkzeuge sind für einen einzelnen zusätzlichen Block gedacht, nicht dafür,
+eine E-Mail zusammenzusetzen.
+
+Das gilt für jede E-Mail, fällt bei Splittests aber besonders auf: Arm A wird importiert, Arm B
+kopiert, und jede nachträgliche Baustein-Reihe macht die beiden Arme in etwas unterschiedlich, das
+der Test nicht messen wollte.
 
 ### Ein Test testet eine Sache
 
@@ -118,8 +146,19 @@ nicht rückgängig. Zeig vorher, welcher Arm gemeint ist: Label und Betreff steh
 
 ## Lesen
 
+**`email-split-test-get` zeigt den Test als Ganzes** und schreibt nichts: `testSizePercent`,
+`testDurationHours`, `winnerBy`, `hasStarted`, dazu jeden Arm und `needsMoreVariants`. Das ist die
+Antwort auf „wie ist der Test eingestellt" und der Blick, bevor etwas geändert wird. Dieselbe
+Antwort liefern auch die vier Schreibwerkzeuge — wer gerade eines aufgerufen hat, hat sie schon.
+
+Es nimmt `campaignId` **oder** die `emailId` eines Arms, genau eines von beiden. Der zweite Weg ist
+der Rückweg: Wer nur eine E-Mail vor sich hat — die Zahl aus einer Editor-URL — bekommt den Test
+dahinter samt `campaignId` und den `editorUrl` aller Arme und kann von dort aus weiterarbeiten. Ohne
+ihn führte von einem Arm kein Weg zurück zum Test.
+
 `email-newsletter-get` liefert `splitTestVariants` — pro Arm `emailId`, `label` (das „A", „B", das
-auch die App zeigt), `name`, `subject` und `editorUrl`.
+auch die App zeigt), `name`, `subject` und `editorUrl`. Für die Arme allein reicht das; die
+Einstellungen des Tests stehen dort nicht.
 
 Für einen Splittest sind `emailId`, `contentUrl` und `metadata.subject` **null**, und
 `deliveryConfiguration` gehört zu einem Arm: sie wird ohne `editorUrl` abgewiesen, statt für einen
@@ -133,3 +172,9 @@ Arm beantwortet zu werden, den niemand gewählt hat.
 - Einen bestehenden Newsletter in einen Splittest verwandeln, oder umgekehrt.
 
 In all diesen Fällen: sag es klar und verweise auf die `appUrl` aus der Antwort.
+
+## Die Werkzeuge im Einzelnen
+
+Die vier Arm- und Einstellungs-Werkzeuge mit Wertebereichen und Stolperern stehen in
+[references/tools.md](references/tools.md); ihre veröffentlichten Verträge Wort für Wort, mit jedem
+Parameter, in [references/contracts.md](references/contracts.md).

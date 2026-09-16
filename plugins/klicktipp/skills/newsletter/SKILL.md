@@ -47,37 +47,6 @@ ihn nimmt sich das Programm die ersten Wörter des Inhalts, und das ist selten d
 Höchstens 120 Zeichen, ohne HTML. Er lässt sich **direkt beim Anlegen** mitgeben und später jederzeit
 mit `email-newsletter-draft-update` ändern — beide Wege schreiben dasselbe Feld.
 
-### Wenn der Newsletter aus fertigem HTML entsteht
-
-Der Import überträgt weder Betreff noch Pre-Header — er ersetzt nur das Baustein-Dokument. Ein
-`<title>` landet nirgends, und ein verstecktes Preheader-`<div>` wirft der Konverter weg. Wer darauf
-wartet, bekommt einen Newsletter mit leerem Pre-Header und einem Betreff aus dem Nichts.
-
-**Lies das HTML deshalb, bevor du importierst, und nimm die beiden Zeilen mit ins `draft-create`.**
-Es liegt dir ohnehin vor — du willst es gleich hochladen:
-
-| Woher | Wohin |
-| --- | --- |
-| `<title>` | `name` **und** Vorschlag für `subject` |
-| `<meta name="description">` | `preheader` |
-| versteckte Preheader-Zeile (`<div class="preheader">`, `display:none`) | `preheader`, falls kein `<meta>` da ist |
-
-Damit stehen alle drei schon beim Anlegen, und der spätere `draft-update` entfällt — samt der
-Revisions-Invalidierung, die er auslösen würde.
-
-**Der `<title>` bedient beide Felder, aber nicht gleich gut.** Als `name` ist er fast immer richtig:
-die interne Bezeichnung soll wiederfindbar sein, und genau dafür hat der Mensch den Titel vergeben —
-„Newsletter Vorlage Final v3" ist eine brauchbare Bezeichnung und eine schlechte Betreffzeile.
-Übernimm ihn als `name` also direkt, und leg ihn für `subject` nur als **Vorschlag** vor.
-
-Der Name muss im Konto **eindeutig** sein. Kollidiert er, häng etwas Unterscheidendes an
-(Datum, Kampagne), statt den Fehler an den Nutzer durchzureichen.
-
-Beim Betreff ist das Vorlegen keine Höflichkeit, sondern Pflicht: die Werkzeuge verbieten
-ausdrücklich, einen Betreff auszudenken. Ein aus dem Quell-HTML gelesener ist **kein Erfinden,
-sondern Vorschlagen** — er stammt vom Menschen, der das HTML geschrieben hat —, aber er ist eben
-oft der Arbeitstitel. Fehlt eine der Zeilen im HTML, frag danach, statt die Lücke zu füllen.
-
 ### Splittest
 
 Ein Splittest wird **beim Anlegen entschieden und nie danach** — `email-newsletter-draft-create`
@@ -159,6 +128,22 @@ Sage nach diesem Aufruf niemals „der Newsletter wurde verschickt". Er wurde vo
 `email-newsletter-search` filtert über `query`, `status` (`draft`, `scheduled`, `outgoing`, `sent`),
 Zeiträume (`createdFrom`, `sendDateFrom`, …) und paginiert über `limit` / `cursor`.
 
+Zwei Fragen, die genau **eine** Suche sind — nicht ein Lesen je Newsletter:
+
+- **„Welche Newsletter gingen letzte Woche raus?"** → `status: "sent"` plus ein `sendDate`-Fenster.
+  Die Fenster sind halboffen — `From` schließt den Moment ein, `Before` schließt ihn aus — und
+  wollen ISO 8601 **mit** UTC-Offset (`2026-09-01T10:00:00+02:00`). Ein Entwurf hat kein
+  Versanddatum und fällt in kein `sendDate`-Fenster, auch wenn ein Termin gesetzt und wieder
+  abgesagt wurde; Entwürfe zählst du über `status: "draft"`.
+- **„Hier ist eine Editor-URL — welcher Newsletter ist das?"** Die URL nennt die *E-Mail*, jedes
+  andere Werkzeug nimmt den *Newsletter*. Such und vergleiche die `emailId` aus der URL mit der
+  Liste, statt zu raten — benachbarte IDs gehören zu verschiedenen Newslettern. Ein Splittest hat
+  keine einzelne E-Mail (`emailId: null`); seine Arme stehen in `splitTestVariants` von
+  `email-newsletter-get`.
+
+Bei mehr Treffern als `limit` kommt ein `nextCursor`: unverändert zurückgeben, mit **denselben**
+Filtern. Ein Cursor aus einer anderen Suche wird abgewiesen.
+
 `email-newsletter-get` liest einen Newsletter über `newsletterId` **oder** `editorUrl`. Standardmäßig
 kommen nur Identität und Lebenszyklus; alles Weitere über `include`:
 
@@ -169,8 +154,16 @@ kommen nur Identität und Lebenszyklus; alles Weitere über `include`:
 | `deliveryConfiguration` | Absender, Antwortadresse, Signatur |
 | `deliveryStatus` | wo der Versand steht, mit `scheduleUrl` und `statisticsUrl` |
 | `audienceReach` | wie viele Kontakte es gerade erreichen würde |
+| `conversionPixel` | die Tracking-Snippets für die Danke-Seite, eines je Absenderdomain |
 
 Fordere nur an, was du brauchst. `audienceReach` ist eine Messung, keine gespeicherte Zahl.
+
+`conversionPixel` ist die Antwort auf „wie messe ich Conversions" — besonders nach einem Splittest
+mit `winnerBy: conversions` oder `revenue`, der ohne Pixel nichts zu zählen hat. Gib dem Nutzer das
+`snippet` **wörtlich** zum Einbauen in seine Danke-Seite und nenne die `domain` dazu: die Pixel-URL
+enthält die Absenderdomain, ein Snippet der falschen Domain zählt nichts. Ein Splittest hat **einen**
+Satz Pixel für alle Arme — du brauchst dafür keine `editorUrl`. Sagt die Antwort
+`available: false`, hat das Konto die Funktion nicht; dann gibt es auch in der Oberfläche keinen.
 
 ## Löschen
 
@@ -193,6 +186,15 @@ Die häufigsten Tore:
   nicht abgedeckt.
 - **Inhalt fehlt oder ist nicht veröffentlicht.** Die Aktivierung bindet veröffentlichten Inhalt.
   Ein Entwurfsinhalt reicht nicht — siehe `email-content-publish` im Skill `email`.
+
+## Die Werkzeuge im Einzelnen
+
+Was jedes Werkzeug dieses Skills tut, was es ausdrücklich nicht tut, und woran man sich in der
+Praxis stößt — samt der Signatur-Werkzeuge, die die Kandidaten für `signatureId` liefern —, steht in
+[references/tools.md](references/tools.md). Die vollständigen Verträge, wie der Server sie
+veröffentlicht — jede Beschreibung, jeder Parameter mit Typ und Grenzen —, stehen Wort für Wort in
+[references/contracts.md](references/contracts.md). Das Verfahren steht hier, die Stolperer in der
+Werkzeugliste, der Wortlaut im Vertrag.
 
 ## Kontoauswahl
 
