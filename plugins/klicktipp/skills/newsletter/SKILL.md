@@ -92,21 +92,77 @@ Revision neu — sonst wird der Schreibvorgang als „geändert" abgewiesen. Die
 bestehende Zielgruppe erst mit `email-newsletter-get` und `include: ["audience"]` lesen und die
 vollständige neue Menge schicken. Sonst verschwindet, was vorher da stand.
 
+**Frage nach einem Ausschluss für lange inaktive Kontakte.** Wer seit Monaten nichts öffnet und
+trotzdem jede Mail bekommt, drückt Zustellrate und Absenderreputation — und damit die Zustellung
+für alle anderen. Frage deshalb beim Setzen oder Ändern einer Zielgruppe einmal aktiv, ob das Konto
+einen Tag für inaktive Kontakte pflegt (Namen wie „Seit 6 Monaten inaktiv"), und trage ihn dann in
+`excludeTagIds`.
+
+Sage dabei ehrlich, was du kannst: **du kannst einen vorhandenen Tag ausschließen, keine Inaktivität
+berechnen.** Tag-Bedingungen haben keine Zeitachse, und KlickTipp hat keinen eingebauten
+Inaktiv-Tag — die Systemtags sagen „gesendet", „geöffnet", „geklickt" je E-Mail, nicht „seit wann
+nicht mehr". Existiert kein solcher Tag, ist die Antwort „den müsstest du dir in KlickTipp bauen",
+nicht ein Versuch, ihn aus Systemtags zusammenzusetzen. Findet `search-tags` einen Kandidaten, nenne
+ihn mit Namen und lass bestätigen, statt auf einen Namen zu raten.
+
 ## 4. Absender und Signatur
 
-`email-newsletter-delivery-configure` setzt Absendername, Absenderadresse, Antwortadresse und
-Signatur. Die drei Adressfelder haben je einen `*Mode` neben dem Wert — lies die Beschreibung des
+`email-newsletter-delivery-configure` setzt Absendername, Absenderadresse, Antwortadresse,
+Versanddomain und Signatur. Die vier Werte haben je einen `*Mode` daneben — lies die Beschreibung des
 Werkzeugs, welche Modi es gibt, statt zu raten; ein freier Wert ist nicht immer erlaubt, weil
 Absenderadressen verifiziert sein müssen.
 
+**Rate keine Adresse und keine Domain.** Die Antwort jedes Aufrufs trägt `availableSenderAddresses`
+und `availableSenderDomains`, und das Werkzeug lehnt alles ab, was nicht darin steht — vor dem
+Schreiben, mit der Liste in der Meldung. Eine leere Domainliste heißt „dieses Konto wählt keine
+Domain", nicht „such dir eine".
+
+**Adresse und Domain gehören zusammen.** Wer nur die Absenderadresse ändert, lässt die alte Domain
+stehen, und der Newsletter ginge durch eine Domain, die nicht zu seinem Absender gehört. Das wird
+abgelehnt, und die Meldung nennt die passende Domain — schick beides in einem Aufruf.
+
+### Wenn du Signaturtext schreibst
+
+Zwei Dinge, die der Server **nicht** erzwingt und die deshalb an dir hängen:
+
+**Zwei schnelle Kontaktwege im Impressum.** Pflicht sind für den Server nur die Adressplatzhalter.
+Ein Impressum, über das man den Absender tatsächlich erreicht, nennt darüber hinaus mindestens zwei
+schnelle Wege — E-Mail und Telefon, oder E-Mail und Kontaktformular. Weise darauf hin, wenn im
+Entwurf nur einer steht. Prüfe die Rechtslage nicht selbst und behaupte sie nicht; sage, dass es
+ein üblicher Mindeststandard ist und im Zweifel rechtlich geprüft gehört.
+
+**Biete die transaktionale Fassung aktiv an.** Eine SOI-Bestätigungsmail ist der Erstkontakt und
+verträgt keinen Abmeldelink — eine Abmeldung von etwas, das noch gar nicht bestätigt wurde. Genau
+dafür gibt es `useInTransactionalEmails: true` mit eigenem `transactionalHtml`: dort steht
+`%Link:SubscriberInfo%` statt `%Link:Unsubscribe%`, und der Server **weist ein transaktionales HTML
+mit `%Link:Unsubscribe%` ab**. Wer eine Signatur anlegt, wird nicht von selbst danach fragen — also
+frag du, bevor die Signatur steht. Die vollständigen Platzhalterregeln stehen in
+[references/tools.md](references/tools.md).
+
 ## 5. Testversand
 
-`email-newsletter-test-send` schickt eine echte Mail an **eine** Adresse, und die muss die eigene
-Adresse des Kontos oder eine seiner verifizierten Absenderadressen sein. Alles andere wird
-abgewiesen. Die Zielgruppe wird dabei nicht angefasst.
+`email-newsletter-test-send` schickt eine echte Mail an **eine** Adresse — dieselbe Aktion, die der
+Testdialog in KlickTipp auslöst, mit denselben Regeln. Jede Adresse ist erlaubt.
 
-Genau deswegen ist dieser Schritt billig: er erreicht niemanden ausserhalb des Kontos. Schlage ihn
-aktiv vor, bevor du Schritt 6 auch nur erwähnst.
+**Und genau deshalb hat der Schritt eine Nebenwirkung, die du vorher sagst:** ist die Adresse noch
+kein Kontakt des Kontos, wird sie einer und bekommt den Testempfänger-Tag. So landet sie in der
+Liste des Dialogs. Taggen ist das, worauf Automationen anspringen — ein Testversand kann also eine
+starten. Nenne die Adresse und was mit ihr passiert, dann sende.
+
+Die Zielgruppe wird nicht angefasst, und der Versandstand des Newsletters bewegt sich nicht.
+Deswegen bleibt der Schritt billig gegenüber Schritt 6 — schlage ihn aktiv vor, bevor du die
+Aktivierung auch nur erwähnst.
+
+**Ein Testversand trägt den veröffentlichten Inhalt, nicht den Entwurf.** Die Block-Werkzeuge
+speichern einen Entwurf und veröffentlichen absichtlich nie — also musst du vor dem Testversand
+`email-content-publish` aufrufen, sonst kommt gar nichts an. Das Werkzeug lehnt in diesem Zustand
+ab, mit `newsletter_send_content_publish_required` und der Anweisung, zuerst zu veröffentlichen;
+genauso, wie KlickTipp den Testdialog gar nicht anbietet, solange die Mail nicht so weit ist. Hat
+der Inhalt nach dem Veröffentlichen noch Änderungen bekommen, wird gesendet — aber die Antwort
+trägt ein `warnings`, das sagt, dass der Test den älteren Stand zeigt. Lies es und sage es weiter,
+statt den Test als Beweis für den aktuellen Entwurf zu verkaufen.
+
+Die Reihenfolge ist damit: Inhalt schreiben → `email-content-publish` → Testversand → Schritt 6.
 
 ## 6. Aktivierung — und was dieses Werkzeug wirklich tut
 

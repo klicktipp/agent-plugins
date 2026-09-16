@@ -34,7 +34,7 @@ Both targets read the same `.mcp.json`.
 | `email-newsletter-draft-update` | name, internal note and audience of a draft |
 | `email-newsletter-draft-delete` | discard a draft |
 | `email-newsletter-delivery-configure` | sender name, sender address, reply address, signature |
-| `email-newsletter-test-send` | test send to the account's own or a verified sender address |
+| `email-newsletter-test-send` | test send to any address — the recipient becomes a tagged contact, which can start an automation |
 | `email-newsletter-send` | prepare the real dispatch and return a confirmation URL |
 
 **Content of one email**
@@ -117,7 +117,12 @@ them:
   editability, but `email-block-remove` cannot be undone either. They are the way
   to make a change that can be named, and the ones to prefer over an import on a
   newsletter that already carries a design.
-- `email-content-publish` changes what real recipients would receive.
+- `email-content-publish` changes what real recipients would receive — and a test
+  send shows the published body, so publishing comes before testing, not after.
+- `email-newsletter-test-send` is no longer restricted to the account's own
+  addresses, and it writes: whoever receives the test becomes a contact with a
+  tag, which can trigger an automation. The agent is expected to say that before
+  the step, not after.
 - `email-newsletter-draft-delete` removes the draft with its email, audience
   conditions and system tags.
 

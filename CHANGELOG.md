@@ -8,6 +8,22 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.14 — 2026-09-16
+
+- **The test send takes any address now — and writes one.** It runs through the app's own test
+  dialog, so the restriction to the account's own addresses is gone and the side effect is real:
+  the recipient becomes a tagged contact, which can start an automation. The skill says so before
+  the step rather than after it, and the published tool table follows.
+- **Publish before testing.** A test send shows the published body, so an unpublished change is
+  not what arrives; the skill reads the warning that says so instead of passing it over.
+- `newsletter`: the sender lists are binding and the domain comes with them; and three things the
+  server allows without prompting — excluding long-inactive contacts when an audience is set (with
+  the limit said out loud, because tag conditions have no time axis), the imprint, and the
+  transactional signature.
+- `crm`: contact date fields are read the way the interface writes them — `16.09.2026`, not a
+  second notation beside it. ISO 8601 still goes in on the write side, for a date that was
+  computed rather than read.
+
 ## 0.8.12 — 2026-09-16
 
 - Three add-on blocks are held back on production: **countdown**, **contact card** and

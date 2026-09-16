@@ -182,6 +182,25 @@ eines Tags zählen will, liest `get-tag`: es sagt, wie viele Kontakte ihn tragen
 Kanal- oder Abo-Referenzdaten gibt es nicht — sag das, statt sie aus anderen Antworten
 zusammenzusetzen.
 
+### Datumsfelder stehen so da, wie sie in der Oberfläche stehen
+
+Jedes Feld nennt seinen Typ, und die drei Typen, die intern als Zahl liegen, kommen so heraus, wie
+KlickTipp sie anzeigt — Zeichen für Zeichen dasselbe, weil beide dieselbe Formateinstellung lesen:
+
+| Typ | Antwort | Beispiel |
+| --- | --- | --- |
+| `field-date` | Tag | `16.09.2026` |
+| `field-datetime` | Tag und Uhrzeit | `16.09.2026 14:30` |
+| `field-time` | Uhrzeit | `14:30` |
+
+Die Zeitzone ist die des Kontos. **Rechne nichts um und schätze nichts**: was als `16.09.2026`
+kommt, ist der 16.09.2026, und du gibst es genau so weiter.
+
+`enrich-contact` nimmt diese Formen zurück — und zusätzlich ISO 8601 (`2026-09-16`,
+`2026-09-16T14:30:00+02:00`), falls du ein Datum gerechnet statt gelesen hast. Etwas anderes,
+„nächsten Montag" etwa, wird abgewiesen statt umgedeutet; die Abweisung nennt die Form, die gegangen
+wäre. Ein leerer Wert löscht das Feld.
+
 ## Die Weiterleitungs-URL identifiziert den Abonnenten
 
 `get-subscription-redirect-url` liefert die Pending-Seite (Bestätigung offen) oder die Danke-Seite

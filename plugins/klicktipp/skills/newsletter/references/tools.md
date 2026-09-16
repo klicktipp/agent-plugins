@@ -18,8 +18,8 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `email-newsletter-draft-create` | | Entwurf anlegen: Name, Betreff, Pre-Header, optional `splitTest` (Skill `splittest`). Sendet nichts. |
 | `email-newsletter-draft-update` | I | Name, Notiz, Betreff, Pre-Header, Zielgruppe eines Entwurfs. Betreff/Pre-Header machen `contentRevision` ungültig. |
 | `email-newsletter-draft-delete` | D | Entwurf endgültig löschen. |
-| `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Signatur. |
-| `email-newsletter-test-send` | O | Eine echte Testmail an eine Adresse; der Empfänger wird als Testkontakt getaggt. |
+| `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur. Prüft gegen die Listen, die es selbst mitliefert. |
+| `email-newsletter-test-send` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `email-content-publish`. |
 | `email-newsletter-send` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
 | `email-signature-search` · `email-signature-get` | R | Signaturen, die unter einen Newsletter können, mit Absenderprofil — die Kandidaten für `signatureId`. ⚠ nicht auf Production |
 | `email-signature-create` · `email-signature-update` · `email-signature-content-replace` · `email-signature-delivery-configure` | / I / DI / I | Signatur anlegen (auch als Kopie), Name/Notiz/Labels, Inhaltsblock komplett ersetzen, Tags und Absenderprofil. ⚠ nicht auf Production |
@@ -71,17 +71,39 @@ lässt ihn stehen — das gilt für jedes Feld: weggelassen heißt behalten.
 **Stolperer:** Kein Papierkorb. Eine Namensähnlichkeit aus der Suche ist keine Zustimmung.
 
 ### `email-newsletter-delivery-configure`
-**Wofür:** Absender, Antwortadresse, Signatur; sagt, was zum Versand noch fehlt. **Nicht:** Termin,
-Aktivierung. **Stolperer:** Jeder der drei Absender-Werte hat einen `…Mode` — `explicit` (dann den
-Wert daneben), `account_default` oder `signature_dispatch_profile`; weggelassen heißt behalten. Die
-Absenderadresse muss eine des Kontos sein. `signatureId: 0` heißt „KlickTipp wählt per Tagging" und
-ist kein Eintrag der Signaturliste.
+**Wofür:** Absender, Antwortadresse, Versanddomain, Signatur; sagt, was zum Versand noch fehlt.
+**Nicht:** Termin, Aktivierung. **Stolperer:** Jeder der vier Absender-Werte hat einen `…Mode` —
+`explicit` (dann den Wert daneben), `account_default` oder `signature_dispatch_profile`;
+weggelassen heißt behalten. `signatureId: 0` heißt „KlickTipp wählt per Tagging" und ist kein
+Eintrag der Signaturliste.
+
+Das Werkzeug lehnt ab, **bevor** es schreibt, und nennt dabei jedes Mal die Werte, die gingen:
+
+- `senderEmail` muss in `availableSenderAddresses` stehen. Eine Adresse, die im Konto zwar existiert,
+  aber nicht als Absender taugt, wird abgewiesen — früher wurde sie gespeichert und der Newsletter
+  stand mit einem Absender da, der nicht senden kann.
+- `senderDomain` muss in `availableSenderDomains` stehen. Ist die Liste **leer**, wählt dieses Konto
+  gar keine Domain (KlickTipp bietet das Feld erst ab zwei gültigen Domains und mit der
+  Whitelabel-Berechtigung) — dann `senderDomain` weglassen, nicht eine andere raten.
+- Adresse und Domain müssen **zusammenpassen**. Geprüft wird das Ergebnis, nicht der Aufruf: wer nur
+  die Adresse ändert, schleppt die alte Domain mit, und genau das wird abgelehnt. Die Meldung nennt
+  die Domain, die dazugehört — beides in einem Aufruf schicken.
+
+Beide Listen stehen in der Antwort jedes Aufrufs, und der aktuelle Stand in
+`email-newsletter-get` mit `include: ["deliveryConfiguration"]` (`senderDomainMode`,
+`senderDomain`). Lies sie, statt Adressen oder Domains zu raten.
 
 ### `email-newsletter-test-send`
-**Wofür:** eine echte Mail an eine Adresse — die des Kontos oder eine seiner verifizierten
-Absenderadressen. **Nicht:** ein Versand an die Zielgruppe. **Stolperer:** Der Empfänger wird als
-Kontakt mit dem Testkontakt-Tag angelegt oder markiert — das ist eine Nebenwirkung, die man vorher
-sagt.
+**Wofür:** eine echte Mail an eine beliebige Adresse, über dieselbe Aktion wie der Testdialog der
+Oberfläche. **Nicht:** ein Versand an die Zielgruppe, und kein Blick auf den Entwurf. **Stolperer:**
+Der Empfänger wird als Kontakt mit dem Testempfänger-Tag angelegt oder markiert — eine
+Schreiboperation am Konto, die Automationen starten kann, also vorher sagen. Die Mail trägt den
+veröffentlichten Inhalt: ein nie veröffentlichter Body wird mit
+`newsletter_send_content_publish_required` abgewiesen (erst `email-content-publish`), alles andere,
+was die Oberfläche vor einem Test verlangt — Betreff, Pflicht-Tags im Inhalt — mit
+`newsletter_send_not_ready`; beide nennen die Gründe in `details.missingRequirements` und die
+Editor-URL. Wurde nach dem Veröffentlichen geändert, wird gesendet, und die Antwort trägt
+`warnings`: der Test zeigt den älteren Stand.
 
 ### `email-newsletter-send`
 **Wofür:** die Vorbereitung — Prüfung, Empfängerschätzung, Bestätigungs-URL. **Nicht:** senden. Nie.
@@ -146,6 +168,11 @@ Sie gelten für `create` und `content-replace` gleich, und der Server weist ab, 
 - **Transaktionales HTML** braucht die Adressplatzhalter und darf `%Link:Unsubscribe%` **nicht**
   enthalten. `%Link:SubscriberInfo%` ist empfohlen, nicht Pflicht.
 
+Die transaktionale Fassung ist kein Randfall, sondern der Grund, warum es sie gibt: sie geht an
+Erstkontakte (SOI-Bestätigung), wo ein Abmeldelink von einem noch unbestätigten Abo abmelden würde.
+Biete sie beim Anlegen einer Signatur aktiv an, statt zu warten, bis jemand danach fragt — siehe
+[SKILL.md](../SKILL.md), Abschnitt 4.
+
 ## Antwortformen
 
 Die Werkzeuge veröffentlichen **kein Output-Schema** mehr — die Form ihrer Antworten steht hier.
@@ -164,6 +191,11 @@ Splittest), `scheduleUrl*`, `statisticsUrl*`.
 
 Projektionen: `metadata` (Name, Notiz, Labels, Betreff), `audience`, `deliveryConfiguration`
 (Absender, Antwortadresse, Signatur), und die beiden mit fester Form:
+
+Die `deliveryConfiguration` trägt vier Paare aus Modus und Wert: `senderNameMode`/`senderName`,
+`senderEmailMode`/`senderEmail`, `replyToEmailMode`/`replyToEmail` und
+`senderDomainMode`/`senderDomain`, dazu `signature`. Der Wert ist nur bei Modus `explicit` gesetzt,
+sonst `null` — er wird erst beim Versand aufgelöst.
 
 **`deliveryStatus`** — `observedAt*` (wann gelesen; Bounces und Beschwerden kommen nach dem Versand
 noch nach), `name*`, `newsletterStatus*`, `dispatchConfigured*`, `mode*` (`immediate` ·
