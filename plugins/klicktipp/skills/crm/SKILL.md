@@ -17,11 +17,15 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
 
 ## Verfügbarkeit
 
-Diese Werkzeuge sind **auf Production noch nicht freigeschaltet**, mit einer Ausnahme:
-`search-opt-in-processes` und `get-opt-in-process` gibt es überall; `update-opt-in-process` und
-`delete-opt-in-process` folgen derselben Freigabe wie der Rest. Wer auf Production
-`search-contacts` aufruft, bekommt „unknown tool" — das ist kein Fehler, sondern die Freigabe steht
-aus. Sag es so, statt einen Defekt zu suchen.
+Diese Werkzeuge sind **auf Production noch nicht freigeschaltet**, mit zwei Ausnahmen:
+`search-opt-in-processes` und `get-opt-in-process` gibt es überall.
+
+**Alles Schreibende an Opt-in-Prozessen fehlt auf Production**, auch `update-opt-in-process` und
+`delete-opt-in-process`. Auf Production liest du also die Anmeldelisten und verweist fürs Ändern
+und Löschen auf die Oberfläche.
+
+Wer dort eines der übrigen aufruft, bekommt „unknown tool" — das ist kein Fehler, sondern die
+Freigabe steht aus. Sag es so, statt einen Defekt zu suchen.
 
 ## Die drei Bausteine
 
@@ -148,6 +152,9 @@ Diese Mail ist in vielen Ländern der rechtliche Nachweis der Einwilligung. Abse
 änderst du nur, wenn der Nutzer genau das verlangt hat, und sagst hinterher, was du geändert hast.
 
 ## Eine Anmeldeliste löschen heißt: erst aufräumen
+
+**Auf Production gibt es weder dieses noch `update-opt-in-process`** (siehe „Verfügbarkeit") — dort
+verweist du auf die Oberfläche. Auf Staging und lokal gilt:
 
 `delete-opt-in-process` entfernt den Prozess samt Bestätigungsmail. **Die Kontakte bleiben
 angemeldet** und werden nicht gelöscht — das ist die Frage, die vorher gestellt wird, also

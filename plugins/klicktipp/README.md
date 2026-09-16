@@ -1,7 +1,7 @@
 # KlickTipp
 
-Write, review and prepare KlickTipp email newsletters from your agent, and work
-with the contact data of the account — over the hosted KlickTipp MCP server at
+Write, review and prepare KlickTipp email newsletters from your agent, and read
+the opt-in processes of the account — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
@@ -53,7 +53,8 @@ Both targets read the same `.mcp.json`.
 Each block tool names the blocks it may touch by their `uuid`, so a change reaches
 exactly one block and leaves the rest of the design untouched.
 
-**Split tests**
+**Split tests** — ⚠ not released on production yet; calling one there answers
+"unknown tool", which is the pending release and not a defect
 
 | | |
 |---|---|
@@ -62,7 +63,8 @@ exactly one block and leaves the rest of the design untouched.
 | `email-split-test-variant-update` | change an arm, its subject line above all |
 | `email-split-test-variant-remove` | take an arm out |
 
-**Contacts, tags and fields**
+**Contacts, tags and fields** — ⚠ not released on production yet, same as the
+split tests above
 
 | | |
 |---|---|
@@ -73,14 +75,13 @@ exactly one block and leaves the rest of the design untouched.
 | `assign-manual-tag` · `remove-manual-tag` | put a manual tag on a contact, or take it off |
 | `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` · `delete-custom-field` | the custom field definitions |
 
-**Opt-in**
+**Opt-in** — reading works on production; changing and deleting a process is the
+web interface's job there
 
 | | |
 |---|---|
 | `search-opt-in-processes` | list the account's opt-in processes |
 | `get-opt-in-process` | read the full configuration of one |
-| `get-opt-in-confirmation-email` | read the confirmation email of a double opt-in process |
-| `get-subscription-redirect-url` | resolve the pending or thank-you URL a subscriber is redirected to |
 
 There is no separate delivery-status tool: where a newsletter stands with its
 dispatch is the `deliveryStatus` projection of `email-newsletter-get`. The
@@ -146,7 +147,9 @@ out of them. Read-only: it creates, changes and sends nothing.
 
 `skills/crm` — the contact data of the account: find, read, subscribe and
 unsubscribe contacts, set field values, manage manual tags and custom field
-definitions, and read the opt-in processes behind them.
+definitions, and read the opt-in processes behind them. On production only the
+two opt-in reads are released so far; the skill says so rather than letting an
+agent hunt for a defect.
 
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
@@ -155,10 +158,11 @@ no layout.
 Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
-Signatures are documented in `skills/newsletter/references/tools.md` as the
-`email-signature-*` family, but they are **not released on production yet** — an
-"unknown tool" there is the pending release, not a defect. What does work on
-production is picking an existing signature through `signatureId` in
+**What is not on production yet** — the split tests, the contact and tag tools,
+the image tools, and the `email-signature-*` family. All four are documented in
+the skills that use them, each with the note that an "unknown tool" there is the
+pending release and not a defect. What does work on production is picking an
+existing signature through `signatureId` in
 `email-newsletter-delivery-configure`.
 
 ## Support

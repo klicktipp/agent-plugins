@@ -11,8 +11,10 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 echten Empfänger, eine Automation) · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes
 Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Konto des Zugangs.
 
-**⚠ Nicht auf Production** — alle außer `search-opt-in-processes` und `get-opt-in-process`. Wer auf
-Production eines aufruft, bekommt „unknown tool"; das ist kein Fehler, sondern die Freigabe steht aus.
+**⚠ Nicht auf Production** — alle außer `search-opt-in-processes` und `get-opt-in-process`. Auch
+die beiden Schreiber an Opt-in-Prozessen (`update-`, `delete-opt-in-process`) sind dort **bewusst**
+nicht freigegeben. Wer eines der übrigen auf Production aufruft, bekommt „unknown tool"; das ist
+kein Fehler, sondern die Freigabe steht aus.
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |

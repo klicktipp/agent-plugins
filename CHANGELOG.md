@@ -8,6 +8,17 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.11 — 2026-09-16
+
+- **Corrected what production actually offers.** 0.8.3 and 0.8.10 listed the split-test tools and
+  the contact, tag and field tools as if they were available; they are not released on production
+  yet, and neither are the image tools nor the `email-signature-*` family. The tool table marks
+  each of them, and the plugin description is back to what production does: newsletters, and
+  reading the opt-in processes.
+- `crm`: on production the opt-in processes are read, not written — `update-opt-in-process` and
+  `delete-opt-in-process` are missing there too, so the skill points at the web interface for
+  changing and deleting one instead of enumerating which writer is out this week.
+
 ## 0.8.10 — 2026-09-16
 
 - **Every skill carries its own tool reference.** A `references/` folder per skill holds the tools
