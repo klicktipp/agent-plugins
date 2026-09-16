@@ -18,7 +18,7 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `email-newsletter-draft-create` | | Entwurf anlegen: Name, Betreff, Pre-Header, optional `splitTest` (Skill `splittest`). Sendet nichts. |
 | `email-newsletter-draft-update` | I | Name, Notiz, Betreff, Pre-Header, Zielgruppe eines Entwurfs. Betreff/Pre-Header machen `contentRevision` ungültig. |
 | `email-newsletter-draft-delete` | D | Entwurf endgültig löschen. |
-| `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur. Prüft gegen die Listen, die es selbst mitliefert. |
+| `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
 | `email-newsletter-test-send` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `email-content-publish`. |
 | `email-newsletter-send` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
 | `email-signature-search` · `email-signature-get` | R | Signaturen, die unter einen Newsletter können, mit Absenderprofil — die Kandidaten für `signatureId`. ⚠ nicht auf Production |
@@ -57,7 +57,8 @@ ist unumkehrbar — in beide Richtungen — und braucht Premium; `conversions`/`
 Conversion-Pixel.
 
 ### `email-newsletter-draft-update`
-**Wofür:** Name (≤ 250), Notiz (≤ 1000, nie an Empfänger), Betreff, Pre-Header, Zielgruppe.
+**Wofür:** Name (≤ 250), Notiz (≤ 1000, nie an Empfänger), Betreff, Pre-Header, Zielgruppe,
+UTM-Kampagnenname (≤ 120).
 **Nicht:** Inhalt, Absender, Termin — und keinen Splittest (dessen Betreff:
 `email-split-test-variant-update`). **Stolperer:** Betreff oder Pre-Header schreiben macht jede
 vorher gelesene `contentRevision` ungültig — der nächste Inhalts-Write wird als „geändert"
@@ -66,16 +67,37 @@ abgewiesen. Die Zielgruppe ersetzt die alte komplett: `mode` ist `all_contacts`,
 oder `all`; zusammen höchstens 50 Tags). Ein leerer `preheader` entfernt ihn, ein weggelassener
 lässt ihn stehen — das gilt für jedes Feld: weggelassen heißt behalten.
 
+`utmCampaignName` ist der Name, den KlickTipp als `utm_campaign` an die getrackten Links hängt. Er
+gehört zur Kampagne, deshalb steht er hier und nicht beim Versand-Werkzeug. Leerer String heißt
+„zurück zu den kontoweiten UTM-Einstellungen"; weggelassen heißt behalten. Über 120 Zeichen wird
+abgelehnt, bevor irgendetwas geschrieben wird.
+
 ### `email-newsletter-draft-delete`
 **Wofür:** einen Entwurf endgültig entfernen. **Nicht:** geplante, laufende, versendete Newsletter.
 **Stolperer:** Kein Papierkorb. Eine Namensähnlichkeit aus der Suche ist keine Zustimmung.
 
 ### `email-newsletter-delivery-configure`
-**Wofür:** Absender, Antwortadresse, Versanddomain, Signatur; sagt, was zum Versand noch fehlt.
+**Wofür:** Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking und die
+KlickTipp-Kopfzeile; sagt, was zum Versand noch fehlt.
 **Nicht:** Termin, Aktivierung. **Stolperer:** Jeder der vier Absender-Werte hat einen `…Mode` —
 `explicit` (dann den Wert daneben), `account_default` oder `signature_dispatch_profile`;
 weggelassen heißt behalten. `signatureId: 0` heißt „KlickTipp wählt per Tagging" und ist kein
 Eintrag der Signaturliste.
+
+Dazu zwei Schalter aus dem Panel „Erweiterte Einstellungen" derselben Seite:
+
+- `linkTracking` — `true` heißt **Tracking an** (KlickTipp schreibt die Links um und zählt Klicks).
+  Achtung beim Lesen fremder Doku: die Spalte dahinter heißt `TurnOffTrackLink` und die App
+  beschriftet die Checkbox „Link-Tracking deaktivieren" — das Werkzeug dreht das um, damit `true`
+  das Naheliegende bedeutet. Ohne eigene Versanddomain lässt sich Tracking **nicht** abschalten;
+  der Aufruf wird abgelehnt, genau wie die App die Checkbox dann ausgraut.
+- `headerLinks` — `true` setzt KlickTipps eigene Zeile über den Inhalt: Browseransicht, Abmelden,
+  Spam melden. Das ist der Weg zu genau diesen drei Links; es gibt dafür keine Bausteine. (Die App
+  nennt den Schalter „Vorschau für GMail aktivieren", gespeichert als `ReportSpamEnabled` — beide
+  Namen beschreiben nur einen Teil davon.)
+
+Der Pre-Header ist **kein** Teil davon: er steht zwar in der Nachbarspalte, wird aber unabhängig
+gerendert und mit `email-newsletter-draft-update` als `preheader` geschrieben.
 
 Das Werkzeug lehnt ab, **bevor** es schreibt, und nennt dabei jedes Mal die Werte, die gingen:
 
@@ -175,7 +197,10 @@ Biete sie beim Anlegen einer Signatur aktiv an, statt zu warten, bis jemand dana
 
 ## Antwortformen
 
-Die Werkzeuge veröffentlichen **kein Output-Schema** mehr — die Form ihrer Antworten steht hier.
+Sechs Werkzeuge veröffentlichen ein **Output-Schema** (JSON Schema), das ein Client gegen
+`structuredContent` prüfen kann: die beiden Leser, Import, Veröffentlichen, Prüfen und
+`email-row-add`. Für alle anderen steht die Form der Antwort hier — und auch für die sechs ist
+diese Seite die ausführlichere Quelle, weil ein Schema Felder benennt, aber nicht erklärt.
 Jede Antwort kommt als `structuredContent` und als dieselbe kompakte JSON im Text. Ein `*`
 markiert Felder, die immer da sind; alles andere ist nur da, wenn es angefordert wurde oder
 zutrifft. Nicht angeforderte Projektionen **fehlen**, statt `null` zu sein.
@@ -189,13 +214,18 @@ seine eigene E-Mail), `createdAt*`, `newsletterStatus*` (`draft` · `scheduled` 
 `label`, `name`, `subject`, `editorUrl`; null ohne Splittest), `editUrl*`, `contentUrl*` (null beim
 Splittest), `scheduleUrl*`, `statisticsUrl*`.
 
-Projektionen: `metadata` (Name, Notiz, Labels, Betreff), `audience`, `deliveryConfiguration`
-(Absender, Antwortadresse, Signatur), und die beiden mit fester Form:
+Projektionen: `metadata` (Name, Notiz, Labels, Betreff, `utmCampaignName`), `audience`,
+`deliveryConfiguration` (Absender, Antwortadresse, Signatur) — die zusätzlich `tracking` mitliefert
+—, und die beiden mit fester Form:
 
 Die `deliveryConfiguration` trägt vier Paare aus Modus und Wert: `senderNameMode`/`senderName`,
 `senderEmailMode`/`senderEmail`, `replyToEmailMode`/`replyToEmail` und
 `senderDomainMode`/`senderDomain`, dazu `signature`. Der Wert ist nur bei Modus `explicit` gesetzt,
 sonst `null` — er wird erst beim Versand aufgelöst.
+
+**`tracking`** kommt zusammen mit `deliveryConfiguration` (dieselbe Seite der App, ein Panel
+tiefer): `linkTracking*` (true = Tracking an) und `headerLinks*` (true = Browseransicht, Abmelden
+und Spam melden stehen über dem Inhalt).
 
 **`deliveryStatus`** — `observedAt*` (wann gelesen; Bounces und Beschwerden kommen nach dem Versand
 noch nach), `name*`, `newsletterStatus*`, `dispatchConfigured*`, `mode*` (`immediate` ·

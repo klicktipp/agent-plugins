@@ -8,6 +8,26 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.16 — 2026-09-16
+
+- **No tool adds a block only the editor can fill.** Countdown, contact card and Wowing video had
+  add tools that could set an empty shell and nothing else — their content is chosen in a dialog
+  of the KlickTipp editor, so what came out looked placed and rendered nothing at send time. Those
+  three add tools are gone; the skills name the editor as the answer, and existing blocks of those
+  kinds stay readable, movable and removable.
+- **A tool called without an account works in the account the app would open** — the user's own
+  where they have KlickTipp access, the one linked account where they have none, and a choice
+  where there are several. The skills describe that, and the refusals a texter or a disconnected
+  account gets, so the agent asks the person instead of guessing.
+- **The six output schemas are published again.** A client that wants to validate an answer needs
+  a machine-readable schema; deriving the shape from Markdown is not that. The references say so
+  rather than claiming there is none, and stay the fuller source — a schema names fields, it does
+  not explain them.
+- `newsletter`: the tracking settings the screen has and the tools did not — the UTM campaign name
+  through draft-update, link tracking and the KlickTipp header line through delivery-configure.
+- `email`: the HTML import answer says what the conversion cost, and since the conversion is Bee's,
+  only the report after it is binding.
+
 ## 0.8.14 — 2026-09-16
 
 - **The test send takes any address now — and writes one.** It runs through the app's own test

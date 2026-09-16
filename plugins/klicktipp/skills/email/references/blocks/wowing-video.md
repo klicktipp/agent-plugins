@@ -6,7 +6,7 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 ## Werkzeuge
 
-| Anlegen | `email-wowing-video-add` |
+| Anlegen | — (nur im KlickTipp-Editor) |
 | --- | --- |
 | Ändern | — (nichts zu ändern) |
 | Entfernen | `email-block-remove` |
@@ -15,7 +15,9 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 ## Worauf zu achten ist
 
-Kommt unkonfiguriert: das Video wird im KlickTipp-Editor gewählt. Nicht zu verwechseln mit dem normalen Video-Baustein, der `src` und `thumbSrc` direkt nimmt.
+Kommt unkonfiguriert: das Video wird im KlickTipp-Editor gewählt. Nicht zu verwechseln mit dem normalen Video-Baustein, der `src` und `thumbSrc` direkt nimmt — den gibt es weiterhin als `email-video-add`.
+
+**Es gibt kein Werkzeug, das diesen Baustein anlegt.** Es gab eines; es konnte nur eine leere Hülle setzen, weil das Video im Dialog des KlickTipp-Editors gewählt wird. Ein so eingefügter Baustein sah platziert aus und zeigte beim Versand nichts — deshalb ist das Werkzeug weg. Wird ein Wowing-Video gewünscht, nenne den Editor. Vorhandene Bausteine dieser Art bleiben lesbar, verschiebbar und entfernbar.
 
 ## Gestaltung
 

@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — E-Mail-Inhalt, Bausteine, Gestaltung, Bilder
 
-Wort für Wort das, was der Server in `tools/list` für die 51 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 48 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -21,7 +21,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read this HTML is based on; a stale one refuses the import
 - `contentHtml`* — string (minLength 1; maxLength 10000000): The complete HTML body; replaces the stored document entirely
 - `replaceExistingContent` — null | boolean: true to replace content the email already has; omit on the first attempt, so the answer lists what would be lost
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-content-publish` · DO
 
@@ -33,7 +33,7 @@ Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by email-get
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the state to publish, from the read or the last write; a stale one refuses
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-spacer-style-write` · I
 
@@ -47,7 +47,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `uuids`* — array<string> (minItems 1; maxItems 60): The uuids of the blocks to write; the same values land on each
 - `height` — null | integer (minimum 0; maximum 400): Height of the gap in pixels
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-divider-style-write` · I
 
@@ -62,7 +62,7 @@ Parameter:
 - `uuids`* — array<string> (minItems 1; maxItems 60): The uuids of the blocks to write; the same values land on each
 - `line` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): The line as "1px solid #000000"
 - `width` — null | integer (minimum 10; maximum 100): How far the line reaches across the row, as a whole percentage
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-button-style-write` · I
 
@@ -86,7 +86,7 @@ Parameter:
 - `paddingRight` — null | integer (minimum 0; maximum 400): Space right of the label
 - `paddingBottom` — null | integer (minimum 0; maximum 400): Space below the label
 - `paddingLeft` — null | integer (minimum 0; maximum 400): Space left of the label
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-get` · RI
 
@@ -99,7 +99,7 @@ Parameter:
 - `emailId` — null | integer (minimum 1): ID of the email; omit when the editor URL is given
 - `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL of the email, as a previous read returned it; omit when the email ID is given
 - `include` — array<string> (maxItems 4): Projections to add: "content" (the editable document), "contentOutline" (uuid, kind and value of every writable field -- for a content change), "styleOutline" (what the style tools set -- for a style change), "publishedContent" (the HTML a dispatch would send); omit for identity only
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-preview` · ROI
 
@@ -110,7 +110,7 @@ Renders the current drag-and-drop email draft through Bee and displays its HTML 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a previous read returned it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-content-check` · RI
 
@@ -122,7 +122,7 @@ Parameter:
 
 - `emailId` — null | integer (minimum 1): ID of the email; omit when the editor URL is given
 - `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL of the email, as a previous read returned it; omit when the email ID is given
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-block-move`
 
@@ -137,7 +137,7 @@ Parameter:
 - `uuid`* — string: The uuid of the block to move
 - `position` — null | integer (minimum 0): Where it goes, counted from zero; omit to append
 - `toColumnUuid` — null | string: The uuid of the column to move it into; omit to move inside its own column
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-block-remove` · D
 
@@ -150,7 +150,7 @@ Parameter:
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `uuid`* — string: The uuid of the block to remove
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-block-style-write` · I
 
@@ -170,7 +170,7 @@ Parameter:
 - `textAlign` — null | string (einer von `left`, `center`, `right`, `justify`): How its content sits: "left", "center", "right" or "justify"
 - `hideOnMobile` — null | boolean: Whether the block is hidden on a phone
 - `hideOnDesktop` — null | boolean: Whether the block is hidden on a desktop
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-button-add`
 
@@ -186,7 +186,7 @@ Parameter:
 - `label` — null | string (maxLength 2000): The visible text of the button, as markup
 - `href` — null | string (maxLength 2000): Where the button leads
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-button-write` · I
 
@@ -201,7 +201,7 @@ Parameter:
 - `uuid`* — string: The uuid of the button block
 - `label` — null | string: The visible text of the button, as markup
 - `href` — null | string: The link target of the button
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-column-style-write` · I
 
@@ -223,35 +223,7 @@ Parameter:
 - `borderRight` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border right of the column, same shape
 - `borderBottom` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border below the column, same shape
 - `borderLeft` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border left of the column, same shape
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
-
-## `email-contact-card-add`
-
-**Add email contact card**
-
-Puts a contact card add-on into the column whose uuid it names and answers with the uuid of the new block. It arrives UNCONFIGURED and there is nothing here to configure it with: its dialog is in the KlickTipp editor. Say that instead of reporting a finished block. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
-
-Parameter:
-
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
-- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `columnUuid`* — string: The uuid of the column the block goes into
-- `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
-
-## `email-countdown-add`
-
-**Add email countdown**
-
-Puts a countdown add-on into the column whose uuid it names and answers with the uuid of the new block. It arrives UNCONFIGURED and there is nothing here to configure it with: its dialog is in the KlickTipp editor. Say that instead of reporting a finished block. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
-
-Parameter:
-
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
-- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `columnUuid`* — string: The uuid of the column the block goes into
-- `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-divider-add`
 
@@ -265,7 +237,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-heading-add`
 
@@ -281,7 +253,7 @@ Parameter:
 - `text` — null | string (maxLength 100000): The words of the heading, as markup
 - `level` — null | string (einer von `h1`, `h2`, `h3`): The heading level: "h1", "h2" or "h3"; omit for h1
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-html-add`
 
@@ -296,7 +268,7 @@ Parameter:
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `html` — null | string (maxLength 100000): The markup of the block
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-icons-add`
 
@@ -314,7 +286,7 @@ Parameter:
   - `href` — string: Where it leads.
   - `text` — string: The words beside the icon.
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-icons-write` · I
 
@@ -331,7 +303,7 @@ Parameter:
   - `src`* — string: URL of the picture, from email-image-search or email-image-upload.
   - `href` — string: Where it leads.
   - `text` — string: The words beside the icon.
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-add`
 
@@ -348,7 +320,7 @@ Parameter:
 - `alt` — null | string (maxLength 1000): Alternative text of the image
 - `href` — null | string (maxLength 2000): Link target of the image
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-write` · I
 
@@ -365,7 +337,7 @@ Parameter:
   - `src` — string: URL of the image, from email-image-search or email-image-upload.
   - `alt` — string: Alternative text of the image.
   - `href` — string: Link target; an empty string removes the link.
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-list-add`
 
@@ -380,7 +352,7 @@ Parameter:
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `html` — null | string (maxLength 100000): The list, as complete <ul> or <ol> markup
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-menu-add`
 
@@ -397,7 +369,7 @@ Parameter:
   - `text`* — string: The words of the entry.
   - `href` — string: Where it leads.
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-menu-write` · I
 
@@ -413,7 +385,7 @@ Parameter:
 - `items`* — array<object> (minItems 1; maxItems 30): The menu entries, left to right
   - `text`* — string: The words of the entry.
   - `href` — string: Where it leads.
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-page-style-write` · I
 
@@ -431,7 +403,7 @@ Parameter:
 - `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default colour of every link of the email
 - `contentWidth` — null | integer (minimum 320; maximum 1440): Width of the message in pixels
 - `fontFamily` — null | string (einer von `Arial`, `Courier New`, `Georgia`, `Helvetica`, `Lucida Sans`, `Tahoma`, `Trebuchet MS`, `Verdana`): Default font of the whole email, by name; see the schema for the names
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-paragraph-add`
 
@@ -446,7 +418,7 @@ Parameter:
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `html` — null | string (maxLength 100000): The words of the paragraph, as markup
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-personalized-email-add`
 
@@ -462,7 +434,7 @@ Parameter:
 - `prompt`* — string (minLength 1; maxLength 10000): The instruction a dispatch turns into a text per recipient
 - `name` — null | string (maxLength 200): A name for the block, for the editor
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-personalized-email-write` · I
 
@@ -477,7 +449,7 @@ Parameter:
 - `uuid`* — string: The uuid of the personalized email block
 - `prompt` — null | string (maxLength 10000): The instruction a dispatch generates the text from, per recipient
 - `name` — null | string (maxLength 250): The name of the block as a person sees it in the KlickTipp editor
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-row-add`
 
@@ -491,7 +463,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columns` — null | integer (minimum 1; maximum 6): How many equally wide columns the row gets; 1, 2, 3, 4 or 6, one by default
 - `position` — null | integer (minimum 0): Where the row goes among the rows, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-row-style-write` · I
 
@@ -520,7 +492,7 @@ Parameter:
 - `borderRight` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border right of the row, same shape
 - `borderBottom` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border below the row, same shape
 - `borderLeft` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border left of the row, same shape
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-social-add`
 
@@ -540,7 +512,7 @@ Parameter:
   - `alt` — string: Alternative text: what a reader gets instead of the picture when it does not load, and what a screen reader says.
   - `title` — string: Tooltip of the icon, shown on hover. Not a replacement for alt: a reader who never sees the picture never sees this either.
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-social-icon-search` · RI
 
@@ -551,7 +523,7 @@ Lists the ICON PICTURES this email already uses, with the network, the alternati
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-social-write` · I
 
@@ -570,7 +542,7 @@ Parameter:
   - `name` — string: The network, e.g. "facebook".
   - `alt` — string: Alternative text: what a reader gets instead of the picture when it does not load, and what a screen reader says.
   - `title` — string: Tooltip of the icon, shown on hover. Not a replacement for alt: a reader who never sees the picture never sees this either.
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-spacer-add`
 
@@ -584,7 +556,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-table-add`
 
@@ -599,7 +571,7 @@ Parameter:
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `rows`* — array<array> (minItems 1; maxItems 60): The rows, each a list of cells as markup
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-table-write` · I
 
@@ -613,7 +585,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `uuid`* — string: The uuid of the table block
 - `rows`* — array<array> (minItems 1; maxItems 60): The rows, each a list of cells as markup
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-text-add`
 
@@ -628,7 +600,7 @@ Parameter:
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `html` — null | string (maxLength 100000): The words of the block, as markup
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-text-write` · I
 
@@ -644,7 +616,7 @@ Parameter:
   - `uuid`* — string: The uuid of the text block to write.
   - `html`* — string: Its complete markup, the read markup with the words replaced.
   - `level` — string (einer von `h1`, `h2`, `h3`): The heading level, for a heading block only. Refused on any other kind, which has none.
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-video-add`
 
@@ -660,7 +632,7 @@ Parameter:
 - `src` — null | string (maxLength 2000): URL of the video, which is where the click leads
 - `thumbSrc` — null | string (maxLength 2000): URL of the preview image, which is what the recipient sees
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-video-write` · I
 
@@ -675,21 +647,7 @@ Parameter:
 - `uuid`* — string: The uuid of the video block
 - `src` — null | string (maxLength 2000): The video URL, for example a YouTube or Vimeo page
 - `thumbSrc` — null | string (maxLength 2000): The preview image the block shows instead of the video
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
-
-## `email-wowing-video-add`
-
-**Add email Wowing video**
-
-Puts a Wowing video add-on into the column whose uuid it names and answers with the uuid of the new block. It arrives UNCONFIGURED and there is nothing here to configure it with: its dialog is in the KlickTipp editor. Say that instead of reporting a finished block. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
-
-Parameter:
-
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
-- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `columnUuid`* — string: The uuid of the column the block goes into
-- `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-search` · RI
 
@@ -701,7 +659,7 @@ Parameter:
 
 - `limit` — null | integer (minimum 1; maximum 100): Images per page, 1 to 100; default 20
 - `cursor` — null | string (maxLength 1000): nextCursor of the previous page; omit for the first page
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-stock-search` · ROI
 
@@ -715,7 +673,7 @@ Parameter:
 - `limit` — null | integer (minimum 1; maximum 12): How many candidates, 1 to 12; default 3
 - `orientation` — null | string (einer von `landscape`, `portrait`, `square`): Only photos of this shape: landscape, portrait or square; omit for any shape
 - `minWidth` — null | integer (minimum 1; maximum 10000): Only photos at least this wide, in pixels; 1200 for a full-width image
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-folder-search` · RI
 
@@ -725,7 +683,7 @@ Lists the folders of a KlickTipp account's image library -- the folders the emai
 
 Parameter:
 
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-folder-create`
 
@@ -736,7 +694,7 @@ Creates one folder in a KlickTipp account's image library and returns the folder
 Parameter:
 
 - `path`* — string (minLength 1; maxLength 250): Name of the new folder, or a path for one inside another ("Kampagnen/Herbst"); letters, digits, dots, dashes and underscores survive, everything else becomes a dash
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-folder-delete` · DI
 
@@ -747,7 +705,7 @@ Removes one EMPTY folder from a KlickTipp account's image library and returns th
 Parameter:
 
 - `path`* — string (minLength 1; maxLength 250): Path of the folder to remove, as email-image-folder-search lists it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-upload` · I
 
@@ -757,7 +715,7 @@ Opens the upload form for a KlickTipp account's image library -- the files the e
 
 Parameter:
 
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-upload-file`
 
@@ -770,7 +728,7 @@ Parameter:
 - `fileName`* — string (minLength 1; maxLength 250): Name of the picked file, as the browser reports it; sanitised, extension set from the bytes, a taken name is numbered, never overwritten -- see storedAs
 - `contentBase64`* — string (minLength 1; maxLength 6990508): The file's bytes as plain base64, no data: prefix
 - `folder` — null | string (maxLength 250): Folder of the library to store it in, as email-image-folder-search lists it; omit for the library's root
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-image-upload-from-url` · O
 
@@ -783,4 +741,4 @@ Parameter:
 - `fileName`* — string (minLength 1; maxLength 250): Name for the file, extension optional; sanitised, extension set from the bytes, a taken name is numbered, never overwritten -- see storedAs
 - `sourceUrl`* — string (minLength 12; maxLength 2000): Public http(s) URL the server fetches the image from; reachable from the internet, no login, no private host
 - `folder` — null | string (maxLength 250): Folder of the library to store it in, as email-image-folder-search lists it; omit for the library's root
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

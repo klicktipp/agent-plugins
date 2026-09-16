@@ -6,7 +6,7 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 ## Werkzeuge
 
-| Anlegen | `email-countdown-add` |
+| Anlegen | — (nur im KlickTipp-Editor) |
 | --- | --- |
 | Ändern | — (nichts zu ändern) |
 | Entfernen | `email-block-remove` |
@@ -17,7 +17,7 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 Kommt unkonfiguriert: Zieldatum und Aussehen werden im KlickTipp-Editor gesetzt. Melde ihn nicht als fertigen Countdown — ohne Ziel zeigt er nichts Sinnvolles.
 
-**Auf Production nicht freigeschaltet.** Dort antwortet der Aufruf mit „unknown tool". Das ist kein Defekt: ein Baustein, den nur der Editor fertig machen kann, geht erst heraus, wenn es ein Werkzeug gibt, das ihn konfiguriert. Nenne dem Nutzer den Editor.
+**Es gibt kein Werkzeug, das diesen Baustein anlegt.** Es gab eines; es konnte nur eine leere Hülle setzen, weil das Zieldatum im Dialog des KlickTipp-Editors gewählt wird. Ein so eingefügter Baustein sah platziert aus und zeigte beim Versand nichts — deshalb ist das Werkzeug weg. Wird ein Countdown gewünscht, nenne den Editor. Vorhandene Bausteine dieser Art bleiben lesbar, verschiebbar und entfernbar.
 
 ## Gestaltung
 

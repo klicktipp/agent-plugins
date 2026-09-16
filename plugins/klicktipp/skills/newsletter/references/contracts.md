@@ -127,7 +127,7 @@ Parameter:
 - `sendDateBefore` — null | string (Muster `^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(:\d{2})?([Zz]|[+-]\d{2}:?\d{2})$`): Only newsletters whose dispatch moment lies before this one, exclusive, same format
 - `limit` — null | integer (minimum 1; maximum 100): How many newsletters to return at most, 1 to 100, 25 by default
 - `cursor` — null | string (minLength 8; maxLength 200): nextCursor of the previous page, with the same filters; omit for the first page
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-get` · RI
 
@@ -140,7 +140,7 @@ Parameter:
 - `newsletterId`* — integer (minimum 1): ID of the newsletter, as shown in the KlickTipp app URL
 - `include` — array<string> (maxItems 6): Projections to add: "metadata", "audience", "deliveryConfiguration", "deliveryStatus", "audienceReach", "conversionPixel"; omit for identity and lifecycle only. The body is email-get
 - `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL naming one arm of a split test, from splitTestVariants; omit for a newsletter with a single email
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-draft-create`
 
@@ -158,13 +158,13 @@ Parameter:
   - `testSizePercent`* — integer (minimum 2; maximum 98)
   - `testDurationHours`* — integer (minimum 1; maximum 27777)
   - `winnerBy`* — string (einer von `opens`, `clicks`, `conversions`, `revenue`)
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-draft-update` · I
 
 **Update newsletter draft**
 
-Writes name, internal note, subject, preheader and audience of an email newsletter draft. Nothing is sent and no send date is set. Only drafts can be written; omitted arguments keep their value, a call without any change is refused. Writing subject or preheader invalidates every contentRevision read before, so read the content again before changing it. The audience replaces the previous one entirely and is given with an explicit mode -- "all_contacts" addresses every active contact of the account. The body is changed by the block tools, delivery configuration and scheduling by their own tools. Refuses a split test: its subject lives on the arms, see email-split-test-variant-update.
+Writes name, internal note, subject, preheader, audience and UTM campaign name of an email newsletter draft. Nothing is sent and no send date is set. Only drafts can be written; omitted arguments keep their value, a call without any change is refused. Writing subject or preheader invalidates every contentRevision read before, so read the content again before changing it. The audience replaces the previous one entirely and is given with an explicit mode -- "all_contacts" addresses every active contact of the account. The body is changed by the block tools, delivery configuration and scheduling by their own tools. Refuses a split test: its subject lives on the arms, see email-split-test-variant-update.
 
 Parameter:
 
@@ -180,7 +180,8 @@ Parameter:
   - `excludeTagIds` — array<integer> (maxItems 50): Tags that keep a contact out, for "tag_conditions"; include and exclude together at most 50.
   - `excludeTagsMatch` — string (einer von `any`, `all`): Whether "any" excluded tag already excludes or only "all" together do.
 - `preheader` — null | string (maxLength 120): New inbox preview line, at most 120 characters, without HTML; empty string removes it, omit keeps it. Invalidates every contentRevision read before
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `utmCampaignName` — null | string (maxLength 120): Campaign name appended to tracked links as utm_campaign, at most 120 characters, without HTML; empty string restores the account default, omit keeps it
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-draft-delete` · D
 
@@ -191,13 +192,13 @@ Deletes an email newsletter draft in KlickTipp, along with its email, its audien
 Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to delete
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-delivery-configure` · I
 
 **Configure newsletter delivery**
 
-Writes the delivery configuration of an email newsletter in KlickTipp: sender name, sender address, reply address and signature. Reports back what is still missing before the newsletter could be sent, together with the sender addresses and signatures the account may use. This tool neither schedules nor activates anything and reaches no recipient -- activation is a separate tool. Arguments that are left out keep their current value. Only a newsletter that was never scheduled can be configured: any other lifecycle state is refused before anything is written.
+Writes the delivery configuration of an email newsletter in KlickTipp: sender name, sender address, reply address, sending domain and signature. Reports back what is still missing before the newsletter could be sent, together with the sender addresses, sending domains and signatures the account may use -- and refuses anything outside those lists before writing, naming what would be accepted. An explicit sender address and the sending domain have to belong together: changing the address alone is refused when the stored domain is not the one bound to it. This tool neither schedules nor activates anything and reaches no recipient -- activation is a separate tool. Arguments that are left out keep their current value. Only a newsletter that was never scheduled can be configured: any other lifecycle state is refused before anything is written.
 
 Parameter:
 
@@ -208,20 +209,24 @@ Parameter:
 - `senderEmail` — null | string (maxLength 250): Sender address, one of the account's sender addresses; for mode "explicit"; omit to keep
 - `replyToEmailMode` — null | string (einer von `explicit`, `account_default`, `signature_dispatch_profile`): "explicit" (pass replyToEmail), "account_default" or "signature_dispatch_profile"; omit to keep
 - `replyToEmail` — null | string (maxLength 250): Address answers go to, for mode "explicit" only; omit to keep the current one
+- `senderDomainMode` — null | string (einer von `explicit`, `account_default`, `signature_dispatch_profile`): "explicit" (pass senderDomain), "account_default" or "signature_dispatch_profile"; omit to keep
+- `senderDomain` — null | string (maxLength 250): Domain the newsletter is sent through, one of availableSenderDomains; for mode "explicit"; omit to keep
 - `signatureId` — null | integer (minimum 0): ID of the signature under the newsletter; 0 lets KlickTipp pick one by tagging; omit to keep
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `linkTracking` — null | boolean: Whether KlickTipp rewrites the links so clicks are counted; true is the normal case, omit to keep
+- `headerLinks` — null | boolean: Whether KlickTipp puts its own line above the body with browser view, unsubscribe and report-spam links; omit to keep
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-newsletter-test-send` · O
+## `email-newsletter-test-send` · DO
 
 **Send newsletter test**
 
-Sends one email newsletter as a test to a single address, so its content can be checked before it goes out. The address has to be a test context of the account: its own address or one of its verified sender addresses -- anything else is refused. The audience of the newsletter is never used as a recipient by this tool, and the delivery state of the newsletter does not change. The send is isolated: no contact is created or changed, no tag is set, and no automation is started.
+Sends one email newsletter as a test to a single address, so its content can be checked before it goes out -- the same send the test dialog of KlickTipp performs, with the same rules. Any address may receive one, and an address that is not a contact of the account yet BECOMES ONE and is tagged as a test recipient, which can start automations; name the address and say what it will become before calling this. A test carries the PUBLISHED content of the email: a body that was never published is refused -- publish it with email-content-publish -- and one changed after publication is sent with a warning that the test shows the older content. The audience of the newsletter is never a recipient, and its delivery state does not change.
 
 Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send a test of
-- `recipientEmail`* — string (minLength 3; maxLength 250): Address to send the test to: the account's address or one of its verified sender addresses
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `recipientEmail`* — string (minLength 3; maxLength 250): Address to send the test to; any address, and one that is not a contact yet becomes one
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-send` · DO
 
@@ -234,4 +239,4 @@ Parameter:
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send
 - `mode`* — string (einer von `immediate`, `scheduled`): "immediate" or "scheduled"; no default
 - `scheduledAt` — null | string (Muster `^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(:\d{2})?([Zz]|[+-]\d{2}:?\d{2})$`): Moment to send at, ISO 8601 with UTC offset; required for "scheduled", forbidden for "immediate"
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

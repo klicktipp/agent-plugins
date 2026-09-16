@@ -18,7 +18,7 @@ Searches the active KlickTipp opt-in processes (also called subscription process
 Parameter:
 
 - `query` — null | string (maxLength 250): Case-insensitive name fragment to search for; omit to return every active process
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-opt-in-process` · RI
 
@@ -29,7 +29,7 @@ Returns the configuration of a single KlickTipp opt-in process (also called subs
 Parameter:
 
 - `optInProcessId`* — integer (minimum 1): ID of the opt-in process, as shown in the KlickTipp app URL
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `update-opt-in-process` · I
 
@@ -61,7 +61,7 @@ Parameter:
   - `subscriberKeyParameterName` — string (maxLength 100)
   - `referralLinkParameterName` — string (maxLength 100)
   - `referralLinkId` — integer (minimum 0)
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `delete-opt-in-process` · D
 
@@ -72,7 +72,7 @@ Deletes one KlickTipp opt-in process (also called subscription process or subscr
 Parameter:
 
 - `optInProcessId`* — integer (minimum 1): ID of the opt-in process to delete
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-opt-in-confirmation-email` · RI
 
@@ -83,7 +83,7 @@ Reads the confirmation email a double opt-in process sends: its subject, the sen
 Parameter:
 
 - `optInProcessId`* — integer (minimum 1): ID of the opt-in process whose confirmation email is read
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `update-opt-in-confirmation-email` · I
 
@@ -100,7 +100,7 @@ Parameter:
 - `replyToEmail` — null | string (maxLength 250): Address a reply goes to; empty string removes it
 - `ccEmail` — null | string (maxLength 250): Address that receives a copy; empty string removes it
 - `bccEmail` — null | string (maxLength 250): Address that receives a blind copy; empty string removes it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `subscribe` · DO
 
@@ -116,7 +116,7 @@ Parameter:
 - `phoneNumber` — null | string (maxLength 50): SMS channel to subscribe in E.164 format; mutually exclusive with email
 - `referenceId` — integer (minimum 0; Default `0`): Subscription reference context to create or reuse; a non-zero ID must exist in the account
 - `tagId` — null | integer (minimum 1): Tag to additionally assign to the contact after a successful subscription
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `unsubscribe` · DOI
 
@@ -129,7 +129,7 @@ Parameter:
 - `approval`* — string (einer von `unsubscribe-contact`): Exactly "unsubscribe-contact": acknowledges a changed real recipient and automations
 - `email` — null | string (maxLength 250): Email channel to unsubscribe; mutually exclusive with phoneNumber
 - `phoneNumber` — null | string (maxLength 50): SMS channel to unsubscribe in E.164 format; mutually exclusive with email
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `search-contacts` · RI
 
@@ -144,34 +144,34 @@ Parameter:
 - `manualTagId` — null | integer (minimum 1): ID of an existing manual tag the returned contacts must have
 - `cursor` — null | string (maxLength 500): Opaque nextCursor value of the previous result page; omit for the first page
 - `pageSize` — integer (minimum 1; maximum 100; Default `25`): Maximum contacts on the page, from 1 through 100
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-contact` · RI
 
 **Get contact**
 
-Returns the permitted detail view of one contact in a KlickTipp account: email address, email subscription status, contact fields for the requested reference, writable manual tag IDs and the edit link. It does not expose complete channel or subscription-reference records.
+Returns the permitted detail view of one contact in a KlickTipp account: email address, email subscription status, contact fields for the requested reference, writable manual tag IDs and the edit link. Every field carries its data type, and the three that are stored as numbers are answered exactly as KlickTipp shows them on screen: a date as 16.09.2026, a moment as 16.09.2026 14:30, a time of day as 14:30, in the time zone the account is configured for. It does not expose complete channel or subscription-reference records.
 
 Parameter:
 
 - `contactId`* — integer (minimum 1): Numeric contact ID returned by search-contacts
 - `referenceId` — integer (minimum 0; Default `0`): Reference whose multi-value fields and manual tags to read; 0 for contact-wide values
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `enrich-contact` · DO
 
 **Enrich contact**
 
-Updates explicitly listed contact-field values for one contact. It cannot change email or SMS addresses, opt-in state, subscriptions, lists or other channel data. Every custom-field ID and the contact itself must belong to the selected account; global contact fields remain available.
+Updates explicitly listed contact-field values for one contact. It cannot change email or SMS addresses, opt-in state, subscriptions, lists or other channel data. Every custom-field ID and the contact itself must belong to the selected account; global contact fields remain available. Date, time and datetime fields take the forms get-contact answers with -- 16.09.2026, 16.09.2026 14:30, 14:30 -- and ISO 8601 as well, for a caller that computed a date rather than read one. Anything else is refused rather than stored as a date it was not meant to be, and the refusal names the form that works. An empty value clears the field.
 
 Parameter:
 
 - `contactId`* — integer (minimum 1): Numeric contact ID returned by search-contacts
-- `fields`* — array<object> (minItems 1; maxItems 50): Contact field updates; fieldId must be a global field key or an account-owned numeric custom-field ID, and referenceId defaults to 0
+- `fields`* — array<object> (minItems 1; maxItems 50): Contact field updates; fieldId must be a global field key or an account-owned numeric custom-field ID, a date, time or datetime value takes the form get-contact answers with, and referenceId defaults to 0
   - `fieldId`* — string (minLength 1; maxLength 15)
   - `value`* — string (maxLength 65535)
   - `referenceId` — integer (minimum 0; Default `0`)
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `assign-manual-tag` · O
 
@@ -185,7 +185,7 @@ Parameter:
 - `manualTagId`* — integer (minimum 1): Existing writable manual tag ID; unknown tags are rejected and never created
 - `approval`* — string (einer von `I_ACCEPT_AUTOMATION_EFFECTS`): Exactly I_ACCEPT_AUTOMATION_EFFECTS: tagging may start campaigns and automations
 - `referenceId` — integer (minimum 0; Default `0`): Reference for a multi-value manual tag; use 0 for contact-wide tags
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `remove-manual-tag` · DOI
 
@@ -199,7 +199,7 @@ Parameter:
 - `manualTagId`* — integer (minimum 1): Existing writable manual tag ID to remove
 - `approval`* — string (einer von `I_ACCEPT_AUTOMATION_EFFECTS`): Exactly I_ACCEPT_AUTOMATION_EFFECTS: removal may alter campaigns and automations
 - `referenceId` — integer (minimum 0; Default `0`): Reference for a multi-value manual tag; use 0 for contact-wide tags
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-subscription-redirect-url` · RI
 
@@ -211,7 +211,7 @@ Parameter:
 
 - `email`* — string: Email address of the subscriber
 - `optInProcessId` — null | integer (minimum 1): Opt-in process to resolve for; omit for the one the subscriber signed up through
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `search-custom-fields` · RI
 
@@ -225,7 +225,7 @@ Parameter:
 - `types` — array | null: Only fields of these data types, for example ["field-date", "field-datetime"]; omit for every type
 - `onlyWritable` — null | boolean: Only the account's own fields, the ones the write tools may touch; omit to include the global fields
 - `limit` — null | integer (minimum 1; maximum 200): How many fields to return at most, 1 to 200, 50 by default
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-custom-field` · RI
 
@@ -236,7 +236,7 @@ Returns one custom field definition of a KlickTipp account: its name and data ty
 Parameter:
 
 - `customFieldId`* — string (minLength 1; maxLength 100; Muster `^[A-Za-z0-9_]+$`): Field ID: a number for the account's own field, a name such as "FirstName" for a global one
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `create-custom-field`
 
@@ -249,7 +249,7 @@ Parameter:
 - `name`* — string (minLength 1; maxLength 250): Name of the field, which has to be unique within the account
 - `type`* — string (einer von `field-single`, `field-paragraph`, `field-email`, `field-number`, `field-url`, `field-date`, `field-time`, `field-datetime`, `field-html`, `field-decimal`): Data type of the field, which decides what can be stored in it and cannot be changed afterwards
 - `description` — null | string (maxLength 2000): What the field holds, so a person or a model reading it later knows what to write into it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `update-custom-field` · I
 
@@ -264,7 +264,7 @@ Parameter:
 - `description` — null | string (maxLength 2000): New description of what the field holds; omit to keep the current one
 - `category` — null | string (maxLength 250): Group in the app; empty string sorts into none; omit to keep
 - `metaLabels` — array | null (maxItems 50): New set of labels of the field, which replaces the current one; omit to keep the current labels
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `delete-custom-field` · DI
 
@@ -275,7 +275,7 @@ Deletes a custom field definition in KlickTipp and with it every value the conta
 Parameter:
 
 - `customFieldId`* — string (minLength 1; maxLength 100; Muster `^[A-Za-z0-9_]+$`): ID of the field to delete
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `search-tags` · RI
 
@@ -291,7 +291,7 @@ Parameter:
 - `multiValue` — null | boolean: true: tags a contact can carry once per subscription; false: once overall; omit for both
 - `systemRole` — null | string (einer von `test-contact`): Only tags with this system role; "test-contact" marks contacts that receive test emails
 - `limit` — null | integer (minimum 1; maximum 200): How many tags to return at most, 1 to 200, 50 by default
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-tag` · RI
 
@@ -302,7 +302,7 @@ Returns one tag of a KlickTipp account with the context needed to tell what it m
 Parameter:
 
 - `tagId`* — integer (minimum 1): ID of the tag, as shown in the KlickTipp app URL
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `create-manual-tag`
 
@@ -314,7 +314,7 @@ Parameter:
 
 - `name`* — string (minLength 1; maxLength 250): Name of the tag, which has to be unique within the account and cannot be a number alone
 - `description` — null | string (maxLength 2000): What the tag stands for, so a person or a model reading it later knows when to assign it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `update-manual-tag` · I
 
@@ -327,7 +327,7 @@ Parameter:
 - `tagId`* — integer (minimum 1): ID of the manual tag to change
 - `name` — null | string (maxLength 250): New name of the tag, which has to stay unique within the account; omit to keep the current one
 - `description` — null | string (maxLength 2000): New description of what the tag stands for; omit to keep the current one
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `delete-manual-tag` · DOI
 
@@ -338,4 +338,4 @@ Deletes a manual tag in KlickTipp and takes it off every contact that carries it
 Parameter:
 
 - `tagId`* — integer (minimum 1): ID of the manual tag to delete
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

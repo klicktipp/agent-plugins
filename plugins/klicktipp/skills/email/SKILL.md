@@ -90,7 +90,7 @@ Konvertierung stattfindet.
 | `email-icons-write` | die Einträge eines Icon-Bausteins — dito |
 | `email-table-write` | die Zeilen einer Tabelle, jede Zelle Markup |
 | `email-row-add` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
-| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-countdown-add`¹, `email-contact-card-add`¹, `email-wowing-video-add`, `email-ai-text-add`, `email-personalized-email-add`² |
+| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-ai-text-add`, `email-personalized-email-add`² |
 | `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
 | `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
 | `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
@@ -117,15 +117,16 @@ der Antwort: ein Video ohne `thumbSrc`, eine Liste ohne `<ul>`/`<ol>`, ein unkon
 eine personalisierte E-Mail. Melde nie „hinzugefügt", wenn die Antwort dir sagt, dass der Baustein
 leer bleibt — sag, was noch fehlt und wo es gesetzt wird.
 
-**Vier Bausteine kommen leer und bleiben es: Countdown, Kontaktkarte, Wowing-Video, KI-Text.**
-Sie sind Add-ons; ihr Inhalt entsteht in einem Dialog im KlickTipp-Editor, und kein Werkzeug hier
-erreicht ihn. Ein eingefügter Countdown zeigt nichts, bis jemand im Editor ein Ziel setzt.
+**Countdown, Kontaktkarte und Wowing-Video kannst du nicht einfügen.** Ihr Inhalt entsteht in
+einem Dialog des KlickTipp-Editors, und kein Werkzeug hier erreicht ihn. Es gab einmal Add-Werkzeuge
+dafür; sie setzten eine leere Hülle, die beim Versand nichts anzeigte, und sind genau deshalb weg.
+Wird einer dieser Bausteine gewünscht, ist die Antwort der Editor — nenne ihn, statt etwas
+Ähnliches aus Text und Bild nachzubauen und es als Countdown auszugeben. Vorhandene Bausteine
+dieser Art bleiben lesbar, verschiebbar und entfernbar.
 
-Deshalb: **füge sie nur ein, wenn der Nutzer sie ausdrücklich will** — nicht, weil eine E-Mail
-„üblicherweise" einen Countdown hat. Und sag den Satz *vorher*, nicht hinterher: „Ich kann den
-Baustein setzen, einrichten musst du ihn im Editor — willst du das?" Ein leerer Countdown in einem
-fertig gemeldeten Newsletter ist schlechter als gar keiner, weil er wie ein Fehler aussieht und
-beim Versand einfach nichts anzeigt.
+**Der KI-Text-Baustein** kommt dagegen weiterhin leer und bleibt es, bis jemand ihn im Editor
+einrichtet. Füge ihn nur ein, wenn der Nutzer ihn ausdrücklich will, und sag den Satz *vorher*:
+„Ich kann den Baustein setzen, einrichten musst du ihn im Editor — willst du das?"
 
 Der KI-Text-Baustein hat zusätzlich ein Tor: ohne die Freischaltung des Kontos wird sein Add mit
 `kind_not_available` abgewiesen und es ändert sich nichts. Das ist keine Störung, sondern eine
@@ -347,8 +348,9 @@ Zwei Dinge dazu, die du beim Weitergeben nicht verdrehen darfst:
   wenn er es kann.
 - **Ein unkonfiguriertes Add-on kannst du nicht reparieren.** Ein Countdown, eine Kontaktkarte
   oder ein Wowing-Video zeigt, was im KlickTipp-Editor *ausgewählt* wurde — das ist kein
-  schreibbares Feld, und kein Werkzeug hier setzt es. Bleiben also zwei Wege, und beide gehören
-  dem Nutzer: im Editor konfigurieren, oder den Block mit `email-block-remove` entfernen. Sag das
+  schreibbares Feld, und kein Werkzeug hier setzt es (deshalb gibt es für die drei auch kein
+  Add-Werkzeug mehr). Bleiben also zwei Wege, und beide gehören dem Nutzer: im Editor
+  konfigurieren, oder den Block mit `email-block-remove` entfernen. Sag das
   so, statt einen Weg daran vorbei zu suchen. Der Befund tritt auch dann auf, wenn im Block
   Platzhaltertext steht — ein fertig aussehender Block kann hohl sein.
 - **Ein Befund ist eine Entscheidung, keine Aufgabe.** Ein zu blasser Text oder ein fehlender
@@ -385,6 +387,22 @@ gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, 
 einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merge-Inhalt und
 Add-ons (Countdown, Kontaktkarte, Wowing-Video, KI-Text, Signatur) als ihr gerendertes Ergebnis;
 Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
+
+**Nach dem Import sagen die `warnings` des Ergebnisses, was diese eine Konvertierung wirklich
+gekostet hat** — nicht als Vorhersage, sondern gezählt auf beiden Seiten. Immer dabei: das Layout
+ist neu gebaut, Zeilen, Spalten und Abstände sind danach die des Editors, und es stehen
+Abstandhalter darin, die niemand geschickt hat. Dazu je eine Zeile mit Zahlen für Trennlinien,
+Listen, Tabellen, Bilder und Videos, die nicht als eigener Baustein zurückkamen, samt dem Werkzeug
+zum Nachziehen. Eine Tabelle, deren Zellen als `Zelle AZelle B` zusammenlaufen, steht genau dort.
+Gib diese Zeilen weiter; ein „Import hat geklappt" ohne sie ist die Meldung, die den Nutzer den
+Verlust erst im Editor entdecken lässt.
+
+**Sag vorher nicht zu, was aus einem HTML wird.** Die Konvertierung macht ein externer Dienst; was
+aus einer Tabelle oder einer Trennlinie wird, entscheidet nicht KlickTipp, und es kann sich ändern,
+ohne dass hier etwas neu ausgeliefert wird. Die Aufzählung weiter oben ist deshalb eine Erwartung,
+kein Vertrag — verbindlich ist immer erst der Bericht **nach** dem Import. Formuliere entsprechend:
+„so etwas überlebt die Konvertierung erfahrungsgemäß nicht" vor dem Aufruf, und die gemessenen
+Zeilen danach.
 
 Der Import lässt **Name, Betreff und Pre-Header unberührt** — er schreibt nur das Dokument. Ein
 `<title>` im importierten HTML landet nirgends, eine versteckte Preheader-Zeile wirft der Konverter

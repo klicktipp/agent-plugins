@@ -31,7 +31,7 @@ Parameter:
 
 - `campaignId`* — integer (minimum 1): ID of the split test campaign (a newsletter ID)
 - `copyFromEmailId` — null | integer (minimum 1): Email ID of the arm to copy, from splitTestVariants; omit for an empty arm
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-split-test-variant-remove` · D
 
@@ -43,7 +43,7 @@ Parameter:
 
 - `campaignId`* — integer (minimum 1): ID of the split test campaign the arm belongs to
 - `emailId`* — integer (minimum 1): Email ID of the arm to remove, as email-newsletter-get returns it in splitTestVariants
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-split-test-variant-update` · I
 
@@ -58,7 +58,7 @@ Parameter:
 - `name` — null | string (maxLength 250): New internal name of this arm, never sent to a recipient; omit to keep the current one
 - `subject` — null | string (maxLength 998): New subject line of this arm, without HTML; ask the user, never invent one. Invalidates the arm's contentRevision
 - `preheader` — null | string (maxLength 120): New inbox preview line of this arm, at most 120 characters, without HTML; empty string removes it, omit keeps it
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-split-test-configure` · I
 
@@ -72,4 +72,4 @@ Parameter:
 - `testSizePercent` — null | integer (minimum 2; maximum 98): Share of the audience the arms go to, 2 to 98; omit to keep
 - `testDurationHours` — null | integer (minimum 1; maximum 27777): Measuring period before the winner goes to the rest, 1 to 27777 hours; omit to keep
 - `winnerBy` — null | string (einer von `opens`, `clicks`, `conversions`, `revenue`): "opens" (open rate), "clicks" (unique clicks), "conversions" or "revenue" (both need the conversion pixel); omit to keep
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account of the access token
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
