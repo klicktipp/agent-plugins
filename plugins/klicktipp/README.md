@@ -36,6 +36,7 @@ Both targets read the same `.mcp.json`.
 | `email-newsletter-delivery-configure` | sender name, sender address, reply address, signature |
 | `email-newsletter-test-send` | test send to any address — the recipient becomes a tagged contact, which can start an automation |
 | `email-newsletter-send` | prepare the real dispatch and return a confirmation URL |
+| `email-newsletter-cancel` | take a running dispatch back — not on production yet, and it does not unsend what already left |
 
 **Content of one email**
 
@@ -72,20 +73,27 @@ not change
 | `email-split-test-variant-update` | change an arm, its subject line above all |
 | `email-split-test-variant-remove` | take an arm out |
 
-**Contacts, tags and fields** — ⚠ not released on production yet, same as the
-split tests above
+**Contacts, tags and fields** — thirteen of them are released and arrive with the
+next production deployment; until then production answers "unknown tool"
 
 | | |
 |---|---|
 | `search-contacts` · `get-contact` | find contacts by tag, field value or subscription, and read one |
-| `subscribe` · `unsubscribe` | take a contact into an opt-in process, or out of the account's mailings |
-| `enrich-contact` | set field values on a contact that already exists |
-| `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` · `delete-manual-tag` | the manual tags of the account |
+| `update-contact` | write field values on a contact that already exists |
+| `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` | the manual tags of the account |
 | `assign-manual-tag` · `remove-manual-tag` | put a manual tag on a contact, or take it off |
-| `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` · `delete-custom-field` | the custom field definitions |
+| `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` | the custom field definitions |
 
-**Opt-in** — reading works on production; changing and deleting a process is the
-web interface's job there
+**Deliberately not on production**, each for its own reason: `delete-manual-tag`
+and `delete-custom-field`, because deleting a field takes the value out of every
+contact of the account and cannot be undone; `subscribe`, `unsubscribe` and
+`get-subscription-redirect-url`, because a subscription sends the confirmation
+mail, can start automations and changes who really gets post; and everything
+that writes an opt-in process or its confirmation email, because that is the
+record of consent. Those stay with the web interface.
+
+**Opt-in** — reading has always worked on production; changing and deleting a
+process is the web interface's job there
 
 | | |
 |---|---|
@@ -172,9 +180,12 @@ no layout.
 Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
-**What is not on production yet** — the contact and tag tools, the image tools,
-the `email-signature-*` family, and the personalized email. The split tests are
-released and arrive with the next production deployment. All four are documented in
+**What is not on production yet** — the image tools, the `email-signature-*`
+family, the personalized email, and `email-newsletter-cancel`. The split tests
+and thirteen of the contact, tag and field tools are released and arrive with
+the next production deployment. A handful is held back on purpose rather than
+pending — the deletions and everything touching a subscription or an opt-in
+process; the list above says which and why. All four are documented in
 the skills that use them, each with the note that an "unknown tool" there is the
 pending release and not a defect. What does work on production is picking an
 existing signature through `signatureId` in

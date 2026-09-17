@@ -11,10 +11,12 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 echten Empfänger, eine Automation) · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes
 Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Konto des Zugangs.
 
-**⚠ Nicht auf Production** — alle außer `search-opt-in-processes` und `get-opt-in-process`. Auch
-die beiden Schreiber an Opt-in-Prozessen (`update-`, `delete-opt-in-process`) sind dort **bewusst**
-nicht freigegeben. Wer eines der übrigen auf Production aufruft, bekommt „unknown tool"; das ist
-kein Fehler, sondern die Freigabe steht aus.
+**Auf Production freigegeben** sind die dreizehn Tag-, Kontakt- und Feld-Werkzeuge plus die zwei
+Opt-in-Leser — ab dem nächsten Release dort, vorher „unknown tool". **Nicht** freigegeben, jedes
+aus eigenem Grund: die beiden Löscher (`delete-manual-tag`, `delete-custom-field`), die drei
+Anmelde-Werkzeuge (`subscribe`, `unsubscribe`, `get-subscription-redirect-url`) und alles am
+Einwilligungsnachweis. Die Aufschlüsselung mit Begründung steht in `../SKILL.md` unter
+„Verfügbarkeit".
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |
@@ -24,7 +26,7 @@ kein Fehler, sondern die Freigabe steht aus.
 | `get-subscription-redirect-url` | R | Die Weiterleitungs-URL eines Abonnenten (Pending- oder Danke-Seite). |
 | `search-contacts` · `get-contact` | R | Kontakte suchen (Cursor, ohne Gesamtzahl) und Detail lesen. |
 | `subscribe` · `unsubscribe` | DO | Ein Kanal eines Kontakts an-/abmelden. Ändert einen echten Empfänger, kann Automationen starten. Brauchen `approval`. |
-| `enrich-contact` | DO | Feldwerte eines Kontakts setzen. Nicht: Adressen, Opt-in, Abos. |
+| `update-contact` | DO | Feldwerte eines Kontakts setzen. Nicht: Adressen, Opt-in, Abos. |
 | `assign-manual-tag` · `remove-manual-tag` | O | Tag an/ab — kann Kampagnen starten. Brauchen `approval`. |
 | `search-tags` · `get-tag` | R | Tags, manuell wie systemvergeben. |
 | `create-manual-tag` · `update-manual-tag` · `delete-manual-tag` | / I / D | Nur manuelle Tags. Löschen nimmt den Tag von allen Kontakten. |
@@ -62,7 +64,7 @@ starten — deshalb `approval` Pflicht (`subscribe-contact` / `unsubscribe-conta
 ausdrücklicher Zustimmung. Der mitgegebene Tag kann weitere Automationen starten. Andere Kanäle und
 Referenzen bleiben unberührt; Abmelden entfernt keine Tags.
 
-### `enrich-contact`
+### `update-contact`
 **Wofür:** Feldwerte (`fields`: je `fieldId` ein globaler Schlüssel oder eine numerische Feld-ID des
 Kontos, `referenceId` Default 0). **Nicht:** Adressen, Opt-in, Abos, Listen. **Stolperer:** Jede
 Feld-ID muss zum Konto gehören; das Feld muss existieren (`create-custom-field`) — nichts wird

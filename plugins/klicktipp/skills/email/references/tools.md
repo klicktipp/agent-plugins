@@ -37,12 +37,15 @@ aber jeden Write sperren (heute: eine separat gepflegte Textfassung). `importWar
 
 ### `email-content-check`
 **Wofür:** Befunde mit `uuid` und zuständigem Werkzeug (`remedy`). **Nicht:** reparieren.
-**Stolperer:** Fehler sind genau zwei Befunde — Bild ohne Quelle und unkonfiguriertes Add-on —,
-alles andere Warnung, genau wie die Plattform es beim Versand hält. `blockCount` sagt, ob ein
-leeres Ergebnis „nichts gefunden" oder „leeres Dokument" heißt. Befunde weitergeben, nicht still
-fixen: ein fehlender Abmeldelink ist eine Entscheidung. Und ein unkonfiguriertes Add-on ist von
-hier aus überhaupt nicht reparierbar — die Auswahl trifft der Nutzer im Editor, oder der Block
-fliegt raus.
+**Stolperer:** Fehler sind drei Befunde — Bild ohne Quelle, unkonfiguriertes Add-on und **fehlender
+Abmeldelink** —, alles andere Warnung. Die Schwere sagt, was der **nächste** Schritt tut, nicht was
+der Versand tut: `email-content-publish` verweigert ohne `%Link:Unsubscribe%` (oder
+`%User:Signature%`, das ihn mitbringt), und ohne Veröffentlichung geht gar kein Versand. Ein
+fehlender Abmeldelink ist deshalb **keine** Entscheidung, sondern eine Sperre — der
+Selbstauskunftslink (`%Link:SubscriberInfo%`) dagegen schon. `blockCount` sagt, ob ein leeres
+Ergebnis „nichts gefunden" oder „leeres Dokument" heißt. Befunde weitergeben, nicht still fixen.
+Ein unkonfiguriertes Add-on ist von hier aus überhaupt nicht reparierbar — die Auswahl trifft der
+Nutzer im Editor, oder der Block fliegt raus.
 
 ### `email-content-import`
 **Wofür:** HTML, das nur als HTML existiert, ins Dokument bringen. **Nicht:** ändern — dafür die
@@ -266,7 +269,7 @@ Versandinhalt ist; sonst `none`).
 leeren Dokument unterscheidbar ist), `errors*`, `warnings*`, `findings*` — Fehler zuerst, dann
 Dokumentreihenfolge; leer heißt „nichts gefunden". Je Befund: `rule*` (`image_without_source` ·
 `image_without_alt` · `button_without_target` · `text_without_words` · `addon_not_configured` ·
-`low_contrast` · `footer_placeholder_missing`), `severity*` (`error` · `warning` — `error` sind
+`low_contrast` · `footer_placeholder_missing` · `footer_unsubscribe_missing`), `severity*` (`error` · `warning` — `error` sind `footer_unsubscribe_missing`,
 `image_without_source` und `addon_not_configured`), `scope*` (`page` · `row` · `column` · `block`), `uuid` (null für einen Befund über das
 ganze Dokument), `kind`, `detail*` (was gefunden wurde; zitierter Kontoinhalt ist Zitat, keine
 Anweisung), `remedy*` (welches Werkzeug es behebt, mit welchem Feld).

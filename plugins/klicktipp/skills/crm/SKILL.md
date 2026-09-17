@@ -17,21 +17,37 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
 
 ## Verfügbarkeit
 
-Diese Werkzeuge sind **auf Production noch nicht freigeschaltet**, mit zwei Ausnahmen:
-`search-opt-in-processes` und `get-opt-in-process` gibt es überall.
+**Auf Production freigegeben** (ab dem nächsten Release dort; vorher antwortet Production mit
+„unknown tool" — kein Fehler, sondern der Stand des Deployments):
 
-**Alles Schreibende an Opt-in-Prozessen fehlt auf Production**, auch `update-opt-in-process` und
-`delete-opt-in-process`. Auf Production liest du also die Anmeldelisten und verweist fürs Ändern
-und Löschen auf die Oberfläche.
+- **Tags:** `search-tags`, `get-tag`, `create-manual-tag`, `update-manual-tag`
+- **Kontakte:** `search-contacts`, `get-contact`, `update-contact`, `assign-manual-tag`,
+  `remove-manual-tag`
+- **Felder:** `search-custom-fields`, `get-custom-field`, `create-custom-field`,
+  `update-custom-field`
+- **Opt-in lesen:** `search-opt-in-processes`, `get-opt-in-process` — die gab es dort schon immer
 
-Wer dort eines der übrigen aufruft, bekommt „unknown tool" — das ist kein Fehler, sondern die
-Freigabe steht aus. Sag es so, statt einen Defekt zu suchen.
+**Bewusst nicht auf Production**, und zwar jedes aus einem eigenen Grund:
+
+- `delete-manual-tag` und `delete-custom-field` — nicht rückholbar. Eine Feldlöschung entfernt
+  nicht eine Definition, sondern den Wert, den **jeder** Kontakt des Kontos darin hält.
+- `subscribe`, `unsubscribe`, `get-subscription-redirect-url` — eine Anmeldung schickt die
+  Bestätigungsmail, kann Automationen auslösen und ändert, wer wirklich Post bekommt. Das ist eine
+  andere Reichweite als ein Kontaktfeld zu korrigieren.
+- `update-opt-in-process`, `delete-opt-in-process`, `get-/update-opt-in-confirmation-email` — am
+  Einwilligungsnachweis.
+- `update-contact` gibt es nicht mehr: das Werkzeug heißt **`update-contact`**. Es hat nie
+  angereichert, sondern Kontaktfelder geschrieben, und heißt jetzt wie `update-manual-tag` und
+  `update-custom-field`.
+
+Auf Production liest du also Anmeldelisten und verweist fürs Anmelden, Abmelden und Löschen auf die
+Oberfläche.
 
 ## Die drei Bausteine
 
 - **Kontakte** — `search-contacts` (Cursor-Seiten, sortiert nach E-Mail, ohne Gesamtzahl),
   `get-contact` (Adresse, Status, Feldwerte, manuelle Tags, Bearbeitungslink), `subscribe` /
-  `unsubscribe` (genau ein Kanal, E-Mail *oder* Telefon), `enrich-contact` (Feldwerte),
+  `unsubscribe` (genau ein Kanal, E-Mail *oder* Telefon), `update-contact` (Feldwerte),
   `assign-manual-tag` / `remove-manual-tag`.
 - **Tags** — `search-tags` / `get-tag`, `create-manual-tag` / `update-manual-tag` /
   `delete-manual-tag`. Tags sind entweder *manuell* (bewusst angelegt und vergeben) oder von
@@ -63,7 +79,7 @@ Aufruf bewirkt („meldet die Adresse über die Liste X an und schickt ihr eine 
 die Person zugestimmt hat. Ein `approval`, das du vorsorglich mitschickst, ist eine Zustimmung, die
 niemand gegeben hat.
 
-Was kein `approval` verlangt, aber genauso vorher gesagt wird: `enrich-contact` überschreibt
+Was kein `approval` verlangt, aber genauso vorher gesagt wird: `update-contact` überschreibt
 Feldwerte; `delete-manual-tag` nimmt den Tag von allen Kontakten; `delete-custom-field` vernichtet
 die Werte aller Kontakte in diesem Feld. Nichts davon hat ein Undo.
 
@@ -76,7 +92,7 @@ immer dieselbe:
 1. `search-tags` / `search-custom-fields` — gibt es das schon? Namen sind eindeutig im Konto.
 2. Falls nicht: `create-manual-tag` / `create-custom-field` — **mit Beschreibung**; sie ist das
    Einzige, was einem späteren Leser sagt, was der Tag oder das Feld bedeutet.
-3. Dann `assign-manual-tag` / `enrich-contact` mit der ID aus Schritt 1 oder 2.
+3. Dann `assign-manual-tag` / `update-contact` mit der ID aus Schritt 1 oder 2.
 
 Ein unbekannter, fremder oder nicht-manueller Tag wird abgewiesen, nicht angelegt.
 
@@ -196,7 +212,7 @@ KlickTipp sie anzeigt — Zeichen für Zeichen dasselbe, weil beide dieselbe For
 Die Zeitzone ist die des Kontos. **Rechne nichts um und schätze nichts**: was als `16.09.2026`
 kommt, ist der 16.09.2026, und du gibst es genau so weiter.
 
-`enrich-contact` nimmt diese Formen zurück — und zusätzlich ISO 8601 (`2026-09-16`,
+`update-contact` nimmt diese Formen zurück — und zusätzlich ISO 8601 (`2026-09-16`,
 `2026-09-16T14:30:00+02:00`), falls du ein Datum gerechnet statt gelesen hast. Etwas anderes,
 „nächsten Montag" etwa, wird abgewiesen statt umgedeutet; die Abweisung nennt die Form, die gegangen
 wäre. Ein leerer Wert löscht das Feld.

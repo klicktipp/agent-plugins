@@ -1,11 +1,11 @@
 # Die veröffentlichten Verträge — Newsletter, Versand und Signaturen
 
-Wort für Wort das, was der Server in `tools/list` für die 14 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 15 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-16) mit `build/contracts.py` — nicht von Hand
+Generiert aus `build/tools-list.json` (Stand 2026-09-17) mit `build/contracts.py` — nicht von Hand
 ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
 und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -26,7 +26,7 @@ Parameter:
 
 **Get email signature**
 
-Returns one email signature with its name, notes, labels, tag IDs, sender profile, read-only digital business card, content flags, usability and blockers. Set includeContent only when the HTML, plain and transactional content itself is needed.
+Returns one email signature with its name, notes, labels, tag IDs, sender profile, digital business card, content flags, usability and blockers. Set includeContent only when the HTML, plain and transactional content itself is needed.
 
 Parameter:
 
@@ -38,7 +38,7 @@ Parameter:
 
 **Create email signature**
 
-Creates or copies an email signature. A copy keeps its business-card data; name and tag IDs replace source values, supplied content and sender fields override them, and omitted copied fields stay. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Tags, addresses and domains must exist, and an assigned sender domain must match. Returns content flags only; use email-signature-get with includeContent true. No newsletter changes.
+Creates or copies an email signature. Name and tag IDs replace source values; supplied content, sender and business-card fields override copied values, while omitted copied fields stay. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Tags, addresses and domains must exist, and an assigned sender domain must match. Returns content flags only; use email-signature-get with includeContent true. No newsletter changes.
 
 Parameter:
 
@@ -58,6 +58,19 @@ Parameter:
   - `bccEmail` — string (maxLength 250)
   - `toEmail` — string (maxLength 250)
   - `senderDomain` — string (maxLength 250)
+- `vCard` — object: Optional plain-text digital-business-card fields; supplied fields override copied values, omitted copied fields stay, and empty strings clear fields
+  - `firstName` — string (maxLength 128)
+  - `lastName` — string (maxLength 128)
+  - `companyName` — string (maxLength 128)
+  - `emailAddress` — string (maxLength 128)
+  - `phone` — string (maxLength 128)
+  - `cellPhone` — string (maxLength 128)
+  - `street` — string (maxLength 128)
+  - `zip` — string (maxLength 128)
+  - `city` — string (maxLength 128)
+  - `state` — string (maxLength 128)
+  - `country` — string (maxLength 128)
+  - `website` — string (maxLength 250)
 - `notes` — null | string (maxLength 1000): Internal note; on a copy, omit to preserve the source note
 - `metaLabels` — array | null (maxItems 50): Labels; on a copy, omit to preserve the source labels
 - `accountId` — null | integer (minimum 1): User ID of the account in which to create the signature; omit for the token account, or pass an accessible subaccount ID
@@ -66,7 +79,7 @@ Parameter:
 
 **Update email signature**
 
-Changes only the name, internal note or labels of an email signature. Omitted fields stay unchanged; content, tag IDs, sender profile and digital business card are never changed.
+Changes the name, internal note, labels or digital business card of an email signature. Omitted fields stay unchanged and empty business-card strings clear those fields. Content, tag IDs and sender profile are never changed.
 
 Parameter:
 
@@ -74,6 +87,19 @@ Parameter:
 - `name` — null | string (minLength 1; maxLength 250): New unique name; omit to keep it, and note that the default signature cannot be renamed
 - `notes` — null | string (maxLength 1000): New internal note; omit to keep it, or pass an empty string to clear it
 - `metaLabels` — array | null (maxItems 50): Replacement labels; omit to keep them, or pass an empty array to clear them
+- `vCard` — object: Plain-text digital-business-card fields to change; omitted fields stay unchanged and empty strings clear fields
+  - `firstName` — string (maxLength 128)
+  - `lastName` — string (maxLength 128)
+  - `companyName` — string (maxLength 128)
+  - `emailAddress` — string (maxLength 128)
+  - `phone` — string (maxLength 128)
+  - `cellPhone` — string (maxLength 128)
+  - `street` — string (maxLength 128)
+  - `zip` — string (maxLength 128)
+  - `city` — string (maxLength 128)
+  - `state` — string (maxLength 128)
+  - `country` — string (maxLength 128)
+  - `website` — string (maxLength 250)
 - `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
 
 ## `email-signature-content-replace` · DOI
@@ -239,4 +265,15 @@ Parameter:
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send
 - `mode`* — string (einer von `immediate`, `scheduled`): "immediate" or "scheduled"; no default
 - `scheduledAt` — null | string (Muster `^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(:\d{2})?([Zz]|[+-]\d{2}:?\d{2})$`): Moment to send at, ISO 8601 with UTC offset; required for "scheduled", forbidden for "immediate"
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-newsletter-cancel` · D
+
+**Cancel a newsletter dispatch**
+
+Takes back the dispatch of an email newsletter that was scheduled or has just started, so it becomes a draft again and reaches nobody further. THIS IS THE ANSWER TO "stop it", "cancel the send" AND "undo the schedule". Only while the delivery status says canBeCancelled: once a dispatch is far enough along it cannot be called off, and the refusal says so rather than pretending. What already went out stays out -- this stops what has not been sent yet, it does not recall mail. The newsletter itself, its content and its audience are untouched; only the dispatch is undone, and activating it again is email-newsletter-send. Ask the person before calling this: a dispatch someone set up deliberately is not yours to stop on your own reading of a situation.
+
+Parameter:
+
+- `newsletterId`* — integer (minimum 1): ID of the newsletter whose dispatch is to be called off
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

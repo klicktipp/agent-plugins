@@ -33,6 +33,8 @@ der vorige hinterlassen hat.
 
 Schritt 2 bis 5 sind in der Reihenfolge frei. Schritt 1, 6 und 7 nicht.
 
+Nach Schritt 7 gibt es noch einen Rückweg: `email-newsletter-cancel` nimmt einen Versand zurück, solange er nicht zu weit ist — siehe „Einen Versand zurücknehmen".
+
 ## 1. Entwurf anlegen
 
 `email-newsletter-draft-create` nimmt `name` (Pflicht, das ist die interne Bezeichnung), optional
@@ -240,6 +242,27 @@ mit `winnerBy: conversions` oder `revenue`, der ohne Pixel nichts zu zählen hat
 enthält die Absenderdomain, ein Snippet der falschen Domain zählt nichts. Ein Splittest hat **einen**
 Satz Pixel für alle Arme — du brauchst dafür keine `editorUrl`. Sagt die Antwort
 `available: false`, hat das Konto die Funktion nicht; dann gibt es auch in der Oberfläche keinen.
+
+## Einen Versand zurücknehmen
+
+`email-newsletter-cancel` nimmt einen Versand zurück, der terminiert ist oder gerade angelaufen
+ist: der Newsletter wird wieder Entwurf, und ab da geht nichts mehr raus. Nur solange
+`deliveryStatus.canBeCancelled` `true` sagt — ist der Versand weit genug fortgeschritten, wird es
+abgelehnt, und die Meldung sagt das, statt so zu tun als ginge es.
+
+**Was schon draußen ist, bleibt draußen.** Der Aufruf stoppt, was noch nicht gesendet wurde; er
+holt keine Mail zurück. Sag das dazu, wenn du meldest, dass abgebrochen wurde — sonst hört die
+Person „nichts ist rausgegangen", und das stimmt fast nie.
+
+**Frag vorher.** Einen Versand, den jemand bewusst eingerichtet hat, brichst du nicht auf eigene
+Einschätzung ab. Inhalt, Zielgruppe und Absender bleiben unangetastet; wieder aktivieren geht mit
+`email-newsletter-send`.
+
+Die Berechtigung ist dieselbe wie fürs Freigeben („Email marketing manager"): wer einen Newsletter
+übergeben darf, darf ihn auch zurückholen — ein Texter-Unterkonto keins von beidem.
+
+**Auf Production ist das Werkzeug noch nicht freigeschaltet**; dort ist der Weg die
+`scheduleUrl` aus `deliveryStatus`.
 
 ## Löschen
 

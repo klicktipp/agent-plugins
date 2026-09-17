@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-16) mit `build/contracts.py` — nicht von Hand
+Generiert aus `build/tools-list.json` (Stand 2026-09-17) mit `build/contracts.py` — nicht von Hand
 ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
 und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -102,35 +102,6 @@ Parameter:
 - `bccEmail` — null | string (maxLength 250): Address that receives a blind copy; empty string removes it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `subscribe` · DO
-
-**Subscribe contact**
-
-Subscribes exactly one email or SMS channel of a KlickTipp contact through an opt-in process and creates or reuses the contact and requested reference. THIS CHANGES A REAL RECIPIENT, MAY SEND A CONFIRMATION MESSAGE AND MAY START AUTOMATIONS. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Assigning the optional tag may start further automations or outbound events. Other channels and references are not changed.
-
-Parameter:
-
-- `optInProcessId`* — integer (minimum 1): ID of the opt-in process to run
-- `approval`* — string (einer von `subscribe-contact`): Exactly "subscribe-contact": acknowledges a confirmation message, automations and a changed real recipient
-- `email` — null | string (maxLength 250): Email channel to subscribe; mutually exclusive with phoneNumber
-- `phoneNumber` — null | string (maxLength 50): SMS channel to subscribe in E.164 format; mutually exclusive with email
-- `referenceId` — integer (minimum 0; Default `0`): Subscription reference context to create or reuse; a non-zero ID must exist in the account
-- `tagId` — null | integer (minimum 1): Tag to additionally assign to the contact after a successful subscription
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
-
-## `unsubscribe` · DOI
-
-**Unsubscribe contact**
-
-Unsubscribes exactly one email or SMS channel of a KlickTipp contact. THIS CHANGES A REAL RECIPIENT: future subscribed-audience messages on that channel stop, and automations may run. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Other channels of the same contact and all subscription references remain untouched.
-
-Parameter:
-
-- `approval`* — string (einer von `unsubscribe-contact`): Exactly "unsubscribe-contact": acknowledges a changed real recipient and automations
-- `email` — null | string (maxLength 250): Email channel to unsubscribe; mutually exclusive with phoneNumber
-- `phoneNumber` — null | string (maxLength 50): SMS channel to unsubscribe in E.164 format; mutually exclusive with email
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
-
 ## `search-contacts` · RI
 
 **Search contacts**
@@ -158,9 +129,9 @@ Parameter:
 - `referenceId` — integer (minimum 0; Default `0`): Reference whose multi-value fields and manual tags to read; 0 for contact-wide values
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `enrich-contact` · DO
+## `update-contact` · DO
 
-**Enrich contact**
+**Update contact**
 
 Updates explicitly listed contact-field values for one contact. It cannot change email or SMS addresses, opt-in state, subscriptions, lists or other channel data. Every custom-field ID and the contact itself must belong to the selected account; global contact fields remain available. Date, time and datetime fields take the forms get-contact answers with -- 16.09.2026, 16.09.2026 14:30, 14:30 -- and ISO 8601 as well, for a caller that computed a date rather than read one. Anything else is refused rather than stored as a date it was not meant to be, and the refusal names the form that works. An empty value clears the field.
 
@@ -199,6 +170,35 @@ Parameter:
 - `manualTagId`* — integer (minimum 1): Existing writable manual tag ID to remove
 - `approval`* — string (einer von `I_ACCEPT_AUTOMATION_EFFECTS`): Exactly I_ACCEPT_AUTOMATION_EFFECTS: removal may alter campaigns and automations
 - `referenceId` — integer (minimum 0; Default `0`): Reference for a multi-value manual tag; use 0 for contact-wide tags
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `subscribe` · DO
+
+**Subscribe contact**
+
+Subscribes exactly one email or SMS channel of a KlickTipp contact through an opt-in process and creates or reuses the contact and requested reference. THIS CHANGES A REAL RECIPIENT, MAY SEND A CONFIRMATION MESSAGE AND MAY START AUTOMATIONS. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Assigning the optional tag may start further automations or outbound events. Other channels and references are not changed.
+
+Parameter:
+
+- `optInProcessId`* — integer (minimum 1): ID of the opt-in process to run
+- `approval`* — string (einer von `subscribe-contact`): Exactly "subscribe-contact": acknowledges a confirmation message, automations and a changed real recipient
+- `email` — null | string (maxLength 250): Email channel to subscribe; mutually exclusive with phoneNumber
+- `phoneNumber` — null | string (maxLength 50): SMS channel to subscribe in E.164 format; mutually exclusive with email
+- `referenceId` — integer (minimum 0; Default `0`): Subscription reference context to create or reuse; a non-zero ID must exist in the account
+- `tagId` — null | integer (minimum 1): Tag to additionally assign to the contact after a successful subscription
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `unsubscribe` · DOI
+
+**Unsubscribe contact**
+
+Unsubscribes exactly one email or SMS channel of a KlickTipp contact. THIS CHANGES A REAL RECIPIENT: future subscribed-audience messages on that channel stop, and automations may run. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Other channels of the same contact and all subscription references remain untouched.
+
+Parameter:
+
+- `approval`* — string (einer von `unsubscribe-contact`): Exactly "unsubscribe-contact": acknowledges a changed real recipient and automations
+- `email` — null | string (maxLength 250): Email channel to unsubscribe; mutually exclusive with phoneNumber
+- `phoneNumber` — null | string (maxLength 50): SMS channel to unsubscribe in E.164 format; mutually exclusive with email
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-subscription-redirect-url` · RI

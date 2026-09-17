@@ -21,10 +21,23 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
 | `email-newsletter-test-send` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `email-content-publish`. |
 | `email-newsletter-send` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
+| `email-newsletter-cancel` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. ⚠ nicht auf Production |
 | `email-signature-search` · `email-signature-get` | R | Signaturen, die unter einen Newsletter können, mit Absenderprofil — die Kandidaten für `signatureId`. ⚠ nicht auf Production |
 | `email-signature-create` · `email-signature-update` · `email-signature-content-replace` · `email-signature-delivery-configure` | / I / DI / I | Signatur anlegen (auch als Kopie), Name/Notiz/Labels, Inhaltsblock komplett ersetzen, Tags und Absenderprofil. ⚠ nicht auf Production |
 
 ## Newsletter
+
+### `email-newsletter-cancel`
+**Wofür:** einen Versand zurücknehmen, der terminiert ist oder gerade anläuft; der Newsletter wird
+wieder Entwurf und erreicht niemanden weiter. **Nicht:** löschen, und **nicht** zurückholen, was
+schon versendet wurde. **Stolperer:** Nur solange `deliveryStatus.canBeCancelled` `true` ist —
+danach wird abgelehnt, und die Meldung sagt, dass es zu spät ist statt so zu tun als ginge es.
+Ein Entwurf wird mit einem eigenen Satz abgelehnt („kein Versand zum Abbrechen"), damit du die
+beiden Fälle nicht verwechselst. Braucht dieselbe Berechtigung wie das Freigeben
+(„Email marketing manager"). **Frag die Person vorher** — einen bewusst eingerichteten Versand
+brichst du nicht auf eigene Einschätzung ab. Wieder aktivieren geht mit `email-newsletter-send`.
+Die Antwort sagt ausdrücklich, dass bereits versendete Mails unterwegs bleiben; gib diesen Satz
+weiter, statt nur „abgebrochen" zu melden.
 
 ### `email-newsletter-search`
 **Wofür:** die Liste; Filter `query`, `status`, `createdFrom/Before`, `sendDateFrom/Before`; Seiten
@@ -235,7 +248,8 @@ für einen Entwurf, auch wenn ein Termin gesetzt und abgesagt wurde), `sendProce
 `uniqueOpenCount`, `totalClickCount`, `uniqueClickCount`, `hardBounceCount`, `softBounceCount`,
 `spamBounceCount`, `spamComplaintCount`, `unsubscriptionCount` (alle ≥ 0; `total…` zählt
 Ereignisse, `unique…` Personen; `spamComplaintCount` steckt auch in `unsubscriptionCount`, weil eine
-Beschwerde abmeldet — **nicht addieren**), `canBeCancelled*`, `missingRequirements*` (Liste in
+Beschwerde abmeldet — **nicht addieren**), `canBeCancelled*` (sagt, ob `email-newsletter-cancel`
+den Versand noch zurücknehmen kann), `missingRequirements*` (Liste in
 Worten, leer wenn nichts fehlt), `readyToSend*`, `scheduleUrl*`, `statisticsUrl*`.
 
 **`audienceReach`** — `minRecipients*` (sicher erreicht), `maxRecipients*` (höchstens),

@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-16) mit `build/contracts.py` — nicht von Hand
+Generiert aus `build/tools-list.json` (Stand 2026-09-17) mit `build/contracts.py` — nicht von Hand
 ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
 und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -391,7 +391,7 @@ Parameter:
 
 **Write email page style**
 
-Writes what the whole email starts out with: the colour around the message, the colour behind it, the default text colour, the colour of every link, the default font, and how wide the message is. THIS IS THE PLACE FOR "ALL LINKS GREEN", "A WIDER EMAIL" OR "ONE FONT FOR THE WHOLE MAIL": these are defaults of the document, so one call reaches every row -- but a block whose own markup names a value keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS. The font is named, not a stack, and only fonts every mail client has are offered; a web font has to be set in the KlickTipp editor or it falls back silently. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes what the whole email starts out with: the colour around the message, the colour behind it, the default text colour, the colour of every link, the default font, how wide the message is and where it sits. THIS IS THE PLACE FOR "ALL LINKS GREEN", "A WIDER EMAIL", "ONE FONT FOR THE WHOLE MAIL" OR "ALIGN THE EMAIL LEFT": these are defaults of the document, so one call reaches every row -- but a block whose own markup names a value keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS. The font is named, not a stack, and only fonts every mail client has are offered; a web font works only if the KlickTipp editor sets it. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -403,7 +403,7 @@ Parameter:
 - `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default colour of every link of the email
 - `contentWidth` — null | integer (minimum 320; maximum 1440): Width of the message in pixels
 - `fontFamily` — null | string (einer von `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`, `Times New Roman`, `Trebuchet MS`, `Verdana`, `ヒラギノ角ゴ Pro W3`, `メイリオ`): Default font of the whole email, by name; see the schema for the names
-- `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits in a wider window
+- `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits when the window is wider than it is
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-paragraph-add`

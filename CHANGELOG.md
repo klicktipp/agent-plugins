@@ -8,6 +8,26 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.9.0 — 2026-09-17
+
+- **Thirteen contact, tag and field tools go to production** — the four tag tools, the five
+  contact tools, the four custom-field tools — arriving with the next production deployment.
+- **And a list of what deliberately stays behind, each with its reason** rather than as one
+  bucket: the two deletions, because deleting a field takes the value out of every contact of the
+  account; `subscribe`, `unsubscribe` and `get-subscription-redirect-url`, because a subscription
+  sends the confirmation mail, can start automations and changes who really gets post; and
+  everything writing an opt-in process or its confirmation email, because that is the record of
+  consent.
+- `enrich-contact` is now **`update-contact`** — it never enriched, it wrote contact fields, and it
+  now reads like `update-manual-tag` and `update-custom-field`.
+- **A dispatch can be taken back.** `email-newsletter-cancel` exists, so `canBeCancelled` no longer
+  names a state with no way out of it. It does not unsend what already left, it takes the same
+  permission as handing a newsletter over, it is not on production yet — and the skill says to ask
+  the person before calling it.
+- **A missing unsubscribe link is a blocker, not a warning.** The publish refuses without the
+  token, and nothing is sent unpublished, so the old wording sent an agent to tell people the
+  dispatch would decide it. The skill names which footer placeholder blocks and which does not.
+
 ## 0.8.19 — 2026-09-17
 
 - **The split-test tools are released.** They are in the production allowlist, so what was "not on
