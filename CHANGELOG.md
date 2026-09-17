@@ -8,6 +8,18 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.8.19 — 2026-09-17
+
+- **The split-test tools are released.** They are in the production allowlist, so what was "not on
+  production, release pending" is now "released, and there from the next production deployment on"
+  — an "unknown tool" until then is the state of the deployment, not a defect. The skill also says
+  what the release does *not* change: delivery configuration, test send and activation refuse a
+  split test everywhere, because none of them can pick an arm.
+- It also records the dead end in between, because someone will still meet it: the `splitTest`
+  argument was published while the five tools were not, and a test created that way cannot be
+  given its second arm from here at all — that newsletter is finished in the app.
+- `email`: block alignment, and the editor's own font names rather than approximations of them.
+
 ## 0.8.16 — 2026-09-16
 
 - **No tool adds a block only the editor can fill.** Countdown, contact card and Wowing video had

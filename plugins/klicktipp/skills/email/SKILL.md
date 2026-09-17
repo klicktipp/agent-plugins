@@ -495,13 +495,25 @@ Zwei Dinge gehören dabei auf die richtige Ebene:
 
 **Die Schriftart setzt du einmal auf der Seite**, mit `fontFamily` in `email-page-style-write` —
 nicht je Baustein. Die Bausteine stehen im Startzustand auf `inherit`, greifen die Seitenvorgabe
-also von selbst. Angeboten sind nur Schriften, die jedes Mailprogramm hat: `Arial`, `Courier New`,
-`Georgia`, `Helvetica`, `Lucida Sans`, `Tahoma`, `Trebuchet MS`, `Verdana`. Du nennst den **Namen**,
-nicht den Stack — die Ausweichkette schreibt der Server. **Eine Webschrift wie Montserrat oder
-Roboto kannst du nicht setzen**: die braucht zusätzlich einen Eintrag in `page.body.webFonts` mit
-einer Google-Fonts-URL, damit der Editor den `<link>` erzeugt. Ohne den fällt sie beim Empfänger
-still auf eine Systemschrift zurück, und niemand sieht es. Wer eine Webschrift will, setzt sie im
-KlickTipp-Editor.
+also von selbst. Angeboten sind die Systemschriften der Auswahl im Editor, unter **genau den
+Namen, die dort stehen**: `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`,
+`Times New Roman`, `Trebuchet MS`, `Verdana` sowie die beiden japanischen `ヒラギノ角ゴ Pro W3`
+und `メイリオ`. Du nennst den **Namen**, nicht den Stack — die Ausweichkette schreibt der Server.
+`Helvetica` und `Courier New` werden weiter angenommen; sie standen früher in der Liste.
+
+**Eine Webschrift wie Montserrat oder Roboto kannst du nicht setzen**, obwohl der Editor sie
+anbietet: die braucht zusätzlich einen Eintrag in `page.body.webFonts` mit einer Google-Fonts-URL,
+damit der Editor den `<link>` erzeugt. Ohne den fällt sie beim Empfänger still auf eine
+Systemschrift zurück, und niemand sieht es. Deshalb stehen die acht — Bitter, Droid Serif, Lato,
+Montserrat, Open Sans, Roboto, Source Sans Pro, Ubuntu — hier gar nicht zur Wahl, statt als Namen,
+die nichts tun. Wer eine davon will, setzt sie im KlickTipp-Editor.
+
+**Die Ausrichtung der ganzen E-Mail** ist `contentAlign` — `left`, `center` oder `right` — im
+selben Werkzeug, neben `contentWidth`. Sie entscheidet, wo die Nachricht steht, wenn das Fenster
+breiter ist als sie; mit den Ausrichtungen *innerhalb* eines Blocks (`textAlign` in
+`email-block-style-write`) hat sie nichts zu tun. Ein neuer Entwurf startet mit dem
+Standarddokument, nicht mit dem Aussehen eines anderen Newsletters — wer eine Vorlage nachbaut,
+setzt Breite, Ausrichtung und Schrift also selbst.
 
 **Einen Rahmen um eine Zeile setzt du auf der Zeile**, mit `borderTop`/`-Right`/`-Bottom`/`-Left`
 in `email-row-style-write` — nicht auf ihren Spalten. Ein Rahmen je Spalte zeichnet eine Box je

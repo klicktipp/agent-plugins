@@ -107,7 +107,7 @@ weggelassenes Feld behält seinen Wert, ein leeres `href` entfernt den Link) · 
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |
-| `email-page-style-write` | I | Seite: Hintergrund, Inhaltshintergrund, Text-/Linkfarbe, Breite, `fontFamily` (Name aus acht Systemschriften, keine Webschrift). |
+| `email-page-style-write` | I | Seite: Hintergrund, Inhaltshintergrund, Text-/Linkfarbe, Breite, `contentAlign` (`left`/`center`/`right` — die ganze E-Mail im Fenster), `fontFamily` (Name aus den Systemschriften des Editors, keine Webschrift). |
 | `email-row-style-write` | I | Zeilen: Farben, Breite, vertikale Ausrichtung, Mobil-Verhalten, `padding*` und `border*` der Zeile (Rahmen um eine Zeile gehört hierhin, nicht auf die Spalten). |
 | `email-column-style-write` | I | Spalten: Hintergrund, Innenabstand, Rahmen. |
 | `email-block-style-write` | I | Blöcke: Innenabstand, Ausrichtung, auf Mobil/Desktop verstecken. |
@@ -118,6 +118,16 @@ weggelassenes Feld behält seinen Wert, ein leeres `href` entfernt den Link) · 
 Die Style-Werkzeuge nehmen `uuids` (bis 60, dieselben Werte landen auf jedem) und je Eigenschaft
 einen Wert: Farben als `#RRGGBB` oder `transparent`, Rahmen als `2px solid #000000`
 (`solid|dashed|dotted|none`), Abstände in Pixeln (0–400). Weggelassen heißt unverändert.
+
+`email-page-style-write` nimmt dagegen keine `uuids` — eine E-Mail hat eine Seite. Es trägt den
+ganzen Reiter „Allgemein" des Editors: Breite, Ausrichtung, Standardschrift und die vier Farben.
+Die Schriftnamen sind die der Editor-Auswahl (`Helvetica Neue`, `Courier`, `Times New Roman`, die
+beiden japanischen); `Helvetica` und `Courier New` bleiben als frühere Namen gültig. Die acht
+Webschriften der Auswahl — Montserrat, Roboto und Geschwister — fehlen bewusst: ohne Eintrag in
+`page.body.webFonts` fallen sie beim Empfänger still zurück. **Wichtig für „das kann ich nicht":**
+das Werkzeug lehnt ein unbekanntes Feld als Ganzes ab (`additionalProperties: false`), also heißt
+ein Schema-Fehler nach einem Versuch mit einem falschen Feldnamen *nicht*, dass der Reiter
+unerreichbar ist. Schau in die Feldliste, statt es aufzugeben.
 
 ### `email-block-move` · `email-block-remove`
 **Stolperer:** Entfernen und Neuanlegen ist kein Ändern — Typografie und Add-on-Konfiguration gehen

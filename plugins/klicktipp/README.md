@@ -59,8 +59,11 @@ shell that rendered nothing at send time. The editor is the answer for those
 three; blocks of those kinds that already exist stay readable, movable and
 removable.
 
-**Split tests** — ⚠ not released on production yet; calling one there answers
-"unknown tool", which is the pending release and not a defect
+**Split tests** — released, and on production from the next production release
+on; until that deployment is out, calling one there still answers "unknown
+tool". Delivery configuration, test send and activation refuse a split test
+everywhere, because none of them can pick an arm — that part the release does
+not change
 
 | | |
 |---|---|
@@ -169,8 +172,9 @@ no layout.
 Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
-**What is not on production yet** — the split tests, the contact and tag tools,
-the image tools, the `email-signature-*` family, and the personalized email. All four are documented in
+**What is not on production yet** — the contact and tag tools, the image tools,
+the `email-signature-*` family, and the personalized email. The split tests are
+released and arrive with the next production deployment. All four are documented in
 the skills that use them, each with the note that an "unknown tool" there is the
 pending release and not a defect. What does work on production is picking an
 existing signature through `signatureId` in

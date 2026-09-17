@@ -173,6 +173,13 @@ Arm beantwortet zu werden, den niemand gewählt hat.
 
 In all diesen Fällen: sag es klar und verweise auf die `appUrl` aus der Antwort.
 
+**Der Abschluss gehört der App, und das ändert sich auch nicht**, wenn diese Werkzeuge überall
+verfügbar sind. `email-newsletter-delivery-configure`, `email-newsletter-test-send` und
+`email-newsletter-send` weisen einen Splittest in *jeder* Umgebung ab — nicht weil etwas fehlt,
+sondern weil keines von ihnen einen Arm auswählen kann. Der Weg von hier ist also: anlegen, Arme
+bauen, Inhalte schreiben — und für Absender, Testversand und Freigabe in die Oberfläche wechseln.
+Kündige einen Splittest deshalb nie als „verschicke ich dir" an.
+
 ## Die Werkzeuge im Einzelnen
 
 Die vier Arm- und Einstellungs-Werkzeuge mit Wertebereichen und Stolperern stehen in

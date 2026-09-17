@@ -8,8 +8,15 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 `../SKILL.md`. `R` liest nur · `D` löscht ohne Undo · `I` ein zweiter gleicher Aufruf ändert nichts
 mehr.
 
-**⚠ Nicht auf Production** — dort noch nicht freigeschaltet. Wer auf Production arbeitet und eines
-aufruft, bekommt „unknown tool"; das ist kein Fehler, sondern die Freigabe steht aus.
+**Freigegeben, aber erst ab dem nächsten Production-Release dort.** Die fünf stehen in der
+Production-Freigabe; bis das Release draußen ist, antwortet Production weiter mit „unknown tool" —
+kein Fehler, sondern der Stand des Deployments. Auf Staging und lokal sind sie da.
+
+Sie waren vorher **nicht** freigegeben, während `email-newsletter-draft-create` sein
+`splitTest`-Argument schon veröffentlichte. Das war eine Sackgasse: Splittest ja/nein ist in beide
+Richtungen unumkehrbar, ein frischer Test hat **einen** Arm und braucht zwei — und der zweite kam
+genau aus einem dieser Werkzeuge. Wer auf einem älteren Stand darauf trifft, findet den Newsletter
+nur noch in der App wieder; erfinde dafür keinen Umweg.
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |

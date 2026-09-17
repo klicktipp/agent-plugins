@@ -402,7 +402,8 @@ Parameter:
 - `textColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default text colour of the whole email
 - `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default colour of every link of the email
 - `contentWidth` — null | integer (minimum 320; maximum 1440): Width of the message in pixels
-- `fontFamily` — null | string (einer von `Arial`, `Courier New`, `Georgia`, `Helvetica`, `Lucida Sans`, `Tahoma`, `Trebuchet MS`, `Verdana`): Default font of the whole email, by name; see the schema for the names
+- `fontFamily` — null | string (einer von `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`, `Times New Roman`, `Trebuchet MS`, `Verdana`, `ヒラギノ角ゴ Pro W3`, `メイリオ`): Default font of the whole email, by name; see the schema for the names
+- `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits in a wider window
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-paragraph-add`
