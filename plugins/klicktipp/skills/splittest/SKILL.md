@@ -1,6 +1,6 @@
 ---
 name: splittest
-description: Splittests (A/B-Tests) in KlickTipp — anlegen, Varianten hinzufügen, kopieren und entfernen, Betreffzeile je Variante, und was sich ändert, sobald ein Newsletter einer ist. Auch bei „zwei Betreffzeilen testen", „welche Version kommt besser an", und wenn ein Werkzeug mit `split_test_not_supported` oder „is not a split test" abweist — das ist meist die falsche Adressierung, kein Fehler. Der Lebenszyklus ist `newsletter`, der Inhalt einer Variante `email`.
+description: A/B-Tests eines KlickTipp-Newsletters — anlegen, Varianten hinzufügen, kopieren, entfernen, Betreffzeile je Variante. Nutze ihn bei Splittest, Variante, Gewinner oder „zwei Betreffzeilen testen", und wenn ein Werkzeug `split_test_not_supported` meldet. Der Lebenszyklus ist `newsletter`.
 ---
 
 # KlickTipp Splittests

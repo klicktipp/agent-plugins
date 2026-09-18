@@ -8,6 +8,13 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.2 — 2026-09-18
+
+- **The skill descriptions are terse.** 2761 characters down to 1748 across the six — and they were
+  4743 two versions ago. Each now leads with the job in one clause, names the words a user would
+  actually say, and hands off to its neighbouring skill. This is the text that decides which skill
+  is consulted, and all of it sits in context before any of them is.
+
 ## 0.11.1 — 2026-09-18
 
 - **The skills follow Anthropic's authoring checklist now.** Every reference longer than 100 lines

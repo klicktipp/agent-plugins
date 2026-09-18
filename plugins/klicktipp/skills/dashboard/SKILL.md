@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Die Zahlen der letzten Aussendungen eines KlickTipp-Kontos als lesbares Dashboard — Reichweite, Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen. Auch bei Fragen nach Öffnungs- und Klickrate, nach der Zustellbarkeit, danach wie ein Newsletter abgeschnitten hat, oder wenn mehrere Aussendungen verglichen werden sollen. Nur lesend — es wird nichts angelegt, geändert oder verschickt.
+description: Die Zahlen der letzten Aussendungen eines KlickTipp-Kontos als Dashboard — Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen. Nutze ihn bei Report, Auswertung, Öffnungs- oder Klickrate, Zustellbarkeit oder dem Vergleich mehrerer Aussendungen. Nur lesend.
 ---
 
 # KlickTipp Dashboard

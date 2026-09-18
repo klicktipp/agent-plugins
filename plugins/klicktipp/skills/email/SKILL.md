@@ -1,6 +1,6 @@
 ---
 name: email
-description: Der Inhalt einer KlickTipp-E-Mail — lesen, ändern, gestalten, prüfen, veröffentlichen. Die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML, und ein Körper wird als fertiges Dokument in einem Aufruf abgelegt, nicht Baustein für Baustein. Auch für Gestaltung — Farben, Abstände, Rahmen, Breiten, Schrift —, für Bilder, und wenn ein Newsletter „ohne Inhalt" gemeldet wird, obwohl im Editor etwas zu sehen ist. Nicht für Landingpages und nicht für die einzelne Geschäftsmail (`email-template-generator`); die Hülle um den Inhalt ist `newsletter`.
+description: Den Inhalt einer KlickTipp-E-Mail lesen, ändern, gestalten, prüfen, veröffentlichen. Die Werkzeuge geben ein Bausteindokument heraus, nicht HTML, und ein Körper geht als fertiges Dokument in einem Aufruf hinein. Nutze ihn für Newsletter-Inhalte, Gestaltung und Bilder — und wenn ein Newsletter „ohne Inhalt" gemeldet wird. Die Hülle darum ist `newsletter`.
 ---
 
 # KlickTipp E-Mail

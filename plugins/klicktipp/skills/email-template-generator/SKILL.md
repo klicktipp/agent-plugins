@@ -1,6 +1,6 @@
 ---
 name: email-template-generator
-description: Geschäftliche E-Mails, die ankommen und beantwortet werden — Kaltakquise, Support-Antworten, Nachfassen, Entschuldigungen, Absagen, Terminanfragen. Auch für Betreffzeilen, fürs Kürzen und Verbessern, für eine Vorlage für einen wiederkehrenden Fall, und bei „warum antwortet auf diese Mail niemand". Nicht für Newsletter-Gestaltung oder HTML-E-Mails (`email`).
+description: Geschäftliche E-Mails schreiben, die beantwortet werden — Kaltakquise, Support-Antwort, Nachfassen, Absage, Terminanfrage. Nutze ihn zum Formulieren, Kürzen und für Betreffzeilen. Nicht für Newsletter oder HTML-Mails, dafür ist `email` da.
 ---
 
 # E-Mails, die beantwortet werden
