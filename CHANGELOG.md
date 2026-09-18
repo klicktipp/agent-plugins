@@ -8,6 +8,15 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.10.3 — 2026-09-18
+
+- **An orphaned README no longer ships with the `email` skill.** It was linked from nowhere, predated
+  the rebuild of the skill, and still opened by describing the skill as an HTML generator — the one
+  framing 0.10.0 removed. A reader who found it in the plugin would have believed it.
+- **The schema catalogue stops sending a reader upstream for files that are already there.** It
+  claimed only `definitions.schema.json` was mirrored; all fifteen are, and it now names the three
+  that genuinely are not.
+
 ## 0.10.2 — 2026-09-18
 
 - **The editor is named by what it is, not by its vendor.** Six places in the `email` skill called

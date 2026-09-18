@@ -36,17 +36,18 @@ the block and carries the level inside the descriptor.
 
 ## The rest of the upstream catalog
 
-Only the definitions schema is mirrored here, because it is the one every other file in that family
-references. The others are one file each in the upstream repository
-`BeefreeSDK/beefree-sdk-simple-schema` and are worth fetching when a task actually produces simple
-schema input:
+The family is mirrored in full next to this file, so nothing has to be fetched to read a
+constraint:
 
 - Layout — `simple_template.schema.json`, `simple_row.schema.json`, `simple_column.schema.json`
 - Blocks — `simple_button.schema.json`, `simple_divider.schema.json`, `simple_html.schema.json`,
   `simple_icons.schema.json`, `simple_image.schema.json`, `simple_list.schema.json`,
   `simple_menu.schema.json`, `simple_paragraph.schema.json`, `simple_title.schema.json`
-- Utility — `form_validation_schema.json`, plus row metadata, comments and comment-change schemas
-  that exist only as documentation pages
+- Shared — `definitions.schema.json`, which every one of them references, plus
+  `simple_unified.schema.json` with the whole family in one file and `example_valid_request.json`
+
+Only `form_validation_schema.json`, the row metadata and the comment schemas are not here; they
+exist upstream as documentation pages and are worth fetching if a task really needs them.
 
 Mirrors go stale: treat the copy here as a snapshot for orientation and re-fetch upstream before
 relying on a constraint. The stored-document rules in `SKILL.md` do not depend on it — they were
