@@ -32,7 +32,7 @@ the block and carries the level inside the descriptor.
 | --- | --- |
 | `document-skeleton.json` | key skeleton of a **stored** document, both shapes explained |
 | `blocks/` | one file per stored module kind: its product term, its tools, its fields, and what a round trip costs it |
-| `bee-simple-schema/` | the upstream schema files, verbatim and Apache-2.0 licensed: the unified schema, one per block, the shared `definitions.schema.json` and a complete valid example. See its README |
+| `simple-schema/` | the upstream schema files, verbatim and Apache-2.0 licensed: the unified schema, one per block, the shared `definitions.schema.json` and a complete valid example. See its README |
 
 ## The rest of the upstream catalog
 

@@ -8,6 +8,13 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.3 — 2026-09-18
+
+- **The editor is named by what it is.** The bundled schema folder is `references/simple-schema/`,
+  and the prose around it says editor rather than vendor. Its README keeps the source URL and the
+  Apache-2.0 copyright line, which is the condition for shipping those files at all. The module
+  types inside a stored document are literal values and unchanged.
+
 ## 0.11.2 — 2026-09-18
 
 - **The skill descriptions are terse.** 2761 characters down to 1748 across the six — and they were

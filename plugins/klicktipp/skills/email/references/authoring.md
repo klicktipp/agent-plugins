@@ -14,7 +14,7 @@ Gestaltung hineinzuholen, steht der kurze Weg in `SKILL.md` und du brauchst dies
 
 Nur wenn **nichts** davon existiert, entsteht der Körper wirklich neu — und auch dann gehört er in
 einen Aufruf: schreib das Dokument selbst (`references/document-skeleton.json` für die Form,
-`references/bee-simple-schema/` für die Felder) und leg es mit `email-content-document-import` ab.
+`references/simple-schema/` für die Felder) und leg es mit `email-content-document-import` ab.
 
 **Warum das keine Stilfrage ist.** Jeder Werkzeugaufruf kostet 15–30 Sekunden, davon das meiste
 nicht im Server, sondern im Modell davor. Eine E-Mail aus fünfzehn Bausteinen zusammenzusetzen sind

@@ -1,7 +1,8 @@
-# The Beefree simple schema, verbatim
+# The editor SDK's simple schema, verbatim
 
-The upstream JSON Schema files of the editor SDK's **simple schema**, copied unchanged so an agent
-can read what the format actually allows instead of inferring it from examples.
+The upstream JSON Schema files of the **simple schema**, copied unchanged so an agent can read what
+the format actually allows instead of inferring it from examples. The source and the licence below
+name the vendor because the licence requires it; everywhere else this is the editor's schema.
 
 | | |
 | --- | --- |

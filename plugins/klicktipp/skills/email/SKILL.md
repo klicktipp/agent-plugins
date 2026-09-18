@@ -335,7 +335,7 @@ In `references/` liegen:
 | `tools.md` | **alle Werkzeuge dieses Skills** — Inhalt lesen/prüfen/importieren/veröffentlichen, Bausteine, Gestaltung, Bilder: wofür, was sie nicht tun, Stolperer |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |
-| `bee-simple-schema/` | die Schema-Dateien des Anbieters, unverändert: das vereinte Schema, eines je Baustein, die geteilten Constraints und ein vollständiges gültiges Beispiel. **Kein** Prüfmaßstab für ein gespeichertes Dokument — warum, steht im Katalog daneben |
+| `simple-schema/` | die Schema-Dateien des Anbieters, unverändert: das vereinte Schema, eines je Baustein, die geteilten Constraints und ein vollständiges gültiges Beispiel. **Kein** Prüfmaßstab für ein gespeichertes Dokument — warum, steht im Katalog daneben |
 | `blocks/` | **eine Datei je Bausteinart**: Werkzeuge, Felder, Speicherort, Fallstricke, Importkosten. Lies die eine, die du brauchst — `blocks/README.md` ist der Index |
 | `html-authoring.md` | **die zwingenden Regeln für Import-HTML**: Grundgerüst, Zwölfer-Grid, Blockklassen, CSS und Bilder, KlickTipp-Variablen, Pflicht-Footer, Qualitätscheck |
 | `styling.md` | **Gestaltung ändern**: die vier Ebenen, benannte Werte statt CSS, die zwei Style-Karten eines Bausteins |
@@ -358,7 +358,7 @@ Zwei Fallen, die dort ausführlich stehen und beim Lesen sofort greifen:
 - Das Generierungs-Schema kennt zehn Bausteintypen, ein gespeichertes Dokument neunzehn plus
   Add-ons. Gespeicherte Newsletter dagegen zu validieren lehnt die Mehrheit ab.
 
-`document-skeleton.json` und `bee-simple-schema/` brauchst du, sobald du ein Dokument **selbst
+`document-skeleton.json` und `simple-schema/` brauchst du, sobald du ein Dokument **selbst
 schreibst**, um es mit `email-content-document-import` in einem Aufruf abzulegen — das Gerüst gibt
 die Form, das Schema die Felder, und im Schema-Ordner liegt ein vollständiges gültiges Beispiel.
 `kt-module-definitions.json` und der Schema-Katalog bleiben Analyse-Material: sie beschreiben die
