@@ -8,6 +8,13 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.10.4 — 2026-09-18
+
+- **The documentation moved to developers.klicktipp.com and is now two guides** — one for the MCP
+  server itself, one for the plugins. Both READMEs and the `homepage` of both manifests point there.
+  The tool and skill listing stays in the README, because it changes with every release while the
+  guides do not, and the guides link back here for it.
+
 ## 0.10.3 — 2026-09-18
 
 - **An orphaned README no longer ships with the `email` skill.** It was linked from nowhere, predated

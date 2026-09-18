@@ -15,7 +15,7 @@ No API key lives in this repository. The MCP endpoint
 (`https://mcp.klicktipp.com/mcp`) sits behind OAuth and you sign in once,
 interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 
-**Documentation: <https://klicktipp.github.io/agent-plugins/>**
+**Documentation** — [the MCP server](https://developers.klicktipp.com/guides/mcp-server) · [the plugins](https://developers.klicktipp.com/guides/mcp-server-plugins). The tools and skills each version ships are listed below and in [the plugin's README](plugins/klicktipp/README.md), because that list moves with the releases.
 
 | | |
 |---|---|

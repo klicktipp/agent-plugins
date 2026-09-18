@@ -196,6 +196,7 @@ existing signature through `signatureId` in
 ## Support
 
 support@klick-tipp.com ·
-[Documentation](https://klicktipp.github.io/agent-plugins/) ·
+[MCP server](https://developers.klicktipp.com/guides/mcp-server) ·
+[Plugins](https://developers.klicktipp.com/guides/mcp-server-plugins) ·
 [Privacy policy](https://www.klick-tipp.com/datenschutz) ·
 [Terms](https://www.klick-tipp.com/agb)
