@@ -4,6 +4,17 @@ Diese Datei ist die Gestaltungsseite von `dashboard`. Sie setzt **nichts** vorau
 Bibliothek, kein CDN, keinen weiteren Skill. Alles hier lässt sich in einer einzigen HTML-Datei
 umsetzen, und genau das ist der Punkt: ein Report wird Wochen später geöffnet, oft ohne Netz.
 
+## Inhalt
+
+- 0. Was ein Artifact von einer HTML-Datei unterscheidet
+- 1. Der Farb-Layer
+- 2. Schrift
+- 3. Die Kachel
+- 4. Diagramme in reinem SVG
+- 5. Interaktion
+- 6. Layout
+- 7. Prüfen, bevor es rausgeht
+
 ## 0. Was ein Artifact von einer HTML-Datei unterscheidet
 
 **Schreib die Seite ohne Dokumentrahmen.** Kein `<!DOCTYPE>`, kein `<html>`, kein `<head>`, kein

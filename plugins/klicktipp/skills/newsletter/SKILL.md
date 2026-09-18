@@ -1,7 +1,6 @@
 ---
 name: newsletter
 description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf anlegen, Betreff, Pre-Header und Zielgruppe setzen, Absender und Signatur konfigurieren, Testversand, Terminierung, Löschen, und die Aktivierung, die ein Mensch bestätigt. Auch bei „wie viele erreiche ich damit", wenn ein Versand nicht startet oder ein Newsletter sich nicht mehr bearbeiten lässt, und immer wenn jemand einen Newsletter „rausschicken" oder „fertig machen" will — Inhalt allein verschickt nichts. Der Inhalt selbst ist `email`, A/B-Tests sind `splittest`.
-prerequisites: None
 ---
 
 # KlickTipp Newsletter

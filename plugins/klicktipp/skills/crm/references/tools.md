@@ -38,6 +38,13 @@ Einwilligungsnachweis. Die Aufschlüsselung mit Begründung steht in `../SKILL.m
 | `search-custom-fields` · `get-custom-field` | R | Felddefinitionen samt Platzhalter für den Inhalt. |
 | `create-custom-field` · `update-custom-field` · `delete-custom-field` | / I / D | Datentyp ist endgültig. Löschen vernichtet die Werte aller Kontakte. |
 
+## Inhalt
+
+- Opt-in
+- Kontakte
+- Tags
+- Felder
+
 ## Opt-in
 
 ### `search-opt-in-processes` · `get-opt-in-process`

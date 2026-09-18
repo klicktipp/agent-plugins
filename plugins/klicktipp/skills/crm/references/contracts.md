@@ -5,9 +5,21 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-18) mit `build/contracts.py` — nicht von Hand
-ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
-und woran man sich stößt, steht in [tools.md](tools.md).
+Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
+tut und woran man sich stößt, steht in [tools.md](tools.md).
+
+## Inhalt
+
+`search-opt-in-processes` · `get-opt-in-process` · `create-opt-in-process` ·
+`update-opt-in-process` · `delete-opt-in-process` · `get-opt-in-confirmation-email` ·
+`update-opt-in-confirmation-email` · `get-opt-in-confirmation-email-content` ·
+`update-opt-in-confirmation-email-content` · `send-opt-in-confirmation-email-test` ·
+`preview-opt-in-confirmation-email` · `search-contacts` · `get-contact` · `update-contact` ·
+`assign-manual-tag` · `remove-manual-tag` · `subscribe` · `unsubscribe` ·
+`get-subscription-redirect-url` · `search-custom-fields` · `get-custom-field` ·
+`create-custom-field` · `update-custom-field` · `delete-custom-field` · `search-tags` ·
+`get-tag` · `create-manual-tag` · `update-manual-tag` · `delete-manual-tag`
 
 ## `search-opt-in-processes` · RI
 

@@ -25,6 +25,12 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `email-signature-search` · `email-signature-get` | R | Signaturen, die unter einen Newsletter können, mit Absenderprofil — die Kandidaten für `signatureId`. ⚠ nicht auf Production |
 | `email-signature-create` · `email-signature-update` · `email-signature-content-replace` · `email-signature-delivery-configure` | / I / DI / I | Signatur anlegen (auch als Kopie), Name/Notiz/Labels, Inhaltsblock komplett ersetzen, Tags und Absenderprofil. ⚠ nicht auf Production |
 
+## Inhalt
+
+- Newsletter
+- Signaturen — ⚠ nicht auf Production
+- Antwortformen
+
 ## Newsletter
 
 ### `email-newsletter-cancel`

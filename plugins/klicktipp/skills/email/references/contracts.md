@@ -5,9 +5,27 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-18) mit `build/contracts.py` — nicht von Hand
-ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
-und woran man sich stößt, steht in [tools.md](tools.md).
+Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
+tut und woran man sich stößt, steht in [tools.md](tools.md).
+
+## Inhalt
+
+`email-content-import` · `email-content-publish` · `email-content-copy` ·
+`email-content-document-import` · `email-spacer-style-write` · `email-divider-style-write` ·
+`email-button-style-write` · `email-get` · `email-preview` · `email-content-check` ·
+`email-block-move` · `email-block-remove` · `email-block-style-write` · `email-button-add` ·
+`email-button-write` · `email-column-style-write` · `email-divider-add` · `email-heading-add` ·
+`email-html-add` · `email-icons-add` · `email-icons-write` · `email-image-add` ·
+`email-image-write` · `email-list-add` · `email-menu-add` · `email-menu-write` ·
+`email-page-style-write` · `email-paragraph-add` · `email-personalized-email-add` ·
+`email-personalized-email-write` · `email-row-add` · `email-row-style-write` ·
+`email-social-add` · `email-social-icon-search` · `email-social-write` · `email-spacer-add` ·
+`email-table-add` · `email-table-write` · `email-text-add` · `email-text-write` ·
+`email-video-add` · `email-video-write` · `email-image-search` · `email-image-stock-search` ·
+`email-image-folder-search` · `email-image-folder-create` · `email-image-folder-delete` ·
+`email-image-upload` · `email-image-upload-file` · `email-image-upload-from-url` ·
+`email-image-preview` · `email-template-search`
 
 ## `email-content-import` · DO
 

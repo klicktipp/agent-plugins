@@ -8,6 +8,14 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.1 — 2026-09-18
+
+- **The skills follow Anthropic's authoring checklist now.** Every reference longer than 100 lines
+  carries a table of contents, so a partial read still shows what else is in the file. The
+  `prerequisites` key is gone — the format defines `name` and `description`, and `prerequisites:
+  None` said nothing six times over. And the contract references stopped describing a generator that
+  no longer exists.
+
 ## 0.11.0 — 2026-09-18
 
 - **Codex finds the marketplace where it looks for it.** `.agents/plugins/marketplace.json` is the

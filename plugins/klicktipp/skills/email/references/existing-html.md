@@ -47,6 +47,11 @@ Zusätzlich gilt beim Bearbeiten:
 
 Wenn kein bestehendes HTML vorliegt, gestaltest du frei nach den Regeln unten.
 
+## Inhalt
+
+- Import-HTML schreiben
+- Was der Import tut, meldet und kostet
+
 ## Import-HTML schreiben
 
 Sobald du HTML erzeugst, das durch `email-content-import` geht — beim Bearbeiten vorhandenen

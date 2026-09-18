@@ -5,9 +5,18 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-18) mit `build/contracts.py` — nicht von Hand
-ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
-und woran man sich stößt, steht in [tools.md](tools.md).
+Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
+tut und woran man sich stößt, steht in [tools.md](tools.md).
+
+## Inhalt
+
+`email-signature-search` · `email-signature-get` · `email-signature-create` ·
+`email-signature-update` · `email-signature-content-replace` ·
+`email-signature-delivery-configure` · `email-newsletter-search` · `email-newsletter-get` ·
+`email-newsletter-draft-create` · `email-newsletter-draft-update` ·
+`email-newsletter-draft-delete` · `email-newsletter-delivery-configure` ·
+`email-newsletter-test-send` · `email-newsletter-send` · `email-newsletter-cancel`
 
 ## `email-signature-search` · RI
 

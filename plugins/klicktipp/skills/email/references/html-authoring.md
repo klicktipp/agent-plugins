@@ -10,6 +10,17 @@ Für den anderen Weg — eine bestehende E-Mail über die Bausteinwerkzeuge änd
 Generiere ausschließlich E-Mail-HTML. Die HTML-Importer-API des Editors ist für E-Mail-Templates
 optimiert, nicht für Landingpages oder allgemeine Webseiten.
 
+## Inhalt
+
+- 1. Grundgerüst
+- 2. Grid-System: Zeilen und Spalten
+- 3. Block-Klassen des Editors
+- 4. CSS, Bilder und Ressourcen
+- 5. KlickTipp-Variablen: Dynamische Inhalte
+- 6. Pflicht-Footer
+- 7. Valides HTML
+- 8. Import-Qualitätscheck
+
 ## 1. Grundgerüst
 
 Verwende ausnahmslos dieses Basis-Gerüst. Die HTML-Importer-API des Editors verlangt valides HTML mit

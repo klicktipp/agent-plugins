@@ -1,7 +1,6 @@
 ---
 name: crm
 description: Die Kontaktdaten eines KlickTipp-Kontos — Kontakte suchen, anlegen, an- und abmelden, Feldwerte setzen; manuelle Tags und eigene Felder anlegen, vergeben, umbenennen, löschen; Opt-in-Prozesse (Anmeldelisten) lesen und ändern. Auch bei „wer hat Tag X", „welche Felder gibt es", „über welche Liste kam jemand rein", oder wenn ein Werkzeug ein Tag oder Feld als unbekannt abweist. Nicht für Newsletter (`newsletter`), deren Inhalt (`email`) oder Zahlen (`dashboard`).
-prerequisites: None
 ---
 
 # KlickTipp CRM — Kontakte, Tags, Felder, Opt-in
