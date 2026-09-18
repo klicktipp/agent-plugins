@@ -1,6 +1,6 @@
 ---
 name: email
-description: Der Inhalt einer KlickTipp-E-Mail: lesen, ändern, gestalten, prüfen, veröffentlichen. Die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML — ein Körper wird gefüllt, indem ein fertiges Dokument in einem Aufruf hineingeht (aus einer anderen E-Mail des Kontos, als Bee-JSON, notfalls als HTML), nicht Baustein für Baustein. Nutze diesen Skill, wenn Inhalte einer E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter neu entstehen soll, wenn Gestaltung geändert wird — Farben, Abstände, Rahmen, Breiten, Schrift —, wenn Bilder gesucht oder hochgeladen werden, wenn ein Newsletter „ohne Inhalt" gemeldet wird obwohl im Editor etwas zu sehen ist, oder wenn Warnungen zu Bausteinen zu deuten sind. Nicht für Landingpages, und nicht für die einzelne Geschäftsmail (Anschreiben, Antwort, Nachfassen): dafür ist `email-template-generator` zuständig. Für die Hülle um den Inhalt — Name, Zielgruppe, Absender, Versand — ist `newsletter` zuständig.
+description: Der Inhalt einer KlickTipp-E-Mail: lesen, ändern, gestalten, prüfen, veröffentlichen. Die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML — ein Körper wird gefüllt, indem ein fertiges Dokument in einem Aufruf hineingeht (aus einer anderen E-Mail des Kontos, als Editor-JSON, notfalls als HTML), nicht Baustein für Baustein. Nutze diesen Skill, wenn Inhalte einer E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter neu entstehen soll, wenn Gestaltung geändert wird — Farben, Abstände, Rahmen, Breiten, Schrift —, wenn Bilder gesucht oder hochgeladen werden, wenn ein Newsletter „ohne Inhalt" gemeldet wird obwohl im Editor etwas zu sehen ist, oder wenn Warnungen zu Bausteinen zu deuten sind. Nicht für Landingpages, und nicht für die einzelne Geschäftsmail (Anschreiben, Antwort, Nachfassen): dafür ist `email-template-generator` zuständig. Für die Hülle um den Inhalt — Name, Zielgruppe, Absender, Versand — ist `newsletter` zuständig.
 prerequisites: None
 ---
 
@@ -373,7 +373,7 @@ welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorlieg
 | Die Gestaltung liegt vor … | Weg | Verlust |
 | --- | --- | --- |
 | als **andere E-Mail dieses Kontos** | `email-content-copy` | keiner |
-| als **Bee-Dokument** (Vorlage, Export) | `email-content-document-import` | keiner |
+| als **Editor-Dokument** (Vorlage, Export) | `email-content-document-import` | keiner |
 | **nur als HTML** | `email-content-import` | die Konvertierung kostet |
 | **gar nicht** | selbst schreiben → `references/authoring.md` | — |
 

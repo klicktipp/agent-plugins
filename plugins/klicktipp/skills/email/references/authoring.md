@@ -8,7 +8,7 @@ Gestaltung hineinzuholen, steht der kurze Weg in `SKILL.md` und du brauchst dies
 
 - Als **andere E-Mail dieses Kontos** — die letzte Ausgabe, eine Vorlagen-Mail → `email-content-copy`.
   Ein Aufruf.
-- Als **Bee-Dokument** — Vorlage, Export → `email-content-document-import`. Ein Aufruf.
+- Als **Editor-Dokument** — Vorlage, Export → `email-content-document-import`. Ein Aufruf.
 - **Nur als HTML** — von einer Agentur, aus einem anderen Werkzeug → `email-content-import`. Ein
   Aufruf, plus die Konvertierungskosten aus `importWarnings`.
 

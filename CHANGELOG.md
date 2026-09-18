@@ -8,6 +8,15 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.10.2 — 2026-09-18
+
+- **The editor is named by what it is, not by its vendor.** Six places in the `email` skill called
+  the stored document a "Bee-Dokument" or its CDN "Bees Ressourcen-Host"; they now read
+  Editor-Dokument and "Ressourcen-Host des Editors" — the term someone reading the KlickTipp UI
+  would recognise. The module types in a stored document (`mailup-bee-newsletter-modules-*`) are
+  literal values and unchanged, and the vendored simple-schema files keep their upstream origin,
+  which their Apache-2.0 licence requires.
+
 ## 0.10.1 — 2026-09-18
 
 - **Two things that made the plugin directory reject the submission.** The `email` skill's

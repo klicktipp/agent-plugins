@@ -20,7 +20,7 @@ Konten kommt statt einer Antwort die Liste zur Auswahl zurück; dann `accountId`
 | `email-get` | R | Der E-Mail-Körper, per `emailId` oder `editorUrl`; Projektionen `content`, `contentOutline`, `styleOutline`, `publishedContent`. Liefert die `contentRevision`. |
 | `email-content-check` | R | Befunde vor dem Veröffentlichen: Bild ohne Quelle/Alt, Button ohne Ziel, leerer Text, unkonfiguriertes Add-on, Kontrast, fehlender Footer-Platzhalter. |
 | `email-content-import` | DO | HTML → Editor-Dokument, Vollersatz ohne Undo. Der Einstieg **nur für HTML**, nie der Bearbeitungsweg. |
-| `email-content-document-import` | DO | Fertiges Bee-Dokument (JSON) → Körper, Vollersatz ohne Undo. Konvertiert nichts, verliert nichts. |
+| `email-content-document-import` | DO | Fertiges Editor-Dokument (JSON) → Körper, Vollersatz ohne Undo. Konvertiert nichts, verliert nichts. |
 | `email-content-copy` | DO | Körper einer anderen E-Mail des Kontos übernehmen, unverändert. Quelle darf versendet sein. |
 | `email-content-publish` | DO | Der Entwurf wird zum Versandinhalt. Ändert, was echte Empfänger bekämen. |
 
@@ -69,7 +69,7 @@ zusammenlaufen, stehen genau dort. Melde nach einem Import nie „hat geklappt",
 genannt zu haben; jede nennt auch das Werkzeug, mit dem der Baustein von Hand nachgezogen wird.
 
 ### `email-content-document-import`
-**Wofür:** ein Design, das **schon ein Bee-Dokument ist** — eine Vorlage, ein Export, das, was
+**Wofür:** ein Design, das **schon ein Editor-Dokument ist** — eine Vorlage, ein Export, das, was
 `email-get` unter `content` herausgegeben hat — als Körper speichern. **Nicht:** HTML (dafür
 `email-content-import`), und nicht ändern (dafür die Baustein-Werkzeuge). **Stolperer:** Hier wird
 nichts konvertiert, also geht auch nichts verloren: Layout, Abstände, Trennlinien, Tabellen,
@@ -205,7 +205,7 @@ entscheidet, entscheidet blind. Das Fenster zeigt es in seinen eigenen Proportio
 Schachbrett — ein transparentes PNG verrät so, dass es keinen eigenen Hintergrund hat.
 **Nicht:** eine beliebige URL. Der Host erklärt die CSP des iframes, **wenn er die Ressource liest**
 — vor jedem Aufruf und damit ohne zu wissen, welches Bild gefragt sein wird. Die Liste steht also
-fest: die Mediathek-CDNs, Bees Ressourcen-Host, Pexels und Pixabay.
+fest: die Mediathek-CDNs, der Ressourcen-Host des Editors, Pexels und Pixabay.
 **Stolperer:** Ein Bild auf dem eigenen Server des Kunden wird **mit Namen abgelehnt** statt still
 als leeres Fenster zu enden; der Weg hinein ist `email-image-upload-from-url` — es kopiert das Bild
 in die Mediathek und gibt eine URL zurück, die dieses Werkzeug zeigen kann. Das ist ohnehin die
