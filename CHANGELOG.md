@@ -8,6 +8,14 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.10.1 — 2026-09-18
+
+- **Two things that made the plugin directory reject the submission.** The `email` skill's
+  `description` was 1198 characters against a limit of 1024 — it now keeps every trigger that is not
+  covered elsewhere and drops the two that were. And the release archive held the plugin directory
+  as a folder, so `.claude-plugin/plugin.json` sat one level down; it now holds the contents of that
+  directory, with the manifest at the top level.
+
 ## 0.10.0 — 2026-09-18
 
 - **Three ways into a newsletter body, and the skill says which one you are in.** The `email` skill

@@ -72,14 +72,15 @@ jobs:
           python3 .github/scripts/release_notes.py "${{ steps.v.outputs.version }}" > notes.md
           cat notes.md
 
-      # the archive holds the plugin directory itself, so it unpacks to
-      # klicktipp/ and installs as a drop-in without a nested folder
+      # the archive holds the CONTENTS of the plugin directory, so
+      # .claude-plugin/plugin.json sits at the top level of the zip -- the
+      # plugin directory rejects an archive whose manifest is one folder down
       - name: Archive the plugin
         run: |
           mkdir -p stage dist
           cp -R plugins/klicktipp stage/klicktipp
           find stage -name .DS_Store -delete
-          (cd stage && zip -qr "../dist/klicktipp-${{ steps.v.outputs.version }}.zip" klicktipp)
+          (cd stage/klicktipp && zip -qr "../../dist/klicktipp-${{ steps.v.outputs.version }}.zip" .)
           unzip -l "dist/klicktipp-${{ steps.v.outputs.version }}.zip" | tail -3
 
       - name: Publish

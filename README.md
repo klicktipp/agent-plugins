@@ -60,9 +60,10 @@ git tag 0.5.1 && git push origin 0.5.1
 [`.github/workflows/release.yml`](.github/workflows/release.yml) checks that the
 tag equals the version in both manifests, revalidates the plugin, takes the
 release notes from the tag's [`CHANGELOG.md`](CHANGELOG.md) section, and attaches
-`klicktipp-<tag>.zip` — the plugin directory itself, so it unpacks to
-`klicktipp/`. A tag without a changelog section, or one that disagrees with the
-manifests, fails the run and publishes nothing.
+`klicktipp-<tag>.zip` — the contents of the plugin directory, with
+`.claude-plugin/plugin.json` at the top level, which is where the plugin
+directory looks for it. A tag without a changelog section, or one that disagrees
+with the manifests, fails the run and publishes nothing.
 
 ## Where this comes from
 
