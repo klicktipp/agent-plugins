@@ -71,7 +71,7 @@ Parameter:
 
 **Import email content from a document**
 
-Stores a complete drag-and-drop editor document as the body of one KlickTipp email, addressed by its editor URL -- the entry path for a design that already exists as a Beefree document, such as a template or an export. Takes the document as JSON, page-rooted or the page itself, in the shape email-get hands one out. Nothing is converted, so nothing is lost; for a design that exists only as HTML use email-content-import, and to take one over from another email of the account use email-content-copy. Replaces the stored draft entirely, without undo, and does not publish -- use email-content-publish, named in nextAction. Bound to the content revision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
+Stores a complete drag-and-drop editor document as the body of one KlickTipp email, addressed by its editor URL -- the entry path for a design that already exists as such a document, such as a template or an export. Takes the document as JSON, page-rooted or the page itself, in the shape email-get hands one out. Nothing is converted, so nothing is lost; for a design that exists only as HTML use email-content-import, and to take one over from another email of the account use email-content-copy. Replaces the stored draft entirely, without undo, and does not publish -- use email-content-publish, named in nextAction. Bound to the content revision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
 
 Parameter:
 
@@ -151,7 +151,7 @@ Parameter:
 
 **Preview email**
 
-Renders the current drag-and-drop email draft through Bee and displays its HTML in an MCP App. Takes the editor URL from email-get or a content write. Includes unpublished edits; does not save, publish or send. Recipient placeholders remain unresolved. The result carries contentHtml for hosts without MCP Apps support.
+Renders the current drag-and-drop email draft and displays its HTML in an MCP App. Takes the editor URL from email-get or a content write. Includes unpublished edits; does not save, publish or send. Recipient placeholders remain unresolved. The result carries contentHtml for hosts without MCP Apps support.
 
 Parameter:
 

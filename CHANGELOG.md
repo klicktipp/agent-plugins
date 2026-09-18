@@ -8,6 +8,12 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.4 — 2026-09-18
+
+- **The last two vendor mentions are gone**, at the source. `email-content-document-import` and
+  `email-preview` name the editor document as what it is — JSON — rather than by brand, and the
+  contract reference follows the server word for word as it always does.
+
 ## 0.11.3 — 2026-09-18
 
 - **The editor is named by what it is.** The bundled schema folder is `references/simple-schema/`,
