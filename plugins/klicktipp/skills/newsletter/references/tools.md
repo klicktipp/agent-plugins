@@ -55,7 +55,7 @@ Betreff), `audience`, `deliveryConfiguration` (Absender, Antwortadresse, Signatu
 nur Identität und Lebenszyklus. **Nicht:** der Körper — `email-get` mit `editorUrl` oder `emailId`.
 **Stolperer:** Projektionen sind alles oder nichts; eine, die nicht bedient werden kann, lässt den
 ganzen Aufruf scheitern. Bei einem Splittest sind `emailId`, `contentUrl` und `metadata.subject`
-null, die Arme stehen in `splitTestVariants`, und `deliveryConfiguration` braucht eine `editorUrl`
+null, die Varianten stehen in `splitTestVariants`, und `deliveryConfiguration` braucht eine `editorUrl`
 daraus. `audienceReach` ist eine Messung, kein gespeicherter Wert — und die einzige Zahl, die „wie
 viele Kontakte" beantwortet. `deliveryStatus` trägt `observedAt`: Bounces und Beschwerden kommen
 nach dem Versand noch nach.
@@ -220,10 +220,10 @@ zutrifft. Nicht angeforderte Projektionen **fehlen**, statt `null` zu sein.
 
 ### `email-newsletter-get`
 
-Grundfelder: `accountId*`, `newsletterId*`, `emailId*` (null bei einem Splittest — jeder Arm hat
+Grundfelder: `accountId*`, `newsletterId*`, `emailId*` (null bei einem Splittest — jede Variante hat
 seine eigene E-Mail), `createdAt*`, `newsletterStatus*` (`draft` · `scheduled` · `outgoing` ·
 `sent`), `usageType*` (`newsletter` · `newsletter-split-test`), `emailEditor*` (`drag-and-drop` ·
-`rich-text` · null beim Splittest), `isSplitTest*`, `splitTestVariants` (Arme mit `emailId`,
+`rich-text` · null beim Splittest), `isSplitTest*`, `splitTestVariants` (Varianten mit `emailId`,
 `label`, `name`, `subject`, `editorUrl`; null ohne Splittest), `editUrl*`, `contentUrl*` (null beim
 Splittest), `scheduleUrl*`, `statisticsUrl*`.
 
@@ -264,5 +264,5 @@ Eine Ablehnung kommt mit `isError: true` und einer von zwei Formen:
   `use_klicktipp_editor`, `change_document`, `change_html`, `retry_later`,
   `ask_user_before_retry`, …), `details` ist immer ein Objekt, notfalls leer. Gib den Code weiter.
 - **Splittest-Ablehnung:** `{ "code": "split_test_not_supported", "isSplitTest": true, "appUrl",
-  "newsletterId", "message" }` — die Operation kann keinen Arm adressieren; `appUrl` sagt, wo die
-  Arme in KlickTipp bearbeitet werden. Nichts wurde verändert.
+  "newsletterId", "message" }` — die Operation kann keine Variante adressieren; `appUrl` sagt, wo die
+  Varianten in KlickTipp bearbeitet werden. Nichts wurde verändert.

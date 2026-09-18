@@ -19,7 +19,9 @@ Konten kommt statt einer Antwort die Liste zur Auswahl zurück; dann `accountId`
 | --- | --- | --- |
 | `email-get` | R | Der E-Mail-Körper, per `emailId` oder `editorUrl`; Projektionen `content`, `contentOutline`, `styleOutline`, `publishedContent`. Liefert die `contentRevision`. |
 | `email-content-check` | R | Befunde vor dem Veröffentlichen: Bild ohne Quelle/Alt, Button ohne Ziel, leerer Text, unkonfiguriertes Add-on, Kontrast, fehlender Footer-Platzhalter. |
-| `email-content-import` | DO | HTML → Editor-Dokument, Vollersatz ohne Undo. Der **Einstieg**, nie der Bearbeitungsweg. |
+| `email-content-import` | DO | HTML → Editor-Dokument, Vollersatz ohne Undo. Der Einstieg **nur für HTML**, nie der Bearbeitungsweg. |
+| `email-content-document-import` | DO | Fertiges Bee-Dokument (JSON) → Körper, Vollersatz ohne Undo. Konvertiert nichts, verliert nichts. |
+| `email-content-copy` | DO | Körper einer anderen E-Mail des Kontos übernehmen, unverändert. Quelle darf versendet sein. |
 | `email-content-publish` | DO | Der Entwurf wird zum Versandinhalt. Ändert, was echte Empfänger bekämen. |
 
 ### `email-get`
@@ -65,6 +67,35 @@ Konstruktion, die nicht als eigener Baustein zurückkam — Trennlinien, Listen,
 Videos. Eine verschluckte Trennlinie und eine Tabelle, deren Zellen zu `Zelle AZelle B`
 zusammenlaufen, stehen genau dort. Melde nach einem Import nie „hat geklappt", ohne diese Zeilen
 genannt zu haben; jede nennt auch das Werkzeug, mit dem der Baustein von Hand nachgezogen wird.
+
+### `email-content-document-import`
+**Wofür:** ein Design, das **schon ein Bee-Dokument ist** — eine Vorlage, ein Export, das, was
+`email-get` unter `content` herausgegeben hat — als Körper speichern. **Nicht:** HTML (dafür
+`email-content-import`), und nicht ändern (dafür die Baustein-Werkzeuge). **Stolperer:** Hier wird
+nichts konvertiert, also geht auch nichts verloren: Layout, Abstände, Trennlinien, Tabellen,
+Entscheidungen und KI-Blöcke kommen so an, wie sie geschickt wurden. Das Dokument geht als JSON
+hinein, entweder mit `page`-Wurzel oder als Seite selbst. Ansonsten gelten dieselben Regeln wie beim
+HTML-Import: Vollersatz ohne Undo, erste Abweisung über bestehendem Inhalt mit Auflistung,
+`replaceExistingContent: true` beim zweiten Aufruf, Bindung an die `contentRevision`, und
+veröffentlicht wird getrennt.
+
+Einen bestehenden Newsletter übernimmst du einfacher mit `email-content-copy` — das spart es, das
+ganze Dokument durch den Kontext zu schleifen. Dieses Werkzeug hier ist für Dokumente, die **nicht**
+aus einer E-Mail dieses Kontos kommen.
+
+Ist das Dokument unlesbar, sagt die Abweisung „The document you sent" — das ist **deine** Eingabe,
+nicht der Newsletter. Fang dann nicht an, den Newsletter zu untersuchen.
+
+### `email-content-copy`
+**Wofür:** „mach den nächsten wie den letzten". Nimmt den Körper einer anderen E-Mail desselben
+Kontos, Byte für Byte. **Nicht:** Name, Betreff, Zielgruppe — das ist die Hülle
+(`email-newsletter-draft-update`). **Stolperer:** Der richtige Weg statt „HTML der alten Mail holen
+und importieren" — dieser Umweg ist genau der, der Trennlinien, Boxen und Bilder gekostet hat. Beide
+E-Mails werden über ihre `editorUrl` benannt. Die **Quelle** darf jede Newsletter-E-Mail des Kontos
+sein, auch eine längst versendete, und wird nur gelesen. Das **Ziel** muss ein bearbeitbarer Entwurf
+sein und verliert seinen Körper vollständig. Quelle und Ziel dürfen nicht dieselbe E-Mail sein, und
+eine leere Quelle wird abgewiesen, statt das Ziel zu leeren. Die erste Abweisung über bestehendem
+Inhalt sagt „A copy replaces the whole document" und zählt auf, was verloren ginge.
 
 ### `email-content-publish`
 **Wofür:** der Entwurf wird Versandinhalt. **Nicht:** senden. **Stolperer:** Ändert, was echte
@@ -143,6 +174,7 @@ Dort noch nicht freigeschaltet: „unknown tool" ist kein Fehler, die Freigabe s
 | Werkzeug | | Wofür |
 | --- | --- | --- |
 | `email-image-search` | R | Die Mediathek des Kontos, seitenweise. Listet, sucht nicht nach Motiven. |
+| `email-image-preview` | R I | **Zeigt eine Bild-URL als Bild** im App-Fenster. Nur Mediathek-CDN und Stock-Archive. |
 | `email-image-stock-search` | RO | Pexels/Pixabay. Kommt nie leer zurück; die URLs nie direkt in den Newsletter. |
 | `email-image-upload` | | Öffnet das **Upload-Formular**. Nimmt nichts an und speichert nichts; der Nutzer wählt im Fenster die Datei. |
 | `email-image-upload-file` | | Das Formular speichert damit die gewählte Datei. **Nur für die App sichtbar**, nicht in deiner Werkzeugliste. |
@@ -159,11 +191,26 @@ derselben `query`). Hochladen geht hier nicht — das ist `email-image-upload`.
 
 ### `email-image-stock-search`
 **Wofür:** Pexels/Pixabay; `query` ein, zwei Wörter **auf Englisch** (die Archive sind englisch
-indexiert), `limit` 1–12 (Default 3, drei passen nebeneinander), `minWidth` 1200 für ein Bild über
+indexiert), `limit` 1–12 (Default 6, zwei Reihen zu dritt), `minWidth` 1200 für ein Bild über
 die volle Breite (600 Punkte müssen auf Retina scharf bleiben). **Stolperer:** Kommt **nie** leer
 zurück — ohne Treffer liefert es Unverwandtes; sag, was zu sehen ist. Die URLs gehören nicht in den
 Newsletter: per `email-image-upload-from-url` übernehmen. Lizenz ohne Namensnennung, aber mit Einschränkung
 bei erkennbaren Personen — Entscheidung des Nutzers.
+
+### `email-image-preview`
+**Wofür:** eine einzelne Bild-URL als Bild zeigen, bevor sie in eine E-Mail geht — die URL aus
+`email-image-search`, aus der Antwort von `email-image-upload-from-url` oder aus einem mit
+`email-get` zurückgelesenen Bildblock. „1200x800, herbst-hero.jpg" ist kein Bild; wer danach
+entscheidet, entscheidet blind. Das Fenster zeigt es in seinen eigenen Proportionen auf einem
+Schachbrett — ein transparentes PNG verrät so, dass es keinen eigenen Hintergrund hat.
+**Nicht:** eine beliebige URL. Der Host erklärt die CSP des iframes, **wenn er die Ressource liest**
+— vor jedem Aufruf und damit ohne zu wissen, welches Bild gefragt sein wird. Die Liste steht also
+fest: die Mediathek-CDNs, Bees Ressourcen-Host, Pexels und Pixabay.
+**Stolperer:** Ein Bild auf dem eigenen Server des Kunden wird **mit Namen abgelehnt** statt still
+als leeres Fenster zu enden; der Weg hinein ist `email-image-upload-from-url` — es kopiert das Bild
+in die Mediathek und gibt eine URL zurück, die dieses Werkzeug zeigen kann. Das ist ohnehin die
+richtige Reihenfolge: Was in den Newsletter soll, muss in der Mediathek liegen. Nur `https`. Ohne
+App-Host bringt der Aufruf nichts — dann nenne dem Nutzer einfach die URL.
 
 ### `email-image-upload`
 **Wofür:** das Upload-Formular öffnen, wenn ein Bild vom Rechner des Nutzers kommen soll. Nimmt nur
@@ -230,7 +277,7 @@ Editor-Zustand hat), `editorUrl*` (die kanonische URL, an die jeder Write adress
   erlauben, aber jeden Write sperren — heute eine separat gepflegte Textfassung), `importWarnings*`
   (was ein `email-content-import` kosten würde: Blöcke, die als Markup zurückkommen, Entscheidungen
   und KI-Blöcke, die er löscht; leer, wenn nichts), `variantLabel`/`variantIndex` (nur bei einem
-  Splittest-Arm).
+  Splittest-Variante).
 - **`contentOutline`** — `contentStatus*`, `contentRevision*` (derselbe Token wie in `content`: ein
   Lesen, zwei Projektionen), `blockCount*`, `rows*` von oben nach unten, je `uuid*` und `columns*`
   von links nach rechts (die Spalten-`uuid` ist, was ein Add adressiert), je `uuid*` und `modules*`

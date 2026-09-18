@@ -1,19 +1,20 @@
 ---
 name: email
-description: Erzeugt importfähiges E-Mail-HTML für den KlickTipp-E-Mail-Editor und deutet, was die Newsletter-Werkzeuge über einen Inhalt zurückgeben — die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML. Auch wenn Gestaltung geändert werden soll — Farben, Abstände, Rahmen, Breiten —, oder wenn ein Inhalt vor dem Veröffentlichen geprüft werden soll. Nutze diesen Skill, wenn ein Newsletter, ein Mailing-Layout oder ein HTML-Baustein für den KlickTipp-Editor entstehen soll, wenn Inhalte einer bestehenden E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter „ohne Inhalt" oder unlesbar gemeldet wird obwohl im Editor etwas zu sehen ist, wenn Warnungen zu Bausteinen zu deuten sind, oder wenn geklärt werden soll, welche Editor-Elemente sich per HTML-Import überhaupt stabil erzeugen lassen. Nicht für Landingpages oder allgemeine Webseiten — und nicht für die einzelne Geschäftsmail (Anschreiben, Antwort, Nachfassen): dafür ist `email-template-generator` zuständig.
+description: Der Inhalt einer KlickTipp-E-Mail: lesen, ändern, gestalten, prüfen, veröffentlichen. Die Werkzeuge geben das gespeicherte Bausteindokument heraus, nicht HTML — und ein Körper wird gefüllt, indem ein fertiges Dokument in einem Aufruf hineingeht (aus einer anderen E-Mail des Kontos, als Bee-JSON, oder notfalls als HTML), nicht Baustein für Baustein. Nutze diesen Skill, wenn Inhalte einer E-Mail gelesen, geändert oder veröffentlicht werden sollen, wenn ein Newsletter neu entstehen soll, wenn Gestaltung geändert wird — Farben, Abstände, Rahmen, Breiten, Schrift —, wenn Bilder gesucht oder hochgeladen werden, wenn ein Inhalt vor dem Veröffentlichen geprüft werden soll, wenn ein Newsletter „ohne Inhalt" oder unlesbar gemeldet wird obwohl im Editor etwas zu sehen ist, wenn Warnungen zu Bausteinen zu deuten sind, oder wenn geklärt werden soll, welche Editor-Elemente sich per HTML-Import überhaupt stabil erzeugen lassen. Nicht für Landingpages oder allgemeine Webseiten — und nicht für die einzelne Geschäftsmail (Anschreiben, Antwort, Nachfassen): dafür ist `email-template-generator` zuständig. Für die Hülle um den Inhalt — Name, Zielgruppe, Absender, Versand — ist `newsletter` zuständig.
 prerequisites: None
 ---
 
 # KlickTipp E-Mail
 
-Du bist ein hochgradig spezialisierter Frontend-Entwickler für KlickTipp E-Mail-Marketing. Deine
-ausschließliche Aufgabe ist es, HTML-Code zu generieren, der exakt für den HTML-Import des
-KlickTipp-E-Mail-Editors optimiert ist.
+Du arbeitest am **Inhalt** einer KlickTipp-E-Mail: lesen, ändern, gestalten, prüfen, veröffentlichen.
 
-Der generierte Code muss beim Import stabil in bearbeitbare Drag-and-Drop-Blöcke umgewandelt
-werden können. Für robuste Vorlagen sind native Basis-Module wie Zeilen, Texte, Titel, Bilder,
-Buttons, Listen und Spacer zu bevorzugen; Spezialelemente können vom Importer vereinfacht
-gemappt werden.
+Was die Werkzeuge herausgeben, ist das **gespeicherte Bausteindokument**, nicht HTML. Das ist der
+Satz, an dem sich alles andere entscheidet: Änderungen sprechen das Dokument an — ein Werkzeug je Art
+von Änderung, jedes an eine `contentRevision` gebunden —, und HTML ist nur *eine* von drei Türen
+hinein, die schmalste dazu, weil die Konvertierung Gestaltung kostet.
+
+Diese Datei ist der Ablauf. Die Nachschlagewerke liegen in `references/`, eines je Frage; „Was neben
+diesem Skill liegt" ist ihr Index. Lies die eine Datei, die du brauchst, nicht alle.
 
 ## Inhalte lesen, ändern, veröffentlichen
 
@@ -25,7 +26,7 @@ hereinzuholen.
 **Gelesen wird der Körper mit `email-get`, nicht mit `email-newsletter-get`.** Die Trennung ist
 scharf und lohnt sich zu merken: `email-get` beantwortet, was *in* einer E-Mail steht, und wird über
 die `emailId` oder die `editorUrl` angesprochen. `email-newsletter-get` beantwortet, was der
-Newsletter *ist* — Name, Empfänger, Versandstand, Split-Test-Arme — und nimmt die `newsletterId`.
+Newsletter *ist* — Name, Empfänger, Versandstand, Split-Test-Varianten — und nimmt die `newsletterId`.
 Ein Körper ist ein Körper, egal welches Mailing ihn trägt; deshalb heißen alle Werkzeuge, die ihn
 anfassen, schlicht `email-…`.
 
@@ -110,34 +111,10 @@ statt einen Defekt zu suchen.
 Einfügen-Menü führt die personalisierte E-Mail nicht. Dort ist der Baustein im Newsletter
 nicht erreichbar.
 
-**Lies die `warnings` der Schreibantwort und gib sie weiter.** Ein Baustein wird auch dann
-gespeichert, wenn er so nichts zeigt — das ist Absicht, weil es ein legitimer Zwischenstand auf dem
-Weg zu einem Baustein ist, den ein Mensch im Editor fertigstellt. Gesagt wird es aber, und zwar in
-der Antwort: ein Video ohne `thumbSrc`, eine Liste ohne `<ul>`/`<ol>`, ein unkonfiguriertes Add-on,
-eine personalisierte E-Mail. Melde nie „hinzugefügt", wenn die Antwort dir sagt, dass der Baustein
-leer bleibt — sag, was noch fehlt und wo es gesetzt wird.
-
-**Countdown, Kontaktkarte und Wowing-Video kannst du nicht einfügen.** Ihr Inhalt entsteht in
-einem Dialog des KlickTipp-Editors, und kein Werkzeug hier erreicht ihn. Es gab einmal Add-Werkzeuge
-dafür; sie setzten eine leere Hülle, die beim Versand nichts anzeigte, und sind genau deshalb weg.
-Wird einer dieser Bausteine gewünscht, ist die Antwort der Editor — nenne ihn, statt etwas
-Ähnliches aus Text und Bild nachzubauen und es als Countdown auszugeben. Vorhandene Bausteine
-dieser Art bleiben lesbar, verschiebbar und entfernbar.
-
-**Der KI-Text-Baustein** kommt dagegen weiterhin leer und bleibt es, bis jemand ihn im Editor
-einrichtet. Füge ihn nur ein, wenn der Nutzer ihn ausdrücklich will, und sag den Satz *vorher*:
-„Ich kann den Baustein setzen, einrichten musst du ihn im Editor — willst du das?"
-
-Der KI-Text-Baustein hat zusätzlich ein Tor: ohne die Freischaltung des Kontos wird sein Add mit
-`kind_not_available` abgewiesen und es ändert sich nichts. Das ist keine Störung, sondern eine
-Berechtigung — melde es als solche, statt es zu umgehen.
-
-Ausgenommen ist die **personalisierte E-Mail**: die hat mit `email-personalized-email-write` ein
-echtes Feld und lässt sich hier fertigstellen. Dafür gilt bei ihr das Umgekehrte: der
-Newsletter-Editor bietet sie im Einfügen-Menü **nicht** an — nur Automationen tun das. Eine Person
-kann sie dort also weder anlegen noch nach einem Entfernen zurückholen; nur dieser Werkzeugsatz
-kann das. Füge sie deshalb nur auf ausdrücklichen Wunsch ein und sag diesen Punkt im selben Zug
-dazu.
+**Was ein neuer Baustein mitbringt und was nicht** — die `warnings` der Schreibantwort, die drei
+Add-ons, deren Inhalt nur im Editor entsteht, der KI-Text-Baustein, und woher ein neu eingefügter
+Baustein sein Aussehen abschaut — steht in `references/adding-blocks.md`. Lies sie, bevor du einen
+Baustein **anlegst**; zum Ändern eines vorhandenen brauchst du sie nicht.
 
 **Fasse zusammen, was sich zusammenfassen lässt.** Drei Werkzeuge nehmen mehrere Ziele auf einmal:
 
@@ -151,11 +128,10 @@ Lesung und drei Schreibvorgänge — nicht acht. Gemischte Arten gehen nicht in 
 dem Nutzer an, dass eine gemischte Änderung in wenigen Schritten passiert, und nimm für jeden
 Schritt die Revision aus der vorigen Antwort.
 
-Einen Vollersatz gibt es nicht. Für HTML gibt es genau einen Weg: `email-content-import` holt ein
-Design herein, das **nur** als HTML existiert — einmalig, beim Aufsetzen. Schick niemals geändertes
-HTML durch den Import, um eine Änderung anzubringen: der Newsletter ist dann schon ein Dokument,
-und die Konvertierung kostet ihn seine Bausteine (siehe „Was ein HTML-Import kostet"). Veröffentlicht
-wird mit `email-content-publish`. Kein Undo, in beiden Fällen.
+Einen Vollersatz als *Änderung* gibt es nicht: ein ganzer Körper wird **gefüllt**, nicht geschrieben,
+und wie — das steht unten unter „Einen Körper füllen". Schick insbesondere nie geändertes HTML durch
+den Import, um eine Änderung anzubringen: der Newsletter ist dann schon ein Dokument, und die
+Konvertierung kostet ihn seine Bausteine.
 
 **Struktur: Zeile anlegen, Baustein verschieben.** `email-row-add` legt eine Zeile mit gleich breiten,
 leeren Spalten an — `columns` sagt wie viele, eine ohne Angabe. Erlaubt sind nur Zahlen, die das
@@ -186,6 +162,10 @@ Dazu: Ändern ist **ein** Aufruf mit **einer** Revision, Entfernen plus Anlegen 
 `email-block-remove` ist destruktiv ohne Undo, ein Write nicht. Mach nicht den gefährlichsten Weg
 zum Normalfall.
 
+**Vor dem Entfernen fragst du.** Der Baustein ist mit seinem Inhalt weg, und diese Werkzeuge holen
+ihn nicht zurück — auch der Nutzer nicht, wenn er im Editor nachsieht. Sag, welcher Baustein gemeint
+ist und was er trägt, und entferne ihn erst danach.
+
 **Die eine Ausnahme:** Wenn sich die **Art** ändern soll — aus einem Absatz wird eine Überschrift.
 Eine Art lässt sich nicht schreiben. Dann ist Entfernen plus Anlegen richtig, und dann sag dem
 Nutzer, dass der alte Baustein dabei verschwindet.
@@ -211,36 +191,9 @@ eine Spalte:
 Liegt das Design bereits als HTML vor, ist der Import der kürzere Weg: er baut Zeilen und Spalten in
 einem Schritt.
 
-**Gestaltung geht inzwischen — in benannten Werten, nie in CSS.** Vier Ebenen für alles, was jeder
-Baustein hat (Seite, Zeile, Spalte, Baustein), und drei Werkzeuge für das, was **nur eine Art** hat:
-die Höhe eines Abstands, Linie und Breite einer Trennlinie, das Aussehen eines Buttons. Ein
-artgebundenes Werkzeug auf einer anderen Art wird abgelehnt — eine Überschrift hat keine Höhe.
-Zusammen setzen sie Farben, Innenabstände, Rahmen, Ausrichtung, Breiten, Eckenradien und die
-Sichtbarkeit je Gerät. Eine Farbe ist
-`#RRGGBB`, `#RGB` oder `transparent`, ein Abstand eine ganze Pixelzahl 0–400, eine Breite 320–1440,
-ein Rahmen `1px solid #000000`. Eine CSS-Deklaration wird abgelehnt — sie könnte
-`background-image: url(...)` in die E-Mail tragen. Jedes Werkzeug schreibt nur, was du benennst;
-alles andere bleibt. Style-Schreibungen sind **absolut**: „mach den Hintergrund weiß" braucht keine
-Lesung, „acht Pixel mehr Abstand" schon — dafür ist `styleOutline` da.
-
-**Im `styleOutline` trägt ein Baustein zwei Karten.** `style` sind Außenabstand und Ausrichtung, die
-jeder Baustein hat; `kindStyle` ist das, was nur diese Art hat — die Höhe eines Abstandhalters, die
-Linie einer Trennlinie, der ganze Look eines Buttons. Getrennt, weil beide ein `paddingTop` führen
-und das nicht derselbe Abstand ist: einmal um den Button herum, einmal darin. `kindStyle` ist `null`
-bei jeder Art ohne eigenes Stil-Werkzeug. Eine leere Karte heißt „hier ist nichts gesetzt", nicht
-„hier geht nichts": der Editor legt seine Voreinstellungen erst beim Rendern an, nicht ins Dokument.
-
-Was weiterhin **nicht** geht, sagst du offen, statt es zu umgehen: die Schriftart, die Spaltenbreiten
-einer bestehenden Zeile (die Spalten einer Zeile sind gleich breit; eine schiefe Teilung entsteht im
-Editor), eine Zeile entfernen, und die **Breite eines Bildes oder Videos** — die steckt im Dokument
-in zwei gekoppelten Werten plus einem Klassen-Token, und eines davon allein zu setzen bringt Editor
-und Darstellung auseinander; dafür ist der Editor der Weg. Auch die Typografie eines Textbausteins
-gehört nicht hierher: sie steckt in seinem eigenen Markup, also in `email-text-write` — sie an zwei
-Stellen anzubieten hieße, zwei Antworten auf eine Frage zu haben.
-
-**Welches Feld welche Bausteinart hat, welches Werkzeug es schreibt und worauf bei ihr zu achten
-ist, steht je Baustein in `references/blocks/` — eine Datei je Art.** Lies die eine, um die es
-geht, statt alle. Der Index ist `references/blocks/README.md`.
+**Gestaltung** — die vier Ebenen (Seite, Zeile, Spalte, Block), benannte Werte statt CSS, und die
+zwei Karten, die ein Baustein im `styleOutline` trägt — steht in `references/styling.md`. Lies sie,
+bevor du Farben, Abstände, Rahmen, Breiten oder Schrift anfasst.
 
 **Vier Bausteine tragen eine Liste statt eines Feldes** — Menü, Social-Links, Icons und Tabelle.
 Für sie gilt eine eigene Regel: **die Liste ersetzt die Liste.** Schick alle Einträge, die der
@@ -281,37 +234,14 @@ Vereinheitlichung, keine „unnötige" Verschachtelung entfernen. Braucht der ne
 als der alte, wiederhole das vorhandene `<p style=…>` mit seinem Stil; braucht er weniger, lass
 Absätze weg. Bei einer Überschrift gilt dasselbe für `text` (dort steckt der Text in `<span>`s).
 
-**Hinzufügen: der neue Baustein sieht aus wie ein Baustein derselben Art — aber nicht unbedingt wie
-sein Nachbar.** Der Server kopiert beim Anlegen das `style`-Objekt und den Innenabstand vom
-**ersten** Baustein derselben Art, den er findet: erst in derselben Spalte, dann in derselben Zeile,
-dann irgendwo im Newsletter. *Erster*, nicht *nächstgelegener* — die Einfügeposition spielt dabei
-keine Rolle. Was im
-`html` steckt — Wrapper, `<p style=…>`, Schriftgrößen —, kopiert er **nicht**; das ist dein Teil:
-nimm das `html` des Nachbarbausteins derselben Art (bevorzugt aus derselben Zeile oder dem
-Abschnitt, in den der neue Block kommt — nicht die Vorschauzeile, nicht den Footer) als Vorlage und
-ersetze nur die Wörter. Erfinde nichts: keine Werte, die nicht im Dokument stehen, keine
-`font-family` aus dem Kopf, keine Größen, die du für passend hältst.
-
-Zwei Dinge bleiben:
-
-1. Hat der Newsletter **keinen** Baustein dieser Art, gibt es nichts abzulesen — dann trägt der neue
-   Baustein die Werte seines Startzustands, und dein `html` kommt ohne Vorlage: dann schlichtes
-   Markup (`<p>`, `<strong>`, `<a href>`), nichts erfunden. Sag das dem Nutzer, statt ein fertiges
-   Ergebnis zu melden.
-2. Mehrere neue Bausteine kosten mehrere Aufrufe: ein Add legt **einen** Baustein an und gibt die
-   neue Revision zurück, mit der der nächste arbeitet. Da jedes Add seinen Inhalt mitnimmt, ist das
-   ein Aufruf je Baustein — kein zweiter zum Füllen.
-3. **Eine Reihe von Adds macht eine Reihe gleicher Bausteine.** Sobald der erste neue Absatz in der
-   Spalte steht, ist *er* für den zweiten der erste seiner Art — und dessen Abstände wandern durch
-   die ganze Reihe. Zehn so eingefügte Absätze tragen alle dasselbe Padding, während ein gestalteter
-   Entwurf seine Abstände von Abschnitt zu Abschnitt variiert. Das ist als Design-Sprung sichtbar
-   und war es in der Praxis schon.
-
 **Deshalb: einen Körper nicht aus Adds zusammensetzen.** Entsteht eine E-Mail oder ein ganzer
-Abschnitt neu, ist `email-content-import` der Weg — ein Aufruf, eine Revision, und die Gestaltung
-kommt aus dem HTML statt aus einer Kette von Kopien. Die `*-add`-Werkzeuge sind für den **einzelnen
-zusätzlichen** Baustein in einem bestehenden Entwurf gedacht. Wer danach nur Wörter tauschen will,
-nimmt `email-text-write`: das schreibt in vorhandene Bausteine und rührt die Gestaltung nicht an.
+Abschnitt neu, gehört der ganze Körper in **einen** Aufruf — `email-content-copy`,
+`email-content-document-import` oder `email-content-import`, je nachdem, in welcher Form die
+Gestaltung vorliegt (siehe „Einen Körper füllen"). Ein Aufruf, eine Revision, und die
+Gestaltung kommt aus einem Stück statt aus einer Kette von Kopien. Die `*-add`-Werkzeuge sind für
+den **einzelnen zusätzlichen** Baustein in einem bestehenden Entwurf gedacht. Wer danach nur Wörter
+tauschen will, nimmt `email-text-write`: das schreibt in vorhandene Bausteine und rührt die
+Gestaltung nicht an.
 
 Wohin der neue Baustein kommt, sagt `position` innerhalb der Zielspalte — von null gezählt, ohne
 Angabe wird angehängt. In eine **andere** Spalte kommt ein bestehender Baustein mit
@@ -360,64 +290,15 @@ Nichts wird geraten: ein Kontrast wird nur dort gemessen, wo **beide** Farben im
 Eine Farbe, die erst der Renderer setzt, erzeugt keinen Befund — du kannst einen Wert nicht ändern,
 der nicht da ist.
 
-**Was `importWarnings` und `writeBlockers` in einer Leseantwort sagen.** `importWarnings` ist die
-Kostenliste **eines HTML-Imports** auf genau diesen Newsletter — und nur dafür. Sie gilt nicht für
-das Bearbeiten: dort wird nichts konvertiert, also verliert kein Baustein Gestaltung oder
-Bearbeitbarkeit. Lies sie dem Nutzer vor, **bevor** du importierst, nie als Kommentar zu einer
-Änderung. Leer heißt: eine Konvertierung würde hier nichts kosten.
+**`writeBlockers` in einer Leseantwort** nennt Zustände, die den Newsletter lesbar lassen, aber jedes
+Schreiben verhindern — heute eine eigenständig gepflegte Textversion
+(`newsletter_content_plain_custom`). Steht dort etwas, führt kein Werkzeugweg daran vorbei; verweise
+auf den Editor.
 
-`writeBlockers` nennt Zustände, die den Newsletter lesbar lassen, aber jedes Schreiben verhindern —
-heute eine eigenständig gepflegte Textversion (`newsletter_content_plain_custom`). Steht dort etwas,
-führt kein Werkzeugweg daran vorbei; verweise auf den Editor.
-
-**Ein Import über bestehenden Inhalt wird beim ersten Aufruf abgewiesen** — mit Absicht. Die
-Antwort zählt auf, wie viele Zeilen und Bausteine der Newsletter hat und welcher Art sie sind, und
-ändert nichts. Erst ein zweiter Aufruf mit `replaceExistingContent: true` konvertiert. Zeig dem
-Nutzer diese Liste und lass ihn entscheiden: ein Import über einen gestalteten Newsletter nimmt
-jeden Baustein, sein Layout und die Identität jedes Blocks mit, und es gibt kein Zurück. Ein leerer
-Entwurf braucht keine Bestätigung.
-
-**Der Import veröffentlicht nicht.** Er speichert den Entwurf; der Versandinhalt ändert sich erst
-durch `email-content-publish`. Die Antwort nennt genau das in `nextAction` — lies es, statt nach
-dem Import „fertig" zu melden.
-
-**Was ein HTML-Import kostet** (`email-content-import`). Ein Import
-nimmt gerendertes HTML und nie das Dokument; je Baustein kommt zurück: Trennlinie als
-gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, Tabelle als
-einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merge-Inhalt und
-Add-ons (Countdown, Kontaktkarte, Wowing-Video, KI-Text, Signatur) als ihr gerendertes Ergebnis;
-Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
-
-**Nach dem Import sagen die `warnings` des Ergebnisses, was diese eine Konvertierung wirklich
-gekostet hat** — nicht als Vorhersage, sondern gezählt auf beiden Seiten. Immer dabei: das Layout
-ist neu gebaut, Zeilen, Spalten und Abstände sind danach die des Editors, und es stehen
-Abstandhalter darin, die niemand geschickt hat. Dazu je eine Zeile mit Zahlen für Trennlinien,
-Listen, Tabellen, Bilder und Videos, die nicht als eigener Baustein zurückkamen, samt dem Werkzeug
-zum Nachziehen. Eine Tabelle, deren Zellen als `Zelle AZelle B` zusammenlaufen, steht genau dort.
-Gib diese Zeilen weiter; ein „Import hat geklappt" ohne sie ist die Meldung, die den Nutzer den
-Verlust erst im Editor entdecken lässt.
-
-**Sag vorher nicht zu, was aus einem HTML wird.** Die Konvertierung macht ein externer Dienst; was
-aus einer Tabelle oder einer Trennlinie wird, entscheidet nicht KlickTipp, und es kann sich ändern,
-ohne dass hier etwas neu ausgeliefert wird. Die Aufzählung weiter oben ist deshalb eine Erwartung,
-kein Vertrag — verbindlich ist immer erst der Bericht **nach** dem Import. Formuliere entsprechend:
-„so etwas überlebt die Konvertierung erfahrungsgemäß nicht" vor dem Aufruf, und die gemessenen
-Zeilen danach.
-
-Der Import lässt **Name, Betreff und Pre-Header unberührt** — er schreibt nur das Dokument. Ein
-`<title>` im importierten HTML landet nirgends, eine versteckte Preheader-Zeile wirft der Konverter
-weg. Name, Betreff und Pre-Header setzt der Skill `newsletter` über seine eigenen Werkzeuge.
-
-Und Entscheidungen wie KI-Blöcke sind nach einem Import **weg**: sie stehen nicht im HTML, kein
-Vorgehen deinerseits kann sie erhalten — sag das ausdrücklich, bevor du importierst. Im Dokument stehen sie dagegen sehr wohl, und
-ein Bearbeiten lässt sie unangetastet: das ist der Grund, einen gestalteten Newsletter nie über HTML
-zu ändern.
-
-**Die Liste ist eine Untergrenze, keine vollständige Aufzählung.** Nicht enthalten, aber
-nachgewiesen: Abstände, Rahmen, Rundungen und Inline-Farben bleiben nicht erhalten, Innenabstände
-verschieben sich mit jedem Durchlauf weiter, und das Layout wird normalisiert — Spaltenzahl,
-zusätzliche Abstandsblöcke und eine geänderte Inhaltsbreite sind vorgekommen. Gib diesen Satz mit
-weiter: eine Liste, die vollständig klingt, ist schlimmer als keine.
+**Alles Weitere zum HTML-Import** — was `importWarnings` sagt, warum der erste Import über
+bestehendem Inhalt abgewiesen wird, was eine Konvertierung kostet und was du vorher **nicht**
+zusagen darfst — steht in `references/existing-html.md`. Du brauchst es nur, wenn wirklich HTML im
+Spiel ist.
 
 **„Kein Inhalt" richtig deuten.** Meldet ein Werkzeug, die E-Mail habe keinen Inhalt, während im
 Editor etwas zu sehen ist, wurde der Inhalt meist aus einem bestehenden Newsletter oder einer
@@ -451,13 +332,17 @@ In `references/` liegen:
 
 | Datei | Inhalt |
 | --- | --- |
-| `contracts.md` | **die veröffentlichten Verträge** aller 44 Werkzeuge dieses Skills, Wort für Wort: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung — generiert aus der Werkzeugliste des Servers |
+| `contracts.md` | **die veröffentlichten Verträge** aller 51 Werkzeuge dieses Skills, Wort für Wort: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung — generiert aus der Werkzeugliste des Servers |
 | `tools.md` | **alle Werkzeuge dieses Skills** — Inhalt lesen/prüfen/importieren/veröffentlichen, Bausteine, Gestaltung, Bilder: wofür, was sie nicht tun, Stolperer |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |
 | `bee-simple-schema/` | die Schema-Dateien des Anbieters, unverändert: das vereinte Schema, eines je Baustein, die geteilten Constraints und ein vollständiges gültiges Beispiel. **Kein** Prüfmaßstab für ein gespeichertes Dokument — warum, steht im Katalog daneben |
 | `blocks/` | **eine Datei je Bausteinart**: Werkzeuge, Felder, Speicherort, Fallstricke, Importkosten. Lies die eine, die du brauchst — `blocks/README.md` ist der Index |
 | `html-authoring.md` | **die zwingenden Regeln für Import-HTML**: Grundgerüst, Zwölfer-Grid, Blockklassen, CSS und Bilder, KlickTipp-Variablen, Pflicht-Footer, Qualitätscheck |
+| `styling.md` | **Gestaltung ändern**: die vier Ebenen, benannte Werte statt CSS, die zwei Style-Karten eines Bausteins |
+| `adding-blocks.md` | **einen Baustein anlegen**: was er mitbringt, welche Add-ons leer bleiben, von welchem Nachbarn er sein Aussehen erbt |
+| `authoring.md` | **eine E-Mail entsteht neu**: Entscheidungsreihenfolge, Gestaltung auf Seite/Zeile/Block, Schriften, Ausrichtung, Rahmen, Bilder, Fußzeile |
+| `existing-html.md` | **fertiges HTML liegt vor**: was Inhalt ist und geändert werden darf, was Struktur ist und bleibt, und die Regeln für Import-HTML |
 | `content-replacement.md` | Vorgehen für „hier ist der neue Text“: die Zuordnung vor dem Schreiben, die vier Fälle, die kein reines Ersetzen sind, und was nie mitgeändert wird |
 | `simple-schema-catalog.md` | was sonst zu jener Familie gehört — und warum sie kein gespeichertes Dokument prüfen darf |
 
@@ -474,155 +359,38 @@ Zwei Fallen, die dort ausführlich stehen und beim Lesen sofort greifen:
 - Das Generierungs-Schema kennt zehn Bausteintypen, ein gespeichertes Dokument neunzehn plus
   Add-ons. Gespeicherte Newsletter dagegen zu validieren lehnt die Mehrheit ab.
 
-Die vier JSON-Dateien und der Schema-Katalog betreffen nur die gespeicherte Bausteinstruktur —
-Analyse, Migration, Auswertung. Im normalen Ablauf brauchst du sie nicht.
+`document-skeleton.json` und `bee-simple-schema/` brauchst du, sobald du ein Dokument **selbst
+schreibst**, um es mit `email-content-document-import` in einem Aufruf abzulegen — das Gerüst gibt
+die Form, das Schema die Felder, und im Schema-Ordner liegt ein vollständiges gültiges Beispiel.
+`kt-module-definitions.json` und der Schema-Katalog bleiben Analyse-Material: sie beschreiben die
+gespeicherte Struktur, und im normalen Ablauf brauchst du sie nicht.
 
-## Eine neue E-Mail entstehen lassen
+## Einen Körper füllen
 
-Der Weg ist **Baustein für Baustein**: `email-row-add` legt die Zeile an, dann je Baustein ein
-`email-<art>-add`. Nichts wird konvertiert — es gibt keine `importWarnings`, und jeder Block ist von
-der ersten Sekunde an bearbeitbar.
+Einen Vollersatz als *Änderung* gibt es nicht. Es gibt drei Wege, einen Körper zu **füllen**, und
+welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorliegt:
 
-Was dieser Weg **nicht** mitbringt, ist Gestaltung. Ein leerer Entwurf hat keinen Baustein, von dem
-ein neuer sein Aussehen abschauen könnte — jeder Block landet mit seinem Startzustand, und ohne
-Gegenmaßnahme sieht das Ergebnis zusammengewürfelt aus, egal wie gut die Texte sind. Setz
-Typografie, Abstände und Farben deshalb selbst, und zwar **für alle Bausteine gemeinsam**:
-`email-page-style-write` für die Seite, `email-row-style-write` je Zeile, `email-block-style-write`
-für den einzelnen Block. Eine E-Mail wirkt professionell durch Abstände und konsequente
-Typografie, nicht durch Dekoration; eine halb umgestellte Skala sieht schlechter aus als gar keine.
+| Die Gestaltung liegt vor … | Weg | Verlust |
+| --- | --- | --- |
+| als **andere E-Mail dieses Kontos** | `email-content-copy` | keiner |
+| als **Bee-Dokument** (Vorlage, Export) | `email-content-document-import` | keiner |
+| **nur als HTML** | `email-content-import` | die Konvertierung kostet |
+| **gar nicht** | selbst schreiben → `references/authoring.md` | — |
 
-Zwei Dinge gehören dabei auf die richtige Ebene:
+Jeder dieser Wege ist **ein** Aufruf. Der Umweg „HTML der alten Mail holen und wieder importieren"
+ist ein Fehler und kein Notbehelf: er bezahlt eine Konvertierung für etwas, das als Dokument schon
+vorliegt. Und einen Körper aus einer Reihe von `*-add`-Aufrufen zusammenzusetzen ist der teuerste
+Weg von allen — ein Aufruf kostet 15–30 Sekunden, fast alles davon Denkzeit des Modells, und
+fünfzehn Bausteine sind damit über zehn Minuten für ein Ergebnis, das ein Import in unter einer
+Minute erreicht. Veröffentlicht wird in allen Fällen mit `email-content-publish`. Kein Undo, in
+keinem Fall.
 
-**Die Schriftart setzt du einmal auf der Seite**, mit `fontFamily` in `email-page-style-write` —
-nicht je Baustein. Die Bausteine stehen im Startzustand auf `inherit`, greifen die Seitenvorgabe
-also von selbst. Angeboten sind die Systemschriften der Auswahl im Editor, unter **genau den
-Namen, die dort stehen**: `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`,
-`Times New Roman`, `Trebuchet MS`, `Verdana` sowie die beiden japanischen `ヒラギノ角ゴ Pro W3`
-und `メイリオ`. Du nennst den **Namen**, nicht den Stack — die Ausweichkette schreibt der Server.
-`Helvetica` und `Courier New` werden weiter angenommen; sie standen früher in der Liste.
+**Zwei Nachschlagewerke hängen daran**, und du brauchst sie nur im jeweiligen Fall:
 
-**Eine Webschrift wie Montserrat oder Roboto kannst du nicht setzen**, obwohl der Editor sie
-anbietet: die braucht zusätzlich einen Eintrag in `page.body.webFonts` mit einer Google-Fonts-URL,
-damit der Editor den `<link>` erzeugt. Ohne den fällt sie beim Empfänger still auf eine
-Systemschrift zurück, und niemand sieht es. Deshalb stehen die acht — Bitter, Droid Serif, Lato,
-Montserrat, Open Sans, Roboto, Source Sans Pro, Ubuntu — hier gar nicht zur Wahl, statt als Namen,
-die nichts tun. Wer eine davon will, setzt sie im KlickTipp-Editor.
-
-**Die Ausrichtung der ganzen E-Mail** ist `contentAlign` — `left`, `center` oder `right` — im
-selben Werkzeug, neben `contentWidth`. Sie entscheidet, wo die Nachricht steht, wenn das Fenster
-breiter ist als sie; mit den Ausrichtungen *innerhalb* eines Blocks (`textAlign` in
-`email-block-style-write`) hat sie nichts zu tun. Ein neuer Entwurf startet mit dem
-Standarddokument, nicht mit dem Aussehen eines anderen Newsletters — wer eine Vorlage nachbaut,
-setzt Breite, Ausrichtung und Schrift also selbst.
-
-**Einen Rahmen um eine Zeile setzt du auf der Zeile**, mit `borderTop`/`-Right`/`-Bottom`/`-Left`
-in `email-row-style-write` — nicht auf ihren Spalten. Ein Rahmen je Spalte zeichnet eine Box je
-Spalte, mit sichtbaren Nähten dazwischen, statt einer Linie um die ganze Zeile. Dasselbe gilt für
-den Innenabstand: `paddingTop` und Geschwister auf der Zeile halten den Inhalt von der Kante der
-Zeile weg, die Spalten-Variante nur von der Kante der Spalte.
-
-Liegt bereits HTML vor — von einer Agentur, aus einem anderen Werkzeug —, ist
-`email-content-import` der Weg dafür (siehe „Bestehendes HTML bearbeiten" und die zwingenden
-Regeln in `references/html-authoring.md`). **Schreib aber kein HTML, nur um es dann zu
-importieren.** Die Konvertierung kostet, was `importWarnings` auflistet, und was du gerade gebaut
-hast, ist bereits ein Dokument — die Bausteinwerkzeuge kommen ohne Umweg ans Ziel.
-
-### So generierst du eine
-
-1. **Entscheide selbst, ohne Rückfrage** — Reihenfolge der Zeilen, Farben, Bildsprache. Der
-   Auftrag sagt, worum es geht; daraus folgt die Gestaltung. Sag hinterher in einem Satz, was du
-   entschieden hast — das kann der Nutzer korrigieren und hat dann etwas Fertiges vor sich statt
-   einer Frage.
-2. **Zeile für Zeile bauen.** `email-row-add`, dann die Bausteine darin. Überschrift, Absatz, Bild,
-   Button, Liste, Abstand sind die Grundausstattung; Trennlinie, Menü, Social-Icons, Video,
-   Tabelle und eigenes HTML haben je ein eigenes Add-Werkzeug. Was jeder Baustein annimmt, steht
-   in `references/blocks/` — `blocks/README.md` ist der Index.
-3. **Gestaltung setzen, zusammenhängend.** Seite, Zeilen, Blöcke — mit den Style-Werkzeugen aus
-   dem Absatz oben, nicht Block für Block nach Gefühl.
-4. **Die Fußzeile gehört in jede E-Mail**: Abmeldelink und Anbieterkennzeichnung. Wer sie vergisst,
-   bekommt sie spätestens vom `email-content-check` vorgehalten — besser vorher.
-5. **Bilder besorgen — in dieser Reihenfolge.** Erst `email-image-search`: Logo, Produktfoto,
-   Teambild liegen in der Mediathek des Kontos und in keinem Stockarchiv. Das Werkzeug **listet
-   auf, es sucht nicht** — es gibt eine Seite der Bibliothek heraus, und mit `nextCursor` holst du
-   die nächste. Eine Suchanfrage nimmt es nicht, weil der Speicher Dateinamen kennt und keine
-   Motive: „Auto" hätte nie ein Foto eines Autos gefunden. Lies also eine Seite und wähl daraus.
-   Findet sich dort nichts, `email-image-stock-search` — dieselben freien Archive (Pexels,
-   Pixabay), die auch der Editor anbietet. Eigenes Material kommt über `email-image-upload` herein.
-
-   **Eine Stock-URL darf nicht in den Newsletter.** Gib `sourceUrl` und `fileName` des gewählten
-   Fotos an `email-image-upload-from-url` und nimm die URL, die zurückkommt. Eine fremde URL lässt jedes
-   Postfach einen Dritten kontaktieren und bricht an dem Tag, an dem das Foto dort verschwindet.
-
-   Zwei Dinge, die dich sonst blamieren: Die Stock-Suche kommt **nie leer zurück** — zu einer
-   Anfrage ohne Treffer liefert sie unverwandte Fotos. Schau an, was gekommen ist, und sag, was es
-   zeigt, statt es als Fund zu präsentieren. Und **lass den Nutzer wählen**: die Lizenz verlangt
-   keine Namensnennung, schränkt aber erkennbare Personen ein — das ist seine Entscheidung.
-6. **`email-content-check`**, bevor veröffentlicht wird — und die Befunde weitergeben, statt still
-   zu reparieren.
-
-**Wo trotzdem gefragt wird**, weil es nicht Gestaltung ist: bevor ein Import bestehenden Inhalt
-ersetzt, bevor ein Baustein entfernt wird, und bei der Wahl eines Stockfotos — dessen Lizenz
-schränkt erkennbare Personen ein, und das ist die Entscheidung des Nutzers. Gestaltung entscheidest
-du, Verluste und Rechte entscheidet er.
-
-## Bestehendes HTML bearbeiten
-
-Liegt bereits E-Mail-HTML vor, ist die Aufgabe eine Inhaltsänderung, kein Redesign. Ändere
-ausschließlich das, was inhaltlich beauftragt wurde. Das übrige Dokument bleibt Zeichen für
-Zeichen identisch.
-
-Was Inhalt ist und geändert werden darf:
-
-- Texte, Überschriften, Listeneinträge, Tabellenzellen, eine sichtbare Vorschauzeile im Dokument.
-  (Das **Pre-Header-Feld** der E-Mail liegt nicht im Dokument — es wird über
-  `email-newsletter-draft-update` gesetzt, Feld `preheader`.)
-- Button-Labels und Link-Ziele, `href`, `alt`-Texte, Bild-URLs.
-- KlickTipp-Variablen und Systemlinks.
-
-Was Design ist und unangetastet bleibt:
-
-- Struktur und Reihenfolge von Zeilen, Spalten und Blöcken; Spaltenanzahl und -breiten.
-- Alle Klassen, inklusive der `block-[n]`-Nummerierung, und alle Attribute wie `width`, `align`,
-  `cellpadding`.
-- Inline-Styles, Farben, Schriftarten, Schriftgrößen, Zeilenhöhen, Padding, Abstände, Rahmen.
-- Spacer, Divider, Wrapper-Tabellen — auch scheinbar überflüssige.
-
-Zusätzlich gilt beim Bearbeiten:
-
-- Kein Aufräumen nebenbei: keine Neuformatierung des Codes, keine Umsortierung von Attributen,
-  keine Vereinheitlichung von Styles, kein Entfernen „unnötiger" Verschachtelung, keine
-  Neunummerierung von Blöcken.
-- Verstößt das vorhandene HTML gegen Regeln dieses Skills, etwa eine `http`-Bild-URL, ein
-  Background-Image oder ein `menu_block`: nicht eigenmächtig umbauen, sondern nach dem Code-Block
-  in einem Satz benennen. Ausnahme sind Fehler, die Import oder Speicherung zwingend brechen —
-  fehlender `DOCTYPE`, fehlendes `<meta charset="UTF-8">`, fehlende Pflicht-Footer-Variablen sowie
-  invalides HTML wie ein nicht geschlossenes oder überkreuztes Tag. Diese korrigieren und die
-  Korrektur benennen.
-- Braucht der neue Inhalt mehr Platz, als das Layout hergibt, wird der Text angepasst, nicht das
-  Layout. Geht das nicht sinnvoll, den Konflikt benennen und nach der gewünschten Layoutänderung
-  fragen.
-- Design nur ändern, wenn es ausdrücklich verlangt ist, zum Beispiel „mach den Button grün",
-  „zwei Spalten statt einer" oder „mehr Abstand über der Überschrift". Dann genau diese Änderung
-  umsetzen und nichts darüber hinaus.
-- Ist unklar, ob eine Anweisung Inhalt oder Design meint, als Inhalt behandeln und die
-  Design-Frage stellen.
-
-Wenn kein bestehendes HTML vorliegt, gestaltest du frei nach den Regeln unten.
-
-## Import-HTML schreiben
-
-Sobald du HTML erzeugst, das durch `email-content-import` geht — beim Bearbeiten vorhandenen
-E-Mail-HTMLs oder wenn du fremdes HTML importfähig machst —, **lies zuerst `references/html-authoring.md`**.
-Dort stehen die zwingenden Regeln: Grundgerüst, das Zwölfer-Grid, die Blockklassen des Editors,
-was mit CSS und Bildern erlaubt ist, die KlickTipp-Variablen, der Pflicht-Footer, valides HTML und
-der Qualitätscheck vor der Ausgabe.
-
-Sie sind nicht optional und nicht zusammenfassbar: HTML, das sie verletzt, importiert der Editor
-entweder gar nicht oder als einen Klumpen, der sich nicht mehr bearbeiten lässt. Verlass dich
-nicht darauf, sie zu kennen — sie sind fünf Bildschirmseiten lang, und der Unterschied steckt in
-den Details.
-
-Für Änderungen über die Bausteinwerkzeuge gelten sie **nicht**: dort wird nichts konvertiert.
+- `references/authoring.md` — eine E-Mail entsteht **neu**: Reihenfolge der Entscheidungen,
+  Gestaltung setzen (Seite, Zeilen, Blöcke), Schriften, Ausrichtung, Rahmen, Bilder besorgen, Fußzeile.
+- `references/existing-html.md` — dir liegt **fertiges HTML** vor: was daran Inhalt ist und geändert
+  werden darf, was Struktur ist und unangetastet bleibt, und die Regeln für Import-HTML.
 
 ## Output-Format
 

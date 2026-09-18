@@ -1,6 +1,6 @@
 ---
 name: newsletter
-description: Der Lebenszyklus eines KlickTipp-Newsletters von aussen nach innen — Entwurf anlegen, Betreff, Pre-Header und Zielgruppe setzen, Absender und Signatur konfigurieren, Testversand, und die Aktivierung, die ein Mensch bestaetigt. Nutze diesen Skill, wenn ein Newsletter angelegt, gesucht, umbenannt, terminiert, getestet, verschickt oder geloescht werden soll, wenn der Pre-Header beziehungsweise die Vorschauzeile im Posteingang gesetzt werden soll, wenn ein Splittest beziehungsweise A/B-Test angelegt werden soll oder Testarme (Varianten) hinzugefuegt, geaendert oder entfernt werden sollen, wenn gefragt wird "wie viele erreiche ich damit", wenn ein Versand nicht startet oder ein Newsletter sich nicht mehr bearbeiten laesst, und immer dann, wenn jemand einen Newsletter "rausschicken" oder "fertig machen" will — auch wenn nur vom Inhalt die Rede ist, denn Inhalt allein verschickt nichts. Fuer den Inhalt selbst (HTML, Bausteine, Gestaltung) ist der Skill `email` zustaendig; dieser hier ist die Huelle darum.
+description: Der Lebenszyklus eines KlickTipp-Newsletters von aussen nach innen — Entwurf anlegen, Betreff, Pre-Header und Zielgruppe setzen, Absender und Signatur konfigurieren, Testversand, und die Aktivierung, die ein Mensch bestaetigt. Nutze diesen Skill, wenn ein Newsletter angelegt, gesucht, umbenannt, terminiert, getestet, verschickt oder geloescht werden soll, wenn der Pre-Header beziehungsweise die Vorschauzeile im Posteingang gesetzt werden soll, wenn ein Splittest beziehungsweise A/B-Test angelegt werden soll oder Varianten hinzugefuegt, geaendert oder entfernt werden sollen, wenn gefragt wird "wie viele erreiche ich damit", wenn ein Versand nicht startet oder ein Newsletter sich nicht mehr bearbeiten laesst, und immer dann, wenn jemand einen Newsletter "rausschicken" oder "fertig machen" will — auch wenn nur vom Inhalt die Rede ist, denn Inhalt allein verschickt nichts. Fuer den Inhalt selbst (HTML, Bausteine, Gestaltung) ist der Skill `email` zustaendig; dieser hier ist die Huelle darum.
 prerequisites: None
 ---
 
@@ -25,7 +25,7 @@ der vorige hinterlassen hat.
 | 1 | Entwurf anlegen | `email-newsletter-draft-create` |
 | 2 | Inhalt schreiben | → Skill `email` |
 | 3 | Betreff und Zielgruppe setzen | `email-newsletter-draft-update` |
-| 3a | *nur beim Splittest:* weitere Testarme und ihre Betreffzeilen | `email-split-test-variant-*` |
+| 3a | *nur beim Splittest:* weitere Testvarianten und ihre Betreffzeilen | `email-split-test-variant-*` |
 | 4 | Absender, Antwortadresse, Signatur | `email-newsletter-delivery-configure` |
 | 5 | Testversand und Prüfung | `email-newsletter-test-send` |
 | 6 | Aktivierung vorbereiten | `email-newsletter-send` |
@@ -44,6 +44,13 @@ Absender, kein Termin. Er kann niemanden erreichen.
 Nutze `name` für etwas, das in der Übersicht wiederzufinden ist („Februar-Aktion 2026"), nicht für
 den Betreff. Der Betreff ist, was die Empfängerin im Posteingang liest, und steht in `subject`.
 
+**Den Betreff fragst du ab und erfindest ihn nicht.** Er ist die einzige Zeile, die jeder Empfänger
+sieht, bevor er über Öffnen oder Löschen entscheidet, und er lässt sich aus dem Auftrag nicht
+ableiten — „Newsletter über die Herbstaktion" sagt, worum es geht, nicht wie die Zeile lautet. Wenn
+der Nutzer keinen nennt und auch keinen will, schlag einen vor und sag, dass es dein Vorschlag ist.
+Nachträglich ändern geht mit `email-newsletter-draft-update`, macht aber jede vorher gelesene
+`contentRevision` ungültig.
+
 Der **Pre-Header** ist die Zeile, die viele Programme im Posteingang hinter dem Betreff zeigen. Ohne
 ihn nimmt sich das Programm die ersten Wörter des Inhalts, und das ist selten das, was werben soll.
 Höchstens 120 Zeichen, ohne HTML. Er lässt sich **direkt beim Anlegen** mitgeben und später jederzeit
@@ -52,11 +59,11 @@ mit `email-newsletter-draft-update` ändern — beide Wege schreiben dasselbe Fe
 ### Splittest
 
 Ein Splittest wird **beim Anlegen entschieden und nie danach** — `email-newsletter-draft-create`
-nimmt dafür ein `splitTest`-Objekt. Danach hat der Newsletter keine einzelne E-Mail mehr: jeder
-Testarm ist eine eigene, `email-newsletter-draft-update` weist einen Betreff ab, und jeder Arm wird
+nimmt dafür ein `splitTest`-Objekt. Danach hat der Newsletter keine einzelne E-Mail mehr: jede
+Variante ist eine eigene, `email-newsletter-draft-update` weist einen Betreff ab, und jede Variante wird
 über seine eigene `editorUrl` angesprochen.
 
-Alles dazu steht im Skill `splittest` — die Felder, die Arm-Werkzeuge, und warum ein neuer Arm fast
+Alles dazu steht im Skill `splittest` — die Felder, die Varianten-Werkzeuge, und warum eine neue Variante fast
 immer eine Kopie sein sollte. Geh dorthin, sobald ein A/B-Test im Spiel ist.
 
 ## 2. Inhalt
@@ -216,7 +223,7 @@ Zwei Fragen, die genau **eine** Suche sind — nicht ein Lesen je Newsletter:
 - **„Hier ist eine Editor-URL — welcher Newsletter ist das?"** Die URL nennt die *E-Mail*, jedes
   andere Werkzeug nimmt den *Newsletter*. Such und vergleiche die `emailId` aus der URL mit der
   Liste, statt zu raten — benachbarte IDs gehören zu verschiedenen Newslettern. Ein Splittest hat
-  keine einzelne E-Mail (`emailId: null`); seine Arme stehen in `splitTestVariants` von
+  keine einzelne E-Mail (`emailId: null`); seine Varianten stehen in `splitTestVariants` von
   `email-newsletter-get`.
 
 Bei mehr Treffern als `limit` kommt ein `nextCursor`: unverändert zurückgeben, mit **denselben**
@@ -240,7 +247,7 @@ Fordere nur an, was du brauchst. `audienceReach` ist eine Messung, keine gespeic
 mit `winnerBy: conversions` oder `revenue`, der ohne Pixel nichts zu zählen hat. Gib dem Nutzer das
 `snippet` **wörtlich** zum Einbauen in seine Danke-Seite und nenne die `domain` dazu: die Pixel-URL
 enthält die Absenderdomain, ein Snippet der falschen Domain zählt nichts. Ein Splittest hat **einen**
-Satz Pixel für alle Arme — du brauchst dafür keine `editorUrl`. Sagt die Antwort
+Satz Pixel für alle Varianten — du brauchst dafür keine `editorUrl`. Sagt die Antwort
 `available: false`, hat das Konto die Funktion nicht; dann gibt es auch in der Oberfläche keinen.
 
 ## Einen Versand zurücknehmen

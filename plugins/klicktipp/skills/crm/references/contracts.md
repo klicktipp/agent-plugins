@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-17) mit `build/contracts.py` — nicht von Hand
+Generiert aus `build/tools-list.json` (Stand 2026-09-18) mit `build/contracts.py` — nicht von Hand
 ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
 und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -13,7 +13,7 @@ und woran man sich stößt, steht in [tools.md](tools.md).
 
 **Search opt-in processes**
 
-Searches the active KlickTipp opt-in processes (also called subscription processes or subscriber lists) of an account, sorted by name, with ID, name, opt-in mode and the flags that tell them apart. Deleted processes are left out. Lists the account the access token belongs to, or one of its subaccounts when an account ID is given. Use get-opt-in-process for the full configuration of a single entry.
+Searches the active KlickTipp opt-in processes (also called subscription processes or subscriber lists) of an account, sorted by name, with ID, name, opt-in mode and the flags that tell them apart. Deleted processes are left out. Lists the account the access token belongs to, or one of its subaccounts when an account ID is given. The full configuration of a single entry is get-opt-in-process.
 
 Parameter:
 
@@ -35,7 +35,7 @@ Parameter:
 
 **Update opt-in process**
 
-Changes the settings of one KlickTipp opt-in process (also called subscription process or subscriber list): name, opt-in mode, redirect URLs and their query parameters, confirmation resend, change-email role, deletion of unconfirmed contacts, labels and notes. Only the arguments that are given are written, the rest keeps its current value. Settings take effect for contacts subscribing from now on; contacts already in the process are not touched and nothing is sent. Single opt-in subscribes later contacts without confirming, which is not permitted everywhere - ask before setting it. The confirmation email itself is written with the email tools. A redirect page can carry the contact id, email or subscriber key: name a parameter and it is appended under that name, leave it empty and it is not -- but only together with that page`s URL in the same call. Read them with get-opt-in-process.
+Changes the settings of one KlickTipp opt-in process (also called subscription process or subscriber list): name, opt-in mode, redirect URLs and their query parameters, confirmation resend, change-email role, deletion of unconfirmed contacts, labels and notes. Only the arguments that are given are written, the rest keeps its current value. Settings take effect for contacts subscribing from now on; contacts already in the process are not touched and nothing is sent. Single opt-in subscribes later contacts without confirming, which is not permitted everywhere - ask before setting it. The confirmation email itself is written with the email tools. A redirect page can carry the contact id, email or subscriber key: name a parameter and it is appended under that name, leave it empty and it is not -- but only together with that page`s URL in the same call. get-opt-in-process reads them.
 
 Parameter:
 
@@ -78,7 +78,7 @@ Parameter:
 
 **Get opt-in confirmation email**
 
-Reads the confirmation email a double opt-in process sends: its subject, the sender name and address, reply-to, CC and BCC, and the sender domain. THE BODY IS NOT HERE and cannot be read or written by this tool set: a confirmation email is not a drag-and-drop document, so the email and block tools do not accept it -- the answer carries bodyIsEditable false and an editUrl into the KlickTipp editor, which is where its text is written. Single opt-in processes still have this email stored; it is simply not sent. Change the settings with update-opt-in-confirmation-email.
+Reads the confirmation email a double opt-in process sends: its subject, the sender name and address, reply-to, CC and BCC, and the sender domain. The body is not part of this answer and cannot be read or written by this tool set: a confirmation email is not a drag-and-drop document, so the email and block tools do not accept it -- the answer carries bodyIsEditable false and an editUrl into the KlickTipp editor, which is where its text is written. Single opt-in processes still have this email stored; it is simply not sent. Change the settings with update-opt-in-confirmation-email.
 
 Parameter:
 
@@ -89,7 +89,7 @@ Parameter:
 
 **Update opt-in confirmation email**
 
-Changes the settings of the confirmation email a double opt-in process sends: subject, sender name and address, reply-to, CC and BCC. Only the arguments that are given are written, the rest keeps its current value. THE BODY CANNOT BE WRITTEN HERE or by the email tools -- a confirmation email is not a drag-and-drop document; its text is written in the KlickTipp editor, and get-opt-in-confirmation-email returns the link. This email is the legal record of a contact`s consent in many countries: change its sender or subject only when the user asked for it, and say what was changed.
+Changes the settings of the confirmation email a double opt-in process sends: subject, sender name and address, reply-to, CC and BCC. Only the arguments that are given are written, the rest keeps its current value. The body cannot be written here or by the email tools -- a confirmation email is not a drag-and-drop document; its text is written in the KlickTipp editor, and get-opt-in-confirmation-email returns the link. This email is the legal record of a contact`s consent in many countries: change its sender or subject only when the user asked for it, and say what was changed.
 
 Parameter:
 
@@ -106,7 +106,7 @@ Parameter:
 
 **Search contacts**
 
-Returns a cursor-paginated, email-sorted list of contacts in one KlickTipp account. The lean results contain the contact ID, email subscription status and edit link, but intentionally omit complete contact fields and reference data. Filter by an email fragment, subscription status or an existing writable manual tag. Pass the returned nextCursor unchanged, with the same filters, to fetch the next page. Use get-contact for the full permitted detail view.
+Returns a cursor-paginated, email-sorted list of contacts in one KlickTipp account. The lean results contain the contact ID, email subscription status and edit link, but intentionally omit complete contact fields and reference data. Filter by an email fragment, subscription status or an existing writable manual tag. The returned nextCursor, unchanged and with the same filters, is the next page. The full permitted detail view of one contact is get-contact.
 
 Parameter:
 
@@ -176,7 +176,7 @@ Parameter:
 
 **Subscribe contact**
 
-Subscribes exactly one email or SMS channel of a KlickTipp contact through an opt-in process and creates or reuses the contact and requested reference. THIS CHANGES A REAL RECIPIENT, MAY SEND A CONFIRMATION MESSAGE AND MAY START AUTOMATIONS. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Assigning the optional tag may start further automations or outbound events. Other channels and references are not changed.
+Subscribes exactly one email or SMS channel of a KlickTipp contact through an opt-in process and creates or reuses the contact and requested reference. Its effects reach a real recipient: it may send a confirmation message and may start automations. It takes either an email address or a phone number, never both. Assigning the optional tag may start further automations or outbound events. Other channels and references are not changed.
 
 Parameter:
 
@@ -192,7 +192,7 @@ Parameter:
 
 **Unsubscribe contact**
 
-Unsubscribes exactly one email or SMS channel of a KlickTipp contact. THIS CHANGES A REAL RECIPIENT: future subscribed-audience messages on that channel stop, and automations may run. Pass either email or phone number, never both, and only call the tool after the user approved those effects. Other channels of the same contact and all subscription references remain untouched.
+Unsubscribes exactly one email or SMS channel of a KlickTipp contact. Its effects reach a real recipient: future subscribed-audience messages on that channel stop, and automations may run. It takes either an email address or a phone number, never both. Other channels of the same contact and all subscription references remain untouched.
 
 Parameter:
 
@@ -242,7 +242,7 @@ Parameter:
 
 **Create custom field**
 
-Creates a custom field definition in KlickTipp and returns its ID and the placeholder that renders it in newsletter content. Creating a field stores no value and changes no contact. Fields are never created as a side effect elsewhere, so a field a contact should have a value in has to be created here first. The data type is picked once and for good: it cannot be changed afterwards, so pick the one that matches what will be stored -- a date field for a date, a number field for an amount. The name has to be unique within the account. Give a description: it is what tells a later reader what belongs in the field.
+Creates a custom field definition in KlickTipp and returns its ID and the placeholder that renders it in newsletter content. Creating a field stores no value and changes no contact. Fields are never created as a side effect elsewhere, so a field a contact should have a value in has to be created here first. The data type is picked once and for good: it cannot be changed afterwards, so pick the one that matches what will be stored -- a date field for a date, a number field for an amount. The name has to be unique within the account. The description is what tells a later reader what belongs in the field.
 
 Parameter:
 
@@ -308,7 +308,7 @@ Parameter:
 
 **Create manual tag**
 
-Creates a manual tag in KlickTipp, one that is assigned deliberately rather than by KlickTipp itself. Creating a tag assigns it to nobody and changes no contact. Tags are never created as a side effect elsewhere, so a tag a contact should carry has to be created here first. The name has to be unique within the account. Give a description: it is what tells a later reader what the tag means.
+Creates a manual tag in KlickTipp, one that is assigned deliberately rather than by KlickTipp itself. Creating a tag assigns it to nobody and changes no contact. Tags are never created as a side effect elsewhere, so a tag a contact should carry has to be created here first. The name has to be unique within the account. The description is what tells a later reader what the tag means.
 
 Parameter:
 

@@ -44,6 +44,8 @@ Both targets read the same `.mcp.json`.
 |---|---|
 | `email-get` | read the stored block document of a newsletter, block by block |
 | `email-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
+| `email-content-copy` | take the body of another email of the account over unchanged, in one call |
+| `email-content-document-import` | store a finished editor document as the body — nothing is converted, so nothing is lost |
 | `email-content-check` | review the assembled email before it is published |
 | `email-content-publish` | make the reviewed body the one a dispatch would send |
 | `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, HTML, personalized email |

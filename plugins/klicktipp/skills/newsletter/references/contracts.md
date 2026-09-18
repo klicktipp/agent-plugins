@@ -1,11 +1,11 @@
 # Die veröffentlichten Verträge — Newsletter, Versand und Signaturen
 
-Wort für Wort das, was der Server in `tools/list` für die 15 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 14 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Generiert aus `build/tools-list.json` (Stand 2026-09-17) mit `build/contracts.py` — nicht von Hand
+Generiert aus `build/tools-list.json` (Stand 2026-09-18) mit `build/contracts.py` — nicht von Hand
 ändern, sondern den Dump erneuern und neu erzeugen. Wofür ein Werkzeug da ist, was es nicht tut
 und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -26,7 +26,7 @@ Parameter:
 
 **Get email signature**
 
-Returns one email signature with its name, notes, labels, tag IDs, sender profile, digital business card, content flags, usability and blockers. Set includeContent only when the HTML, plain and transactional content itself is needed.
+Returns one email signature with its name, notes, labels, tag IDs, sender profile, digital business card, content flags, usability and blockers. includeContent adds the HTML, plain and transactional content itself, which is the bulk of the answer.
 
 Parameter:
 
@@ -159,28 +159,28 @@ Parameter:
 
 **Get newsletter**
 
-Returns one email newsletter of a KlickTipp account: identity, lifecycle state, editor type, split-test flag and deep links. Everything else is a projection requested through "include": "metadata" (name, note, labels, subject), "audience", "deliveryConfiguration" (sender, reply address, signature), "deliveryStatus" (send date, recipients, counters, what is missing), "audienceReach" (contacts it would reach now) and "conversionPixel" (tracking snippets for a thank-you page, one per sender domain; hand one to the user verbatim). The body is not here -- read it with email-get. Reads only; requested projections are answered whole or the call fails. A split test has one email per arm and no single email: emailId, contentUrl and metadata.subject are null, splitTestVariants lists the arms, and deliveryConfiguration needs one of their editorUrl.
+Returns one email newsletter of a KlickTipp account: identity, lifecycle state, editor type, split-test flag and deep links. Everything else is a projection requested through "include": "metadata" (name, note, labels, subject), "audience", "deliveryConfiguration" (sender, reply address, signature), "deliveryStatus" (send date, recipients, counters, what is missing), "audienceReach" (contacts it would reach now) and "conversionPixel" (tracking snippets for a thank-you page, one per sender domain; hand one to the user verbatim). The body is not here -- read it with email-get. Reads only; requested projections are answered whole or the call fails. A split test has one email per variant and no single email: emailId, contentUrl and metadata.subject are null, splitTestVariants lists the variants, and deliveryConfiguration needs one of their editorUrl.
 
 Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter, as shown in the KlickTipp app URL
 - `include` — array<string> (maxItems 6): Projections to add: "metadata", "audience", "deliveryConfiguration", "deliveryStatus", "audienceReach", "conversionPixel"; omit for identity and lifecycle only. The body is email-get
-- `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL naming one arm of a split test, from splitTestVariants; omit for a newsletter with a single email
+- `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL naming one variant of a split test, from splitTestVariants; omit for a newsletter with a single email
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-newsletter-draft-create`
 
 **Create newsletter draft**
 
-Creates an email newsletter draft in KlickTipp -- name, subject, optional preheader -- and returns newsletter ID, email ID and deep links. Nothing is sent. A draft has no audience filter yet: an unfiltered audience means every active contact of the account (mode "all_contacts"). Ask the user for the subject and never invent one -- it is the line every recipient sees; changing it later through email-newsletter-draft-update invalidates the content revisions read before. Body: block tools (email-text-write and siblings). Audience: email-newsletter-draft-update. Sender: email-newsletter-delivery-configure. "splitTest" makes it a split test, irreversibly, with one arm -- more via email-split-test-variant-add, settings via email-split-test-configure; needs a premium account, "conversions"/"revenue" the conversion pixel, refused before creation.
+Creates an email newsletter draft in KlickTipp -- name, subject, optional preheader -- and returns newsletter ID, email ID and deep links. Nothing is sent. A draft has no audience filter yet: an unfiltered audience means every active contact of the account (mode "all_contacts"). The subject is the line every recipient sees; changing it later through email-newsletter-draft-update invalidates the content revisions read before. Body: block tools (email-text-write and siblings). Audience: email-newsletter-draft-update. Sender: email-newsletter-delivery-configure. "splitTest" makes it a split test, irreversibly, with one variant -- more via email-split-test-variant-add, settings via email-split-test-configure; needs a premium account, "conversions"/"revenue" the conversion pixel, refused before creation.
 
 Parameter:
 
 - `name`* — string (minLength 1; maxLength 250): Name of the newsletter, unique within the account
-- `subject`* — string (minLength 1; maxLength 998): Subject line, without HTML; ask the user for it and never invent one -- it is the line every recipient sees. Correcting it later is email-newsletter-draft-update, which invalidates the content revisions read before
+- `subject`* — string (minLength 1; maxLength 998): Subject line, without HTML. It is the line every recipient sees, and no part of it is derived from anything else in this call. Correcting it later is email-newsletter-draft-update, which invalidates the content revisions read before
 - `notes` — null | string (maxLength 1000): Internal note about the purpose of this newsletter, never part of the email
 - `preheader` — null | string (maxLength 120): Inbox preview line, at most 120 characters, without HTML; omit to leave it empty. Not part of the content document: an HTML import cannot set it
-- `splitTest` — object | null: Makes the newsletter a split test, irreversibly: "testSizePercent" (2-98), "testDurationHours" (1-27777), "winnerBy" ("opens", "clicks", "conversions", "revenue"; the last two need the conversion pixel). Needs a premium account; omit for a normal newsletter
+- `splitTest` — object | null: Makes the newsletter a split test, irreversibly: "testSizePercent" (2-98), "testDurationHours" (1-27777), "winnerBy" ("opens", "clicks", "conversions", "revenue"; the last two need the conversion pixel). All three are required and KlickTipp has no default for any of them, so any value here is a choice somebody made; together they settle what share of real recipients gets a test version and for how long. Needs a premium account; omit for a normal newsletter
   - `testSizePercent`* — integer (minimum 2; maximum 98)
   - `testDurationHours`* — integer (minimum 1; maximum 27777)
   - `winnerBy`* — string (einer von `opens`, `clicks`, `conversions`, `revenue`)
@@ -190,14 +190,14 @@ Parameter:
 
 **Update newsletter draft**
 
-Writes name, internal note, subject, preheader, audience and UTM campaign name of an email newsletter draft. Nothing is sent and no send date is set. Only drafts can be written; omitted arguments keep their value, a call without any change is refused. Writing subject or preheader invalidates every contentRevision read before, so read the content again before changing it. The audience replaces the previous one entirely and is given with an explicit mode -- "all_contacts" addresses every active contact of the account. The body is changed by the block tools, delivery configuration and scheduling by their own tools. Refuses a split test: its subject lives on the arms, see email-split-test-variant-update.
+Writes name, internal note, subject, preheader, audience and UTM campaign name of an email newsletter draft. Nothing is sent and no send date is set. Only drafts can be written; omitted arguments keep their value, a call without any change is refused. Writing subject or preheader invalidates every contentRevision read before, so read the content again before changing it. The audience replaces the previous one entirely and is given with an explicit mode -- "all_contacts" addresses every active contact of the account. The body is changed by the block tools, delivery configuration and scheduling by their own tools. Refuses a split test: its subject lives on the variants, see email-split-test-variant-update.
 
 Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to write, as returned by email-newsletter-draft-create
 - `name` — null | string (maxLength 250): New name, unique within the account, at most 250 characters, without HTML; omit to keep
 - `note` — null | string (maxLength 1000): Internal note, at most 1000 characters, without HTML; omit to keep
-- `subject` — null | string (maxLength 998): New subject line, without HTML; ask the user, never invent one. Invalidates every contentRevision read before
+- `subject` — null | string (maxLength 998): New subject line, without HTML. Invalidates every contentRevision read before
 - `audience` — object: Replaces the audience: "mode" is "all_contacts", "saved_audience" (with "audienceId") or "tag_conditions" (with the tag fields, at most 50 tags together); omit to keep
   - `mode`* — string (einer von `all_contacts`, `saved_audience`, `tag_conditions`): "all_contacts" (every active contact, no further field), "saved_audience" or "tag_conditions".
   - `audienceId` — integer (minimum 1): ID of the saved audience, for mode "saved_audience" only.
@@ -246,7 +246,7 @@ Parameter:
 
 **Send newsletter test**
 
-Sends one email newsletter as a test to a single address, so its content can be checked before it goes out -- the same send the test dialog of KlickTipp performs, with the same rules. Any address may receive one, and an address that is not a contact of the account yet BECOMES ONE and is tagged as a test recipient, which can start automations; name the address and say what it will become before calling this. A test carries the PUBLISHED content of the email: a body that was never published is refused -- publish it with email-content-publish -- and one changed after publication is sent with a warning that the test shows the older content. The audience of the newsletter is never a recipient, and its delivery state does not change.
+Sends one email newsletter as a test to a single address, so its content can be checked before it goes out -- the same send the test dialog of KlickTipp performs, with the same rules. Any address may receive one, and an address that is not a contact of the account yet becomes one and is tagged as a test recipient, which can start automations; name the address and say what it will become before calling this. A test carries the PUBLISHED content of the email: a body that was never published is refused -- publish it with email-content-publish -- and one changed after publication is sent with a warning that the test shows the older content. The audience of the newsletter is never a recipient, and its delivery state does not change.
 
 Parameter:
 
@@ -265,15 +265,4 @@ Parameter:
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send
 - `mode`* — string (einer von `immediate`, `scheduled`): "immediate" or "scheduled"; no default
 - `scheduledAt` — null | string (Muster `^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(:\d{2})?([Zz]|[+-]\d{2}:?\d{2})$`): Moment to send at, ISO 8601 with UTC offset; required for "scheduled", forbidden for "immediate"
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
-
-## `email-newsletter-cancel` · D
-
-**Cancel a newsletter dispatch**
-
-Takes back the dispatch of an email newsletter that was scheduled or has just started, so it becomes a draft again and reaches nobody further. THIS IS THE ANSWER TO "stop it", "cancel the send" AND "undo the schedule". Only while the delivery status says canBeCancelled: once a dispatch is far enough along it cannot be called off, and the refusal says so rather than pretending. What already went out stays out -- this stops what has not been sent yet, it does not recall mail. The newsletter itself, its content and its audience are untouched; only the dispatch is undone, and activating it again is email-newsletter-send. Ask the person before calling this: a dispatch someone set up deliberately is not yours to stop on your own reading of a situation.
-
-Parameter:
-
-- `newsletterId`* — integer (minimum 1): ID of the newsletter whose dispatch is to be called off
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

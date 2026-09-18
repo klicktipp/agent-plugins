@@ -27,6 +27,8 @@ Beide Werkzeuge — Anlegen und Ändern — nehmen genau diese Felder.
 
 Die URL muss eine dieses Kontos sein. Woher sie kommt, in dieser Reihenfolge: `email-image-search` (die Mediathek des Kontos — es **listet auf und sucht nicht**: eine Seite je Aufruf, weiter über `nextCursor`), sonst `email-image-stock-search` (Pexels und Pixabay) und das gewählte Foto mit `sourceUrl` und `fileName` durch `email-image-upload` — **die Provider-URL selbst gehört nie in den Newsletter**. Eigenes Material lädst du direkt mit `email-image-upload` hoch.
 
+Vor dem Einsetzen lohnt ein Blick: `email-image-preview` zeigt eine dieser URLs als Bild im App-Fenster — Mediathek-CDN und Stock-Archive, mehr lässt die Sandbox nicht zu.
+
 Der Grund: eine fremde URL lässt jedes Postfach einen Dritten kontaktieren und bricht an dem Tag, an dem das Foto dort verschwindet. Die Stock-Suche kommt außerdem **nie leer zurück** — ohne Treffer liefert sie unverwandte Fotos, also sag, was gekommen ist, statt es als Fund zu präsentieren. Die Breite, in der das Bild erscheint, ist kein Feld dieses Werkzeugs.
 
 ## Gestaltung

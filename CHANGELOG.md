@@ -8,6 +8,31 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.10.0 — 2026-09-18
+
+- **Three ways into a newsletter body, and the skill says which one you are in.** The `email` skill
+  described the HTML conversion as the only route, which is what sent a run through it and cost the
+  dividers, the box and some images. The form the design is already in decides now: another email of
+  the account is `email-content-copy`, a finished editor document is `email-content-document-import`,
+  and only markup that exists nowhere else is worth a conversion. Both new routes replace the body in
+  one call and convert nothing.
+- **A body is not assembled from single block calls when it is new.** The skill said both things in
+  two places for the same case; the slow reading took over ten minutes. Authoring now writes the
+  document and stores it in one call, and the cost of the other road is named with the measured
+  number rather than left as a preference.
+- **The email skill loads a third of what it did** — 50k characters down to 31k. What only applies in
+  one situation moved into `references/`: styling, adding blocks, the HTML case and authoring from
+  nothing. Each site keeps a pointer that names the decision, so the choice of whether to go look
+  stays in the skill.
+- **A split test asks for its three settings** instead of filling them in as "defaults". Test size,
+  duration and winner criterion settle what share of real recipients gets a test version — the one
+  thing in that flow that is not a design decision. They are asked in one question, and an own choice
+  is named as one.
+- **A variant already carries its content revision**, so reading one just to learn its token is a
+  round trip that can go.
+- **Rules the tool descriptions had to give up now live in the skills** — among them: ask before
+  removing a block, and ask for the subject rather than inventing it.
+
 ## 0.9.0 — 2026-09-17
 
 - **Thirteen contact, tag and field tools go to production** — the four tag tools, the five
