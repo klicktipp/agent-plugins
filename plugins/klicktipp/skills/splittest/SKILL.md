@@ -1,6 +1,6 @@
 ---
 name: splittest
-description: Splittests (A/B-Tests) in KlickTipp — anlegen, Varianten hinzufuegen und kopieren, Betreffzeilen je Variante setzen, Varianten entfernen, und was sich aendert, sobald ein Newsletter einer ist. Nutze diesen Skill, wenn ein Splittest, A/B-Test oder Variantentest angelegt oder geaendert werden soll, wenn "zwei Betreffzeilen testen" oder "welche Version kommt besser an" gefragt ist, wenn Varianten oder ein Gewinner zur Sprache kommen, und immer dann, wenn ein Werkzeug einen Newsletter mit "split_test_not_supported" oder "is not a split test" abweist — das ist fast nie ein Fehler, sondern die falsche Adressierung. Fuer den normalen Newsletter-Lebenszyklus ist der Skill `newsletter` zustaendig, fuer den Inhalt einer Variante der Skill `email`.
+description: Splittests (A/B-Tests) in KlickTipp — anlegen, Varianten hinzufügen, kopieren und entfernen, Betreffzeile je Variante, und was sich ändert, sobald ein Newsletter einer ist. Auch bei „zwei Betreffzeilen testen", „welche Version kommt besser an", und wenn ein Werkzeug mit `split_test_not_supported` oder „is not a split test" abweist — das ist meist die falsche Adressierung, kein Fehler. Der Lebenszyklus ist `newsletter`, der Inhalt einer Variante `email`.
 prerequisites: None
 ---
 

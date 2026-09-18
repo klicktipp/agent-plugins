@@ -1,0 +1,21 @@
+{
+  "name": "klicktipp",
+  "interface": {
+    "displayName": "KlickTipp"
+  },
+  "plugins": [
+    {
+      "name": "klicktipp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/klicktipp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_FIRST_USE"
+      },
+      "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, audience, sender, test sends and the dispatch confirmation — and read the opt-in processes of the account, over the KlickTipp MCP server.",
+      "category": "productivity"
+    }
+  ]
+}

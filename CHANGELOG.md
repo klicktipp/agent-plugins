@@ -8,6 +8,26 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.0 — 2026-09-18
+
+- **Codex finds the marketplace where it looks for it.** `.agents/plugins/marketplace.json` is the
+  location Codex documents; the Claude file it accepts only as a fallback, and that fallback cannot
+  carry a policy. This one says the OAuth sign-in happens at the first tool call rather than on
+  install.
+- **The skill descriptions are half as long** — 4743 characters down to 2761 across the six. Every
+  one of them is loaded before a single skill is chosen. Nothing that routes a request was dropped;
+  what went is a trigger phrased twice and enumerations repeating their own first clause. Four of
+  them also stopped writing `aendern` and `Oeffnungen`.
+- **A description can no longer break its own frontmatter.** Two of the six contained `": "`, which
+  in an unquoted YAML scalar is a mapping and not a string.
+- **Seven tools are newly documented in the contract references** — `create-opt-in-process`, the
+  four opt-in confirmation-email tools, `email-template-search` and `email-newsletter-cancel`. The
+  references mirror what the MCP server publishes; of these only `email-newsletter-cancel` is marked
+  as not being on production yet.
+- The GitHub Pages site is gone. The documentation is at
+  [developers.klicktipp.com](https://developers.klicktipp.com/guides/mcp-server-plugins), split into
+  a guide for the server and one for the plugins.
+
 ## 0.10.4 — 2026-09-18
 
 - **The documentation moved to developers.klicktipp.com and is now two guides** — one for the MCP

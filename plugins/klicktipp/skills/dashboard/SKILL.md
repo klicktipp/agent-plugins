@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Baut aus den Zahlen eines KlickTipp-Kontos ein lesbares Dashboard als Claude-Artifact — Reichweite, Zustellung, Oeffnungen, Klicks, Bounces und Abmeldungen der letzten Aussendungen. Nutze diesen Skill, wenn ein Dashboard, ein Report, eine Auswertung, eine Uebersicht oder "Zahlen" zu einem KlickTipp-Konto gewuenscht sind, wenn gefragt wird wie Newsletter abgeschnitten haben, wie hoch Oeffnungs- oder Klickrate sind, ob die Zustellbarkeit leidet, wie viele Kontakte erreicht werden, oder wenn mehrere Aussendungen verglichen werden sollen. Nur lesend: es wird nichts angelegt, geaendert oder verschickt.
+description: Die Zahlen der letzten Aussendungen eines KlickTipp-Kontos als lesbares Dashboard — Reichweite, Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen. Auch bei Fragen nach Öffnungs- und Klickrate, nach der Zustellbarkeit, danach wie ein Newsletter abgeschnitten hat, oder wenn mehrere Aussendungen verglichen werden sollen. Nur lesend — es wird nichts angelegt, geändert oder verschickt.
 prerequisites: None
 ---
 

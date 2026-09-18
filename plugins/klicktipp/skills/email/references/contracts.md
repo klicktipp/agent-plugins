@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — E-Mail-Inhalt, Bausteine, Gestaltung, Bilder
 
-Wort für Wort das, was der Server in `tools/list` für die 51 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 52 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -431,7 +431,7 @@ Parameter:
 - `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default colour of every link of the email
 - `contentWidth` — null | integer (minimum 320; maximum 1440): Width of the message in pixels
 - `fontFamily` — null | string (einer von `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`, `Times New Roman`, `Trebuchet MS`, `Verdana`, `ヒラギノ角ゴ Pro W3`, `メイリオ`): Default font of the whole email, by name; see the schema for the names
-- `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits in a wider window: "left", "center" or "right"
+- `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits when the window is wider than it is
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-paragraph-add`
@@ -781,3 +781,18 @@ Shows one image URL as a picture, in an MCP App window, so a person can look at 
 Parameter:
 
 - `url`* — string (minLength 12; maxLength 2000): https URL of the image, as a previous image tool returned it
+
+## `email-template-search` · ROI
+
+**Search email templates**
+
+Searches the design catalogue the email editor's template browser shows, and returns each design with its id, name, thumbnail and the tags, categories and collections it carries -- the same three filters this tool takes, so an answer says how to narrow the next call. Category and collection are picked from the lists in this schema; the tag is free text out of the catalogue's own several thousand. Paged: twelve per page by default, with total and nextPage. A host that renders MCP Apps shows the designs as pictures; without one, offer the names and let the user pick, because a template is a layout and its name does not describe it. Reads only: this does not create anything and does not change an existing email.
+
+Parameter:
+
+- `tag` — null | string (maxLength 250): Narrow by one look-and-feel tag, e.g. "light", "white", "three-columns"; omit for all
+- `category` — null | string (einer von `others`, `events`, `personal-note`, `beauty-cosmetics`, `product-launch`, `product-promotion`, `seasonal`, `seasonal-promotion`, `news-blog-and-magazines`, `business-services`, `newsletter`, `service-promotion`, `health-wellness`, `non-profit`, `tutorial`, `real-estate`, `computer-internet`, `electronics`, `travel-leisure`, `automated`, `notification`, `education`, `marketing-and-design`, `media-entertainment`, `transactional`, `small-business`, `christmas`, `holiday`, `fashion`, `new-year`, `food-beverage`, `automotive`, `hanukkah`, `activation`, `pets-and-animal-care`, `black-friday`, `sports`, `apologize-email`, `confirmation`, `halloween`, `cyber-monday`, `apps-download`, `mystery-email`, `welcome`, `thanksgiving`, `thank-you`, `abandoned-cart`, `financial-money`, `giving-tuesday`, `engagement`, `annual_review`, `teaser`, `home_garden`, `survey`, `gaming`, `valentines-day`, `st-patricks-day`, `chinese-new-year`, `easter`, `spring`, `earth-day`, `mothers-day`, `fathers-day`, `lgbtq-pride-month`, `back-to-school`, `mardi-gras`, `april-fools-day`, `cinco-de-mayo`, `memorial-day`, `independence-day`, `labor-day`, `fall`, `breast-cancer`, `winter`, `fashion-week`, `arts`, `black-history-month`, `book-lovers-day`, `cv-resumes`, `delivery`, `get-to-know-your-customer`, `culture`, `animated`, `password-reset`, `announcement`, `weekend-sale`, `luxury`, `music`, `e-commerce`, `webinar`, `legal`, `summer`, `fundraising`, `juneteenth`, `publishing`, `greenpeace-day`, `re-engagement`, `oktoberfest`, `wedding`, `photography`, `dark-mode-optimized`, `human-resources`, `activism`, `global-observances-celebrations`, `kwanzaa`, `the-big-game`, ``, oder null): Narrow by one category, e.g. "events", "product-launch"; omit for all
+- `collection` — null | string (einer von `real-estate`, `e-commerce`, `transactional`, `music`, `event`, `photography`, `human-resources`, `welcome-series`, `educational`, `health-wellness`, `product_launch`, `webinar`, `fashion-brand-retail`, `higher-education`, `recruitment`, `e-book-promotion`, `internal-communications`, `hair-salon`, `survey-campaign`, ``, oder null): Narrow by one collection, e.g. "welcome-series", "e-commerce"; omit for all
+- `page` — null | integer (minimum 1): Which page of the catalogue, from 1; default 1
+- `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

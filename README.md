@@ -29,8 +29,8 @@ interactively — see [SETUP.md](plugins/klicktipp/SETUP.md).
 ## Layout
 
 ```
-.claude-plugin/marketplace.json     the marketplace this repository is
-docs/                               the documentation site, published as GitHub Pages
+.claude-plugin/marketplace.json     the marketplace this repository is, for Claude Code
+.agents/plugins/marketplace.json    the same, where Codex looks for it
 CHANGELOG.md                        one entry per released version, and the release notes
 plugins/klicktipp/
 ├── .claude-plugin/plugin.json      manifest for Claude

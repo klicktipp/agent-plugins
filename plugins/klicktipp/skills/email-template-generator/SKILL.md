@@ -1,6 +1,6 @@
 ---
 name: email-template-generator
-description: Schreibt geschäftliche E-Mails, die ankommen und beantwortet werden — Kaltakquise, Support-Antworten, Nachfassen, Entschuldigungen, Absagen, interne Nachrichten, Terminanfragen. Nutze diesen Skill, wenn eine E-Mail formuliert, verbessert oder gekürzt werden soll, wenn eine Betreffzeile gesucht wird, wenn gefragt wird warum auf eine Mail niemand antwortet, oder wenn eine Vorlage für einen wiederkehrenden Fall entstehen soll. Nicht für Newsletter-Gestaltung oder HTML-E-Mails.
+description: Geschäftliche E-Mails, die ankommen und beantwortet werden — Kaltakquise, Support-Antworten, Nachfassen, Entschuldigungen, Absagen, Terminanfragen. Auch für Betreffzeilen, fürs Kürzen und Verbessern, für eine Vorlage für einen wiederkehrenden Fall, und bei „warum antwortet auf diese Mail niemand". Nicht für Newsletter-Gestaltung oder HTML-E-Mails (`email`).
 prerequisites: None
 ---
 

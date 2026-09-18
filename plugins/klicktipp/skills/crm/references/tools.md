@@ -21,8 +21,13 @@ Einwilligungsnachweis. Die Aufschlüsselung mit Begründung steht in `../SKILL.m
 | Werkzeug | | Wofür |
 | --- | --- | --- |
 | `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten). **Auf Production verfügbar.** |
-| `get-opt-in-confirmation-email` | R | Einstellungen der Bestätigungsmail: Betreff, Absender, Reply-To, CC/BCC. **Nicht den Text** — `bodyIsEditable` ist immer `false`. |
+| `create-opt-in-process` | | Prozess anlegen, optional als Kopie eines bestehenden. Die Bestätigungsmail entsteht mit. |
+| `update-opt-in-process` · `delete-opt-in-process` | I / D | Einstellungen schreiben; löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
+| `get-opt-in-confirmation-email` | R | Absenderseite der Bestätigungsmail: Betreff, Absender, Reply-To, CC/BCC. |
 | `update-opt-in-confirmation-email` | I | Dieselben Einstellungen schreiben. Rechtlicher Einwilligungsnachweis — nur auf ausdrücklichen Wunsch ändern. |
+| `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content` | R / I | Der Text: HTML und Klartext. **Nicht mit den Baustein-Werkzeugen** — `bodyIsEditable` bleibt `false`. |
+| `preview-opt-in-confirmation-email` | ROI | Die Mail als Bild. Zeigt den gespeicherten Text, ohne Signatur und Bestätigungslink. |
+| `send-opt-in-confirmation-email-test` | DO | Testversand an eine Adresse. Macht aus ihr einen vertaggten Kontakt. |
 | `get-subscription-redirect-url` | R | Die Weiterleitungs-URL eines Abonnenten (Pending- oder Danke-Seite). |
 | `search-contacts` · `get-contact` | R | Kontakte suchen (Cursor, ohne Gesamtzahl) und Detail lesen. |
 | `subscribe` · `unsubscribe` | DO | Ein Kanal eines Kontakts an-/abmelden. Ändert einen echten Empfänger, kann Automationen starten. Brauchen `approval`. |
@@ -40,12 +45,34 @@ Einwilligungsnachweis. Die Aufschlüsselung mit Begründung steht in `../SKILL.m
 Detail zusätzlich Bestätigungsmail, Weiterleitungen, Löschung ausstehender Abonnenten, Labels,
 Notizen. **Stolperer:** Gelöschte fehlen in der Suche; die volle Konfiguration nur im Detail.
 
+### `create-opt-in-process`
+**Wofür:** einen Prozess anlegen — Name ist Pflicht, alles Weitere wie beim Ändern.
+`copyFromOptInProcessId` kopiert einen bestehenden samt dem Text seiner Bestätigungsmail.
+**Stolperer:** `useForChangeEmail` gibt es hier nicht (es würde einem anderen Prozess eine Rolle
+wegnehmen); zwei gleiche Aufrufe erzeugen zwei Prozesse oder scheitern am doppelten Namen.
+
+### `get-/update-opt-in-confirmation-email-content`
+**Wofür:** den Text der Bestätigungsmail lesen und schreiben — HTML und Klartext, dazu der Betreff.
+**Stolperer:** Beide Körper werden ganz geschrieben, nicht gepatcht; wer nur einen schreibt,
+hinterlässt eine Mail, die zwei Empfängern zwei Dinge sagt. Ein Fehler der Inhaltsprüfung hält den
+Schreibvorgang an — dann steht `stored: false` in der Antwort, und die Mail sagt weiter, was sie
+vorher sagte.
+
+### `preview-opt-in-confirmation-email` · `send-opt-in-confirmation-email-test`
+**Wofür:** die Mail prüfen, bevor ein Kontakt sie bekommt — als Bild oder als echte Mail an eine
+Adresse. **Stolperer:** Die Vorschau zeigt den **gespeicherten** Text; Signatur, Bestätigungslink
+und Empfängerdaten kommen erst beim Versand dazu, ihr Fehlen ist kein Fehler. Der Testversand
+dagegen ändert das Konto: eine Adresse, die noch kein Kontakt war, wird einer und wird vertaggt —
+und Vertaggen startet Automationen.
+
 ### `get-subscription-redirect-url`
 **Wofür:** die Pending- (Bestätigung offen) oder Danke-Seite (bestätigt) eines Abonnenten, per
 E-Mail-Adresse; `optInProcessId` weggelassen nimmt den Prozess, über den die Adresse sich angemeldet
-hat. Ohne eigene Seite kommt die von KlickTipp gehostete. **Stolperer:** Die URL trägt
-identifizierende Parameter (Abonnenten-ID, E-Mail, Liste, Schlüssel, Empfehlungslink) — nicht
-weiterreichen, wo sie nicht hingehört.
+hat. Ohne eigene Seite kommt die von KlickTipp gehostete. **Stolperer:** Die Adresse ist Pflicht und
+bestimmt, über wen die Antwort ist — such dir keine aus. `redirectPage` sagt, welche der beiden
+Seiten kam; `pending` heißt „dieser Kontakt hat noch nicht bestätigt", nicht „falsch eingestellt".
+Die URL trägt identifizierende Parameter (Abonnenten-ID, E-Mail, Liste, Schlüssel,
+Empfehlungslink) — nicht weiterreichen, wo sie nicht hingehört.
 
 ## Kontakte
 

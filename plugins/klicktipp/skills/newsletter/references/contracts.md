@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — Newsletter, Versand und Signaturen
 
-Wort für Wort das, was der Server in `tools/list` für die 14 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 15 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -265,4 +265,15 @@ Parameter:
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send
 - `mode`* — string (einer von `immediate`, `scheduled`): "immediate" or "scheduled"; no default
 - `scheduledAt` — null | string (Muster `^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(:\d{2})?([Zz]|[+-]\d{2}:?\d{2})$`): Moment to send at, ISO 8601 with UTC offset; required for "scheduled", forbidden for "immediate"
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-newsletter-cancel` · D
+
+**Cancel a newsletter dispatch**
+
+Takes back the dispatch of an email newsletter that was scheduled or has just started, so it becomes a draft again and reaches nobody further. THIS IS THE ANSWER TO "stop it", "cancel the send" AND "undo the schedule". Only while the delivery status says canBeCancelled: once a dispatch is far enough along it cannot be called off, and the refusal says so rather than pretending. What already went out stays out -- this stops what has not been sent yet, it does not recall mail. The newsletter itself, its content and its audience are untouched; only the dispatch is undone, and activating it again is email-newsletter-send. Ask the person before calling this: a dispatch someone set up deliberately is not yours to stop on your own reading of a situation.
+
+Parameter:
+
+- `newsletterId`* — integer (minimum 1): ID of the newsletter whose dispatch is to be called off
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

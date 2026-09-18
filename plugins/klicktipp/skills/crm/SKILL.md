@@ -1,6 +1,6 @@
 ---
 name: crm
-description: Die Kontaktdaten eines KlickTipp-Kontos — Kontakte suchen und lesen, an- und abmelden, Feldwerte setzen, manuelle Tags anlegen, vergeben und entziehen, eigene Felder definieren, Opt-in-Prozesse (Abonnentenlisten) lesen, aendern und loeschen, und die Weiterleitungs-URL eines Abonnenten lesen. Nutze diesen Skill, wenn ein Kontakt, Abonnent, Lead oder Empfaenger gefunden, angelegt, getaggt, angereichert oder abgemeldet werden soll, wenn ein Tag oder ein Feld angelegt, umbenannt oder geloescht werden soll, wenn eine Anmeldeliste umbenannt, ihre Weiterleitung geaendert, auf Single- oder Double-Opt-in umgestellt oder geloescht werden soll, wenn gefragt wird "wer hat Tag X", "welche Felder gibt es", "ueber welche Liste hat sich jemand angemeldet", oder wenn ein Werkzeug ein Tag oder Feld als unbekannt abweist. Nicht fuer Newsletter (Skill `newsletter`), deren Inhalt (Skill `email`) oder Auswertungen (Skill `dashboard`).
+description: Die Kontaktdaten eines KlickTipp-Kontos — Kontakte suchen, anlegen, an- und abmelden, Feldwerte setzen; manuelle Tags und eigene Felder anlegen, vergeben, umbenennen, löschen; Opt-in-Prozesse (Anmeldelisten) lesen und ändern. Auch bei „wer hat Tag X", „welche Felder gibt es", „über welche Liste kam jemand rein", oder wenn ein Werkzeug ein Tag oder Feld als unbekannt abweist. Nicht für Newsletter (`newsletter`), deren Inhalt (`email`) oder Zahlen (`dashboard`).
 prerequisites: None
 ---
 
@@ -34,8 +34,11 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
 - `subscribe`, `unsubscribe`, `get-subscription-redirect-url` — eine Anmeldung schickt die
   Bestätigungsmail, kann Automationen auslösen und ändert, wer wirklich Post bekommt. Das ist eine
   andere Reichweite als ein Kontaktfeld zu korrigieren.
-- `update-opt-in-process`, `delete-opt-in-process`, `get-/update-opt-in-confirmation-email` — am
-  Einwilligungsnachweis.
+- `create-opt-in-process`, `update-opt-in-process`, `delete-opt-in-process` sowie alles rund um die
+  Bestätigungsmail (`get-/update-opt-in-confirmation-email`,
+  `get-/update-opt-in-confirmation-email-content`, `preview-opt-in-confirmation-email`,
+  `send-opt-in-confirmation-email-test`) — am Einwilligungsnachweis. Der Testversand legt außerdem
+  einen Kontakt an und vertaggt ihn.
 - `update-contact` gibt es nicht mehr: das Werkzeug heißt **`update-contact`**. Es hat nie
   angereichert, sondern Kontaktfelder geschrieben, und heißt jetzt wie `update-manual-tag` und
   `update-custom-field`.
@@ -58,10 +61,11 @@ Oberfläche.
   sie tragen `isGlobal` und sind weder änderbar noch löschbar. Jedes Feld hat einen **Platzhalter**,
   der im Newsletter den Wert des Empfängers rendert — die Brücke zum Skill `email`.
 - **Opt-in-Prozesse** — in der App auch „Abonnentenlisten": `search-opt-in-processes` /
-  `get-opt-in-process`, `update-opt-in-process` / `delete-opt-in-process`,
-  `get-opt-in-confirmation-email` / `update-opt-in-confirmation-email`, und
-  `get-subscription-redirect-url` für die Pending- oder Danke-Seite eines Abonnenten. Anlegen geht
-  nur in der App.
+  `get-opt-in-process`, `create-opt-in-process` / `update-opt-in-process` / `delete-opt-in-process`,
+  die Bestätigungsmail mit `get-/update-opt-in-confirmation-email` (Absender, Betreff) und
+  `get-/update-opt-in-confirmation-email-content` (Text), geprüft mit
+  `preview-opt-in-confirmation-email` und `send-opt-in-confirmation-email-test`, und
+  `get-subscription-redirect-url` für die Pending- oder Danke-Seite eines Abonnenten.
 
 ## Zustimmung ist ein Argument, kein Freifahrtschein
 
@@ -117,6 +121,24 @@ oder andere Entitäten den Tag oder das Feld noch benutzen — und nennen sie. D
 die man umgeht, sondern die Liste dessen, was der Nutzer vorher entscheiden muss. Ein gelöschtes
 Feld rendert seinen Platzhalter leer, wo Inhalt ihn noch trägt.
 
+## Eine Anmeldeliste anlegen
+
+`create-opt-in-process` braucht einen Namen und nimmt sonst dieselben Einstellungen wie das
+Ändern. **Mit dem Prozess entsteht eine Bestätigungsmail** — das macht die Plattform, nicht das
+Werkzeug, und ohne sie wäre ein Double-Opt-in-Prozess unbenutzbar. Ihre ID steht als
+`confirmationEmailId` in der Antwort; von dort gehen die Mail-Werkzeuge weiter.
+
+`copyFromOptInProcessId` kopiert einen bestehenden Prozess **samt dem Text seiner
+Bestätigungsmail**. Das ist der kürzeste Weg zu einer zweiten Liste, die aussieht wie die erste.
+Argumente, die daneben stehen, gewinnen gegen die Kopie.
+
+Ein Unterschied zum Ändern: **`useForChangeEmail` gibt es beim Anlegen nicht.** Diese Rolle einem
+anderen Prozess wegzunehmen ist eine Änderung an etwas, das der Nutzer nicht genannt hat — dafür
+gibt es `update-opt-in-process`, wo genau das verlangt wird.
+
+Der neue Prozess ist leer und verschickt nichts, bis ein Formular, eine Automation oder ein
+API-Aufruf jemanden anmeldet.
+
 ## Eine Anmeldeliste ändert man feldweise
 
 `update-opt-in-process` schreibt nur die Argumente, die es bekommt — alles andere behält seinen
@@ -153,24 +175,73 @@ könnten.
 früher verschwanden sie stumm. Die aktuelle URL steht in `get-opt-in-process`, zusammen mit den
 gesetzten Parametern.
 
-## Die Bestätigungsmail: Einstellungen ja, Text nein
+### UTM-Parameter sind das Gegenteil davon
 
-`get-opt-in-confirmation-email` und `update-opt-in-confirmation-email` lesen und schreiben, was die
-Bestätigungsmail eines Double-Opt-in-Prozesses absendet: Betreff, Absendername und -adresse,
-Reply-To, CC und BCC. Du nennst dabei den **Prozess**, nicht die E-Mail — die ID gehört dem Prozess.
+Daneben trägt jede der beiden Seiten fünf Kampagnenparameter: `utm_source`, `utm_medium`,
+`utm_campaign`, `utm_term`, `utm_content`, gesetzt über `pendingUtmParameters` bzw.
+`confirmedUtmParameters`.
 
-**Den Text der Mail kannst du nicht schreiben, auch nicht mit den E-Mail-Werkzeugen.** Eine
-Bestätigungsmail ist kein Baukasten-Dokument: sie hat keines der Dokumente, auf denen
-`email-get` und die Baustein-Werkzeuge arbeiten, und wird deshalb von ihnen abgewiesen. Die Antwort
-sagt das mit `bodyIsEditable: false` und liefert `editUrl` — dorthin schickst du den Nutzer.
+**Hier schickst du den Wert, nicht den Namen.** Bei den Parametern oben nennst du den Namen und die
+Plattform füllt den Wert des Kontakts ein; hier steht der Name durch die Konvention fest, die jedes
+Analyse-Werkzeug liest, und du lieferst den Text, der dahinter ankommt. Deshalb sind es zwei
+getrennte Argumente: in einem Objekt würde früher oder später jemand `"utm_source"` als Wert
+schreiben.
 
-Diese Mail ist in vielen Ländern der rechtliche Nachweis der Einwilligung. Absender oder Betreff
-änderst du nur, wenn der Nutzer genau das verlangt hat, und sagst hinterher, was du geändert hast.
+Diese Werte tragen nichts über den Kontakt — jeder Besucher der Seite bekommt denselben Text.
+`utm_id` gibt es nicht: die kontoweite UTM-Einstellung kennt es, aber jede Option dort benennt eine
+E-Mail oder eine Kampagne, und eine Anmeldeseite wird durch eine Anmeldung erreicht, nicht durch
+ein Mailing.
+
+Auch sie gelten nur zusammen mit der URL ihrer Seite. Was schon von Hand in der URL steht, gewinnt:
+`.../danke?utm_source=X` bleibt `X`. `get-opt-in-process` liest die gesetzten Werte als
+`pendingUtmParameters` / `confirmedUtmParameters` zurück, unter den Query-Namen.
+
+## Die Bestätigungsmail
+
+Du nennst überall den **Prozess**, nie die E-Mail — die ID gehört dem Prozess, und eine selbst
+mitgebrachte könnte zu einem anderen gehören.
+
+**Absender und Betreff:** `get-opt-in-confirmation-email` / `update-opt-in-confirmation-email` —
+Betreff, Absendername und -adresse, Reply-To, CC, BCC.
+
+**Text:** `get-opt-in-confirmation-email-content` / `update-opt-in-confirmation-email-content`.
+
+**Die Baustein-Werkzeuge kannst du dafür trotzdem nicht benutzen.** Eine Bestätigungsmail ist kein
+Baukasten-Dokument: sie hat keines der Dokumente, auf denen `email-get` und die Baustein-Werkzeuge
+arbeiten, und wird von ihnen abgewiesen — deshalb steht in der Antwort weiterhin
+`bodyIsEditable: false`. Ihr Text ist Rich Text, also schlicht HTML und Klartext, und genau die
+schreibt das Content-Werkzeug.
+
+Diese Mail hat **zwei Körper**, und welchen ein Empfänger sieht, entscheidet sein Mailprogramm.
+`html` und `plain` werden jeweils **ganz** geschrieben, nicht gepatcht, und was du nicht schickst,
+behält seinen Text. **Schreib beide** — sonst sagt dieselbe Mail zwei verschiedenen Empfängern zwei
+verschiedene Dinge.
+
+Die Plattform prüft das Ergebnis wie der Editor: Fehler — ein fehlender Abmeldelink, nicht
+unterstütztes HTML, ein leerer Betreff — **halten den Schreibvorgang an**. Die Antwort sagt dann
+`stored: false` und nennt sie in `validationMessages`. Warnungen halten nichts an, sind aber bei
+dieser Mail das Lesen wert.
+
+### Prüfen, bevor ein Kontakt sie bekommt
+
+- `preview-opt-in-confirmation-email` zeigt sie in einem Fenster. **Gezeigt wird der gespeicherte
+  Text**: Signatur, Bestätigungslink und die Daten des Empfängers kommen pro Empfänger erst beim
+  Versand dazu. Dass sie im Bild fehlen, ist kein Fehler — sag das, statt es als einen zu melden.
+  Das Werkzeug ändert nichts und legt keinen Kontakt an; die Vorschau-Seite der App tut das, sie
+  erzeugt einen Vorschau-Kontakt.
+- `send-opt-in-confirmation-email-test` schickt sie an eine Adresse. **Ist die Adresse noch kein
+  Kontakt des Kontos, wird sie einer** — vertaggt als Testempfänger, und Vertaggen ist das, worauf
+  die Plattform Automationen startet. Nenn die Adresse und sag, was aus ihr wird, bevor du das
+  aufrufst. Der Bestätigungslink in einem Test bestätigt niemanden.
+
+Diese Mail ist in vielen Ländern der rechtliche Nachweis der Einwilligung. Absender, Betreff oder
+Text änderst du nur, wenn der Nutzer genau das verlangt hat, und sagst hinterher, was du geändert
+hast. Sie muss weiterhin sagen, wer wen wozu anmeldet.
 
 ## Eine Anmeldeliste löschen heißt: erst aufräumen
 
-**Auf Production gibt es weder dieses noch `update-opt-in-process`** (siehe „Verfügbarkeit") — dort
-verweist du auf die Oberfläche. Auf Staging und lokal gilt:
+**Auf Production gibt es weder dieses noch `create-`/`update-opt-in-process`** (siehe
+„Verfügbarkeit") — dort verweist du auf die Oberfläche. Auf Staging und lokal gilt:
 
 `delete-opt-in-process` entfernt den Prozess samt Bestätigungsmail. **Die Kontakte bleiben
 angemeldet** und werden nicht gelöscht — das ist die Frage, die vorher gestellt wird, also
@@ -221,8 +292,18 @@ wäre. Ein leerer Wert löscht das Feld.
 
 `get-subscription-redirect-url` liefert die Pending-Seite (Bestätigung offen) oder die Danke-Seite
 (bestätigt) einer Adresse — mit den konfigurierten Parametern: Abonnenten-ID, E-Mail, Liste,
-Schlüssel, Empfehlungslink. Diese URL gehört in kein Protokoll, keine Notiz und keinen Newsletter.
-Zeig sie der Person, die danach gefragt hat, und sonst niemandem.
+Schlüssel, Empfehlungslink, dazu die UTM-Werte der Seite. Diese URL gehört in kein Protokoll, keine
+Notiz und keinen Newsletter. Zeig sie der Person, die danach gefragt hat, und sonst niemandem.
+
+**Die E-Mail-Adresse ist Pflicht, und sie ist der Gegenstand der Antwort** — die URL trägt die ID,
+die Adresse und den Schlüssel *dieses* Kontakts. Such dir also keinen aus: wenn nicht klar ist, wer
+gemeint ist, frag. Eine URL über die falsche Person sieht aus wie eine richtige.
+
+Welche der beiden Seiten kommt, sagt `redirectPage`. **Pending ist eine Auskunft über den Kontakt,
+keine Fehlkonfiguration:** dieser Kontakt hat das Double-Opt-in noch nicht bestätigt. Es kann auch
+einen bestätigten treffen, wenn der Prozess seine Bestätigungsmail bei jeder Anmeldung erneut
+schickt — dann wurde er gerade wieder um eine Bestätigung gebeten. Erklär das mit, statt die URL
+kommentarlos hinzulegen.
 
 ## Kontoauswahl
 
