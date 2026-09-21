@@ -37,6 +37,12 @@ A browser window opens, the user signs in with their KlickTipp credentials and
 approves the access. After that the token is stored and refreshed automatically —
 this is a one-time step per machine.
 
+## Another host: Langdock
+
+Langdock is not a plugin host — it connects to the same server as a remote MCP
+integration, with the OAuth client named by hand. See
+[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md).
+
 ## Check that it worked
 
 Ask for something harmless and read-only, and confirm the account is the one the

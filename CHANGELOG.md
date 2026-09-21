@@ -8,6 +8,14 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.11.5 — 2026-09-21
+
+- **Langdock is documented.** [SETUP_LANGDOCK.md](plugins/klicktipp/SETUP_LANGDOCK.md) walks a
+  workspace through connecting to the same MCP server as a remote integration. The one thing that
+  trips people up is named first: dynamic client registration is closed on the KlickTipp side, so
+  the manual Authorization Code + PKCE option is the route, and the empty client secret is correct
+  rather than a missing value.
+
 ## 0.11.4 — 2026-09-18
 
 - **The last two vendor mentions are gone**, at the source. `email-content-document-import` and

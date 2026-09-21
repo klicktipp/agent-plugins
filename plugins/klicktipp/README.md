@@ -5,7 +5,9 @@ the opt-in processes of the account — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
-once, interactively, on first use. See [SETUP.md](SETUP.md).
+once, interactively, on first use. See [SETUP.md](SETUP.md), or
+[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md) to reach the same server from a Langdock
+workspace.
 
 ## Install
 
