@@ -116,7 +116,7 @@ Speicherort und Stolperern — lies die eine, die du brauchst:
 `email-button-add` · `email-menu-add` · `email-social-add` · `email-divider-add` · `email-spacer-add`
 · `email-table-add`
 
-**Countdown, Kontaktkarte und Wowing-Video haben kein Add-Werkzeug mehr.** Es gab eines, und es
+**Countdown, Kontaktkarte, Wowing-Video und KI-Text haben kein Add-Werkzeug mehr.** Es gab eines, und es
 konnte nur eine leere Hülle setzen: der Inhalt dieser drei entsteht in einem Dialog des
 KlickTipp-Editors, den kein Werkzeug hier erreicht. Ein so eingefügter Baustein sah platziert aus
 und zeigte beim Versand nichts. Wer einen Countdown, eine Visitenkarte oder ein Wowing-Video will,

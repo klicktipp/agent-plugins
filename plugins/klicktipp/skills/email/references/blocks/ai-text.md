@@ -6,7 +6,7 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 ## Werkzeuge
 
-| Anlegen | `email-ai-text-add` |
+| Anlegen | — (siehe unten) |
 | --- | --- |
 | Ändern | — (nichts zu ändern) |
 | Entfernen | `email-block-remove` |
@@ -15,7 +15,9 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 ## Worauf zu achten ist
 
-Kommt unkonfiguriert: die Anweisung wird im KlickTipp-Editor gesetzt. Anders als die personalisierte E-Mail, deren Anweisung du direkt mitgibst — und anders als sie setzt dieser Baustein voraus, dass das Konto das Add-on besitzt.
+**Es gibt kein Anlege-Werkzeug mehr.** `email-ai-text-add` ist entfernt. Damit gilt für den KI-Text dasselbe wie für Countdown, Kontaktkarte und Wowing-Video: der Baustein entsteht im KlickTipp-Editor, weil seine Anweisung ohnehin dort gesetzt wird — ein Werkzeug hätte nur eine leere Hülle platzieren können, die beim Versand nichts rendert. Verweise auf den Editor, statt einen Umweg zu suchen.
+
+Ein vorhandener Baustein bleibt lesbar, verschiebbar und entfernbar, und sein Aussehen lässt sich ändern. Der Baustein setzt außerdem voraus, dass das Konto das Add-on besitzt.
 
 ## Gestaltung
 

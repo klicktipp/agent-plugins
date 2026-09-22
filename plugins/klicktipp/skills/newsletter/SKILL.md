@@ -36,9 +36,14 @@ Nach Schritt 7 gibt es noch einen Rückweg: `email-newsletter-cancel` nimmt eine
 
 ## 1. Entwurf anlegen
 
-`email-newsletter-draft-create` nimmt `name` (Pflicht, das ist die interne Bezeichnung), optional
-`subject`, `notes` und `preheader`. Der Entwurf ist danach **inert**: keine Zielgruppe, kein Inhalt, kein
-Absender, kein Termin. Er kann niemanden erreichen.
+`email-newsletter-draft-create` nimmt `name` und `subject` — beide Pflicht; `name` ist die interne
+Bezeichnung, `subject` die Betreffzeile. Dazu optional `notes` und `preheader`.
+
+Der Entwurf hat danach keinen Inhalt, keinen Absender und keinen Termin, und verschickt wird nichts.
+**Zielgruppenlos ist er aber nicht.** Er hat nur noch keinen *Filter*, und ungefiltert heißt
+`all_contacts` — jeder aktive Kontakt des Kontos. Das ist die weiteste mögliche Zielgruppe, nicht die
+engste. Sag dem Nutzer den Modus, den die Antwort nennt, und kläre die Zielgruppe, bevor es Richtung
+Versand geht; verlass dich nicht darauf, dass der Zustand von selbst harmlos ist.
 
 Nutze `name` für etwas, das in der Übersicht wiederzufinden ist („Februar-Aktion 2026"), nicht für
 den Betreff. Der Betreff ist, was die Empfängerin im Posteingang liest, und steht in `subject`.

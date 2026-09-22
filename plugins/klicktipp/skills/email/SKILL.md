@@ -101,7 +101,7 @@ Konvertierung stattfindet.
 | `email-icons-write` | die Einträge eines Icon-Bausteins — dito |
 | `email-table-write` | die Zeilen einer Tabelle, jede Zelle Markup |
 | `email-row-add` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
-| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-ai-text-add` |
+| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add` |
 | `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
 | `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
 | `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
@@ -288,8 +288,12 @@ Zwei Dinge dazu, die du beim Weitergeben nicht verdrehen darfst:
   konfigurieren, oder den Block mit `email-block-remove` entfernen. Sag das
   so, statt einen Weg daran vorbei zu suchen. Der Befund tritt auch dann auf, wenn im Block
   Platzhaltertext steht — ein fertig aussehender Block kann hohl sein.
-- **Ein Befund ist eine Entscheidung, keine Aufgabe.** Ein zu blasser Text oder ein fehlender
-  Abmeldelink kann so gewollt sein. Gib die Befunde weiter und frag, statt still zu reparieren.
+- **Eine Warnung ist eine Entscheidung, ein Fehler nicht.** Ein zu blasser Text oder ein fehlender
+  Selbstauskunftslink kann so gewollt sein — gib das weiter und frag, statt still zu reparieren. Die
+  drei Fehler dagegen sind Sperren: Bild ohne Quelle, unkonfiguriertes Add-on und **fehlender
+  Abmeldelink**. `email-content-publish` verweigert ohne `%Link:Unsubscribe%` (oder
+  `%User:Signature%`, das ihn mitbringt), und ohne Veröffentlichung geht kein Versand. Melde das
+  nicht als Geschmacksfrage.
 
 Nichts wird geraten: ein Kontrast wird nur dort gemessen, wo **beide** Farben im Dokument stehen.
 Eine Farbe, die erst der Renderer setzt, erzeugt keinen Befund — du kannst einen Wert nicht ändern,
@@ -337,7 +341,7 @@ In `references/` liegen:
 
 | Datei | Inhalt |
 | --- | --- |
-| `contracts.md` | **die veröffentlichten Verträge** aller 51 Werkzeuge dieses Skills, Wort für Wort: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung — generiert aus der Werkzeugliste des Servers |
+| `contracts.md` | **die veröffentlichten Verträge** aller Werkzeuge dieses Skills, Wort für Wort: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung — generiert aus der Werkzeugliste des Servers |
 | `tools.md` | **alle Werkzeuge dieses Skills** — Inhalt lesen/prüfen/importieren/veröffentlichen, Bausteine, Gestaltung, Bilder: wofür, was sie nicht tun, Stolperer |
 | `document-skeleton.json` | Schlüsselgerüst eines gespeicherten Editor-Dokuments, beide gültigen Formen, Leerentwurf |
 | `kt-module-definitions.json` | die KlickTipp-eigenen Teile: Entscheidungen, KI-Blöcke, Add-ons |

@@ -23,7 +23,7 @@ und das nicht derselbe Abstand ist: einmal um den Button herum, einmal darin. `k
 bei jeder Art ohne eigenes Stil-Werkzeug. Eine leere Karte heißt „hier ist nichts gesetzt", nicht
 „hier geht nichts": der Editor legt seine Voreinstellungen erst beim Rendern an, nicht ins Dokument.
 
-Was weiterhin **nicht** geht, sagst du offen, statt es zu umgehen: die Schriftart, die Spaltenbreiten
+Was weiterhin **nicht** geht, sagst du offen, statt es zu umgehen: die Spaltenbreiten
 einer bestehenden Zeile (die Spalten einer Zeile sind gleich breit; eine schiefe Teilung entsteht im
 Editor), eine Zeile entfernen, und die **Breite eines Bildes oder Videos** — die steckt im Dokument
 in zwei gekoppelten Werten plus einem Klassen-Token, und eines davon allein zu setzen bringt Editor
