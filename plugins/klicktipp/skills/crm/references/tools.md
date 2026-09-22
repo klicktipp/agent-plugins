@@ -11,20 +11,19 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 echten Empfänger, eine Automation) · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes
 Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Konto des Zugangs.
 
-**Auf Production freigegeben** sind die dreizehn Tag-, Kontakt- und Feld-Werkzeuge plus die zwei
-Opt-in-Leser — ab dem nächsten Release dort, vorher „unknown tool". **Nicht** freigegeben, jedes
-aus eigenem Grund: die beiden Löscher (`delete-manual-tag`, `delete-custom-field`), die drei
-Anmelde-Werkzeuge (`subscribe`, `unsubscribe`, `get-subscription-redirect-url`) und alles am
-Einwilligungsnachweis. Die Aufschlüsselung mit Begründung steht in `../SKILL.md` unter
-„Verfügbarkeit".
+**Auf Production verfügbar** sind die vierzehn Tag-, Kontakt- und Feld-Werkzeuge — `create-contact`
+eingeschlossen —, die zwei Opt-in-Leser und die drei Anmelde-Werkzeuge (`subscribe`, `unsubscribe`,
+`get-subscription-redirect-url`). **Nicht** freigegeben, jedes aus eigenem Grund: die beiden Löscher
+(`delete-manual-tag`, `delete-custom-field`) und alles am Einwilligungsnachweis. Die Aufschlüsselung
+mit Begründung steht in `../SKILL.md` unter „Verfügbarkeit".
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |
 | `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten). **Auf Production verfügbar.** |
 | `create-opt-in-process` | | Prozess anlegen, optional als Kopie eines bestehenden. Die Bestätigungsmail entsteht mit. |
 | `update-opt-in-process` · `delete-opt-in-process` | I / D | Einstellungen schreiben; löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
-| `get-opt-in-confirmation-email` | R | Absenderseite der Bestätigungsmail: Betreff, Absender, Reply-To, CC/BCC. |
-| `update-opt-in-confirmation-email` | I | Dieselben Einstellungen schreiben. Rechtlicher Einwilligungsnachweis — nur auf ausdrücklichen Wunsch ändern. |
+| `get-opt-in-confirmation-email` | R | Absenderseite der Bestätigungsmail: Betreff, Absender, Reply-To, CC/BCC, Domain — plus `senderEmailOptions` und `senderDomainOptions`, also das Erlaubte. |
+| `update-opt-in-confirmation-email` | I | Dieselben Einstellungen schreiben. Absender nur aus `senderEmailOptions`. Rechtlicher Einwilligungsnachweis — nur auf ausdrücklichen Wunsch ändern. |
 | `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content` | R / I | Der Text: HTML und Klartext. **Nicht mit den Baustein-Werkzeugen** — `bodyIsEditable` bleibt `false`. |
 | `preview-opt-in-confirmation-email` | ROI | Die Mail als Bild. Zeigt den gespeicherten Text, ohne Signatur und Bestätigungslink. |
 | `send-opt-in-confirmation-email-test` | DO | Testversand an eine Adresse. Macht aus ihr einen vertaggten Kontakt. |
@@ -63,7 +62,8 @@ wegnehmen); zwei gleiche Aufrufe erzeugen zwei Prozesse oder scheitern am doppel
 **Stolperer:** Beide Körper werden ganz geschrieben, nicht gepatcht; wer nur einen schreibt,
 hinterlässt eine Mail, die zwei Empfängern zwei Dinge sagt. Ein Fehler der Inhaltsprüfung hält den
 Schreibvorgang an — dann steht `stored: false` in der Antwort, und die Mail sagt weiter, was sie
-vorher sagte.
+vorher sagte. Von allen Antworten dieses Skills ist das die, bei der das Nachsehen sich
+lohnt: eine abgelehnte sieht einer erfolgreichen bis auf `stored` zum Verwechseln ähnlich.
 
 ### `preview-opt-in-confirmation-email` · `send-opt-in-confirmation-email-test`
 **Wofür:** die Mail prüfen, bevor ein Kontakt sie bekommt — als Bild oder als echte Mail an eine
@@ -97,6 +97,16 @@ unverändert zurück, mit denselben Filtern.
 starten — deshalb `approval` Pflicht (`subscribe-contact` / `unsubscribe-contact`) und erst nach
 ausdrücklicher Zustimmung. Der mitgegebene Tag kann weitere Automationen starten. Andere Kanäle und
 Referenzen bleiben unberührt; Abmelden entfernt keine Tags.
+
+### `create-contact`
+**Wofür:** einen Kontakt von Hand anlegen, so wie der Bildschirm *Kontakt hinzufügen* — E-Mail-Adresse,
+Mobilnummer oder beides, Feldwerte im selben Aufruf, optional ein manueller Tag. **Anders als
+`subscribe`:** kein Opt-in-Prozess, **keine Bestätigungsmail**, der Kontakt ist sofort `subscribed`
+und damit in der Zielgruppe des nächsten Mailings. **Stolperer:** Eine bereits abgemeldete Adresse
+wird abgewiesen, nicht wieder angemeldet. Eine Adresse, die das Konto schon hat, wird
+*aktualisiert* — die mitgegebenen Werte überschreiben die alten, `alreadyExisted` sagt es. Das Konto
+braucht die Berechtigung zum Anlegen, und jeder Aufruf zählt gegen sein Tagesimportlimit. Unbekannte
+Feld-ID oder unbekannter Tag: Absage, nichts wird stillschweigend übersprungen.
 
 ### `update-contact`
 **Wofür:** Feldwerte (`fields`: je `fieldId` ein globaler Schlüssel oder eine numerische Feld-ID des

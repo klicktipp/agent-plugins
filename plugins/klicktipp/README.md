@@ -38,22 +38,27 @@ Both targets read the same `.mcp.json`.
 | `email-newsletter-delivery-configure` | sender name, sender address, reply address, signature |
 | `email-newsletter-test-send` | test send to any address — the recipient becomes a tagged contact, which can start an automation |
 | `email-newsletter-send` | prepare the real dispatch and return a confirmation URL |
-| `email-newsletter-cancel` | take a running dispatch back — not on production yet, and it does not unsend what already left |
+| `email-newsletter-cancel` | take a running dispatch back — it does not unsend what already left |
 
 **Content of one email**
 
 | | |
 |---|---|
 | `email-get` | read the stored block document of a newsletter, block by block |
+| `email-preview` | render the current draft and show it, unpublished changes included — the answer to "show me the preview" |
 | `email-content-import` | bring in a design that only exists as HTML, once, bound to the revision you read |
 | `email-content-copy` | take the body of another email of the account over unchanged, in one call |
 | `email-content-document-import` | store a finished editor document as the body — nothing is converted, so nothing is lost |
 | `email-content-check` | review the assembled email before it is published |
 | `email-content-publish` | make the reviewed body the one a dispatch would send |
-| `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, HTML, personalized email |
+| `email-<block>-add` | add one block: paragraph, heading, text, button, image, list, divider, spacer, row, table, menu, social, icons, video, HTML |
 | `email-<block>-write` | change the content of an existing block of that kind |
 | `email-<block>-style-write` | change the styling of a block, a column, a row or the page |
 | `email-block-move`, `email-block-remove` | move a block within the document, or take it out |
+| `email-template-search` · `email-template-apply` | find a design of the account's catalogue, and put it on an email |
+| `email-condition-capabilities-get` | what a display condition may say in this account |
+| `email-decision-write` · `email-row-condition-write` | write a named display condition, and bind a row to it |
+| `email-decisions-get` | which display conditions an email carries, and which rows each governs |
 
 Each block tool names the blocks it may touch by their `uuid`, so a change reaches
 exactly one block and leaves the rest of the design untouched.
@@ -64,11 +69,8 @@ shell that rendered nothing at send time. The editor is the answer for those
 three; blocks of those kinds that already exist stay readable, movable and
 removable.
 
-**Split tests** — released, and on production from the next production release
-on; until that deployment is out, calling one there still answers "unknown
-tool". Delivery configuration, test send and activation refuse a split test
-everywhere, because none of them can pick an arm — that part the release does
-not change
+**Split tests** — on production. Delivery configuration, test send and
+activation refuse a split test everywhere, because none of them can pick an arm
 
 | | |
 |---|---|
@@ -77,12 +79,12 @@ not change
 | `email-split-test-variant-update` | change an arm, its subject line above all |
 | `email-split-test-variant-remove` | take an arm out |
 
-**Contacts, tags and fields** — thirteen of them are released and arrive with the
-next production deployment; until then production answers "unknown tool"
+**Contacts, tags and fields** — on production
 
 | | |
 |---|---|
 | `search-contacts` · `get-contact` | find contacts by tag, field value or subscription, and read one |
+| `create-contact` | add one contact by hand, subscribed at once and with its field values — the Add Contact screen |
 | `update-contact` | write field values on a contact that already exists |
 | `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` | the manual tags of the account |
 | `assign-manual-tag` · `remove-manual-tag` | put a manual tag on a contact, or take it off |
@@ -90,9 +92,7 @@ next production deployment; until then production answers "unknown tool"
 
 **Deliberately not on production**, each for its own reason: `delete-manual-tag`
 and `delete-custom-field`, because deleting a field takes the value out of every
-contact of the account and cannot be undone; `subscribe`, `unsubscribe` and
-`get-subscription-redirect-url`, because a subscription sends the confirmation
-mail, can start automations and changes who really gets post; and everything
+contact of the account and cannot be undone; and everything
 that writes an opt-in process or its confirmation email, because that is the
 record of consent. Those stay with the web interface.
 
@@ -184,16 +184,19 @@ no layout.
 Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
-**What is not on production yet** — the image tools, the `email-signature-*`
-family, the personalized email, and `email-newsletter-cancel`. The split tests
-and thirteen of the contact, tag and field tools are released and arrive with
-the next production deployment. A handful is held back on purpose rather than
-pending — the deletions and everything touching a subscription or an opt-in
-process; the list above says which and why. All four are documented in
-the skills that use them, each with the note that an "unknown tool" there is the
-pending release and not a defect. What does work on production is picking an
-existing signature through `signatureId` in
+**What is not on production** — the `email-signature-*` family, and the tools
+that write an opt-in process or its confirmation email. A handful more is held
+back on purpose: the two deletions; the list above says which and why. Each is
+documented in the skill that uses it, with the note that an "unknown tool" there
+is the missing release and not a defect. What does work on production is picking
+an existing signature through `signatureId` in
 `email-newsletter-delivery-configure`.
+
+The personalized email block is a case of its own: its two tools are gone
+everywhere, not held back. The add-on behind it is paid for separately and the
+work on it is deferred, and the editor offers the block only inside an
+automation — so a newsletter cannot get one at all. Blocks that already exist
+stay readable, movable and removable.
 
 ## Support
 

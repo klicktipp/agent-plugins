@@ -1,11 +1,11 @@
 # Die veröffentlichten Verträge — Kontakte, Tags, Felder, Opt-in
 
-Wort für Wort das, was der Server in `tools/list` für die 29 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 30 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Stand 2026-09-22. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
 Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
 tut und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -15,7 +15,7 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `update-opt-in-process` · `delete-opt-in-process` · `get-opt-in-confirmation-email` ·
 `update-opt-in-confirmation-email` · `get-opt-in-confirmation-email-content` ·
 `update-opt-in-confirmation-email-content` · `send-opt-in-confirmation-email-test` ·
-`preview-opt-in-confirmation-email` · `search-contacts` · `get-contact` · `update-contact` ·
+`preview-opt-in-confirmation-email` · `search-contacts` · `get-contact` · `create-contact` · `update-contact` ·
 `assign-manual-tag` · `remove-manual-tag` · `subscribe` · `unsubscribe` ·
 `get-subscription-redirect-url` · `search-custom-fields` · `get-custom-field` ·
 `create-custom-field` · `update-custom-field` · `delete-custom-field` · `search-tags` ·
@@ -145,7 +145,7 @@ Parameter:
 
 **Get opt-in confirmation email**
 
-Reads who the confirmation email of a double opt-in process comes from: its subject, the sender name and address, reply-to, CC and BCC, and the sender domain. The body is not part of this answer -- it is get-opt-in-confirmation-email-content, which reads the HTML and plain text this email is made of. A confirmation email is not a drag-and-drop document, so the block tools do not accept it; the answer carries bodyIsEditable false for that reason and an editUrl into the KlickTipp editor. Single opt-in processes still have this email stored; it is simply not sent. Change these settings with update-opt-in-confirmation-email.
+Reads who the confirmation email of a double opt-in process comes from: its subject, the sender name and address, reply-to, CC and BCC, and the sender domain. It also names what may be chosen: senderEmailOptions are the addresses the account can send from, senderDomainOptions the domains it may pick between, empty when it has no choice. An empty stored sender or reply-to is reported as the account`s own address, which is what such an email is sent from. The body is not part of this answer -- it is get-opt-in-confirmation-email-content. A confirmation email is not a drag-and-drop document, so the block tools do not accept it; the answer carries bodyIsEditable false for that reason and an editUrl into the KlickTipp editor. Single opt-in processes still have this email stored; it is simply not sent. Change it with update-opt-in-confirmation-email.
 
 Parameter:
 
@@ -156,17 +156,18 @@ Parameter:
 
 **Update opt-in confirmation email**
 
-Changes the settings of the confirmation email a double opt-in process sends: subject, sender name and address, reply-to, CC and BCC. Only the arguments that are given are written, the rest keeps its current value. The body is not written here: that is update-opt-in-confirmation-email-content, and the block tools do not accept this email at all. This email is the legal record of a contact`s consent in many countries: change its sender or subject only when the user asked for it, and say what was changed.
+Changes the settings of the confirmation email a double opt-in process sends: subject, sender name and address, reply-to, CC, BCC and sender domain. Only the arguments that are given are written, the rest keeps its current value. A sender address has to be one the account may send from -- get-opt-in-confirmation-email reports them as senderEmailOptions, and anything else is refused with the reason. senderDomain is only for an account that has senderDomainOptions; it stays as it is when omitted and is never derived from the sender address. The body is not written here: that is update-opt-in-confirmation-email-content, and the block tools do not accept this email at all. This email is the legal record of a contact`s consent in many countries: change its sender or subject only when the user asked for it, and say what was changed.
 
 Parameter:
 
 - `optInProcessId`* — integer (minimum 1): ID of the opt-in process whose confirmation email is changed
 - `subject` — null | string (minLength 1; maxLength 250): Subject line of the confirmation email
 - `senderName` — null | string (minLength 1; maxLength 250): Name the email comes from
-- `senderEmail` — null | string (maxLength 250): Address the email comes from; must be one the account may send from
-- `replyToEmail` — null | string (maxLength 250): Address a reply goes to; empty string removes it
+- `senderEmail` — null | string (maxLength 250): Address the email comes from; one of senderEmailOptions, or empty for the account's own address
+- `replyToEmail` — null | string (maxLength 250): Address a reply goes to; empty string returns it to the account's own address
 - `ccEmail` — null | string (maxLength 250): Address that receives a copy; empty string removes it
 - `bccEmail` — null | string (maxLength 250): Address that receives a blind copy; empty string removes it
+- `senderDomain` — null | string (maxLength 250): Domain the email is sent through; only for an account that has senderDomainOptions
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-opt-in-confirmation-email-content` · RI
@@ -242,6 +243,20 @@ Parameter:
 
 - `contactId`* — integer (minimum 1): Numeric contact ID returned by search-contacts
 - `referenceId` — integer (minimum 0; Default `0`): Reference whose multi-value fields and manual tags to read; 0 for contact-wide values
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `create-contact` · D O
+
+**Create contact**
+
+Adds one contact to a KlickTipp account by hand, with its contact-field values in the same call -- the Add Contact screen of the app. Takes an email address, a mobile number, or both. The contact is subscribed at once, through no opt-in process and without a confirmation message, so it is reachable by the next mailing; automations may start. Only for addresses the account may write to by hand: an address that unsubscribed is refused, the account needs the add-contacts permission, and the call counts against its daily import limit. An address the account already has is updated rather than added twice, and the values given overwrite what it held; the answer says so in alreadyExisted. An unknown field ID or tag is refused, never skipped. Use subscribe to let an address opt in through a named process instead.
+
+Parameter:
+
+- `email` — null | string (maxLength 250): Email address of the contact; at least one of email and phoneNumber is required
+- `phoneNumber` — null | string (maxLength 50): Mobile number with country code, as +49170... or 0049170...; at least one of email and phoneNumber is required
+- `tagId` — null | integer (minimum 1): Manual tag to assign to the contact; omit for none
+- `fields` — array (maxItems 50): Contact field values to write with the contact, each {fieldId, value} as get-contact and search-custom-fields name them
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `update-contact` · DO

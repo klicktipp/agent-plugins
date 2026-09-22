@@ -11,8 +11,8 @@ hast.
 **Lies die `warnings` der Schreibantwort und gib sie weiter.** Ein Baustein wird auch dann
 gespeichert, wenn er so nichts zeigt — das ist Absicht, weil es ein legitimer Zwischenstand auf dem
 Weg zu einem Baustein ist, den ein Mensch im Editor fertigstellt. Gesagt wird es aber, und zwar in
-der Antwort: ein Video ohne `thumbSrc`, eine Liste ohne `<ul>`/`<ol>`, ein unkonfiguriertes Add-on,
-eine personalisierte E-Mail. Melde nie „hinzugefügt", wenn die Antwort dir sagt, dass der Baustein
+der Antwort: ein Video ohne `thumbSrc`, eine Liste ohne `<ul>`/`<ol>`, ein unkonfiguriertes
+Add-on. Melde nie „hinzugefügt", wenn die Antwort dir sagt, dass der Baustein
 leer bleibt — sag, was noch fehlt und wo es gesetzt wird.
 
 **Countdown, Kontaktkarte und Wowing-Video kannst du nicht einfügen.** Ihr Inhalt entsteht in
@@ -30,12 +30,16 @@ Der KI-Text-Baustein hat zusätzlich ein Tor: ohne die Freischaltung des Kontos 
 `kind_not_available` abgewiesen und es ändert sich nichts. Das ist keine Störung, sondern eine
 Berechtigung — melde es als solche, statt es zu umgehen.
 
-Ausgenommen ist die **personalisierte E-Mail**: die hat mit `email-personalized-email-write` ein
-echtes Feld und lässt sich hier fertigstellen. Dafür gilt bei ihr das Umgekehrte: der
-Newsletter-Editor bietet sie im Einfügen-Menü **nicht** an — nur Automationen tun das. Eine Person
-kann sie dort also weder anlegen noch nach einem Entfernen zurückholen; nur dieser Werkzeugsatz
-kann das. Füge sie deshalb nur auf ausdrücklichen Wunsch ein und sag diesen Punkt im selben Zug
-dazu.
+**Die personalisierte E-Mail kannst du seit dem 18.09.2026 ebenfalls nicht mehr einfügen** — und
+hier liegt der Grund woanders: mit dem Baustein ist nichts verkehrt, das Add-on dahinter ist
+kostenpflichtig und die Arbeit daran vertagt. `email-personalized-email-add` und
+`email-personalized-email-write` sind deshalb entfallen; das Schreib-Werkzeug ging zudem mit einem
+gemeldeten Fehler heraus (ein Update nur des Namens wurde mit „carries no prompt" abgewiesen).
+
+Sag den Unterschied dazu, wenn jemand danach fragt: **der Editor hilft hier nicht.** Sein
+Einfügen-Menü führt diesen Baustein nicht — nur Automationen setzen einen. In einem Newsletter ist
+er damit gar nicht anzulegen. Vorhandene Bausteine bleiben lesbar, verschiebbar und entfernbar,
+ihre Anweisung ändert man im Editor.
 
 **Hinzufügen: der neue Baustein sieht aus wie ein Baustein derselben Art — aber nicht unbedingt wie
 sein Nachbar.** Der Server kopiert beim Anlegen das `style`-Objekt und den Innenabstand vom
@@ -54,6 +58,23 @@ Zwei Dinge bleiben:
    Baustein die Werte seines Startzustands, und dein `html` kommt ohne Vorlage: dann schlichtes
    Markup (`<p>`, `<strong>`, `<a href>`), nichts erfunden. Sag das dem Nutzer, statt ein fertiges
    Ergebnis zu melden.
+
+   **Zwei Ausnahmen: die Textfarbe und die Linkfarbe.** Absatz, Überschrift, Text, Liste und
+   Tabelle bekommen in diesem Fall die Textfarbe der Seite (`email-page-style-write`, `textColor`)
+   statt der ihres Startzustands; Absatz, Text, Liste und Tabelle zusätzlich deren Linkfarbe
+   (`linkColor`). Ohne das trug ein frisch angelegter Absatz das `#555555` und das `#4768ef` des
+   fremden Newsletters, aus dem der Startzustand einmal stammt, und die eingestellten Seitenfarben
+   blieben wirkungslos — auf Staging beides genau so gemeldet.
+
+   Zwei Bausteine gehören bewusst **nicht** dazu. Der Button: seine Beschriftungsfarbe gehört zu
+   seinem Rahmen, nicht zum Fließtext. Das Menü: seine Einträge *sind* Links, Text- und Linkfarbe
+   sind dort ein Look — eine Hälfte zu ersetzen hinterlässt ein Menü, das nicht mehr zu sich selbst
+   passt. Die Überschrift trägt gar keine eigene Linkfarbe.
+
+   Die Reihenfolge ist damit wichtig: **erst `email-page-style-write`, dann die Bausteine anlegen.**
+   Die Farben werden beim Anlegen in den Baustein geschrieben, nicht später vererbt — eine danach
+   geänderte Seitenfarbe erreicht bestehende Bausteine nicht, weder über die Werkzeuge noch im
+   Editor, weil ein Baustein seine eigenen Farben rendert.
 2. Mehrere neue Bausteine kosten mehrere Aufrufe: ein Add legt **einen** Baustein an und gibt die
    neue Revision zurück, mit der der nächste arbeitet. Da jedes Add seinen Inhalt mitnimmt, ist das
    ein Aufruf je Baustein — kein zweiter zum Füllen.

@@ -1,11 +1,11 @@
 # Die veröffentlichten Verträge — E-Mail-Inhalt, Bausteine, Gestaltung, Bilder
 
-Wort für Wort das, was der Server in `tools/list` für die 52 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 54 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Stand 2026-09-22. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
 Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
 tut und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -18,14 +18,14 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `email-button-write` · `email-column-style-write` · `email-divider-add` · `email-heading-add` ·
 `email-html-add` · `email-icons-add` · `email-icons-write` · `email-image-add` ·
 `email-image-write` · `email-list-add` · `email-menu-add` · `email-menu-write` ·
-`email-page-style-write` · `email-paragraph-add` · `email-personalized-email-add` ·
-`email-personalized-email-write` · `email-row-add` · `email-row-style-write` ·
+`email-page-style-write` · `email-paragraph-add` · `email-row-add` · `email-row-style-write` ·
 `email-social-add` · `email-social-icon-search` · `email-social-write` · `email-spacer-add` ·
 `email-table-add` · `email-table-write` · `email-text-add` · `email-text-write` ·
 `email-video-add` · `email-video-write` · `email-image-search` · `email-image-stock-search` ·
 `email-image-folder-search` · `email-image-folder-create` · `email-image-folder-delete` ·
 `email-image-upload` · `email-image-upload-file` · `email-image-upload-from-url` ·
-`email-image-preview` · `email-template-search`
+`email-image-preview` · `email-template-search` · `email-condition-capabilities-get` ·
+`email-decision-write` · `email-row-condition-write` · `email-decisions-get`
 
 ## `email-content-import` · DO
 
@@ -289,7 +289,7 @@ Parameter:
 
 **Add email heading**
 
-Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour`s. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour`s, and with none to copy its text colour is the email`s own default, set with email-page-style-write. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -389,7 +389,7 @@ Parameter:
 
 **Add email list**
 
-Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -437,14 +437,13 @@ Parameter:
 
 **Write email page style**
 
-Writes what the whole email starts out with: the colour around the message, the colour behind it, the default text colour, the colour of every link, the default font, how wide the message is and where it sits -- this is where "all links green", "a wider email", "one font for the whole mail" or "align the email left" are set. These are defaults of the document, so one call reaches every row -- but a block whose own markup names a value keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS. The font is named, not a stack, and only fonts every mail client has are offered; a web font works only if the KlickTipp editor sets it. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes what the whole email starts out with: the colour around the message, the default text and link colour, the default font, how wide the message is and where it sits -- this is where "all links green", "a wider email", "one font for the whole mail" or "align the email left" are set. The colour BEHIND the message is not here: that ground is made of the rows, so it is set with email-row-style-write. The text and link colours reach a block when the block is made, so set them before adding blocks; a block carrying its own keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS, and the font is named rather than a stack; a web font works only if the KlickTipp editor sets it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `backgroundColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Colour around the message, "#RRGGBB" or "transparent"
-- `contentBackgroundColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Colour behind the message itself
 - `textColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default text colour of the whole email
 - `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Default colour of every link of the email
 - `contentWidth` — null | integer (minimum 320; maximum 1440): Width of the message in pixels
@@ -456,7 +455,7 @@ Parameter:
 
 **Add email paragraph**
 
-Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -467,36 +466,7 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-personalized-email-add`
 
-**Add email personalized email block**
-
-Puts a personalized email block into the column whose uuid it names, with the instruction that IS the block: without it the block renders a placeholder into a newsletter that looks finished and generates nothing, which is why the instruction is required here. One property of this block is worth passing on to the user: the newsletter editor does not offer it in its insert menu -- only automations do -- so a person cannot create it there and cannot bring it back after a removal. Which data fields and tags the instruction may use is chosen in the KlickTipp editor. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
-
-Parameter:
-
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
-- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `columnUuid`* — string: The uuid of the column the block goes into
-- `prompt`* — string (minLength 1; maxLength 10000): The instruction a dispatch turns into a text per recipient
-- `name` — null | string (maxLength 200): A name for the block, for the editor
-- `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
-
-## `email-personalized-email-write` · I
-
-**Write personalized email block**
-
-Writes the instruction a personalized email block generates its text from, per recipient. That instruction is the block: the block itself stays the same block, and one without an instruction renders a placeholder into an email that looks finished. Which data fields and tags the instruction may use is chosen in the KlickTipp editor, not here. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
-
-Parameter:
-
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
-- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `uuid`* — string: The uuid of the personalized email block
-- `prompt` — null | string (maxLength 10000): The instruction a dispatch generates the text from, per recipient
-- `name` — null | string (maxLength 250): The name of the block as a person sees it in the KlickTipp editor
-- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-row-add`
 
@@ -609,7 +579,7 @@ Parameter:
 
 **Add email table**
 
-Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. The block copies the look of the nearest table of this email; with none to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -638,7 +608,7 @@ Parameter:
 
 **Add email text**
 
-Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
 
 Parameter:
 
@@ -804,13 +774,65 @@ Parameter:
 
 **Search email templates**
 
-Searches the design catalogue the email editor's template browser shows, and returns each design with its id, name, thumbnail and the tags, categories and collections it carries -- the same three filters this tool takes, so an answer says how to narrow the next call. Category and collection are picked from the lists in this schema; the tag is free text out of the catalogue's own several thousand. Paged: twelve per page by default, with total and nextPage. A host that renders MCP Apps shows the designs as pictures; without one, offer the names and let the user pick, because a template is a layout and its name does not describe it. Reads only: this does not create anything and does not change an existing email.
+Searches the design catalogue the email editor's template browser shows, and returns each design with its id, name, thumbnail and the tags, categories and collections it carries -- the same three filters this tool takes, so an answer says how to narrow the next call: a category, collection or tag this tool ANSWERED with is always one it accepts back. All three are free text out of the catalogue`s own vocabulary, and a value it does not know matches nothing rather than being refused. Paged: twelve per page by default, with total and nextPage. A host that renders MCP Apps shows the designs as pictures; without one, offer the names and let the user pick, because a template is a layout and its name does not describe it. Reads only: this does not create anything and does not change an existing email.
+
+Parameter:
+- `tag` — null | string (maxLength 250): Narrow by one look-and-feel tag, e.g. "light", "white", "three-columns"; omit for all
+- `category` — null | string (maxLength 250): Narrow by one category as this tool reports them, e.g. "events", "saas"; omit for all
+- `collection` — null | string (maxLength 250): Narrow by one collection as this tool reports them, e.g. "welcome-series"; omit for all
+- `page` — null | integer (minimum 1): Which page of the catalogue, from 1; default 1
+- `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-condition-capabilities-get` · R I
+
+**Read display condition capabilities**
+
+Reads what a display condition may say in one account -- the vocabulary behind "dynamic content", where a row is shown only to the contacts a condition selects. Without conditionTypes it answers the catalogue alone: every kind of condition, such as manual tag, SmartLink, automation or newsletter. With conditionTypes it adds, for those kinds, the comparisons they allow, this account's own entities with the smart-tag field per action, the actions and the timeframes -- the exact values email-decision-write takes as condition, entity, action and timeframe. Entities are cut at 200 per kind and entityCount says how many there are. Reads only.
 
 Parameter:
 
-- `tag` — null | string (maxLength 250): Narrow by one look-and-feel tag, e.g. "light", "white", "three-columns"; omit for all
-- `category` — null | string (einer von `others`, `events`, `personal-note`, `beauty-cosmetics`, `product-launch`, `product-promotion`, `seasonal`, `seasonal-promotion`, `news-blog-and-magazines`, `business-services`, `newsletter`, `service-promotion`, `health-wellness`, `non-profit`, `tutorial`, `real-estate`, `computer-internet`, `electronics`, `travel-leisure`, `automated`, `notification`, `education`, `marketing-and-design`, `media-entertainment`, `transactional`, `small-business`, `christmas`, `holiday`, `fashion`, `new-year`, `food-beverage`, `automotive`, `hanukkah`, `activation`, `pets-and-animal-care`, `black-friday`, `sports`, `apologize-email`, `confirmation`, `halloween`, `cyber-monday`, `apps-download`, `mystery-email`, `welcome`, `thanksgiving`, `thank-you`, `abandoned-cart`, `financial-money`, `giving-tuesday`, `engagement`, `annual_review`, `teaser`, `home_garden`, `survey`, `gaming`, `valentines-day`, `st-patricks-day`, `chinese-new-year`, `easter`, `spring`, `earth-day`, `mothers-day`, `fathers-day`, `lgbtq-pride-month`, `back-to-school`, `mardi-gras`, `april-fools-day`, `cinco-de-mayo`, `memorial-day`, `independence-day`, `labor-day`, `fall`, `breast-cancer`, `winter`, `fashion-week`, `arts`, `black-history-month`, `book-lovers-day`, `cv-resumes`, `delivery`, `get-to-know-your-customer`, `culture`, `animated`, `password-reset`, `announcement`, `weekend-sale`, `luxury`, `music`, `e-commerce`, `webinar`, `legal`, `summer`, `fundraising`, `juneteenth`, `publishing`, `greenpeace-day`, `re-engagement`, `oktoberfest`, `wedding`, `photography`, `dark-mode-optimized`, `human-resources`, `activism`, `global-observances-celebrations`, `kwanzaa`, `the-big-game`, ``, oder null): Narrow by one category, e.g. "events", "product-launch"; omit for all
-- `collection` — null | string (einer von `real-estate`, `e-commerce`, `transactional`, `music`, `event`, `photography`, `human-resources`, `welcome-series`, `educational`, `health-wellness`, `product_launch`, `webinar`, `fashion-brand-retail`, `higher-education`, `recruitment`, `e-book-promotion`, `internal-communications`, `hair-salon`, `survey-campaign`, ``, oder null): Narrow by one collection, e.g. "welcome-series", "e-commerce"; omit for all
-- `page` — null | integer (minimum 1): Which page of the catalogue, from 1; default 1
-- `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
+- `conditionTypes` — array (maxItems 5): Kinds to read the field values of, as conditionType of the catalogue; omit for the catalogue alone
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-decision-write` · D
+
+**Write display condition**
+
+Writes one named display condition of an email -- what the editor calls dynamic content -- and answers with its decisionId. Give the choices only: conditionType, condition, entity, action and timeframe as email-condition-capabilities-get lists them; the operator, the seconds and the smart-tag field are derived. Every value is checked against the account, and an entity it does not own is refused rather than stored as a condition that matches nobody. Writing a decisionId replaces that condition whole. This alone shows no row: bind one with email-row-condition-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
+- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
+- `name`* — string (minLength 1; maxLength 250): What the editor shows for this condition; a person reads it
+- `segments`* — array (minItems 1; maxItems 10): Each {conditions: [{conditionType, condition, entity, action, timeframe}], conditionsOpAND}; a contact matches a segment when its conditions match
+- `segmentsOpAND` — null | boolean: true when every segment has to match, false when one is enough; defaults to true
+- `decisionId` — null | string (maxLength 50): decisionId of an existing condition to replace whole; omit to create one
+- `description` — null | string (maxLength 1000): A note for the person editing this email later
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-row-condition-write` · D I
+
+**Bind row to display condition**
+
+Decides who sees one row of an email: bind it to a display condition by decisionId, or pass null to free it so everybody sees it again. The condition has to exist on this email already -- email-decision-write creates one, email-decisions-get lists them with the rows they govern. A bound row is hidden from every contact the condition does not match, and a condition nobody matches hides the row from everybody without any error; check the audience before sending. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
+- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
+- `rowUuid`* — string (minLength 1; maxLength 100): The uuid of the row, as email-get answers it under contentOutline
+- `decisionId` — null | string (maxLength 50): The condition this row follows; null frees the row, so it is shown to everybody
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-decisions-get` · R I
+
+**Read display conditions**
+
+Lists the display conditions of one email with their segments, and for each the uuids of the rows it governs. The binding is a marker inside the row and shows up in no other projection, so this is the only way to see that a row is shown to part of the audience -- and which part. A condition with no bound row governs nothing and is dropped by the editor's next save. Carries the contentRevision the two write tools take. Reads only.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in

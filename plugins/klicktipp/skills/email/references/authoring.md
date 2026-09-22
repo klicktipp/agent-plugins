@@ -32,7 +32,9 @@ seinem Startzustand, und ohne Gegenmaßnahme sieht das Ergebnis zusammengewürfe
 die Texte sind. Setz
 Typografie, Abstände und Farben deshalb selbst, und zwar **für alle Bausteine gemeinsam**:
 `email-page-style-write` für die Seite, `email-row-style-write` je Zeile, `email-block-style-write`
-für den einzelnen Block. Eine E-Mail wirkt professionell durch Abstände und konsequente
+für den einzelnen Block. **Setz die Seite zuerst**, bevor der erste Baustein entsteht: die
+Textfarbe der Seite geht beim Anlegen in Absätze, Überschriften, Texte, Listen und Tabellen ein,
+die keinen Vorgänger zum Abschauen haben. Danach gesetzt, erreicht sie die bestehenden nicht mehr. Eine E-Mail wirkt professionell durch Abstände und konsequente
 Typografie, nicht durch Dekoration; eine halb umgestellte Skala sieht schlechter aus als gar keine.
 
 Zwei Dinge gehören dabei auf die richtige Ebene:

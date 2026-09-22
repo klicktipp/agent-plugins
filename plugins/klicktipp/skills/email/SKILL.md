@@ -47,6 +47,18 @@ Zustand lesbar, auch bei einem versendeten Newsletter und bei einer E-Mail des a
 willst — nur dort bekommst du die Revision, die die Schreibwerkzeuge verlangen. Bei einem nie
 veröffentlichten Newsletter ist `publishedContent` leer; das ist kein Fehler.
 
+**„Zeig mir die Vorschau" heißt `email-preview`, nicht `email-get`.** Wer eine Vorschau verlangt,
+will das Mailing *sehen* — nicht seine Bausteinstruktur beschrieben bekommen. `email-preview` rendert
+den aktuellen Entwurf samt unveröffentlichter Änderungen und zeigt ihn als MCP App; wo der Host keine
+MCP Apps kann, trägt das Ergebnis dasselbe HTML in `contentHtml`. Es speichert nichts, veröffentlicht
+nichts und verschickt nichts.
+
+Vom Namen dorthin sind es zwei Schritte, denn `email-preview` nimmt die `editorUrl`, keinen Namen:
+`email-newsletter-search` findet das Mailing, `email-get` gibt dessen `editorUrl` heraus, und die
+geht in `email-preview`. Beschreib die E-Mail nicht stattdessen in Worten — das ist die Antwort auf
+eine Frage, die niemand gestellt hat. Personalisierungsfelder bleiben in der Vorschau als Platzhalter
+stehen; das ist richtig so und kein Darstellungsfehler.
+
 **Der Ablauf einer Änderung:** `contentOutline` lesen (bei Gestaltung `styleOutline`) → die Änderung benennen — welche Bausteine neuen
 Inhalt bekommen, welche unverändert bleiben, und ob überhaupt einer entfernt werden soll — und die
 Zustimmung des Nutzers einholen, wo etwas verloren geht → mit genau dieser Revision schreiben → veröffentlichen,
@@ -84,13 +96,12 @@ Konvertierung stattfindet.
 | `email-image-write` | `src`, `alt`, `href` von Bildbausteinen; **nimmt ebenfalls eine Liste** |
 | `email-button-write` | `label` und `href` eines Buttons |
 | `email-video-write` | `src` und `thumbSrc` eines Videos |
-| `email-personalized-email-write`² | `prompt` und `name` einer personalisierten E-Mail |
 | `email-menu-write` | die Einträge eines Menüs — **die Liste ersetzt die Liste** |
 | `email-social-write` | die Icons eines Social-Bausteins — dito |
 | `email-icons-write` | die Einträge eines Icon-Bausteins — dito |
 | `email-table-write` | die Zeilen einer Tabelle, jede Zelle Markup |
 | `email-row-add` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
-| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-ai-text-add`, `email-personalized-email-add`² |
+| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add`, `email-ai-text-add` |
 | `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
 | `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
 | `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
@@ -105,10 +116,6 @@ Konvertierung stattfindet.
 ¹ Auf Production nicht freigeschaltet: beide legen ein Add-on an, das erst der Editor
 fertig macht. Dort antwortet der Aufruf mit „unknown tool" — verweise auf den Editor,
 statt einen Defekt zu suchen.
-
-² Ebenfalls nicht auf Production, und hier hilft der Verweis auf den Editor nicht: dessen
-Einfügen-Menü führt die personalisierte E-Mail nicht. Dort ist der Baustein im Newsletter
-nicht erreichbar.
 
 **Was ein neuer Baustein mitbringt und was nicht** — die `warnings` der Schreibantwort, die drei
 Add-ons, deren Inhalt nur im Editor entsteht, der KI-Text-Baustein, und woher ein neu eingefügter
@@ -175,10 +182,9 @@ nimmt genau die Felder, die diese Art hat: `email-image-add` nimmt `src`, `alt`,
 nie erst leer an, um danach zu schreiben** — das sind zwei Aufrufe, zwei Revisionen und ein
 Zwischenzustand, den jemand sehen kann. Ein Aufruf reicht.
 
-Zwei Arten verlangen etwas, die anderen nicht: `email-personalized-email-add` **braucht** seinen
-`prompt`, weil die Anweisung der Baustein ist, und ein Video ohne `thumbSrc` ist im Editor ein
-leerer Kasten. Trennlinie, Abstand und die vier Add-ons haben nichts zu füllen — sie sind fertig,
-wie sie sind, beziehungsweise werden im Editor eingestellt.
+Eine Art verlangt etwas, die anderen nicht: ein Video ohne `thumbSrc` ist im Editor ein leerer
+Kasten. Trennlinie, Abstand und die Add-ons haben nichts zu füllen — sie sind fertig, wie sie sind,
+beziehungsweise werden im Editor eingestellt.
 
 **So bebaust du einen frischen Entwurf** — der hat weder Zeile noch Spalte, und ein Add braucht
 eine Spalte:
@@ -246,7 +252,7 @@ Wohin der neue Baustein kommt, sagt `position` innerhalb der Zielspalte — von 
 Angabe wird angehängt. In eine **andere** Spalte kommt ein bestehender Baustein mit
 `email-block-move` und `toUuid`, nicht durch Entfernen und neues Hinzufügen.
 
-**Was eine einzelne Bausteinart verlangt — ein Video seine zwei URLs, ein Add-on den Editor, die personalisierte E-Mail ihre Anweisung —, steht in `references/blocks/`.** Lies die Datei der Art, die du anfasst, bevor du sie anlegst.
+**Was eine einzelne Bausteinart verlangt — ein Video seine zwei URLs, ein Add-on den Editor —, steht in `references/blocks/`.** Lies die Datei der Art, die du anfasst, bevor du sie anlegst.
 
 **Ersetzen ist kein Aufräumen.** Wenn du neuen Text in einen bestehenden Newsletter einsetzen
 sollst — aus einer Datei, einem Briefing, einer Nachricht —, dann bekommen genau die Bausteine
@@ -343,6 +349,7 @@ In `references/` liegen:
 | `authoring.md` | **eine E-Mail entsteht neu**: Entscheidungsreihenfolge, Gestaltung auf Seite/Zeile/Block, Schriften, Ausrichtung, Rahmen, Bilder, Fußzeile |
 | `existing-html.md` | **fertiges HTML liegt vor**: was Inhalt ist und geändert werden darf, was Struktur ist und bleibt, und die Regeln für Import-HTML |
 | `content-replacement.md` | Vorgehen für „hier ist der neue Text“: die Zuordnung vor dem Schreiben, die vier Fälle, die kein reines Ersetzen sind, und was nie mitgeändert wird |
+| `display-conditions.md` | **dynamischer Inhalt**: eine Zeile nur für einen Teil der Empfänger — der Ablauf, der vollständige Katalog der Bedingungsarten mit ihren Aktionen, die Zeitfenster, und warum eine Bedingung, die niemanden trifft, keinen Fehler erzeugt |
 | `simple-schema-catalog.md` | was sonst zu jener Familie gehört — und warum sie kein gespeichertes Dokument prüfen darf |
 
 `kt-module-definitions.json` trägt zwei Dinge, die man leicht falsch annimmt: der Add-on-Handle steht

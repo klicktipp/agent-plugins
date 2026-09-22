@@ -16,34 +16,32 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
 
 ## Verfügbarkeit
 
-**Auf Production freigegeben** (ab dem nächsten Release dort; vorher antwortet Production mit
-„unknown tool" — kein Fehler, sondern der Stand des Deployments):
+**Auf Production verfügbar:**
 
 - **Tags:** `search-tags`, `get-tag`, `create-manual-tag`, `update-manual-tag`
-- **Kontakte:** `search-contacts`, `get-contact`, `update-contact`, `assign-manual-tag`,
-  `remove-manual-tag`
+- **Kontakte:** `search-contacts`, `get-contact`, `create-contact`, `update-contact`,
+  `assign-manual-tag`, `remove-manual-tag`
 - **Felder:** `search-custom-fields`, `get-custom-field`, `create-custom-field`,
   `update-custom-field`
 - **Opt-in lesen:** `search-opt-in-processes`, `get-opt-in-process` — die gab es dort schon immer
+- **An- und Abmelden:** `subscribe`, `unsubscribe`, `get-subscription-redirect-url`
+
+Die Reichweite der letzten Gruppe ist eine andere als die der übrigen: eine Anmeldung schickt die
+Bestätigungsmail, kann Automationen auslösen und ändert, wer wirklich Post bekommt. Die Werkzeuge
+verlangen deshalb ein Zustimmungswort, und du sagst vorher, was passieren wird.
 
 **Bewusst nicht auf Production**, und zwar jedes aus einem eigenen Grund:
 
 - `delete-manual-tag` und `delete-custom-field` — nicht rückholbar. Eine Feldlöschung entfernt
   nicht eine Definition, sondern den Wert, den **jeder** Kontakt des Kontos darin hält.
-- `subscribe`, `unsubscribe`, `get-subscription-redirect-url` — eine Anmeldung schickt die
-  Bestätigungsmail, kann Automationen auslösen und ändert, wer wirklich Post bekommt. Das ist eine
-  andere Reichweite als ein Kontaktfeld zu korrigieren.
 - `create-opt-in-process`, `update-opt-in-process`, `delete-opt-in-process` sowie alles rund um die
   Bestätigungsmail (`get-/update-opt-in-confirmation-email`,
   `get-/update-opt-in-confirmation-email-content`, `preview-opt-in-confirmation-email`,
   `send-opt-in-confirmation-email-test`) — am Einwilligungsnachweis. Der Testversand legt außerdem
   einen Kontakt an und vertaggt ihn.
-- `update-contact` gibt es nicht mehr: das Werkzeug heißt **`update-contact`**. Es hat nie
-  angereichert, sondern Kontaktfelder geschrieben, und heißt jetzt wie `update-manual-tag` und
-  `update-custom-field`.
 
-Auf Production liest du also Anmeldelisten und verweist fürs Anmelden, Abmelden und Löschen auf die
-Oberfläche.
+Auf Production legst du also Anmeldelisten nicht an und löschst weder Tag noch Feld — dafür
+verweist du auf die Oberfläche.
 
 ## Die drei Bausteine
 
@@ -201,7 +199,21 @@ Du nennst überall den **Prozess**, nie die E-Mail — die ID gehört dem Prozes
 mitgebrachte könnte zu einem anderen gehören.
 
 **Absender und Betreff:** `get-opt-in-confirmation-email` / `update-opt-in-confirmation-email` —
-Betreff, Absendername und -adresse, Reply-To, CC, BCC.
+Betreff, Absendername und -adresse, Reply-To, CC, BCC, Absenderdomain.
+
+**Absenderadresse: nimm eine aus `senderEmailOptions`.** Das Konto kennt mehr Adressen, als es
+versenden darf — unbestätigte, gesperrte, solche ohne eingerichtete Domain. Die Leseantwort nennt
+die erlaubten; alles andere wird mit dem Grund abgewiesen, und es wird nichts geschrieben.
+
+**Eine leere gespeicherte Absender- oder Reply-To-Adresse ist keine fehlende.** Sie bedeutet „die
+aktuelle Adresse des Kontos" und wird auch so beantwortet. Schreibst du genau diese Adresse,
+speichert das Werkzeug wieder den leeren Wert — so folgt die Mail dem Konto, statt die heutige
+Adresse einzufrieren.
+
+**`senderDomain` nur, wenn `senderDomainOptions` nicht leer ist.** Leer ist der Normalfall: das
+Konto versendet über eine einzige oder über geteilte Infrastruktur und hat nichts zu wählen. Die
+Domain wird nie aus der Absenderadresse abgeleitet und bleibt stehen, wenn du sie weglässt. Einzige
+Ausnahme ist `dispatchProfile` als Absender — dann bestimmt das Versandprofil auch die Domain.
 
 **Text:** `get-opt-in-confirmation-email-content` / `update-opt-in-confirmation-email-content`.
 

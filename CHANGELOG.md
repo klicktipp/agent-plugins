@@ -8,6 +8,48 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.14.0 — 2026-09-22
+
+The production release caught up with what production actually serves. Several notes in this
+plugin still said "arrives with the next deployment" for tools that had long since arrived, and
+that is the larger half of this entry.
+
+- **Dynamic content.** Four tools write and read what the editor calls display conditions:
+  `email-condition-capabilities-get` for the vocabulary of one account,
+  `email-decision-write` for a named condition, `email-row-condition-write` to bind a row to it,
+  and `email-decisions-get` to see which rows a condition governs. The binding sits as a marker
+  inside the row and shows up in no other projection, so the last one is the only way to find out
+  that a row is conditional at all. The full catalogue of condition kinds is a new reference,
+  [display-conditions.md](plugins/klicktipp/skills/email/references/display-conditions.md).
+
+- **`email-preview`** renders the current draft, unpublished changes included, and shows it. The
+  `email` skill now says plainly that "show me the preview" is this tool and not `email-get` —
+  describing an email in words is an answer to a question nobody asked.
+
+- **`create-contact`** adds a contact by hand, subscribed at once and with its field values, the
+  way the Add Contact screen does. An address the account already has is updated rather than added
+  twice, and `alreadyExisted` says which of the two happened.
+
+- **Set the page style before the first block.** The text and link colour of a block are written
+  into it when it is made, not inherited at send time. A block added to an email that has no other
+  block of its kind used to keep the colours of whatever newsletter its start state came from, and
+  a page colour set afterwards never reached it. The order is now part of the authoring guidance.
+
+- **The personalized email block lost its two tools.** They are gone rather than held back: the
+  add-on behind it is paid for separately and the work on it is deferred. The editor offers the
+  block only inside an automation, so a newsletter cannot get one at all — this is the one add-on
+  where pointing at the editor is not an answer.
+
+- **Availability, corrected throughout.** The image tools, the split tests, the contact, tag and
+  field tools, `email-newsletter-cancel` and the subscription tools are on production and are no
+  longer described as pending. What genuinely is not there: the `email-signature-*` family,
+  everything that writes an opt-in process or its confirmation email, and the two deletions.
+
+- **Contracts follow the server word for word**, as always: `email-template-search` takes category
+  and collection as free text now — the enum could refuse a value the same tool had answered with
+  — and `email-page-style-write` writes a default link colour instead of a separate content
+  background.
+
 ## 0.11.5 — 2026-09-21
 
 - **Langdock is documented.** [SETUP_LANGDOCK.md](plugins/klicktipp/SETUP_LANGDOCK.md) walks a

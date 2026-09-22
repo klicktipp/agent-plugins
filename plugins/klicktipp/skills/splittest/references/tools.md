@@ -8,9 +8,7 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 `../SKILL.md`. `R` liest nur · `D` löscht ohne Undo · `I` ein zweiter gleicher Aufruf ändert nichts
 mehr.
 
-**Freigegeben, aber erst ab dem nächsten Production-Release dort.** Die fünf stehen in der
-Production-Freigabe; bis das Release draußen ist, antwortet Production weiter mit „unknown tool" —
-kein Fehler, sondern der Stand des Deployments. Auf Staging und lokal sind sie da.
+**Auf Production verfügbar** — alle fünf.
 
 Sie waren vorher **nicht** freigegeben, während `email-newsletter-draft-create` sein
 `splitTest`-Argument schon veröffentlichte. Das war eine Sackgasse: Splittest ja/nein ist in beide

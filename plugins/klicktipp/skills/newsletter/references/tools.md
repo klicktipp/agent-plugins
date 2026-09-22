@@ -216,10 +216,13 @@ Biete sie beim Anlegen einer Signatur aktiv an, statt zu warten, bis jemand dana
 
 ## Antwortformen
 
-Sechs Werkzeuge veröffentlichen ein **Output-Schema** (JSON Schema), das ein Client gegen
-`structuredContent` prüfen kann: die beiden Leser, Import, Veröffentlichen, Prüfen und
-`email-row-add`. Für alle anderen steht die Form der Antwort hier — und auch für die sechs ist
-diese Seite die ausführlichere Quelle, weil ein Schema Felder benennt, aber nicht erklärt.
+**Jedes Werkzeug veröffentlicht ein Output-Schema** (JSON Schema), das ein Client gegen
+`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun. Die einzige Ausnahme
+sind die sechs `email-signature-*`-Werkzeuge; die haben bewusst keines.
+
+Ein Schema **benennt Felder, es erklärt sie nicht**. Diese Seite bleibt deshalb die ausführlichere
+Quelle: was ein Feld bedeutet, wann es fehlt und was eine Absage auslöst, steht hier und nicht im
+Schema.
 Jede Antwort kommt als `structuredContent` und als dieselbe kompakte JSON im Text. Ein `*`
 markiert Felder, die immer da sind; alles andere ist nur da, wenn es angefordert wurde oder
 zutrifft. Nicht angeforderte Projektionen **fehlen**, statt `null` zu sein.
