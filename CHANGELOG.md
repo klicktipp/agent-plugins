@@ -8,6 +8,32 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.14.1 — 2026-09-22
+
+Five places where a skill told the agent something the server does not say. Each was measured
+against the server rather than taken from the review that reported it, and each made an agent act
+wrongly.
+
+- **A fresh draft is not audience-less.** It was described as inert and unable to reach anybody. It
+  has no audience *filter*, and unfiltered means `all_contacts` — every active contact of the
+  account, the widest audience there is rather than the narrowest. An agent reading the old wording
+  skipped the audience decision because the state looked harmless. The same paragraph called
+  `subject` optional; the tool requires it.
+
+- **A missing unsubscribe link is a blocker, not a matter of taste.** It sat beside pale text as a
+  finding the user might want. The check calls it an error, `email-content-publish` refuses without
+  the placeholder, and nothing is dispatched without publishing.
+
+- **`email-ai-text-add` is gone**, so it is no longer documented as a tool. The block itself
+  remains, so the AI text now sits with the countdown, the contact card and the Wowing video: made
+  in the editor, readable, movable and removable through the tools.
+
+- **The font can be set.** `email-page-style-write` takes `fontFamily`, while the styling guide
+  listed the font among the things that cannot be set — so an agent refused work it could do.
+
+- **A tool count in prose** said 51 where the contract said 54. Removed rather than corrected: a
+  number kept by hand in a second place is a promise to be wrong again.
+
 ## 0.14.0 — 2026-09-22
 
 The production release caught up with what production actually serves. Several notes in this
