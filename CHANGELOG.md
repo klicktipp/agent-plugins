@@ -76,6 +76,12 @@ that is the larger half of this entry.
   — and `email-page-style-write` writes a default link colour instead of a separate content
   background.
 
+## 0.11.6 — 2026-09-23
+
+- **The Codex marketplace was rejected on one word.** `policy.authentication` said `ON_FIRST_USE`;
+  Codex accepts `ON_USE` or `ON_INSTALL`, and refused to add the marketplace at all. The OAuth
+  sign-in happens at the first tool call, so `ON_USE` is the value that was meant.
+
 ## 0.11.5 — 2026-09-21
 
 - **Langdock is documented.** [SETUP_LANGDOCK.md](plugins/klicktipp/SETUP_LANGDOCK.md) walks a
