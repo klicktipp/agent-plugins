@@ -15,11 +15,11 @@ Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Kon
 | --- | --- | --- |
 | `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten). |
 | `delete-opt-in-process` | D | Löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
-| `get-subscription-redirect-url` | R | Die Weiterleitungs-URL eines Abonnenten (Pending- oder Danke-Seite). |
+| `get-opt-in-process-redirect-url` | R | Die Weiterleitungs-URL eines Abonnenten (Pending- oder Danke-Seite). |
 | `search-contacts` · `get-contact` | R | Kontakte suchen (Cursor, ohne Gesamtzahl) und Detail lesen. |
-| `subscribe` · `unsubscribe` | DO | Ein Kanal eines Kontakts an-/abmelden. Ändert einen echten Empfänger, kann Automationen starten. Brauchen `approval`. |
-| `update-contact` | DO | Feldwerte eines Kontakts setzen. Nicht: Adressen, Opt-in, Abos. |
-| `assign-manual-tag` · `remove-manual-tag` | O | Tag an/ab — kann Kampagnen starten. Brauchen `approval`. |
+| `subscribe-contact-via-opt-in-process` · `unsubscribe-contact` | DO | Ein Kanal eines Kontakts an-/abmelden. Ändert einen echten Empfänger, kann Automationen starten. Brauchen `approval`. |
+| `update-contact-values` | DO | Feldwerte eines Kontakts setzen. Nicht: Adressen, Opt-in, Abos. |
+| `tag-contact` · `untag-contact` | O | Tag an/ab — kann Kampagnen starten. Brauchen `approval`. |
 | `search-tags` · `get-tag` | R | Tags, manuell wie systemvergeben. |
 | `create-manual-tag` · `update-manual-tag` · `delete-manual-tag` | / I / D | Nur manuelle Tags. Löschen nimmt den Tag von allen Kontakten. |
 | `search-custom-fields` · `get-custom-field` | R | Felddefinitionen samt Platzhalter für den Inhalt. |
@@ -46,7 +46,7 @@ Prozess, auf den Formulare, Kampagnen oder andere Entitäten zeigen, wird abgewi
 nennt sie beim Namen und ist damit die Arbeitsliste, kein Hindernis. Anlegen und Einstellen gibt es
 hier nicht — was gelöscht ist, entsteht nur in der Oberfläche wieder.
 
-### `get-subscription-redirect-url`
+### `get-opt-in-process-redirect-url`
 **Wofür:** die Pending- (Bestätigung offen) oder Danke-Seite (bestätigt) eines Abonnenten, per
 E-Mail-Adresse; `optInProcessId` weggelassen nimmt den Prozess, über den die Adresse sich angemeldet
 hat. Ohne eigene Seite kommt die von KlickTipp gehostete. **Stolperer:** Die Adresse ist Pflicht und
@@ -64,31 +64,31 @@ Bearbeitungslink). **Nicht:** vollständige Kanal- oder Referenzdaten. **Stolper
 höchstens 100 ohne Gesamtzahl; ein Konto mit 80 000 Kontakten sind 800 Aufrufe. Der `cursor` kommt
 unverändert zurück, mit denselben Filtern.
 
-### `subscribe` · `unsubscribe`
-**Wofür:** genau einen Kanal (E-Mail *oder* Telefon, nie beides) an- oder abmelden; `subscribe`
+### `subscribe-contact-via-opt-in-process` · `unsubscribe-contact`
+**Wofür:** genau einen Kanal (E-Mail *oder* Telefon, nie beides) an- oder abmelden; `subscribe-contact-via-opt-in-process`
 über einen `optInProcessId`, optional mit `referenceId` und einem Tag, der sofort vergeben wird.
 **Stolperer:** Ändert einen echten Empfänger, kann eine Bestätigungsmail auslösen und Automationen
 starten — deshalb `approval` Pflicht (`subscribe-contact` / `unsubscribe-contact`) und erst nach
 ausdrücklicher Zustimmung. Der mitgegebene Tag kann weitere Automationen starten. Andere Kanäle und
 Referenzen bleiben unberührt; Abmelden entfernt keine Tags.
 
-### `create-contact`
+### `upsert-subscribed-contact`
 **Wofür:** einen Kontakt von Hand anlegen, so wie der Bildschirm *Kontakt hinzufügen* — E-Mail-Adresse,
 Mobilnummer oder beides, Feldwerte im selben Aufruf, optional ein manueller Tag. **Anders als
-`subscribe`:** kein Opt-in-Prozess, **keine Bestätigungsmail**, der Kontakt ist sofort `subscribed`
+`subscribe-contact-via-opt-in-process`:** kein Opt-in-Prozess, **keine Bestätigungsmail**, der Kontakt ist sofort `subscribed`
 und damit in der Zielgruppe des nächsten Mailings. **Stolperer:** Eine bereits abgemeldete Adresse
 wird abgewiesen, nicht wieder angemeldet. Eine Adresse, die das Konto schon hat, wird
 *aktualisiert* — die mitgegebenen Werte überschreiben die alten, `alreadyExisted` sagt es. Das Konto
 braucht die Berechtigung zum Anlegen, und jeder Aufruf zählt gegen sein Tagesimportlimit. Unbekannte
 Feld-ID oder unbekannter Tag: Absage, nichts wird stillschweigend übersprungen.
 
-### `update-contact`
+### `update-contact-values`
 **Wofür:** Feldwerte (`fields`: je `fieldId` ein globaler Schlüssel oder eine numerische Feld-ID des
 Kontos, `referenceId` Default 0). **Nicht:** Adressen, Opt-in, Abos, Listen. **Stolperer:** Jede
 Feld-ID muss zum Konto gehören; das Feld muss existieren (`create-custom-field`) — nichts wird
 nebenbei angelegt. Überschreibt ohne Undo.
 
-### `assign-manual-tag` · `remove-manual-tag`
+### `tag-contact` · `untag-contact`
 **Wofür:** ein manueller Tag an/ab, optional je `referenceId`. **Stolperer:** Kann sofort Kampagnen,
 Autoresponder, Outbound-Events starten oder ändern — `approval: I_ACCEPT_AUTOMATION_EFFECTS`
 Pflicht, nach Zustimmung. Entfernen meldet niemanden ab. Nur manuelle, existierende Tags des

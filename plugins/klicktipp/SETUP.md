@@ -84,7 +84,7 @@ claude mcp remove klicktipp --scope user
 
 Tools that write reach a live customer account.
 
-**No tool sends a newsletter.** `email-newsletter-send` only prepares the
+**No tool sends a newsletter.** `prepare-newsletter-dispatch` only prepares the
 dispatch and returns a short-lived single-use confirmation URL. Hand that URL to
 the user along with what confirming it will do — subject, who receives it (mode
 `all_contacts` means every active contact of the account), the recipient
@@ -102,10 +102,10 @@ Four writes have no undo. Say what they cost before calling them:
   not come back.
 - `email-newsletter-content-publish` — changes what real recipients would
   receive.
-- `email-newsletter-draft-delete` — only for a draft the user explicitly asked
+- `delete-newsletter-draft` — only for a draft the user explicitly asked
   to delete.
 
-`get-subscription-redirect-url` returns a URL that identifies a subscriber
+`get-opt-in-process-redirect-url` returns a URL that identifies a subscriber
 (subscriber ID, email address, list, subscriber key, referral link). Treat its
 result as personal data: use it, do not repeat it back in full unless the user
 asked for the URL itself.

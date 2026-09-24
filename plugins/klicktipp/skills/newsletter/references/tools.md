@@ -13,15 +13,15 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 
 | Werkzeug | | Wofür |
 | --- | --- | --- |
-| `email-newsletter-search` | R | Liste der Newsletter, filterbar nach Name, Status, zwei Zeitfenstern; Cursor-Seiten. Der Weg von einer Editor-URL zum Newsletter. |
-| `email-newsletter-get` | R | Ein Newsletter mit Projektionen: `metadata`, `audience`, `deliveryConfiguration`, `deliveryStatus`, `audienceReach`, `conversionPixel`. Kein Inhalt — der ist `email-get` (Skill `email`). |
-| `email-newsletter-draft-create` | | Entwurf anlegen: Name, Betreff, Pre-Header, optional `splitTest` (Skill `splittest`). Sendet nichts. |
-| `email-newsletter-draft-update` | I | Name, Notiz, Betreff, Pre-Header, Zielgruppe eines Entwurfs. Betreff/Pre-Header machen `contentRevision` ungültig. |
-| `email-newsletter-draft-delete` | D | Entwurf endgültig löschen. |
-| `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
-| `email-newsletter-test-send` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `email-content-publish`. |
-| `email-newsletter-send` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
-| `email-newsletter-cancel` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
+| `search-newsletters` | R | Liste der Newsletter, filterbar nach Name, Status, zwei Zeitfenstern; Cursor-Seiten. Der Weg von einer Editor-URL zum Newsletter. |
+| `get-newsletter` | R | Ein Newsletter mit Projektionen: `metadata`, `audience`, `deliveryConfiguration`, `deliveryStatus`, `audienceReach`, `conversionPixel`. Kein Inhalt — der ist `get-email-editor-content` (Skill `email`). |
+| `create-newsletter-draft` | | Entwurf anlegen: Name, Betreff, Pre-Header, optional `splitTest` (Skill `splittest`). Sendet nichts. |
+| `update-newsletter-draft` | I | Name, Notiz, Betreff, Pre-Header, Zielgruppe eines Entwurfs. Betreff/Pre-Header machen `contentRevision` ungültig. |
+| `delete-newsletter-draft` | D | Entwurf endgültig löschen. |
+| `configure-newsletter-delivery` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
+| `send-newsletter-test` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `publish-newsletter-email-content`. |
+| `prepare-newsletter-dispatch` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
+| `cancel-newsletter-dispatch` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
 
 ## Inhalt
 
@@ -30,7 +30,7 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 
 ## Newsletter
 
-### `email-newsletter-cancel`
+### `cancel-newsletter-dispatch`
 **Wofür:** einen Versand zurücknehmen, der terminiert ist oder gerade anläuft; der Newsletter wird
 wieder Entwurf und erreicht niemanden weiter. **Nicht:** löschen, und **nicht** zurückholen, was
 schon versendet wurde. **Stolperer:** Nur solange `deliveryStatus.canBeCancelled` `true` ist —
@@ -38,24 +38,24 @@ danach wird abgelehnt, und die Meldung sagt, dass es zu spät ist statt so zu tu
 Ein Entwurf wird mit einem eigenen Satz abgelehnt („kein Versand zum Abbrechen"), damit du die
 beiden Fälle nicht verwechselst. Braucht dieselbe Berechtigung wie das Freigeben
 („Email marketing manager"). **Frag die Person vorher** — einen bewusst eingerichteten Versand
-brichst du nicht auf eigene Einschätzung ab. Wieder aktivieren geht mit `email-newsletter-send`.
+brichst du nicht auf eigene Einschätzung ab. Wieder aktivieren geht mit `prepare-newsletter-dispatch`.
 Die Antwort sagt ausdrücklich, dass bereits versendete Mails unterwegs bleiben; gib diesen Satz
 weiter, statt nur „abgebrochen" zu melden.
 
-### `email-newsletter-search`
+### `search-newsletters`
 **Wofür:** die Liste; Filter `query`, `status`, `createdFrom/Before`, `sendDateFrom/Before`; Seiten
-über `cursor`. **Nicht:** Betreff, Inhalt, Zielgruppe, Statistik — das ist `email-newsletter-get`.
+über `cursor`. **Nicht:** Betreff, Inhalt, Zielgruppe, Statistik — das ist `get-newsletter`.
 **Stolperer:** Ein Entwurf hat kein Versanddatum und fällt in kein `sendDate`-Fenster, auch wenn ein
 Termin gesetzt und abgesagt wurde. Zeitfenster sind halboffen (`From` inklusiv, `Before` exklusiv)
 und wollen einen UTC-Offset (`2026-09-01T10:00:00+02:00`). Der `cursor` kommt unverändert zurück,
 mit denselben Filtern; nur die Seitengröße darf sich ändern. Eine Editor-URL nennt die *E-Mail*:
 `emailId` abgleichen, nicht raten. Ein Splittest hat `emailId: null`.
 
-### `email-newsletter-get`
+### `get-newsletter`
 **Wofür:** ein Newsletter mit den Projektionen, die du brauchst: `metadata` (Name, Notiz, Labels,
 Betreff), `audience`, `deliveryConfiguration` (Absender, Antwortadresse, Signatur), `deliveryStatus`
 (Stand des Versands), `audienceReach` (wie viele Kontakte er jetzt erreichen würde). Ohne `include`
-nur Identität und Lebenszyklus. **Nicht:** der Körper — `email-get` mit `editorUrl` oder `emailId`.
+nur Identität und Lebenszyklus. **Nicht:** der Körper — `get-email-editor-content` mit `editorUrl` oder `emailId`.
 **Stolperer:** Projektionen sind alles oder nichts; eine, die nicht bedient werden kann, lässt den
 ganzen Aufruf scheitern. Bei einem Splittest sind `emailId`, `contentUrl` und `metadata.subject`
 null, die Varianten stehen in `splitTestVariants`, und `deliveryConfiguration` braucht eine `editorUrl`
@@ -63,7 +63,7 @@ daraus. `audienceReach` ist eine Messung, kein gespeicherter Wert — und die ei
 viele Kontakte" beantwortet. `deliveryStatus` trägt `observedAt`: Bounces und Beschwerden kommen
 nach dem Versand noch nach.
 
-### `email-newsletter-draft-create`
+### `create-newsletter-draft`
 **Wofür:** die Hülle — Name (eindeutig im Konto), Betreff, Pre-Header (≤ 120 Zeichen, kein HTML).
 **Nicht:** Inhalt, Zielgruppe, Absender, Termin. **Stolperer:** Ohne Zielgruppe heißt Zielgruppe
 *alle aktiven Kontakte* (`all_contacts`). Der Betreff kommt vom Menschen, nie erfunden — er ist die
@@ -72,11 +72,11 @@ ihn nicht setzen, eine versteckte Vorschauzeile im HTML fällt beim Konvertieren
 ist unumkehrbar — in beide Richtungen — und braucht Premium; `conversions`/`revenue` zusätzlich den
 Conversion-Pixel.
 
-### `email-newsletter-draft-update`
+### `update-newsletter-draft`
 **Wofür:** Name (≤ 250), Notiz (≤ 1000, nie an Empfänger), Betreff, Pre-Header, Zielgruppe,
 UTM-Kampagnenname (≤ 120).
 **Nicht:** Inhalt, Absender, Termin — und keinen Splittest (dessen Betreff:
-`email-split-test-variant-update`). **Stolperer:** Betreff oder Pre-Header schreiben macht jede
+`update-newsletter-split-test-variant`). **Stolperer:** Betreff oder Pre-Header schreiben macht jede
 vorher gelesene `contentRevision` ungültig — der nächste Inhalts-Write wird als „geändert"
 abgewiesen. Die Zielgruppe ersetzt die alte komplett: `mode` ist `all_contacts`, `saved_audience`
 (mit `audienceId`) oder `tag_conditions` (mit `includeTagIds`/`excludeTagIds`, je `…Match` `any`
@@ -88,11 +88,11 @@ gehört zur Kampagne, deshalb steht er hier und nicht beim Versand-Werkzeug. Lee
 „zurück zu den kontoweiten UTM-Einstellungen"; weggelassen heißt behalten. Über 120 Zeichen wird
 abgelehnt, bevor irgendetwas geschrieben wird.
 
-### `email-newsletter-draft-delete`
+### `delete-newsletter-draft`
 **Wofür:** einen Entwurf endgültig entfernen. **Nicht:** geplante, laufende, versendete Newsletter.
 **Stolperer:** Kein Papierkorb. Eine Namensähnlichkeit aus der Suche ist keine Zustimmung.
 
-### `email-newsletter-delivery-configure`
+### `configure-newsletter-delivery`
 **Wofür:** Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking und die
 KlickTipp-Kopfzeile; sagt, was zum Versand noch fehlt.
 **Nicht:** Termin, Aktivierung. **Stolperer:** Jeder der vier Absender-Werte hat einen `…Mode` —
@@ -113,7 +113,7 @@ Dazu zwei Schalter aus dem Panel „Erweiterte Einstellungen" derselben Seite:
   Namen beschreiben nur einen Teil davon.)
 
 Der Pre-Header ist **kein** Teil davon: er steht zwar in der Nachbarspalte, wird aber unabhängig
-gerendert und mit `email-newsletter-draft-update` als `preheader` geschrieben.
+gerendert und mit `update-newsletter-draft` als `preheader` geschrieben.
 
 Das Werkzeug lehnt ab, **bevor** es schreibt, und nennt dabei jedes Mal die Werte, die gingen:
 
@@ -128,25 +128,25 @@ Das Werkzeug lehnt ab, **bevor** es schreibt, und nennt dabei jedes Mal die Wert
   die Domain, die dazugehört — beides in einem Aufruf schicken.
 
 Beide Listen stehen in der Antwort jedes Aufrufs, und der aktuelle Stand in
-`email-newsletter-get` mit `include: ["deliveryConfiguration"]` (`senderDomainMode`,
+`get-newsletter` mit `include: ["deliveryConfiguration"]` (`senderDomainMode`,
 `senderDomain`). Lies sie, statt Adressen oder Domains zu raten.
 
-### `email-newsletter-test-send`
+### `send-newsletter-test`
 **Wofür:** eine echte Mail an eine beliebige Adresse, über dieselbe Aktion wie der Testdialog der
 Oberfläche. **Nicht:** ein Versand an die Zielgruppe, und kein Blick auf den Entwurf. **Stolperer:**
 Der Empfänger wird als Kontakt mit dem Testempfänger-Tag angelegt oder markiert — eine
 Schreiboperation am Konto, die Automationen starten kann, also vorher sagen. Die Mail trägt den
 veröffentlichten Inhalt: ein nie veröffentlichter Body wird mit
-`newsletter_send_content_publish_required` abgewiesen (erst `email-content-publish`), alles andere,
+`newsletter_send_content_publish_required` abgewiesen (erst `publish-newsletter-email-content`), alles andere,
 was die Oberfläche vor einem Test verlangt — Betreff, Pflicht-Tags im Inhalt — mit
 `newsletter_send_not_ready`; beide nennen die Gründe in `details.missingRequirements` und die
 Editor-URL. Wurde nach dem Veröffentlichen geändert, wird gesendet, und die Antwort trägt
 `warnings`: der Test zeigt den älteren Stand.
 
-### `email-newsletter-send`
+### `prepare-newsletter-dispatch`
 **Wofür:** die Vorbereitung — Prüfung, Empfängerschätzung, Bestätigungs-URL. **Nicht:** senden. Nie.
 **Stolperer:** Sag danach nicht „verschickt". Geänderter, nicht veröffentlichter Inhalt wird
-abgewiesen — erst `email-content-publish`. `mode` ist Pflicht (`immediate` / `scheduled`, kein
+abgewiesen — erst `publish-newsletter-email-content`. `mode` ist Pflicht (`immediate` / `scheduled`, kein
 Default); `scheduledAt` ist bei `scheduled` Pflicht, bei `immediate` verboten, und trägt seinen
 UTC-Offset. Ändert sich ein gebundener Wert oder läuft die URL ab, neu vorbereiten.
 
@@ -162,7 +162,7 @@ Jede Antwort kommt als `structuredContent` und als dieselbe kompakte JSON im Tex
 markiert Felder, die immer da sind; alles andere ist nur da, wenn es angefordert wurde oder
 zutrifft. Nicht angeforderte Projektionen **fehlen**, statt `null` zu sein.
 
-### `email-newsletter-get`
+### `get-newsletter`
 
 Grundfelder: `accountId*`, `newsletterId*`, `emailId*` (null bei einem Splittest — jede Variante hat
 seine eigene E-Mail), `createdAt*`, `newsletterStatus*` (`draft` · `scheduled` · `outgoing` ·
@@ -192,7 +192,7 @@ für einen Entwurf, auch wenn ein Termin gesetzt und abgesagt wurde), `sendProce
 `uniqueOpenCount`, `totalClickCount`, `uniqueClickCount`, `hardBounceCount`, `softBounceCount`,
 `spamBounceCount`, `spamComplaintCount`, `unsubscriptionCount` (alle ≥ 0; `total…` zählt
 Ereignisse, `unique…` Personen; `spamComplaintCount` steckt auch in `unsubscriptionCount`, weil eine
-Beschwerde abmeldet — **nicht addieren**), `canBeCancelled*` (sagt, ob `email-newsletter-cancel`
+Beschwerde abmeldet — **nicht addieren**), `canBeCancelled*` (sagt, ob `cancel-newsletter-dispatch`
 den Versand noch zurücknehmen kann), `missingRequirements*` (Liste in
 Worten, leer wenn nichts fehlt), `readyToSend*`, `scheduleUrl*`, `statisticsUrl*`.
 

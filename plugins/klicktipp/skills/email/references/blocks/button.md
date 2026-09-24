@@ -6,12 +6,12 @@ Familie **Interaktiv**. Modultyp im Dokument: `mailup-bee-newsletter-modules-but
 
 ## Werkzeuge
 
-| Anlegen | `email-button-add` |
+| Anlegen | `add-email-editor-button` |
 | --- | --- |
-| Ändern | `email-button-write` |
-| Entfernen | `email-block-remove` |
-| Verschieben | `email-block-move` |
-| Aussehen | `email-button-style-write` (siehe unten) und `email-block-style-write` |
+| Ändern | `update-email-editor-button` |
+| Entfernen | `remove-email-editor-block` |
+| Verschieben | `move-email-editor-block` |
+| Aussehen | `update-email-editor-button-style` (siehe unten) und `update-email-editor-block-style` |
 
 ## Felder
 
@@ -28,14 +28,14 @@ Beide Werkzeuge — Anlegen und Ändern — nehmen genau diese Felder.
 
 ## Gestaltung
 
-`email-button-style-write` setzt den Button selbst: **Hintergrundfarbe**, **Textfarbe**, **Eckenradius**, **Rahmen** auf allen vier Seiten und den **Innenabstand** — der ist es, was einen Button groß oder klein macht.
+`update-email-editor-button-style` setzt den Button selbst: **Hintergrundfarbe**, **Textfarbe**, **Eckenradius**, **Rahmen** auf allen vier Seiten und den **Innenabstand** — der ist es, was einen Button groß oder klein macht.
 
-Drei Ebenen nicht verwechseln: der Innenabstand *im* Button gehört hierher, der Abstand *um* den Button zu `email-block-style-write`, und die Wörter zu `email-button-write`.
+Drei Ebenen nicht verwechseln: der Innenabstand *im* Button gehört hierher, der Abstand *um* den Button zu `update-email-editor-block-style`, und die Wörter zu `update-email-editor-button`.
 
-`email-block-style-write` setzt zusätzlich für **jeden** Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-block-style` setzt zusätzlich für **jeden** Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 
 Der Baustein übersteht einen HTML-Import als er selbst.
 
-Das gilt **nur** für den Import (`email-content-import`), nicht fürs Ändern: dort wird nichts konvertiert.
+Das gilt **nur** für den Import (`replace-email-editor-content-from-html`), nicht fürs Ändern: dort wird nichts konvertiert.

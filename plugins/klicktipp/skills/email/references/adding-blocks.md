@@ -51,7 +51,7 @@ Zwei Dinge bleiben:
    Ergebnis zu melden.
 
    **Zwei Ausnahmen: die Textfarbe und die Linkfarbe.** Absatz, Überschrift, Text, Liste und
-   Tabelle bekommen in diesem Fall die Textfarbe der Seite (`email-page-style-write`, `textColor`)
+   Tabelle bekommen in diesem Fall die Textfarbe der Seite (`update-email-editor-page-style`, `textColor`)
    statt der ihres Startzustands; Absatz, Text, Liste und Tabelle zusätzlich deren Linkfarbe
    (`linkColor`). Ohne das trug ein frisch angelegter Absatz das `#555555` und das `#4768ef` des
    fremden Newsletters, aus dem der Startzustand einmal stammt, und die eingestellten Seitenfarben
@@ -62,7 +62,7 @@ Zwei Dinge bleiben:
    sind dort ein Look — eine Hälfte zu ersetzen hinterlässt ein Menü, das nicht mehr zu sich selbst
    passt. Die Überschrift trägt gar keine eigene Linkfarbe.
 
-   Die Reihenfolge ist damit wichtig: **erst `email-page-style-write`, dann die Bausteine anlegen.**
+   Die Reihenfolge ist damit wichtig: **erst `update-email-editor-page-style`, dann die Bausteine anlegen.**
    Die Farben werden beim Anlegen in den Baustein geschrieben, nicht später vererbt — eine danach
    geänderte Seitenfarbe erreicht bestehende Bausteine nicht, weder über die Werkzeuge noch im
    Editor, weil ein Baustein seine eigenen Farben rendert.

@@ -2,8 +2,8 @@
 
 Wann du hier landest: dir liegt fertiges E-Mail-HTML vor — aus einer Agentur, einem anderen Werkzeug,
 einer Datei — und es soll geändert oder importiert werden. Für einen Newsletter, der als Dokument
-schon existiert, ist das der falsche Weg; dann führt `email-content-copy` oder
-`email-content-document-import` verlustfrei ans Ziel.
+schon existiert, ist das der falsche Weg; dann führt `replace-email-editor-content-from-email` oder
+`replace-email-editor-content-from-document` verlustfrei ans Ziel.
 
 Liegt bereits E-Mail-HTML vor, ist die Aufgabe eine Inhaltsänderung, kein Redesign. Ändere
 ausschließlich das, was inhaltlich beauftragt wurde. Das übrige Dokument bleibt Zeichen für
@@ -13,7 +13,7 @@ Was Inhalt ist und geändert werden darf:
 
 - Texte, Überschriften, Listeneinträge, Tabellenzellen, eine sichtbare Vorschauzeile im Dokument.
   (Das **Pre-Header-Feld** der E-Mail liegt nicht im Dokument — es wird über
-  `email-newsletter-draft-update` gesetzt, Feld `preheader`.)
+  `update-newsletter-draft` gesetzt, Feld `preheader`.)
 - Button-Labels und Link-Ziele, `href`, `alt`-Texte, Bild-URLs.
 - KlickTipp-Variablen und Systemlinks.
 
@@ -54,7 +54,7 @@ Wenn kein bestehendes HTML vorliegt, gestaltest du frei nach den Regeln unten.
 
 ## Import-HTML schreiben
 
-Sobald du HTML erzeugst, das durch `email-content-import` geht — beim Bearbeiten vorhandenen
+Sobald du HTML erzeugst, das durch `replace-email-editor-content-from-html` geht — beim Bearbeiten vorhandenen
 E-Mail-HTMLs oder wenn du fremdes HTML importfähig machst —, **lies zuerst `references/html-authoring.md`**.
 Dort stehen die zwingenden Regeln: Grundgerüst, das Zwölfer-Grid, die Blockklassen des Editors,
 was mit CSS und Bildern erlaubt ist, die KlickTipp-Variablen, der Pflicht-Footer, valides HTML und
@@ -83,10 +83,10 @@ jeden Baustein, sein Layout und die Identität jedes Blocks mit, und es gibt kei
 Entwurf braucht keine Bestätigung.
 
 **Der Import veröffentlicht nicht.** Er speichert den Entwurf; der Versandinhalt ändert sich erst
-durch `email-content-publish`. Die Antwort nennt genau das in `nextAction` — lies es, statt nach
+durch `publish-newsletter-email-content`. Die Antwort nennt genau das in `nextAction` — lies es, statt nach
 dem Import „fertig" zu melden.
 
-**Was ein HTML-Import kostet** (`email-content-import`). Ein Import
+**Was ein HTML-Import kostet** (`replace-email-editor-content-from-html`). Ein Import
 nimmt gerendertes HTML und nie das Dokument; je Baustein kommt zurück: Trennlinie als
 gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, Tabelle als
 einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merge-Inhalt und

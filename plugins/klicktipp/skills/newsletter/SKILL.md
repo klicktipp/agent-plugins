@@ -8,8 +8,8 @@ description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf, B
 Ein Newsletter besteht aus zwei Dingen, die getrennt verwaltet werden: der **Newsletter** (Name,
 Betreff, Zielgruppe, Absender, Sendetermin) und die **E-Mail** darin (der Inhalt). Dieser Skill
 behandelt den Newsletter. Für den Inhalt gibt es den Skill `email` — er wird über eine eigene
-Werkzeugfamilie (`email-get`, `email-content-import`, die Baustein-Werkzeuge) angesprochen und über
-die `emailId` oder `contentUrl` adressiert, die `email-newsletter-get` zurückgibt.
+Werkzeugfamilie (`get-email-editor-content`, `replace-email-editor-content-from-html`, die Baustein-Werkzeuge) angesprochen und über
+die `emailId` oder `contentUrl` adressiert, die `get-newsletter` zurückgibt.
 
 Diese Trennung ist der häufigste Stolperstein: ein fertig geschriebener Inhalt verschickt nichts,
 und ein aktivierter Newsletter ohne Inhalt ist genauso wenig fertig.
@@ -21,22 +21,22 @@ der vorige hinterlassen hat.
 
 | # | Schritt | Werkzeug |
 | --- | --- | --- |
-| 1 | Entwurf anlegen | `email-newsletter-draft-create` |
+| 1 | Entwurf anlegen | `create-newsletter-draft` |
 | 2 | Inhalt schreiben | → Skill `email` |
-| 3 | Betreff und Zielgruppe setzen | `email-newsletter-draft-update` |
+| 3 | Betreff und Zielgruppe setzen | `update-newsletter-draft` |
 | 3a | *nur beim Splittest:* weitere Testvarianten und ihre Betreffzeilen | `email-split-test-variant-*` |
-| 4 | Absender, Antwortadresse, Signatur | `email-newsletter-delivery-configure` |
-| 5 | Testversand und Prüfung | `email-newsletter-test-send` |
-| 6 | Aktivierung vorbereiten | `email-newsletter-send` |
+| 4 | Absender, Antwortadresse, Signatur | `configure-newsletter-delivery` |
+| 5 | Testversand und Prüfung | `send-newsletter-test` |
+| 6 | Aktivierung vorbereiten | `prepare-newsletter-dispatch` |
 | 7 | **Mensch bestätigt in KlickTipp** | — |
 
 Schritt 2 bis 5 sind in der Reihenfolge frei. Schritt 1, 6 und 7 nicht.
 
-Nach Schritt 7 gibt es noch einen Rückweg: `email-newsletter-cancel` nimmt einen Versand zurück, solange er nicht zu weit ist — siehe „Einen Versand zurücknehmen".
+Nach Schritt 7 gibt es noch einen Rückweg: `cancel-newsletter-dispatch` nimmt einen Versand zurück, solange er nicht zu weit ist — siehe „Einen Versand zurücknehmen".
 
 ## 1. Entwurf anlegen
 
-`email-newsletter-draft-create` nimmt `name` und `subject` — beide Pflicht; `name` ist die interne
+`create-newsletter-draft` nimmt `name` und `subject` — beide Pflicht; `name` ist die interne
 Bezeichnung, `subject` die Betreffzeile. Dazu optional `notes` und `preheader`.
 
 Der Entwurf hat danach keinen Inhalt, keinen Absender und keinen Termin, und verschickt wird nichts.
@@ -52,19 +52,19 @@ den Betreff. Der Betreff ist, was die Empfängerin im Posteingang liest, und ste
 sieht, bevor er über Öffnen oder Löschen entscheidet, und er lässt sich aus dem Auftrag nicht
 ableiten — „Newsletter über die Herbstaktion" sagt, worum es geht, nicht wie die Zeile lautet. Wenn
 der Nutzer keinen nennt und auch keinen will, schlag einen vor und sag, dass es dein Vorschlag ist.
-Nachträglich ändern geht mit `email-newsletter-draft-update`, macht aber jede vorher gelesene
+Nachträglich ändern geht mit `update-newsletter-draft`, macht aber jede vorher gelesene
 `contentRevision` ungültig.
 
 Der **Pre-Header** ist die Zeile, die viele Programme im Posteingang hinter dem Betreff zeigen. Ohne
 ihn nimmt sich das Programm die ersten Wörter des Inhalts, und das ist selten das, was werben soll.
 Höchstens 120 Zeichen, ohne HTML. Er lässt sich **direkt beim Anlegen** mitgeben und später jederzeit
-mit `email-newsletter-draft-update` ändern — beide Wege schreiben dasselbe Feld.
+mit `update-newsletter-draft` ändern — beide Wege schreiben dasselbe Feld.
 
 ### Splittest
 
-Ein Splittest wird **beim Anlegen entschieden und nie danach** — `email-newsletter-draft-create`
+Ein Splittest wird **beim Anlegen entschieden und nie danach** — `create-newsletter-draft`
 nimmt dafür ein `splitTest`-Objekt. Danach hat der Newsletter keine einzelne E-Mail mehr: jede
-Variante ist eine eigene, `email-newsletter-draft-update` weist einen Betreff ab, und jede Variante wird
+Variante ist eine eigene, `update-newsletter-draft` weist einen Betreff ab, und jede Variante wird
 über seine eigene `editorUrl` angesprochen.
 
 Alles dazu steht im Skill `splittest` — die Felder, die Varianten-Werkzeuge, und warum eine neue Variante fast
@@ -72,12 +72,12 @@ immer eine Kopie sein sollte. Geh dorthin, sobald ein A/B-Test im Spiel ist.
 
 ## 2. Inhalt
 
-Nicht hier. `email-newsletter-get` liefert `emailId` und `contentUrl` — damit weiter im Skill
+Nicht hier. `get-newsletter` liefert `emailId` und `contentUrl` — damit weiter im Skill
 `email`. Komm zurück, wenn der Inhalt steht.
 
 ## 3. Betreff, Pre-Header und Zielgruppe
 
-`email-newsletter-draft-update` schreibt `name`, `note`, `subject`, `preheader`, `audience` und
+`update-newsletter-draft` schreibt `name`, `note`, `subject`, `preheader`, `audience` und
 `utmCampaignName`. Es schreibt **nur** diese sechs: Absender, Signatur und Sendetermin sind bewusst
 nicht erreichbar, ein Versuch wird abgewiesen statt still ignoriert.
 
@@ -108,7 +108,7 @@ Name zerschießt die Auswertung. Frag nach oder lass das Feld in Ruhe. Ein leere
 kontoweiten UTM-Einstellungen wieder her.
 
 **Die Zielgruppe wird ersetzt, nicht ergänzt.** Wer „nimm noch Tag X dazu" umsetzt, muss die
-bestehende Zielgruppe erst mit `email-newsletter-get` und `include: ["audience"]` lesen und die
+bestehende Zielgruppe erst mit `get-newsletter` und `include: ["audience"]` lesen und die
 vollständige neue Menge schicken. Sonst verschwindet, was vorher da stand.
 
 **Frage nach einem Ausschluss für lange inaktive Kontakte.** Wer seit Monaten nichts öffnet und
@@ -126,7 +126,7 @@ ihn mit Namen und lass bestätigen, statt auf einen Namen zu raten.
 
 ## 4. Absender und Signatur
 
-`email-newsletter-delivery-configure` setzt Absendername, Absenderadresse, Antwortadresse,
+`configure-newsletter-delivery` setzt Absendername, Absenderadresse, Antwortadresse,
 Versanddomain und Signatur. Die Signatur wird über ihre `signatureId` benannt; welche das Konto
 hat, steht in der Antwort dieses Werkzeugs, und `0` heißt „KlickTipp wählt per Tagging". Die vier
 Werte haben je einen `*Mode` daneben — lies die Beschreibung des
@@ -158,7 +158,7 @@ Dasselbe Werkzeug trägt zwei Schalter aus dem Panel „Erweiterte Einstellungen
 
 ## 5. Testversand
 
-`email-newsletter-test-send` schickt eine echte Mail an **eine** Adresse — dieselbe Aktion, die der
+`send-newsletter-test` schickt eine echte Mail an **eine** Adresse — dieselbe Aktion, die der
 Testdialog in KlickTipp auslöst, mit denselben Regeln. Jede Adresse ist erlaubt.
 
 **Und genau deshalb hat der Schritt eine Nebenwirkung, die du vorher sagst:** ist die Adresse noch
@@ -172,18 +172,18 @@ Aktivierung auch nur erwähnst.
 
 **Ein Testversand trägt den veröffentlichten Inhalt, nicht den Entwurf.** Die Block-Werkzeuge
 speichern einen Entwurf und veröffentlichen absichtlich nie — also musst du vor dem Testversand
-`email-content-publish` aufrufen, sonst kommt gar nichts an. Das Werkzeug lehnt in diesem Zustand
+`publish-newsletter-email-content` aufrufen, sonst kommt gar nichts an. Das Werkzeug lehnt in diesem Zustand
 ab, mit `newsletter_send_content_publish_required` und der Anweisung, zuerst zu veröffentlichen;
 genauso, wie KlickTipp den Testdialog gar nicht anbietet, solange die Mail nicht so weit ist. Hat
 der Inhalt nach dem Veröffentlichen noch Änderungen bekommen, wird gesendet — aber die Antwort
 trägt ein `warnings`, das sagt, dass der Test den älteren Stand zeigt. Lies es und sage es weiter,
 statt den Test als Beweis für den aktuellen Entwurf zu verkaufen.
 
-Die Reihenfolge ist damit: Inhalt schreiben → `email-content-publish` → Testversand → Schritt 6.
+Die Reihenfolge ist damit: Inhalt schreiben → `publish-newsletter-email-content` → Testversand → Schritt 6.
 
 ## 6. Aktivierung — und was dieses Werkzeug wirklich tut
 
-`email-newsletter-send` klingt, als würde es senden. **Es sendet nicht.** Es prüft die
+`prepare-newsletter-dispatch` klingt, als würde es senden. **Es sendet nicht.** Es prüft die
 Voraussetzungen, bindet den veröffentlichungsfähigen Inhalt, schätzt die Empfängerzahl — und gibt
 die Bestätigung zurück, die ein Mensch in KlickTipp klicken muss. Geschrieben wird dabei nichts.
 
@@ -198,7 +198,7 @@ Sage nach diesem Aufruf niemals „der Newsletter wurde verschickt". Er wurde vo
 
 ## Lesen: Suche und Detail
 
-`email-newsletter-search` filtert über `query`, `status` (`draft`, `scheduled`, `outgoing`, `sent`),
+`search-newsletters` filtert über `query`, `status` (`draft`, `scheduled`, `outgoing`, `sent`),
 Zeiträume (`createdFrom`, `sendDateFrom`, …) und paginiert über `limit` / `cursor`.
 
 Zwei Fragen, die genau **eine** Suche sind — nicht ein Lesen je Newsletter:
@@ -212,12 +212,12 @@ Zwei Fragen, die genau **eine** Suche sind — nicht ein Lesen je Newsletter:
   andere Werkzeug nimmt den *Newsletter*. Such und vergleiche die `emailId` aus der URL mit der
   Liste, statt zu raten — benachbarte IDs gehören zu verschiedenen Newslettern. Ein Splittest hat
   keine einzelne E-Mail (`emailId: null`); seine Varianten stehen in `splitTestVariants` von
-  `email-newsletter-get`.
+  `get-newsletter`.
 
 Bei mehr Treffern als `limit` kommt ein `nextCursor`: unverändert zurückgeben, mit **denselben**
 Filtern. Ein Cursor aus einer anderen Suche wird abgewiesen.
 
-`email-newsletter-get` liest einen Newsletter über `newsletterId` **oder** `editorUrl`. Standardmäßig
+`get-newsletter` liest einen Newsletter über `newsletterId` **oder** `editorUrl`. Standardmäßig
 kommen nur Identität und Lebenszyklus; alles Weitere über `include`:
 
 | Projektion | Inhalt |
@@ -240,7 +240,7 @@ Satz Pixel für alle Varianten — du brauchst dafür keine `editorUrl`. Sagt di
 
 ## Einen Versand zurücknehmen
 
-`email-newsletter-cancel` nimmt einen Versand zurück, der terminiert ist oder gerade angelaufen
+`cancel-newsletter-dispatch` nimmt einen Versand zurück, der terminiert ist oder gerade angelaufen
 ist: der Newsletter wird wieder Entwurf, und ab da geht nichts mehr raus. Nur solange
 `deliveryStatus.canBeCancelled` `true` sagt — ist der Versand weit genug fortgeschritten, wird es
 abgelehnt, und die Meldung sagt das, statt so zu tun als ginge es.
@@ -251,14 +251,14 @@ Person „nichts ist rausgegangen", und das stimmt fast nie.
 
 **Frag vorher.** Einen Versand, den jemand bewusst eingerichtet hat, brichst du nicht auf eigene
 Einschätzung ab. Inhalt, Zielgruppe und Absender bleiben unangetastet; wieder aktivieren geht mit
-`email-newsletter-send`.
+`prepare-newsletter-dispatch`.
 
 Die Berechtigung ist dieselbe wie fürs Freigeben („Email marketing manager"): wer einen Newsletter
 übergeben darf, darf ihn auch zurückholen — ein Texter-Unterkonto keins von beidem.
 
 ## Löschen
 
-`email-newsletter-draft-delete` entfernt einen Entwurf endgültig — es gibt kein Zurück und keinen
+`delete-newsletter-draft` entfernt einen Entwurf endgültig — es gibt kein Zurück und keinen
 Papierkorb. Nur für einen Newsletter, den die Person ausdrücklich genannt hat. Frage nach, wenn du
 ihn selbst über die Suche gefunden hast: eine Namensähnlichkeit ist keine Zustimmung.
 
@@ -276,7 +276,7 @@ Die häufigsten Tore:
 - **Split-Test.** Ein Newsletter mit Split-Test wird von der Aktivierung abgelehnt; das ist hier
   nicht abgedeckt.
 - **Inhalt fehlt oder ist nicht veröffentlicht.** Die Aktivierung bindet veröffentlichten Inhalt.
-  Ein Entwurfsinhalt reicht nicht — siehe `email-content-publish` im Skill `email`.
+  Ein Entwurfsinhalt reicht nicht — siehe `publish-newsletter-email-content` im Skill `email`.
 
 ## Die Werkzeuge im Einzelnen
 
@@ -290,7 +290,7 @@ Werkzeugliste, der Wortlaut im Vertrag.
 Systemlinks — Browseransicht, Selbstauskunft, Datenänderung, Abmelden — sind Platzhalter im Inhalt
 und stehen im Skill `email` unter
 [references/html-authoring.md](../email/references/html-authoring.md). Zwei davon gibt es zusätzlich
-als fertige Zeile über dem Inhalt: `headerLinks` in `email-newsletter-delivery-configure` setzt
+als fertige Zeile über dem Inhalt: `headerLinks` in `configure-newsletter-delivery` setzt
 Browseransicht, Abmelden und Spam melden gemeinsam.
 
 ## Kontoauswahl

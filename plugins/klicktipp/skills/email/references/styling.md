@@ -1,7 +1,7 @@
 # Gestaltung
 
 Wann du hier landest: Farben, Abstände, Rahmen, Breiten, Ausrichtung oder Schrift sollen sich ändern.
-Für eine reine Textänderung brauchst du diese Datei nicht — dafür reicht `email-text-write`, das die
+Für eine reine Textänderung brauchst du diese Datei nicht — dafür reicht `update-email-editor-text`, das die
 Gestaltung nicht anfasst.
 
 **Gestaltung geht inzwischen — in benannten Werten, nie in CSS.** Vier Ebenen für alles, was jeder
@@ -28,7 +28,7 @@ einer bestehenden Zeile (die Spalten einer Zeile sind gleich breit; eine schiefe
 Editor), eine Zeile entfernen, und die **Breite eines Bildes oder Videos** — die steckt im Dokument
 in zwei gekoppelten Werten plus einem Klassen-Token, und eines davon allein zu setzen bringt Editor
 und Darstellung auseinander; dafür ist der Editor der Weg. Auch die Typografie eines Textbausteins
-gehört nicht hierher: sie steckt in seinem eigenen Markup, also in `email-text-write` — sie an zwei
+gehört nicht hierher: sie steckt in seinem eigenen Markup, also in `update-email-editor-text` — sie an zwei
 Stellen anzubieten hieße, zwei Antworten auf eine Frage zu haben.
 
 **Welches Feld welche Bausteinart hat, welches Werkzeug es schreibt und worauf bei ihr zu achten

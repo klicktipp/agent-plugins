@@ -25,8 +25,8 @@ neutraler Startzustand ableiten ließe. Sie bleiben beim Editor.
   Innenabstand vom *ersten* Baustein derselben Art (Spalte, dann Zeile, dann Newsletter), nicht vom
   Nachbarn über der Einfügestelle. Das **Markup** kopiert er nicht: das ist dein Teil. Eine Reihe
   von Adds erzeugt deshalb eine Reihe gleich aussehender Bausteine — einen ganzen Körper baut
-  `email-content-import`, nicht eine Kette von Adds.
+  `replace-email-editor-content-from-html`, nicht eine Kette von Adds.
 - **Entfernen und neu anlegen ist kein Ändern.** Dabei gehen Typografie, Add-on-Konfiguration und
   die `uuid` verloren. Siehe SKILL.md.
-- **Aussehen ist die Gestaltungsebene**, nicht der Inhalt: `email-block-style-write` und die drei
+- **Aussehen ist die Gestaltungsebene**, nicht der Inhalt: `update-email-editor-block-style` und die drei
   Ebenen darüber.

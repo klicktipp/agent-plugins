@@ -19,9 +19,9 @@ versprechen, die die Werkzeuge nicht hergeben, und sie dann zu schätzen, ohne e
 
 | Frage | Antwort | Woher |
 | --- | --- | --- |
-| Wie lief eine Aussendung? | **vollständig** | `email-newsletter-get`, `include: ["deliveryStatus"]` |
-| Wie viele erreicht ein Versand gerade? | **vollständig** | `email-newsletter-get`, `include: ["audienceReach"]` |
-| Welche Newsletter gibt es, in welchem Zustand? | **vollständig** | `email-newsletter-search`, nach `status` gefiltert |
+| Wie lief eine Aussendung? | **vollständig** | `get-newsletter`, `include: ["deliveryStatus"]` |
+| Wie viele erreicht ein Versand gerade? | **vollständig** | `get-newsletter`, `include: ["audienceReach"]` |
+| Welche Newsletter gibt es, in welchem Zustand? | **vollständig** | `search-newsletters`, nach `status` gefiltert |
 | Welche Tags hat das Konto? | **Liste, ohne Zahlen** | `search-tags` |
 | **Wie viele Kontakte hat das Konto?** | **gibt es nicht** | siehe unten |
 
@@ -37,10 +37,10 @@ Gibt es keinen solchen Newsletter, **lass die Kachel weg**, statt eine Zahl zu e
 ## 2. Einsammeln, ohne das Konto leerzulesen
 
 ```
-email-newsletter-search  status="sent"  limit=25     → die letzten Aussendungen
-  └─ je Newsletter: email-newsletter-get  include=["deliveryStatus"]
-email-newsletter-search  status="draft"  limit=1     → nur für die Zählung
-email-newsletter-search  status="scheduled" limit=1  → dito
+search-newsletters  status="sent"  limit=25     → die letzten Aussendungen
+  └─ je Newsletter: get-newsletter  include=["deliveryStatus"]
+search-newsletters  status="draft"  limit=1     → nur für die Zählung
+search-newsletters  status="scheduled" limit=1  → dito
 ```
 
 Das sind etwa 25 bis 30 Aufrufe für ein volles Dashboard. Zwei Regeln halten es dabei:

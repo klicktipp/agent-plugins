@@ -11,82 +11,82 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 
 ## Inhalt
 
-`email-content-import` · `email-content-publish` · `email-content-copy` ·
-`email-content-document-import` · `email-spacer-style-write` · `email-divider-style-write` ·
-`email-button-style-write` · `email-get` · `email-preview` · `email-content-check` ·
-`email-block-move` · `email-block-remove` · `email-block-style-write` · `email-button-add` ·
-`email-button-write` · `email-column-style-write` · `email-divider-add` · `email-heading-add` ·
-`email-html-add` · `email-icons-add` · `email-icons-write` · `email-image-add` ·
-`email-image-write` · `email-list-add` · `email-menu-add` · `email-menu-write` ·
-`email-page-style-write` · `email-paragraph-add` · `email-row-add` · `email-row-style-write` ·
-`email-social-add` · `email-social-icon-search` · `email-social-write` · `email-spacer-add` ·
-`email-table-add` · `email-table-write` · `email-text-add` · `email-text-write` ·
-`email-video-add` · `email-video-write` · `email-image-search` · `email-image-stock-search` ·
-`email-image-folder-search` · `email-image-folder-create` · `email-image-folder-delete` ·
-`email-image-upload` · `email-image-upload-file` · `email-image-upload-from-url` ·
-`email-image-preview` · `email-template-search` · `email-template-apply` ·
-`email-condition-capabilities-get` ·
-`email-decision-write` · `email-row-condition-write` · `email-decisions-get`
+`replace-email-editor-content-from-html` · `publish-newsletter-email-content` · `replace-email-editor-content-from-email` ·
+`replace-email-editor-content-from-document` · `update-email-editor-spacer-style` · `update-email-editor-divider-style` ·
+`update-email-editor-button-style` · `get-email-editor-content` · `preview-email-editor` · `validate-email-editor-content` ·
+`move-email-editor-block` · `remove-email-editor-block` · `update-email-editor-block-style` · `add-email-editor-button` ·
+`update-email-editor-button` · `update-email-editor-column-style` · `add-email-editor-divider` · `add-email-editor-heading` ·
+`add-email-editor-html` · `add-email-editor-icons` · `update-email-editor-icons` · `add-email-editor-image-block` ·
+`update-email-editor-image-block` · `add-email-editor-list` · `add-email-editor-menu` · `update-email-editor-menu` ·
+`update-email-editor-page-style` · `add-email-editor-paragraph` · `add-email-editor-row` · `update-email-editor-row-style` ·
+`add-email-editor-social-links` · `list-email-editor-social-icons` · `update-email-editor-social-links` · `add-email-editor-spacer` ·
+`add-email-editor-table` · `update-email-editor-table` · `add-email-editor-text` · `update-email-editor-text` ·
+`add-email-editor-video` · `update-email-editor-video` · `list-email-editor-images` · `search-email-editor-stock-images` ·
+`list-email-editor-image-folders` · `create-email-editor-image-folder` · `delete-email-editor-image-folder` ·
+`open-email-editor-image-upload` · `upload-email-editor-image-file` · `upload-email-editor-image-from-url` ·
+`preview-email-editor-image` · `search-email-editor-templates` · `replace-email-editor-content-from-template` ·
+`get-email-editor-display-condition-capabilities` ·
+`update-email-editor-display-condition` · `configure-email-editor-row-display-condition` · `list-email-editor-display-conditions`
 
-## `email-content-import` · DO
+## `replace-email-editor-content-from-html` · DO
 
 **Import email content from HTML**
 
-Converts HTML into the drag-and-drop editor document of one KlickTipp email newsletter, addressed by its editor URL -- the entry path for a design that exists only as HTML; changes afterwards belong to the block tools. Replaces the stored draft entirely, has no undo, and does not publish: the dispatch content changes only through email-content-publish, named in nextAction. Bound to the content revision of the preceding read. A newsletter that already has content is refused on the first call with a list of what it holds; a second call with replaceExistingContent set to true converts. Non-HTML blocks (add-ons, decisions, AI blocks) are rendered or dropped; the warnings record what it cost. The body has to carry the %User:Signature%placeholder or spell out postal details and unsubscribe link, else it is refused. Returns content status, new revision and editor URL.
+Converts HTML into the drag-and-drop editor document of one KlickTipp email newsletter, addressed by its editor URL -- the entry path for a design that exists only as HTML; changes afterwards belong to the block tools. Replaces the stored draft entirely, has no undo, and does not publish: the dispatch content changes only through publish-newsletter-email-content, named in nextAction. Bound to the content revision of the preceding read. A newsletter that already has content is refused on the first call with a list of what it holds; a second call with replaceExistingContent set to true converts. Non-HTML blocks (add-ons, decisions, AI blocks) are rendered or dropped; the warnings record what it cost. The body has to carry the %User:Signature%placeholder or spell out postal details and unsubscribe link, else it is refused. Returns content status, new revision and editor URL.
 
 Parameter:
 
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by email-get
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by get-email-editor-content
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read this HTML is based on; a stale one refuses the import
 - `contentHtml`* — string (minLength 1; maxLength 10000000): The complete HTML body; replaces the stored document entirely
 - `replaceExistingContent` — null | boolean: true to replace content the email already has; omit on the first attempt, so the answer lists what would be lost
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-content-publish` · DO
+## `publish-newsletter-email-content` · DO
 
 **Publish email content**
 
-Publishes the drag-and-drop editor draft of one KlickTipp email newsletter: from then on that body is what a dispatch sends, replacing the previously published one. This changes what real recipients would receive and has no undo. It takes no HTML -- only the stored draft is published -- and is bound to the content revision of the preceding read or write; if the newsletter changed in between, nothing is published. Only a draft can be published, and a body using editor features the server must not publish on a person's behalf is refused with the editor URL. Sending is separate: email-newsletter-send. Returns content status before and after, the new revision and the editor URL.
+Publishes the drag-and-drop editor draft of one KlickTipp email newsletter: from then on that body is what a dispatch sends, replacing the previously published one. This changes what real recipients would receive and has no undo. It takes no HTML -- only the stored draft is published -- and is bound to the content revision of the preceding read or write; if the newsletter changed in between, nothing is published. Only a draft can be published, and a body using editor features the server must not publish on a person's behalf is refused with the editor URL. Sending is separate: prepare-newsletter-dispatch. Returns content status before and after, the new revision and the editor URL.
 
 Parameter:
 
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by email-get
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by get-email-editor-content
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the state to publish, from the read or the last write; a stale one refuses
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-content-copy` · D
+## `replace-email-editor-content-from-email` · D
 
 **Copy email content**
 
-Copies the drag-and-drop body of one KlickTipp email into another, byte for byte -- the way to build a newsletter on an existing one. Both are addressed by their editor URL and belong to the same account. Nothing is converted, so nothing is lost: layout, images, dividers, tables, KlickTipp decisions and AI blocks all arrive. The source may be any newsletter email of the account, a sent one included, and is only read. The target must be an editable draft; its body is replaced entirely, without undo, and is not published -- use email-content-publish, named in nextAction. Bound to the content revision of the target's preceding read. A target that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to copy. Returns content status, new revision and editor URL.
+Copies the drag-and-drop body of one KlickTipp email into another, byte for byte -- the way to build a newsletter on an existing one. Both are addressed by their editor URL and belong to the same account. Nothing is converted, so nothing is lost: layout, images, dividers, tables, KlickTipp decisions and AI blocks all arrive. The source may be any newsletter email of the account, a sent one included, and is only read. The target must be an editable draft; its body is replaced entirely, without undo, and is not published -- use publish-newsletter-email-content, named in nextAction. Bound to the content revision of the target's preceding read. A target that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to copy. Returns content status, new revision and editor URL.
 
 Parameter:
 
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as returned by email-get
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as returned by get-email-editor-content
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read of that email; a stale one refuses the copy
 - `sourceEditorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to copy from; it is only read and stays untouched
 - `replaceExistingContent` — null | boolean: true to replace content the target already has; omit on the first attempt, so the answer lists what would be lost
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-content-document-import` · D
+## `replace-email-editor-content-from-document` · D
 
 **Import email content from a document**
 
-Stores a complete drag-and-drop editor document as the body of one KlickTipp email, addressed by its editor URL -- the entry path for a design that already exists as such a document, such as a template or an export. Takes the document as JSON, page-rooted or the page itself, in the shape email-get hands one out. Nothing is converted, so nothing is lost; for a design that exists only as HTML use email-content-import, and to take one over from another email of the account use email-content-copy. Replaces the stored draft entirely, without undo, and does not publish -- use email-content-publish, named in nextAction. Bound to the content revision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
+Stores a complete drag-and-drop editor document as the body of one KlickTipp email, addressed by its editor URL -- the entry path for a design that already exists as such a document, such as a template or an export. Takes the document as JSON, page-rooted or the page itself, in the shape get-email-editor-content hands one out. Nothing is converted, so nothing is lost; for a design that exists only as HTML use replace-email-editor-content-from-html, and to take one over from another email of the account use replace-email-editor-content-from-email. Replaces the stored draft entirely, without undo, and does not publish -- use publish-newsletter-email-content, named in nextAction. Bound to the content revision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
 
 Parameter:
 
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by email-get
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, exactly as returned by get-email-editor-content
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read this document is based on; a stale one refuses the write
 - `contentDocument`* — string (minLength 1; maxLength 10000000): The complete editor document as JSON; replaces the stored one entirely
 - `replaceExistingContent` — null | boolean: true to replace content the email already has; omit on the first attempt, so the answer lists what would be lost
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-spacer-style-write` · I
+## `update-email-editor-spacer-style` · I
 
 **Write email spacer height**
 
-Sets how tall spacers are, several in one call. A spacer is nothing but its height, so this is the whole block: the gap it makes between two sections. Named values only -- a whole number of pixels. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Sets how tall spacers are, several in one call. A spacer is nothing but its height, so this is the whole block: the gap it makes between two sections. Named values only -- a whole number of pixels. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -96,11 +96,11 @@ Parameter:
 - `height` — null | integer (minimum 0; maximum 400): Height of the gap in pixels
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-divider-style-write` · I
+## `update-email-editor-divider-style` · I
 
 **Write email divider line**
 
-Sets the line of dividers, several in one call: how thick it is, whether it is solid, dashed or dotted, its colour, and how far it reaches across the row. Named values only -- no CSS -- so a line is "1px solid #000000" and a width is a whole percentage. A thickness of 0 makes the divider an invisible spacer, which is a real use and not a mistake. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Sets the line of dividers, several in one call: how thick it is, whether it is solid, dashed or dotted, its colour, and how far it reaches across the row. Named values only -- no CSS -- so a line is "1px solid #000000" and a width is a whole percentage. A thickness of 0 makes the divider an invisible spacer, which is a real use and not a mistake. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -111,11 +111,11 @@ Parameter:
 - `width` — null | integer (minimum 10; maximum 100): How far the line reaches across the row, as a whole percentage
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-button-style-write` · I
+## `update-email-editor-button-style` · I
 
 **Write email button look**
 
-Sets the look of buttons, several in one call: the colour behind the label, the colour of the label, how round the corners are, a border on any of the four sides, and the space between the label and the edge -- which is what makes a button large or small. Named values only -- no CSS. This is the button itself; the space AROUND it is email-block-style-write, and the words are email-button-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Sets the look of buttons, several in one call: the colour behind the label, the colour of the label, how round the corners are, a border on any of the four sides, and the space between the label and the edge -- which is what makes a button large or small. Named values only -- no CSS. This is the button itself; the space AROUND it is update-email-editor-block-style, and the words are update-email-editor-button. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -135,11 +135,11 @@ Parameter:
 - `paddingLeft` — null | integer (minimum 0; maximum 400): Space left of the label
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-get` · RI
+## `get-email-editor-content` · RI
 
 **Get email**
 
-Reads one email body by email ID or editor URL and says what the email is used for: email ID, usage type, editor, content state and the editor URL every write of the body takes. Everything else is a projection requested through "include": "content" (the editable document), "contentOutline" (uuid, kind and value of every writable field), "styleOutline" (what the style tools set) and "publishedContent" (the HTML a dispatch would send). The outlines carry the contentRevision a write has to give back. The newsletter around the email -- name, audience, dispatch state, split-test variants -- is email-newsletter-get. Reads only. The three document projections exist for the drag-and-drop editor and are answered whole or refused; publishedContent is readable in every state and editor.
+Reads one email body by email ID or editor URL and says what the email is used for: email ID, usage type, editor, content state and the editor URL every write of the body takes. Everything else is a projection requested through "include": "content" (the editable document), "contentOutline" (uuid, kind and value of every writable field), "styleOutline" (what the style tools set) and "publishedContent" (the HTML a dispatch would send). The outlines carry the contentRevision a write has to give back. The newsletter around the email -- name, audience, dispatch state, split-test variants -- is get-newsletter. Reads only. The three document projections exist for the drag-and-drop editor and are answered whole or refused; publishedContent is readable in every state and editor.
 
 Parameter:
 
@@ -148,18 +148,18 @@ Parameter:
 - `include` — array<string> (maxItems 4): Projections to add: "content" (the editable document), "contentOutline" (uuid, kind and value of every writable field -- for a content change), "styleOutline" (what the style tools set -- for a style change), "publishedContent" (the HTML a dispatch would send); omit for identity only
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-preview` · ROI
+## `preview-email-editor` · ROI
 
 **Preview email**
 
-Renders the current drag-and-drop email draft and displays its HTML in an MCP App. Takes the editor URL from email-get or a content write. Includes unpublished edits; does not save, publish or send. Recipient placeholders remain unresolved. The result carries contentHtml for hosts without MCP Apps support.
+Renders the current drag-and-drop email draft and displays its HTML in an MCP App. Takes the editor URL from get-email-editor-content or a content write. Includes unpublished edits; does not save, publish or send. Recipient placeholders remain unresolved. The result carries contentHtml for hosts without MCP Apps support.
 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a previous read returned it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-content-check` · RI
+## `validate-email-editor-content` · RI
 
 **Check email content**
 
@@ -171,11 +171,11 @@ Parameter:
 - `editorUrl` — null | string (minLength 12; maxLength 500): Editor URL of the email, as a previous read returned it; omit when the email ID is given
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-block-move`
+## `move-email-editor-block`
 
 **Move email block**
 
-Moves one block to another place in its column, or into the column whose uuid it names. The same block moves, so its styling, its uuid and an add-on`s configuration survive -- removing it and adding it again would not. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Moves one block to another place in its column, or into the column whose uuid it names. The same block moves, so its styling, its uuid and an add-on`s configuration survive -- removing it and adding it again would not. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -186,11 +186,11 @@ Parameter:
 - `toColumnUuid` — null | string: The uuid of the column to move it into; omit to move inside its own column
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-block-remove` · D
+## `remove-email-editor-block` · D
 
 **Remove email block**
 
-Removes one block, of any kind -- removing needs to know nothing about it. There is no undo and the block cannot be brought back through these tools: what it held is gone with it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Removes one block, of any kind -- removing needs to know nothing about it. There is no undo and the block cannot be brought back through these tools: what it held is gone with it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -199,11 +199,11 @@ Parameter:
 - `uuid`* — string: The uuid of the block to remove
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-block-style-write` · I
+## `update-email-editor-block-style` · I
 
 **Write email block style**
 
-Writes the space around one block and how its content sits -- left, centred, right or justified. Works for a block of any kind, an image and a divider included. The typography of a text block is not here: its font, size, line height and colour live in the markup of that block, so they are changed with email-text-write, and the size an image is shown at belongs to the image. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the space around one block and how its content sits -- left, centred, right or justified. Works for a block of any kind, an image and a divider included. The typography of a text block is not here: its font, size, line height and colour live in the markup of that block, so they are changed with update-email-editor-text, and the size an image is shown at belongs to the image. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -219,11 +219,11 @@ Parameter:
 - `hideOnDesktop` — null | boolean: Whether the block is hidden on a desktop
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-button-add`
+## `add-email-editor-button`
 
 **Add email button**
 
-Puts a button into the column whose uuid it names and answers with the uuid of the new block. It takes label, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest button block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a button into the column whose uuid it names and answers with the uuid of the new block. It takes label, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest button block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -235,11 +235,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-button-write` · I
+## `update-email-editor-button` · I
 
 **Write email button**
 
-Writes the visible text of one button block and where it leads. The label is markup like a text block: start from what you read and swap only the words, or the button loses its typography. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the visible text of one button block and where it leads. The label is markup like a text block: start from what you read and swap only the words, or the button loses its typography. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -250,11 +250,11 @@ Parameter:
 - `href` — null | string: The link target of the button
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-column-style-write` · I
+## `update-email-editor-column-style` · I
 
 **Write email column style**
 
-Writes the look of columns -- several in one call, the same values on each: the colour behind it, the space between its edges and its blocks, and a border on any of its four sides. Named values only -- no CSS -- so a padding is a number of pixels and a border is "1px solid #000000", with solid, dashed, dotted or none. Everything not named stays as it is. The width of a column is not here: columns of a row are equally wide, and an uneven split is made in the KlickTipp editor. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the look of columns -- several in one call, the same values on each: the colour behind it, the space between its edges and its blocks, and a border on any of its four sides. Named values only -- no CSS -- so a padding is a number of pixels and a border is "1px solid #000000", with solid, dashed, dotted or none. Everything not named stays as it is. The width of a column is not here: columns of a row are equally wide, and an uneven split is made in the KlickTipp editor. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -272,11 +272,11 @@ Parameter:
 - `borderLeft` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border left of the column, same shape
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-divider-add`
+## `add-email-editor-divider`
 
 **Add email divider**
 
-Puts a divider into the column whose uuid it names and answers with the uuid of the new block. It has nothing to write: it is finished the moment it exists. What it looks like -- its thickness, its colour, the space around it -- is the style level, email-block-style-write and the row above it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a divider into the column whose uuid it names and answers with the uuid of the new block. It has nothing to write: it is finished the moment it exists. What it looks like -- its thickness, its colour, the space around it -- is the style level, update-email-editor-block-style and the row above it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -286,11 +286,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-heading-add`
+## `add-email-editor-heading`
 
 **Add email heading**
 
-Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour`s, and with none to copy its text colour is the email`s own default, set with email-page-style-write. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour`s, and with none to copy its text colour is the email`s own default, set with update-email-editor-page-style. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -302,11 +302,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-html-add`
+## `add-email-editor-html`
 
 **Add email custom HTML**
 
-Puts a custom HTML block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest html block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a custom HTML block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest html block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -317,11 +317,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-icons-add`
+## `add-email-editor-icons`
 
 **Add email icons**
 
-Puts an icon block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The size of an icon and where its words sit come from the block this email already has -- they are required by the format, so they are copied rather than asked for. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts an icon block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The size of an icon and where its words sit come from the block this email already has -- they are required by the format, so they are copied rather than asked for. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -329,17 +329,17 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `icons`* — array<object> (minItems 1; maxItems 20): The icons, left to right
-  - `src`* — string: URL of the picture, from email-image-search or email-image-upload.
+  - `src`* — string: URL of the picture, from list-email-editor-images or open-email-editor-image-upload.
   - `href` — string: Where it leads.
   - `text` — string: The words beside the icon.
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-icons-write` · I
+## `update-email-editor-icons` · I
 
 **Write email icons**
 
-Writes the entries of one icon block: the picture of each, the words beside it and where it leads. The list replaces the list: the call carries every icon the block should have, in order. The size of the icons and where the words sit are kept from the entry that was there. Not the same block as social links: this one carries any picture with a caption. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the entries of one icon block: the picture of each, the words beside it and where it leads. The list replaces the list: the call carries every icon the block should have, in order. The size of the icons and where the words sit are kept from the entry that was there. Not the same block as social links: this one carries any picture with a caption. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -347,33 +347,33 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `uuid`* — string: The uuid of the icon block
 - `icons`* — array<object> (minItems 1; maxItems 20): The icons, left to right
-  - `src`* — string: URL of the picture, from email-image-search or email-image-upload.
+  - `src`* — string: URL of the picture, from list-email-editor-images or open-email-editor-image-upload.
   - `href` — string: Where it leads.
   - `text` — string: The words beside the icon.
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-add`
+## `add-email-editor-image-block`
 
 **Add email image**
 
-Puts an image into the column whose uuid it names and answers with the uuid of the new block. It takes src, alt, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest image block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts an image into the column whose uuid it names and answers with the uuid of the new block. It takes src, alt, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest image block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columnUuid`* — string: The uuid of the column the block goes into
-- `src` — null | string (maxLength 2000): URL of the image, from email-image-search or email-image-upload
+- `src` — null | string (maxLength 2000): URL of the image, from list-email-editor-images or open-email-editor-image-upload
 - `alt` — null | string (maxLength 1000): Alternative text of the image
 - `href` — null | string (maxLength 2000): Link target of the image
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-write` · I
+## `update-email-editor-image-block` · I
 
 **Write email image**
 
-Points image blocks at other images and sets their alternative text or their link, several in one call -- swapping the pictures of a newsletter is one call and one revision, not one per picture. The URL has to be one of this account, from email-image-search or from what email-image-upload returned: a provider or stock URL makes every recipient`s mail client contact a third party and breaks the day the picture disappears there. The width the image is shown at belongs to the block and is not changed here. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Points image blocks at other images and sets their alternative text or their link, several in one call -- swapping the pictures of a newsletter is one call and one revision, not one per picture. The URL has to be one of this account, from list-email-editor-images or from what open-email-editor-image-upload returned: a provider or stock URL makes every recipient`s mail client contact a third party and breaks the day the picture disappears there. The width the image is shown at belongs to the block and is not changed here. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -381,16 +381,16 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `images`* — array<object> (minItems 1; maxItems 60): The image blocks to write, each by uuid; a field left out keeps its value, an empty href removes the link
   - `uuid`* — string: The uuid of the image block.
-  - `src` — string: URL of the image, from email-image-search or email-image-upload.
+  - `src` — string: URL of the image, from list-email-editor-images or open-email-editor-image-upload.
   - `alt` — string: Alternative text of the image.
   - `href` — string: Link target; an empty string removes the link.
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-list-add`
+## `add-email-editor-list`
 
 **Add email list**
 
-Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -401,11 +401,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-menu-add`
+## `add-email-editor-menu`
 
 **Add email menu**
 
-Puts a menu into the column whose uuid it names, with its entries, and answers with the uuid of the new block. One call and one revision rather than two. What the entries do not name -- how a link opens, the separator, the spacing -- comes from the menu this email already has. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a menu into the column whose uuid it names, with its entries, and answers with the uuid of the new block. One call and one revision rather than two. What the entries do not name -- how a link opens, the separator, the spacing -- comes from the menu this email already has. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -418,11 +418,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-menu-write` · I
+## `update-email-editor-menu` · I
 
 **Write email menu**
 
-Writes the entries of one menu block: their words and where each one leads. The list replaces the list: the call carries every entry the menu should have, in order, because a menu has no stable handle to address one entry by. Everything the entries do not name is kept: how a link opens, the separator, the spacing and the typography of the block. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the entries of one menu block: their words and where each one leads. The list replaces the list: the call carries every entry the menu should have, in order, because a menu has no stable handle to address one entry by. Everything the entries do not name is kept: how a link opens, the separator, the spacing and the typography of the block. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -434,11 +434,11 @@ Parameter:
   - `href` — string: Where it leads.
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-page-style-write` · I
+## `update-email-editor-page-style` · I
 
 **Write email page style**
 
-Writes what the whole email starts out with: the colour around the message, the default text and link colour, the default font, how wide the message is and where it sits -- this is where "all links green", "a wider email", "one font for the whole mail" or "align the email left" are set. The colour BEHIND the message is not here: that ground is made of the rows, so it is set with email-row-style-write. The text and link colours reach a block when the block is made, so set them before adding blocks; a block carrying its own keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS, and the font is named rather than a stack; a web font works only if the KlickTipp editor sets it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes what the whole email starts out with: the colour around the message, the default text and link colour, the default font, how wide the message is and where it sits -- this is where "all links green", "a wider email", "one font for the whole mail" or "align the email left" are set. The colour BEHIND the message is not here: that ground is made of the rows, so it is set with update-email-editor-row-style. The text and link colours reach a block when the block is made, so set them before adding blocks; a block carrying its own keeps it. It addresses no uuid: an email has one page. Named values only -- no CSS, and the font is named rather than a stack; a web font works only if the KlickTipp editor sets it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -452,11 +452,11 @@ Parameter:
 - `contentAlign` — null | string (einer von `left`, `center`, `right`): Where the message sits when the window is wider than it is
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-paragraph-add`
+## `add-email-editor-paragraph`
 
 **Add email paragraph**
 
-Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -469,11 +469,11 @@ Parameter:
 
 
 
-## `email-row-add`
+## `add-email-editor-row`
 
 **Add email row**
 
-Adds a row of equally wide, empty columns. On an empty draft it is the first write there is, because a block needs a column to go into. The answer names the uuids of the new columns and the revision for the next write, so no read is needed before filling them. The row takes its background and width from a row the email already has. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Adds a row of equally wide, empty columns. On an empty draft it is the first write there is, because a block needs a column to go into. The answer names the uuids of the new columns and the revision for the next write, so no read is needed before filling them. The row takes its background and width from a row the email already has. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -483,11 +483,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where the row goes among the rows, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-row-style-write` · I
+## `update-email-editor-row-style` · I
 
 **Write email row style**
 
-Writes the look of rows -- several in one call, the same values on each: the colour behind the whole band, the colour behind its content area, the default text colour, the width of the content, how the columns line up, whether the row stacks or is hidden, its padding, and a border on any of its four sides. A frame around a row is a border on the row, not on its columns: one border per column draws a box per column, with seams. Named values only -- no CSS -- so a colour is "#RRGGBB" or "transparent", a width or padding is a number of pixels, and a border is "1px solid #000000". Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the look of rows -- several in one call, the same values on each: the colour behind the whole band, the colour behind its content area, the default text colour, the width of the content, how the columns line up, whether the row stacks or is hidden, its padding, and a border on any of its four sides. A frame around a row is a border on the row, not on its columns: one border per column draws a box per column, with seams. Named values only -- no CSS -- so a colour is "#RRGGBB" or "transparent", a width or padding is a number of pixels, and a border is "1px solid #000000". Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -512,11 +512,11 @@ Parameter:
 - `borderLeft` — null | string (Muster `^(0|[1-9][0-9]{0,2})px (solid|dashed|dotted|none) (#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Border left of the row, same shape
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-social-add`
+## `add-email-editor-social-links`
 
 **Add email social links**
 
-Puts a social block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The icon pictures come from email-social-icon-search, which hands back the ones this account already uses; any URL from the account`s own image library works too. An invented src resolves to nothing -- a hole in the row that no one sees until the mail is out. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a social block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The icon pictures come from list-email-editor-social-icons, which hands back the ones this account already uses; any URL from the account`s own image library works too. An invented src resolves to nothing -- a hole in the row that no one sees until the mail is out. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -524,7 +524,7 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `columnUuid`* — string: The uuid of the column the block goes into
 - `icons`* — array<object> (minItems 1; maxItems 20): The icons, left to right
-  - `src`* — string: URL of the icon picture. Take one from email-social-icon-search, or any URL from the account`s own image library -- an uploaded picture is a usable icon. Never invent one: an icon URL that resolves to nothing is a hole in the row, in every recipient`s mail program.
+  - `src`* — string: URL of the icon picture. Take one from list-email-editor-social-icons, or any URL from the account`s own image library -- an uploaded picture is a usable icon. Never invent one: an icon URL that resolves to nothing is a hole in the row, in every recipient`s mail program.
   - `href`* — string: Where the icon leads.
   - `name` — string: The network, e.g. "facebook".
   - `alt` — string: Alternative text: what a reader gets instead of the picture when it does not load, and what a screen reader says.
@@ -532,22 +532,22 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-social-icon-search` · RI
+## `list-email-editor-social-icons` · RI
 
 **Search email social icons**
 
-Lists the icon pictures this email already uses, with the network, the alternative text and the tooltip each carries, most used first. The pictures come from the editor`s own icon sets, which this server cannot enumerate, so one reused from here is the only src that stays inside the set a person picked in the editor -- which is why this read precedes email-social-add and email-social-write. A src from anywhere else resolves to nothing, and that hole in the row stays invisible until the mail is out at every recipient. An account`s own picture works as an icon too and is found with email-image-search. An empty answer means this email carries no icon yet; then the library is the remaining source, and a social block placed once in the editor is the way on.
+Lists the icon pictures this email already uses, with the network, the alternative text and the tooltip each carries, most used first. The pictures come from the editor`s own icon sets, which this server cannot enumerate, so one reused from here is the only src that stays inside the set a person picked in the editor -- which is why this read precedes add-email-editor-social-links and update-email-editor-social-links. A src from anywhere else resolves to nothing, and that hole in the row stays invisible until the mail is out at every recipient. An account`s own picture works as an icon too and is found with list-email-editor-images. An empty answer means this email carries no icon yet; then the library is the remaining source, and a social block placed once in the editor is the way on.
 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-social-write` · I
+## `update-email-editor-social-links` · I
 
 **Write email social links**
 
-Writes the icons of one social block: the picture of each, where it leads, its name and its alternative text. The list replaces the list: the call carries every icon the block should have, in order. The icon pictures come from the editor`s own icon sets, so a src from what the read returned resolves and an invented URL does not; what an icon is (follow, share) and how its link opens are kept from the icon that was there. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the icons of one social block: the picture of each, where it leads, its name and its alternative text. The list replaces the list: the call carries every icon the block should have, in order. The icon pictures come from the editor`s own icon sets, so a src from what the read returned resolves and an invented URL does not; what an icon is (follow, share) and how its link opens are kept from the icon that was there. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -555,18 +555,18 @@ Parameter:
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
 - `uuid`* — string: The uuid of the social block
 - `icons`* — array<object> (minItems 1; maxItems 20): The icons, left to right
-  - `src`* — string: URL of the icon picture. Take one from email-social-icon-search, or any URL from the account`s own image library -- an uploaded picture is a usable icon. Never invent one: an icon URL that resolves to nothing is a hole in the row, in every recipient`s mail program.
+  - `src`* — string: URL of the icon picture. Take one from list-email-editor-social-icons, or any URL from the account`s own image library -- an uploaded picture is a usable icon. Never invent one: an icon URL that resolves to nothing is a hole in the row, in every recipient`s mail program.
   - `href`* — string: Where the icon leads.
   - `name` — string: The network, e.g. "facebook".
   - `alt` — string: Alternative text: what a reader gets instead of the picture when it does not load, and what a screen reader says.
   - `title` — string: Tooltip of the icon, shown on hover. Not a replacement for alt: a reader who never sees the picture never sees this either.
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-spacer-add`
+## `add-email-editor-spacer`
 
 **Add email spacer**
 
-Puts a spacer into the column whose uuid it names and answers with the uuid of the new block. It has nothing to write: it is finished the moment it exists. What it looks like -- its thickness, its colour, the space around it -- is the style level, email-block-style-write and the row above it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a spacer into the column whose uuid it names and answers with the uuid of the new block. It has nothing to write: it is finished the moment it exists. What it looks like -- its thickness, its colour, the space around it -- is the style level, update-email-editor-block-style and the row above it. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -576,11 +576,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-table-add`
+## `add-email-editor-table`
 
 **Add email table**
 
-Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. The block copies the look of the nearest table of this email; with none to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. The block copies the look of the nearest table of this email; with none to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -591,11 +591,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-table-write` · I
+## `update-email-editor-table` · I
 
 **Write email table**
 
-Writes the cells of one table block, row by row, each cell a piece of markup. The rows replace the rows, so the call carries the whole table; and because a table renders as a grid, every row needs the same number of cells -- a short row is a hole in it. The header row, the borders, the colours and the typography of the table are kept. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the cells of one table block, row by row, each cell a piece of markup. The rows replace the rows, so the call carries the whole table; and because a table renders as a grid, every row needs the same number of cells -- a short row is a hole in it. The header row, the borders, the colours and the typography of the table are kept. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -605,11 +605,11 @@ Parameter:
 - `rows`* — array<array> (minItems 1; maxItems 60): The rows, each a list of cells as markup
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-text-add`
+## `add-email-editor-text`
 
 **Add email text**
 
-Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with email-page-style-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -620,11 +620,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-text-write` · I
+## `update-email-editor-text` · I
 
 **Write email text**
 
-Writes the words of text blocks -- heading, text, paragraph, list and custom HTML -- each named by its uuid. The typography of a text block lives in its own markup, so the markup that was read for that block, with its wrapper div and its style attributes kept and only the words swapped, is what preserves it -- a bare <p>new text</p> throws the font size, line height and colours away. Several blocks in one call, and nothing else in the email is touched. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the words of text blocks -- heading, text, paragraph, list and custom HTML -- each named by its uuid. The typography of a text block lives in its own markup, so the markup that was read for that block, with its wrapper div and its style attributes kept and only the words swapped, is what preserves it -- a bare <p>new text</p> throws the font size, line height and colours away. Several blocks in one call, and nothing else in the email is touched. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -636,11 +636,11 @@ Parameter:
   - `level` — string (einer von `h1`, `h2`, `h3`): The heading level, for a heading block only. Refused on any other kind, which has none.
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-video-add`
+## `add-email-editor-video`
 
 **Add email video**
 
-Puts a video into the column whose uuid it names and answers with the uuid of the new block. It takes src, thumbSrc straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest video block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Puts a video into the column whose uuid it names and answers with the uuid of the new block. It takes src, thumbSrc straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest video block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -652,11 +652,11 @@ Parameter:
 - `position` — null | integer (minimum 0): Where it goes inside the column, counted from zero; omit to append
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-video-write` · I
+## `update-email-editor-video` · I
 
 **Write email video**
 
-Writes the video URL of one video block and the preview image it shows. No mail client plays a video in the inbox, so the block shows the preview image with a play icon and links to the video -- a block without a preview image stays empty. For a YouTube video the thumbnail of that video is the obvious choice. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes the video URL of one video block and the preview image it shows. No mail client plays a video in the inbox, so the block shows the preview image with a play icon and links to the video -- a block without a preview image stays empty. For a YouTube video the thumbnail of that video is the obvious choice. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -667,11 +667,11 @@ Parameter:
 - `thumbSrc` — null | string (maxLength 2000): The preview image the block shows instead of the video
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-search` · RI
+## `list-email-editor-images` · RI
 
 **Search images**
 
-Lists the images in a KlickTipp account's image library -- the files the email editor's file manager shows -- sorted by path, with the public URL, path, file name, MIME type, size and upload time of each. The URL is what an image block takes in email-image-write (field src); a placeholder in that field resolves to nothing. The search matches file names and folder paths, not what a picture shows; dimensions are not part of a listing. Paged by cursor. Reads the account the access token belongs to, or one of its subaccounts when an account ID is given. To add a picture that is not in the library: email-image-upload opens a form the user picks a file in, email-image-upload-from-url adds one from a public URL.
+Lists the images in a KlickTipp account's image library -- the files the email editor's file manager shows -- sorted by path, with the public URL, path, file name, MIME type, size and upload time of each. The URL is what an image block takes in update-email-editor-image-block (field src); a placeholder in that field resolves to nothing. The search matches file names and folder paths, not what a picture shows; dimensions are not part of a listing. Paged by cursor. Reads the account the access token belongs to, or one of its subaccounts when an account ID is given. To add a picture that is not in the library: open-email-editor-image-upload opens a form the user picks a file in, upload-email-editor-image-from-url adds one from a public URL.
 
 Parameter:
 
@@ -679,11 +679,11 @@ Parameter:
 - `cursor` — null | string (maxLength 1000): nextCursor of the previous page; omit for the first page
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-stock-search` · ROI
+## `search-email-editor-stock-images` · ROI
 
 **Search stock images**
 
-Searches the free stock photo archives behind the KlickTipp email editor (Pexels, Pixabay) and returns candidates with preview URL, provider, licence and pixel size -- three by default, up to twelve. The search never comes back empty: a query without a match is answered with unrelated photos. Neither URL in the answer may go into a newsletter; pass sourceUrl and fileName of the chosen photo to email-image-upload-from-url and use the URL it returns. The licence needs no attribution but restricts identifiable people. A host that renders MCP Apps shows the candidates as pictures. The account's own library (logo, product photos) is searched with email-image-search.
+Searches the free stock photo archives behind the KlickTipp email editor (Pexels, Pixabay) and returns candidates with preview URL, provider, licence and pixel size -- three by default, up to twelve. The search never comes back empty: a query without a match is answered with unrelated photos. Neither URL in the answer may go into a newsletter; pass sourceUrl and fileName of the chosen photo to upload-email-editor-image-from-url and use the URL it returns. The licence needs no attribution but restricts identifiable people. A host that renders MCP Apps shows the candidates as pictures. The account's own library (logo, product photos) is searched with list-email-editor-images.
 
 Parameter:
 
@@ -693,28 +693,28 @@ Parameter:
 - `minWidth` — null | integer (minimum 1; maximum 10000): Only photos at least this wide, in pixels; 1200 for a full-width image
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-folder-search` · RI
+## `list-email-editor-image-folders` · RI
 
 **List image folders**
 
-Lists the folders of a KlickTipp account's image library -- the folders the email editor's file manager shows -- as paths relative to the library, e.g. "Logos" and "Kampagnen/Herbst". These are the values email-image-upload-file and email-image-upload-from-url take as "folder"; a library without folders keeps everything in its root, which is what omitting the field means. Does not list pictures -- that is email-image-search, whose path field says which folder each one sits in. A very large tree is cut off and says so in "truncated".
+Lists the folders of a KlickTipp account's image library -- the folders the email editor's file manager shows -- as paths relative to the library, e.g. "Logos" and "Kampagnen/Herbst". These are the values upload-email-editor-image-file and upload-email-editor-image-from-url take as "folder"; a library without folders keeps everything in its root, which is what omitting the field means. Does not list pictures -- that is list-email-editor-images, whose path field says which folder each one sits in. A very large tree is cut off and says so in "truncated".
 
 Parameter:
 
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-folder-create`
+## `create-email-editor-image-folder`
 
 **Create image folder**
 
-Creates one folder in a KlickTipp account's image library and returns the folders of the library afterwards. The folder appears in the email editor's file manager, and pictures go into it by passing its path as "folder" to email-image-upload-file or email-image-upload-from-url. A path with slashes creates the levels above it as well. The name is cleaned the way a file name is -- letters, digits, dots, dashes and underscores survive, a space becomes a dash -- so read "changed" for the name it actually got. A folder that is already there is refused rather than merged into. Nothing is moved and no picture is touched.
+Creates one folder in a KlickTipp account's image library and returns the folders of the library afterwards. The folder appears in the email editor's file manager, and pictures go into it by passing its path as "folder" to upload-email-editor-image-file or upload-email-editor-image-from-url. A path with slashes creates the levels above it as well. The name is cleaned the way a file name is -- letters, digits, dots, dashes and underscores survive, a space becomes a dash -- so read "changed" for the name it actually got. A folder that is already there is refused rather than merged into. Nothing is moved and no picture is touched.
 
 Parameter:
 
 - `path`* — string (minLength 1; maxLength 250): Name of the new folder, or a path for one inside another ("Kampagnen/Herbst"); letters, digits, dots, dashes and underscores survive, everything else becomes a dash
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-folder-delete` · DI
+## `delete-email-editor-image-folder` · DI
 
 **Remove empty image folder**
 
@@ -722,56 +722,56 @@ Removes one EMPTY folder from a KlickTipp account's image library and returns th
 
 Parameter:
 
-- `path`* — string (minLength 1; maxLength 250): Path of the folder to remove, as email-image-folder-search lists it
+- `path`* — string (minLength 1; maxLength 250): Path of the folder to remove, as list-email-editor-image-folders lists it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-upload` · I
+## `open-email-editor-image-upload` · I
 
 **Upload image**
 
-Opens the upload form for a KlickTipp account's image library -- the files the email editor's file manager shows. Takes nothing and stores nothing: a host with MCP Apps support shows a file picker, the person picks a file from their own disk, and it goes into the library without passing through the conversation. It is the route for a picture that exists only on the user's disk, and it spares them pasting base64. The answer says the form was opened; the URL of the stored file appears in the window and in a later email-image-search. A picture that already exists at a public URL does not need the form: email-image-upload-from-url adds it directly, and a logo or product picture is usually already in the library, where email-image-search finds it.
+Opens the upload form for a KlickTipp account's image library -- the files the email editor's file manager shows. Takes nothing and stores nothing: a host with MCP Apps support shows a file picker, the person picks a file from their own disk, and it goes into the library without passing through the conversation. It is the route for a picture that exists only on the user's disk, and it spares them pasting base64. The answer says the form was opened; the URL of the stored file appears in the window and in a later list-email-editor-images. A picture that already exists at a public URL does not need the form: upload-email-editor-image-from-url adds it directly, and a logo or product picture is usually already in the library, where list-email-editor-images finds it.
 
 Parameter:
 
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-upload-file`
+## `upload-email-editor-image-file`
 
 **Store picked image file**
 
-Stores the file a person picked in the upload form of email-image-upload, in a KlickTipp account's image library, and returns its public URL for an image block in email-image-write (field src). JPEG, PNG, GIF or WebP up to 5 MB. Nothing is overwritten: a taken name is numbered, and the result says under which name the file was stored. This tool belongs to the upload form and is published for it alone -- a model has no file of its own to send, and base64 through a conversation is what the form exists to avoid. To let the user add a picture, call email-image-upload; to add one from a public URL, email-image-upload-from-url.
+Stores the file a person picked in the upload form of open-email-editor-image-upload, in a KlickTipp account's image library, and returns its public URL for an image block in update-email-editor-image-block (field src). JPEG, PNG, GIF or WebP up to 5 MB. Nothing is overwritten: a taken name is numbered, and the result says under which name the file was stored. This tool belongs to the upload form and is published for it alone -- a model has no file of its own to send, and base64 through a conversation is what the form exists to avoid. To let the user add a picture, call open-email-editor-image-upload; to add one from a public URL, upload-email-editor-image-from-url.
 
 Parameter:
 
 - `fileName`* — string (minLength 1; maxLength 250): Name of the picked file, as the browser reports it; sanitised, extension set from the bytes, a taken name is numbered, never overwritten -- see storedAs
 - `contentBase64`* — string (minLength 1; maxLength 6990508): The file's bytes as plain base64, no data: prefix
-- `folder` — null | string (maxLength 250): Folder of the library to store it in, as email-image-folder-search lists it; omit for the library's root
+- `folder` — null | string (maxLength 250): Folder of the library to store it in, as list-email-editor-image-folders lists it; omit for the library's root
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-upload-from-url` · O
+## `upload-email-editor-image-from-url` · O
 
 **Add image from URL**
 
-Adds one image that exists at a public URL to a KlickTipp account's image library -- the files the email editor's file manager shows -- and returns its public URL, ready for an image block in email-image-write (field src). The server fetches the URL itself; it has to be reachable from the internet, without login, and may not point at a private host. Accepts JPEG, PNG, GIF and WebP up to 5 MB. Nothing is overwritten: a taken name is numbered, and the result says under which name the file was stored. This is the way a stock photo from email-image-stock-search enters the library: pass its sourceUrl and fileName. Adds to the account the access token belongs to, or to one of its subaccounts when an account ID is given. A file on the user's own disk goes through the form email-image-upload opens.
+Adds one image that exists at a public URL to a KlickTipp account's image library -- the files the email editor's file manager shows -- and returns its public URL, ready for an image block in update-email-editor-image-block (field src). The server fetches the URL itself; it has to be reachable from the internet, without login, and may not point at a private host. Accepts JPEG, PNG, GIF and WebP up to 5 MB. Nothing is overwritten: a taken name is numbered, and the result says under which name the file was stored. This is the way a stock photo from search-email-editor-stock-images enters the library: pass its sourceUrl and fileName. Adds to the account the access token belongs to, or to one of its subaccounts when an account ID is given. A file on the user's own disk goes through the form open-email-editor-image-upload opens.
 
 Parameter:
 
 - `fileName`* — string (minLength 1; maxLength 250): Name for the file, extension optional; sanitised, extension set from the bytes, a taken name is numbered, never overwritten -- see storedAs
 - `sourceUrl`* — string (minLength 12; maxLength 2000): Public http(s) URL the server fetches the image from; reachable from the internet, no login, no private host
-- `folder` — null | string (maxLength 250): Folder of the library to store it in, as email-image-folder-search lists it; omit for the library's root
+- `folder` — null | string (maxLength 250): Folder of the library to store it in, as list-email-editor-image-folders lists it; omit for the library's root
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-image-preview` · RI
+## `preview-email-editor-image` · RI
 
 **Preview image**
 
-Shows one image URL as a picture, in an MCP App window, so a person can look at it before it goes into an email. Takes a URL a previous call returned -- email-image-search, email-image-upload-from-url, or an image block read back with email-get. Displays only; nothing is stored, changed or sent. The sandbox loads pictures from this account's image CDN and from the stock archives only: a picture on a customer's own server is refused by name, and email-image-upload-from-url is the way in -- it copies the picture into the library and returns a URL this tool can show. A host without MCP Apps support gains nothing from this call and should not make it.
+Shows one image URL as a picture, in an MCP App window, so a person can look at it before it goes into an email. Takes a URL a previous call returned -- list-email-editor-images, upload-email-editor-image-from-url, or an image block read back with get-email-editor-content. Displays only; nothing is stored, changed or sent. The sandbox loads pictures from this account's image CDN and from the stock archives only: a picture on a customer's own server is refused by name, and upload-email-editor-image-from-url is the way in -- it copies the picture into the library and returns a URL this tool can show. A host without MCP Apps support gains nothing from this call and should not make it.
 
 Parameter:
 
 - `url`* — string (minLength 12; maxLength 2000): https URL of the image, as a previous image tool returned it
 
-## `email-template-search` · ROI
+## `search-email-editor-templates` · ROI
 
 **Search email templates**
 
@@ -785,35 +785,35 @@ Parameter:
 - `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-template-apply` · D
+## `replace-email-editor-content-from-template` · D
 
 **Apply design to email**
 
-Puts one design from the KlickTipp template catalogue into the body of an email, addressed by its editor URL. Takes the templateId email-template-search returned; the design itself is fetched from the catalogue on the call. Works for any email the editor opens -- a newsletter draft, an automation email, a notification email -- so starting a newsletter from a design is email-newsletter-draft-create followed by this. Replaces the stored draft entirely, without undo, and does not publish; use email-content-publish. Bound to the contentRevision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
+Puts one design from the KlickTipp template catalogue into the body of an email, addressed by its editor URL. Takes the templateId search-email-editor-templates returned; the design itself is fetched from the catalogue on the call. Works for any email the editor opens -- a newsletter draft, an automation email, a notification email -- so starting a newsletter from a design is create-newsletter-draft followed by this. Replaces the stored draft entirely, without undo, and does not publish; use publish-newsletter-email-content. Bound to the contentRevision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
 
 Parameter:
-- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as email-get returned it
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as get-email-editor-content returned it
 - `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read of that email; a stale one refuses the write
-- `templateId`* — string (minLength 1; maxLength 250): id of the design, as email-template-search returned it
+- `templateId`* — string (minLength 1; maxLength 250): id of the design, as search-email-editor-templates returned it
 - `replaceExistingContent` — null | boolean: true to replace content the email already has; omit on the first attempt, so the answer lists what would be lost
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-condition-capabilities-get` · R I
+## `get-email-editor-display-condition-capabilities` · R I
 
 **Read display condition capabilities**
 
-Reads what a display condition may say in one account -- the vocabulary behind "dynamic content", where a row is shown only to the contacts a condition selects. Without conditionTypes it answers the catalogue alone: every kind of condition, such as manual tag, SmartLink, automation or newsletter. With conditionTypes it adds, for those kinds, the comparisons they allow, this account's own entities with the smart-tag field per action, the actions and the timeframes -- the exact values email-decision-write takes as condition, entity, action and timeframe. Entities are cut at 200 per kind and entityCount says how many there are. Reads only.
+Reads what a display condition may say in one account -- the vocabulary behind "dynamic content", where a row is shown only to the contacts a condition selects. Without conditionTypes it answers the catalogue alone: every kind of condition, such as manual tag, SmartLink, automation or newsletter. With conditionTypes it adds, for those kinds, the comparisons they allow, this account's own entities with the smart-tag field per action, the actions and the timeframes -- the exact values update-email-editor-display-condition takes as condition, entity, action and timeframe. Entities are cut at 200 per kind and entityCount says how many there are. Reads only.
 
 Parameter:
 
 - `conditionTypes` — array (maxItems 5): Kinds to read the field values of, as conditionType of the catalogue; omit for the catalogue alone
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-decision-write` · D
+## `update-email-editor-display-condition` · D
 
 **Write display condition**
 
-Writes one named display condition of an email -- what the editor calls dynamic content -- and answers with its decisionId. Give the choices only: conditionType, condition, entity, action and timeframe as email-condition-capabilities-get lists them; the operator, the seconds and the smart-tag field are derived. Every value is checked against the account, and an entity it does not own is refused rather than stored as a condition that matches nobody. Writing a decisionId replaces that condition whole. This alone shows no row: bind one with email-row-condition-write. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Writes one named display condition of an email -- what the editor calls dynamic content -- and answers with its decisionId. Give the choices only: conditionType, condition, entity, action and timeframe as get-email-editor-display-condition-capabilities lists them; the operator, the seconds and the smart-tag field are derived. Every value is checked against the account, and an entity it does not own is refused rather than stored as a condition that matches nobody. Writing a decisionId replaces that condition whole. This alone shows no row: bind one with configure-email-editor-row-display-condition. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -826,21 +826,21 @@ Parameter:
 - `description` — null | string (maxLength 1000): A note for the person editing this email later
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-row-condition-write` · D I
+## `configure-email-editor-row-display-condition` · D I
 
 **Bind row to display condition**
 
-Decides who sees one row of an email: bind it to a display condition by decisionId, or pass null to free it so everybody sees it again. The condition has to exist on this email already -- email-decision-write creates one, email-decisions-get lists them with the rows they govern. A bound row is hidden from every contact the condition does not match, and a condition nobody matches hides the row from everybody without any error; check the audience before sending. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is email-content-publish.
+Decides who sees one row of an email: bind it to a display condition by decisionId, or pass null to free it so everybody sees it again. The condition has to exist on this email already -- update-email-editor-display-condition creates one, list-email-editor-display-conditions lists them with the rows they govern. A bound row is hidden from every contact the condition does not match, and a condition nobody matches hides the row from everybody without any error; check the audience before sending. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as a read returned it
 - `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
-- `rowUuid`* — string (minLength 1; maxLength 100): The uuid of the row, as email-get answers it under contentOutline
+- `rowUuid`* — string (minLength 1; maxLength 100): The uuid of the row, as get-email-editor-content answers it under contentOutline
 - `decisionId` — null | string (maxLength 50): The condition this row follows; null frees the row, so it is shown to everybody
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `email-decisions-get` · R I
+## `list-email-editor-display-conditions` · R I
 
 **Read display conditions**
 

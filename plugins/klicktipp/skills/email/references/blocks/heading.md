@@ -6,12 +6,12 @@ Familie **Text**. Modultyp im Dokument: `mailup-bee-newsletter-modules-heading`.
 
 ## Werkzeuge
 
-| Anlegen | `email-heading-add` |
+| Anlegen | `add-email-editor-heading` |
 | --- | --- |
-| Ändern | `email-text-write` |
-| Entfernen | `email-block-remove` |
-| Verschieben | `email-block-move` |
-| Aussehen | `email-block-style-write` (Innenabstand, Ausrichtung, Sichtbarkeit je Gerät) |
+| Ändern | `update-email-editor-text` |
+| Entfernen | `remove-email-editor-block` |
+| Verschieben | `move-email-editor-block` |
+| Aussehen | `update-email-editor-block-style` (Innenabstand, Ausrichtung, Sichtbarkeit je Gerät) |
 
 ## Felder
 
@@ -33,16 +33,16 @@ Erlaubt sind genau `h1`, `h2` und `h3` — mehr kennt der Editor nicht, und das 
 sagt dasselbe. Ein anderer Wert wird abgelehnt, ein **leerer** erst recht: die Ebene ist ein
 Strukturwert, den der Editor liest, und geleert hat sie ihn schon zum Absturz gebracht.
 
-Ohne Angabe legt `email-heading-add` eine `h1` an.
+Ohne Angabe legt `add-email-editor-heading` eine `h1` an.
 
 Die Wörter stehen in `text`, **nicht** in `html` — die einzige Textart, die aus der Reihe fällt. Der Text steckt dort in `<span>`s.
 
 ## Gestaltung
 
-`email-block-style-write` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 
 Der Baustein übersteht einen HTML-Import als er selbst.
 
-Das gilt **nur** für den Import (`email-content-import`), nicht fürs Ändern: dort wird nichts konvertiert.
+Das gilt **nur** für den Import (`replace-email-editor-content-from-html`), nicht fürs Ändern: dort wird nichts konvertiert.

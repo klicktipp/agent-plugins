@@ -1,6 +1,6 @@
 # Import-HTML schreiben — die zwingenden Regeln
 
-Diese Regeln gelten, **wann immer du HTML erzeugst, das durch `email-content-import` geht**: beim
+Diese Regeln gelten, **wann immer du HTML erzeugst, das durch `replace-email-editor-content-from-html` geht**: beim
 Bearbeiten von vorhandenem E-Mail-HTML und wenn du fremdes HTML importfähig machst. Sie sind nicht optional — der Importer verwandelt nur
 HTML, das sie einhält, verlässlich in bearbeitbare Bausteine zurück.
 

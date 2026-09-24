@@ -17,9 +17,9 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
 ## Die drei Bausteine
 
 - **Kontakte** — `search-contacts` (Cursor-Seiten, sortiert nach E-Mail, ohne Gesamtzahl),
-  `get-contact` (Adresse, Status, Feldwerte, manuelle Tags, Bearbeitungslink), `subscribe` /
-  `unsubscribe` (genau ein Kanal, E-Mail *oder* Telefon), `update-contact` (Feldwerte),
-  `assign-manual-tag` / `remove-manual-tag`.
+  `get-contact` (Adresse, Status, Feldwerte, manuelle Tags, Bearbeitungslink), `subscribe-contact-via-opt-in-process` /
+  `unsubscribe-contact` (genau ein Kanal, E-Mail *oder* Telefon), `update-contact-values` (Feldwerte),
+  `tag-contact` / `untag-contact`.
 - **Tags** — `search-tags` / `get-tag`, `create-manual-tag` / `update-manual-tag` /
   `delete-manual-tag`. Tags sind entweder *manuell* (bewusst angelegt und vergeben) oder von
   KlickTipp selbst gesetzt, wenn etwas passiert (Newsletter gesendet, geöffnet, geklickt). Nur
@@ -30,7 +30,7 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
   der im Newsletter den Wert des Empfängers rendert — die Brücke zum Skill `email`.
 - **Opt-in-Prozesse** — in der App auch „Abonnentenlisten": `search-opt-in-processes` /
   `get-opt-in-process` lesen sie, `delete-opt-in-process` entfernt einen, und
-  `get-subscription-redirect-url` gibt die Pending- oder Danke-Seite eines Abonnenten heraus.
+  `get-opt-in-process-redirect-url` gibt die Pending- oder Danke-Seite eines Abonnenten heraus.
   Angelegt und eingestellt werden sie in der Oberfläche.
 
 ## Zustimmung ist ein Argument, kein Freifahrtschein
@@ -39,9 +39,9 @@ Die schreibenden Kontakt-Werkzeuge verlangen ein `approval`:
 
 | Werkzeug | `approval` |
 | --- | --- |
-| `subscribe` | `subscribe-contact` |
-| `unsubscribe` | `unsubscribe-contact` |
-| `assign-manual-tag` · `remove-manual-tag` | `I_ACCEPT_AUTOMATION_EFFECTS` |
+| `subscribe-contact-via-opt-in-process` | `subscribe-contact` |
+| `unsubscribe-contact` | `unsubscribe-contact` |
+| `tag-contact` · `untag-contact` | `I_ACCEPT_AUTOMATION_EFFECTS` |
 
 Der Wert bestätigt, dass der Aufruf einen echten Empfänger ändert und Automationen auslösen kann.
 Er ist **die Unterschrift des Nutzers, nicht deine**: setz ihn erst, nachdem du gesagt hast, was der
@@ -49,7 +49,7 @@ Aufruf bewirkt („meldet die Adresse über die Liste X an und schickt ihr eine 
 die Person zugestimmt hat. Ein `approval`, das du vorsorglich mitschickst, ist eine Zustimmung, die
 niemand gegeben hat.
 
-Was kein `approval` verlangt, aber genauso vorher gesagt wird: `update-contact` überschreibt
+Was kein `approval` verlangt, aber genauso vorher gesagt wird: `update-contact-values` überschreibt
 Feldwerte; `delete-manual-tag` nimmt den Tag von allen Kontakten; `delete-custom-field` vernichtet
 die Werte aller Kontakte in diesem Feld. Nichts davon hat ein Undo.
 
@@ -62,7 +62,7 @@ immer dieselbe:
 1. `search-tags` / `search-custom-fields` — gibt es das schon? Namen sind eindeutig im Konto.
 2. Falls nicht: `create-manual-tag` / `create-custom-field` — **mit Beschreibung**; sie ist das
    Einzige, was einem späteren Leser sagt, was der Tag oder das Feld bedeutet.
-3. Dann `assign-manual-tag` / `update-contact` mit der ID aus Schritt 1 oder 2.
+3. Dann `tag-contact` / `update-contact-values` mit der ID aus Schritt 1 oder 2.
 
 Ein unbekannter, fremder oder nicht-manueller Tag wird abgewiesen, nicht angelegt.
 
@@ -111,7 +111,7 @@ die ID aus `get-opt-in-process`.
 
 `search-contacts` filtert nach E-Mail-Fragment, Status oder **einem** manuellen Tag und liefert
 Seiten à höchstens 100 ohne Gesamtzahl. Ein Konto mit 80 000 Kontakten sind 800 Aufrufe — das ist
-kein Weg, „wie viele Kontakte haben wir" zu beantworten (dafür: `email-newsletter-get` mit
+kein Weg, „wie viele Kontakte haben wir" zu beantworten (dafür: `get-newsletter` mit
 `audienceReach`, Skill `dashboard`). Wer eine Person sucht, sucht nach der Adresse. Wer die Träger
 eines Tags zählen will, liest `get-tag`: es sagt, wie viele Kontakte ihn tragen.
 
@@ -133,14 +133,14 @@ KlickTipp sie anzeigt — Zeichen für Zeichen dasselbe, weil beide dieselbe For
 Die Zeitzone ist die des Kontos. **Rechne nichts um und schätze nichts**: was als `16.09.2026`
 kommt, ist der 16.09.2026, und du gibst es genau so weiter.
 
-`update-contact` nimmt diese Formen zurück — und zusätzlich ISO 8601 (`2026-09-16`,
+`update-contact-values` nimmt diese Formen zurück — und zusätzlich ISO 8601 (`2026-09-16`,
 `2026-09-16T14:30:00+02:00`), falls du ein Datum gerechnet statt gelesen hast. Etwas anderes,
 „nächsten Montag" etwa, wird abgewiesen statt umgedeutet; die Abweisung nennt die Form, die gegangen
 wäre. Ein leerer Wert löscht das Feld.
 
 ## Die Weiterleitungs-URL identifiziert den Abonnenten
 
-`get-subscription-redirect-url` liefert die Pending-Seite (Bestätigung offen) oder die Danke-Seite
+`get-opt-in-process-redirect-url` liefert die Pending-Seite (Bestätigung offen) oder die Danke-Seite
 (bestätigt) einer Adresse — mit den konfigurierten Parametern: Abonnenten-ID, E-Mail, Liste,
 Schlüssel, Empfehlungslink, dazu die UTM-Werte der Seite. Diese URL gehört in kein Protokoll, keine
 Notiz und keinen Newsletter. Zeig sie der Person, die danach gefragt hat, und sonst niemandem.

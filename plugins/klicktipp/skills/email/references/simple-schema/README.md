@@ -35,7 +35,7 @@ Two reasons, and neither is validation of stored documents.
 
 The first is that they are the only authoritative statement of what a block may contain. They
 already earned their place once: the icon schema names `image`, `width`, `height` and
-`textPosition` as **mandatory per icon**, which is why `email-icons-write` builds an entry by
+`textPosition` as **mandatory per icon**, which is why `update-email-editor-icons` builds an entry by
 copying one the block already has and replacing only the named leaves — an entry assembled from
 scratch would go out without them, and the editor would open the block empty.
 

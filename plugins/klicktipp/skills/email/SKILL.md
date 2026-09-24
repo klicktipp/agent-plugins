@@ -22,14 +22,14 @@ selbst, und jeder Baustein trägt die `uuid`, über die eine Änderung ihn adres
 Weg für eine Änderung ein anderer als früher — HTML brauchst du nur noch, um ein Design von außen
 hereinzuholen.
 
-**Gelesen wird der Körper mit `email-get`, nicht mit `email-newsletter-get`.** Die Trennung ist
-scharf und lohnt sich zu merken: `email-get` beantwortet, was *in* einer E-Mail steht, und wird über
-die `emailId` oder die `editorUrl` angesprochen. `email-newsletter-get` beantwortet, was der
+**Gelesen wird der Körper mit `get-email-editor-content`, nicht mit `get-newsletter`.** Die Trennung ist
+scharf und lohnt sich zu merken: `get-email-editor-content` beantwortet, was *in* einer E-Mail steht, und wird über
+die `emailId` oder die `editorUrl` angesprochen. `get-newsletter` beantwortet, was der
 Newsletter *ist* — Name, Empfänger, Versandstand, Split-Test-Varianten — und nimmt die `newsletterId`.
 Ein Körper ist ein Körper, egal welches Mailing ihn trägt; deshalb heißen alle Werkzeuge, die ihn
 anfassen, schlicht `email-…`.
 
-**Vier Projektionen, und du fragst selten mehr als eine.** `email-get` gibt ohne `include` nur die
+**Vier Projektionen, und du fragst selten mehr als eine.** `get-email-editor-content` gibt ohne `include` nur die
 Identität heraus. Dazu bestellbar:
 
 | Projektion | wofür |
@@ -47,15 +47,15 @@ Zustand lesbar, auch bei einem versendeten Newsletter und bei einer E-Mail des a
 willst — nur dort bekommst du die Revision, die die Schreibwerkzeuge verlangen. Bei einem nie
 veröffentlichten Newsletter ist `publishedContent` leer; das ist kein Fehler.
 
-**„Zeig mir die Vorschau" heißt `email-preview`, nicht `email-get`.** Wer eine Vorschau verlangt,
-will das Mailing *sehen* — nicht seine Bausteinstruktur beschrieben bekommen. `email-preview` rendert
+**„Zeig mir die Vorschau" heißt `preview-email-editor`, nicht `get-email-editor-content`.** Wer eine Vorschau verlangt,
+will das Mailing *sehen* — nicht seine Bausteinstruktur beschrieben bekommen. `preview-email-editor` rendert
 den aktuellen Entwurf samt unveröffentlichter Änderungen und zeigt ihn als MCP App; wo der Host keine
 MCP Apps kann, trägt das Ergebnis dasselbe HTML in `contentHtml`. Es speichert nichts, veröffentlicht
 nichts und verschickt nichts.
 
-Vom Namen dorthin sind es zwei Schritte, denn `email-preview` nimmt die `editorUrl`, keinen Namen:
-`email-newsletter-search` findet das Mailing, `email-get` gibt dessen `editorUrl` heraus, und die
-geht in `email-preview`. Beschreib die E-Mail nicht stattdessen in Worten — das ist die Antwort auf
+Vom Namen dorthin sind es zwei Schritte, denn `preview-email-editor` nimmt die `editorUrl`, keinen Namen:
+`search-newsletters` findet das Mailing, `get-email-editor-content` gibt dessen `editorUrl` heraus, und die
+geht in `preview-email-editor`. Beschreib die E-Mail nicht stattdessen in Worten — das ist die Antwort auf
 eine Frage, die niemand gestellt hat. Personalisierungsfelder bleiben in der Vorschau als Platzhalter
 stehen; das ist richtig so und kein Darstellungsfehler.
 
@@ -85,33 +85,33 @@ für einen Baustein, den du gerade erst angelegt hast.
 **Ein Werkzeug je Art von Änderung.** Das frühere Sammelwerkzeug mit fünf Operationen gibt es
 nicht mehr; an seine Stelle sind schmale Werkzeuge getreten, die jeweils eine Sache tun. Adressiert
 wird weiterhin per `uuid` — beim Hinzufügen über die `uuid` der **Spalte**, weil ein neuer Baustein
-noch keine hat, und `email-row-add` adressiert gar nichts, weil es das anlegt, was es platziert.
+noch keine hat, und `add-email-editor-row` adressiert gar nichts, weil es das anlegt, was es platziert.
 Jedes von ihnen verlangt `editorUrl` und `contentRevision` aus der Lesung. Es kostet nur, was du
 änderst: Gestaltung, Layout, Entscheidungen und KI-Blöcke bleiben unangetastet, weil keine
 Konvertierung stattfindet.
 
 | Werkzeug | ändert |
 | --- | --- |
-| `email-text-write` | die Wörter von Textbausteinen — Überschrift, Text, Absatz, Liste, eigenes HTML; **nimmt eine Liste** von Bausteinen in einem Aufruf |
-| `email-image-write` | `src`, `alt`, `href` von Bildbausteinen; **nimmt ebenfalls eine Liste** |
-| `email-button-write` | `label` und `href` eines Buttons |
-| `email-video-write` | `src` und `thumbSrc` eines Videos |
-| `email-menu-write` | die Einträge eines Menüs — **die Liste ersetzt die Liste** |
-| `email-social-write` | die Icons eines Social-Bausteins — dito |
-| `email-icons-write` | die Einträge eines Icon-Bausteins — dito |
-| `email-table-write` | die Zeilen einer Tabelle, jede Zelle Markup |
-| `email-row-add` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
-| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `email-heading-add`, `email-text-add`, `email-paragraph-add`, `email-list-add`, `email-html-add`, `email-image-add`, `email-video-add`, `email-icons-add`, `email-button-add`, `email-menu-add`, `email-social-add`, `email-divider-add`, `email-spacer-add`, `email-table-add` |
-| `email-block-remove` | entfernt einen Baustein, gleich welcher Art |
-| `email-block-move` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
-| `email-social-icon-search` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `email-social-add`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
-| `email-page-style-write` | die Vorgaben der ganzen E-Mail: Grundfarbe, Nachrichtenhintergrund, Text- und Linkfarbe, **Schriftart**, Nachrichtenbreite |
-| `email-row-style-write` | Hintergrund des Bandes und des Inhaltsbereichs, Textfarbe, Inhaltsbreite, vertikale Ausrichtung, Stapeln und Sichtbarkeit je Gerät, **Innenabstand und Rahmen der Zeile** |
-| `email-column-style-write` | Hintergrund, Innenabstand und Rahmen auf vier Seiten |
-| `email-block-style-write` | Innenabstand, Ausrichtung und Sichtbarkeit je Gerät — für **jeden** Baustein |
-| `email-spacer-style-write` | die Höhe von Abständen |
-| `email-divider-style-write` | Linie und Breite von Trennlinien |
-| `email-button-style-write` | Hintergrund, Textfarbe, Eckenradius, Rahmen und Innenabstand von Buttons |
+| `update-email-editor-text` | die Wörter von Textbausteinen — Überschrift, Text, Absatz, Liste, eigenes HTML; **nimmt eine Liste** von Bausteinen in einem Aufruf |
+| `update-email-editor-image-block` | `src`, `alt`, `href` von Bildbausteinen; **nimmt ebenfalls eine Liste** |
+| `update-email-editor-button` | `label` und `href` eines Buttons |
+| `update-email-editor-video` | `src` und `thumbSrc` eines Videos |
+| `update-email-editor-menu` | die Einträge eines Menüs — **die Liste ersetzt die Liste** |
+| `update-email-editor-social-links` | die Icons eines Social-Bausteins — dito |
+| `update-email-editor-icons` | die Einträge eines Icon-Bausteins — dito |
+| `update-email-editor-table` | die Zeilen einer Tabelle, jede Zelle Markup |
+| `add-email-editor-row` | eine Zeile mit gleich breiten, leeren Spalten; antwortet mit deren uuids |
+| `email-<art>-add` | legt einen Baustein dieser Art in eine Spalte **und füllt ihn im selben Aufruf**; antwortet mit seiner uuid. Eines je Art: `add-email-editor-heading`, `add-email-editor-text`, `add-email-editor-paragraph`, `add-email-editor-list`, `add-email-editor-html`, `add-email-editor-image-block`, `add-email-editor-video`, `add-email-editor-icons`, `add-email-editor-button`, `add-email-editor-menu`, `add-email-editor-social-links`, `add-email-editor-divider`, `add-email-editor-spacer`, `add-email-editor-table` |
+| `remove-email-editor-block` | entfernt einen Baustein, gleich welcher Art |
+| `move-email-editor-block` | verschiebt einen Baustein in seiner Spalte oder in eine andere |
+| `list-email-editor-social-icons` | **liest**: die Icon-Bilder, die dieser Newsletter schon verwendet — vor jedem `add-email-editor-social-links`/`-write` zu fragen, weil die Sätze des Editors serverseitig nicht auflistbar sind |
+| `update-email-editor-page-style` | die Vorgaben der ganzen E-Mail: Grundfarbe, Nachrichtenhintergrund, Text- und Linkfarbe, **Schriftart**, Nachrichtenbreite |
+| `update-email-editor-row-style` | Hintergrund des Bandes und des Inhaltsbereichs, Textfarbe, Inhaltsbreite, vertikale Ausrichtung, Stapeln und Sichtbarkeit je Gerät, **Innenabstand und Rahmen der Zeile** |
+| `update-email-editor-column-style` | Hintergrund, Innenabstand und Rahmen auf vier Seiten |
+| `update-email-editor-block-style` | Innenabstand, Ausrichtung und Sichtbarkeit je Gerät — für **jeden** Baustein |
+| `update-email-editor-spacer-style` | die Höhe von Abständen |
+| `update-email-editor-divider-style` | Linie und Breite von Trennlinien |
+| `update-email-editor-button-style` | Hintergrund, Textfarbe, Eckenradius, Rahmen und Innenabstand von Buttons |
 
 ¹ Auf Production nicht freigeschaltet: beide legen ein Add-on an, das erst der Editor
 fertig macht. Dort antwortet der Aufruf mit „unknown tool" — verweise auf den Editor,
@@ -124,8 +124,8 @@ Baustein **anlegst**; zum Ändern eines vorhandenen brauchst du sie nicht.
 
 **Fasse zusammen, was sich zusammenfassen lässt.** Drei Werkzeuge nehmen mehrere Ziele auf einmal:
 
-- `email-text-write` eine Liste von Bausteinen — alle Textänderungen in **einem** Aufruf,
-- `email-image-write` ebenso — alle Bildwechsel in **einem**,
+- `update-email-editor-text` eine Liste von Bausteinen — alle Textänderungen in **einem** Aufruf,
+- `update-email-editor-image-block` ebenso — alle Bildwechsel in **einem**,
 - die Style-Werkzeuge eine Liste von **uuids** mit denselben Werten: „diese vier Bausteine bekommen
   24 Pixel oben" ist ein Aufruf.
 
@@ -139,7 +139,7 @@ und wie — das steht unten unter „Einen Körper füllen". Schick insbesondere
 den Import, um eine Änderung anzubringen: der Newsletter ist dann schon ein Dokument, und die
 Konvertierung kostet ihn seine Bausteine.
 
-**Struktur: Zeile anlegen, Baustein verschieben.** `email-row-add` legt eine Zeile mit gleich breiten,
+**Struktur: Zeile anlegen, Baustein verschieben.** `add-email-editor-row` legt eine Zeile mit gleich breiten,
 leeren Spalten an — `columns` sagt wie viele, eine ohne Angabe. Erlaubt sind nur Zahlen, die das
 Zwölfer-Raster des Editors teilen: **1, 2, 3, 4 oder 6**. Eine schiefe Teilung wie 5+7 gibt es in
 gespeicherten Newslettern, sie entsteht aber im Editor, nicht hier. `position` setzt die Zeile
@@ -147,7 +147,7 @@ zwischen die vorhandenen, von null gezählt; ohne Angabe kommt sie ans Ende. Die
 übernimmt Hintergrund und Breite von der Zeile, die der Newsletter schon hat — bei einem leeren
 Entwurf die Breite aus dem Dokument —, damit sie nicht auffällt.
 
-`email-block-move` verschiebt einen Baustein: mit `toUuid` in eine andere Spalte, ohne `toUuid` nur an
+`move-email-editor-block` verschiebt einen Baustein: mit `toUuid` in eine andere Spalte, ohne `toUuid` nur an
 eine andere Stelle seiner eigenen, `position` von null gezählt. Verschieben bewegt denselben
 Baustein.
 
@@ -165,7 +165,7 @@ zum Umschreiben, auch wenn ein Add seinen Inhalt inzwischen mitbringt. Was dabei
   beides.
 
 Dazu: Ändern ist **ein** Aufruf mit **einer** Revision, Entfernen plus Anlegen sind zwei — und
-`email-block-remove` ist destruktiv ohne Undo, ein Write nicht. Mach nicht den gefährlichsten Weg
+`remove-email-editor-block` ist destruktiv ohne Undo, ein Write nicht. Mach nicht den gefährlichsten Weg
 zum Normalfall.
 
 **Vor dem Entfernen fragst du.** Der Baustein ist mit seinem Inhalt weg, und diese Werkzeuge holen
@@ -177,8 +177,8 @@ Eine Art lässt sich nicht schreiben. Dann ist Entfernen plus Anlegen richtig, u
 Nutzer, dass der alte Baustein dabei verschwindet.
 
 **Ein Add bringt seinen Inhalt gleich mit.** Es gibt ein Add-Werkzeug je Bausteinart, und jedes
-nimmt genau die Felder, die diese Art hat: `email-image-add` nimmt `src`, `alt`, `href`,
-`email-button-add` nimmt `label` und `href`, `email-menu-add` nimmt seine Einträge. **Lege deshalb
+nimmt genau die Felder, die diese Art hat: `add-email-editor-image-block` nimmt `src`, `alt`, `href`,
+`add-email-editor-button` nimmt `label` und `href`, `add-email-editor-menu` nimmt seine Einträge. **Lege deshalb
 nie erst leer an, um danach zu schreiben** — das sind zwei Aufrufe, zwei Revisionen und ein
 Zwischenzustand, den jemand sehen kann. Ein Aufruf reicht.
 
@@ -189,7 +189,7 @@ beziehungsweise werden im Editor eingestellt.
 **So bebaust du einen frischen Entwurf** — der hat weder Zeile noch Spalte, und ein Add braucht
 eine Spalte:
 
-1. `email-row-add` (mit der gewünschten Spaltenzahl). **Die Antwort nennt die uuids der neuen
+1. `add-email-editor-row` (mit der gewünschten Spaltenzahl). **Die Antwort nennt die uuids der neuen
    Spalten und die neue Revision** — dafür brauchst du keine zweite Lesung mehr.
 2. Je Baustein ein Add mit seinem Inhalt, jedes mit der Revision aus der vorigen Antwort.
 
@@ -218,7 +218,7 @@ steht dort in genau der Form, die das Schreibwerkzeug derselben Art nimmt.
 
 **Bei Social-Links rate niemals eine `src`.** Die Icon-Bilder kommen aus den Icon-Sätzen des
 Editors, und die liegen in dessen Browser-SDK — der Server kann sie nicht auflisten. Frag darum vor
-jedem Anlegen oder Ändern `email-social-icon-search`; eine Bild-URL aus der eigenen Bibliothek geht
+jedem Anlegen oder Ändern `list-email-editor-social-icons`; eine Bild-URL aus der eigenen Bibliothek geht
 ebenso (der Editor führt dafür den Icon-Typ „Custom"). Findet sich nichts, sag das, statt eine URL
 zu erfinden: sie wird angenommen, und der Empfänger sieht ein Loch in der Reihe. Details in
 `references/blocks/social.md`.
@@ -230,7 +230,7 @@ eingestellt werden sie im Editor.
 seine Gestaltung zum großen Teil **im `html` selbst**: ein Wrapper-`<div class="txtTinyMce-wrapper"
 style="font-size:…">`, darin `<p style="font-size:16px;line-height:24px;…">`, oft `<span
 style="color:…">`. Das Objekt `text.style`/`paragraph.style` daneben kennt nur Farbe, Schrift und
-Zeilenhöhe. Wer für ein `email-text-write` ein nacktes `<p>Neuer Text</p>` schickt, wirft also die
+Zeilenhöhe. Wer für ein `update-email-editor-text` ein nacktes `<p>Neuer Text</p>` schickt, wirft also die
 Schriftgröße, die Zeilenhöhe und die Farben des Bausteins weg — der Editor zeigt dann seine
 Voreinstellung, und die E-Mail sieht nicht mehr aus wie vorher. Darum: nimm das **gelesene `html`
 des Bausteins** als Vorlage, behalte Wrapper, `<p style=…>`, `<span style=…>`, `<strong>`, `<a>`
@@ -240,17 +240,17 @@ als der alte, wiederhole das vorhandene `<p style=…>` mit seinem Stil; braucht
 Absätze weg. Bei einer Überschrift gilt dasselbe für `text` (dort steckt der Text in `<span>`s).
 
 **Deshalb: einen Körper nicht aus Adds zusammensetzen.** Entsteht eine E-Mail oder ein ganzer
-Abschnitt neu, gehört der ganze Körper in **einen** Aufruf — `email-content-copy`,
-`email-content-document-import` oder `email-content-import`, je nachdem, in welcher Form die
+Abschnitt neu, gehört der ganze Körper in **einen** Aufruf — `replace-email-editor-content-from-email`,
+`replace-email-editor-content-from-document` oder `replace-email-editor-content-from-html`, je nachdem, in welcher Form die
 Gestaltung vorliegt (siehe „Einen Körper füllen"). Ein Aufruf, eine Revision, und die
 Gestaltung kommt aus einem Stück statt aus einer Kette von Kopien. Die `*-add`-Werkzeuge sind für
 den **einzelnen zusätzlichen** Baustein in einem bestehenden Entwurf gedacht. Wer danach nur Wörter
-tauschen will, nimmt `email-text-write`: das schreibt in vorhandene Bausteine und rührt die
+tauschen will, nimmt `update-email-editor-text`: das schreibt in vorhandene Bausteine und rührt die
 Gestaltung nicht an.
 
 Wohin der neue Baustein kommt, sagt `position` innerhalb der Zielspalte — von null gezählt, ohne
 Angabe wird angehängt. In eine **andere** Spalte kommt ein bestehender Baustein mit
-`email-block-move` und `toUuid`, nicht durch Entfernen und neues Hinzufügen.
+`move-email-editor-block` und `toUuid`, nicht durch Entfernen und neues Hinzufügen.
 
 **Was eine einzelne Bausteinart verlangt — ein Video seine zwei URLs, ein Add-on den Editor —, steht in `references/blocks/`.** Lies die Datei der Art, die du anfasst, bevor du sie anlegst.
 
@@ -268,7 +268,7 @@ Die Regeln dazu und das ganze Vorgehen — die Zuordnung vor dem Schreiben, die 
 entfernt — das Flag ist die Art, wie das Produkt einen Baustein aus den Händen einer Person hält.
 Verweise auf den Editor, statt einen Weg daran vorbei zu suchen.
 
-**Vor dem Veröffentlichen: `email-content-check`.** Es liest denselben Körper und antwortet mit
+**Vor dem Veröffentlichen: `validate-email-editor-content`.** Es liest denselben Körper und antwortet mit
 einer Liste von Befunden, jeder mit der `uuid`, die zu ändern ist, und dem Werkzeug, das es ändert:
 Bild ohne Quelle, Bild ohne Alternativtext, Button ohne Ziel, Textbaustein ohne sichtbare Wörter,
 **ein Add-on, das eingefügt aber nie konfiguriert wurde**, zu geringer Kontrast (WCAG unter 4.5:1)
@@ -285,13 +285,13 @@ Zwei Dinge dazu, die du beim Weitergeben nicht verdrehen darfst:
   oder ein Wowing-Video zeigt, was im KlickTipp-Editor *ausgewählt* wurde — das ist kein
   schreibbares Feld, und kein Werkzeug hier setzt es (deshalb gibt es für die drei auch kein
   Add-Werkzeug mehr). Bleiben also zwei Wege, und beide gehören dem Nutzer: im Editor
-  konfigurieren, oder den Block mit `email-block-remove` entfernen. Sag das
+  konfigurieren, oder den Block mit `remove-email-editor-block` entfernen. Sag das
   so, statt einen Weg daran vorbei zu suchen. Der Befund tritt auch dann auf, wenn im Block
   Platzhaltertext steht — ein fertig aussehender Block kann hohl sein.
 - **Eine Warnung ist eine Entscheidung, ein Fehler nicht.** Ein zu blasser Text oder ein fehlender
   Selbstauskunftslink kann so gewollt sein — gib das weiter und frag, statt still zu reparieren. Die
   drei Fehler dagegen sind Sperren: Bild ohne Quelle, unkonfiguriertes Add-on und **fehlender
-  Abmeldelink**. `email-content-publish` verweigert ohne `%Link:Unsubscribe%` (oder
+  Abmeldelink**. `publish-newsletter-email-content` verweigert ohne `%Link:Unsubscribe%` (oder
   `%User:Signature%`, das ihn mitbringt), und ohne Veröffentlichung geht kein Versand. Melde das
   nicht als Geschmacksfrage.
 
@@ -370,7 +370,7 @@ Zwei Fallen, die dort ausführlich stehen und beim Lesen sofort greifen:
   Add-ons. Gespeicherte Newsletter dagegen zu validieren lehnt die Mehrheit ab.
 
 `document-skeleton.json` und `simple-schema/` brauchst du, sobald du ein Dokument **selbst
-schreibst**, um es mit `email-content-document-import` in einem Aufruf abzulegen — das Gerüst gibt
+schreibst**, um es mit `replace-email-editor-content-from-document` in einem Aufruf abzulegen — das Gerüst gibt
 die Form, das Schema die Felder, und im Schema-Ordner liegt ein vollständiges gültiges Beispiel.
 `kt-module-definitions.json` und der Schema-Katalog bleiben Analyse-Material: sie beschreiben die
 gespeicherte Struktur, und im normalen Ablauf brauchst du sie nicht.
@@ -382,10 +382,10 @@ welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorlieg
 
 | Die Gestaltung liegt vor … | Weg | Verlust |
 | --- | --- | --- |
-| als **andere E-Mail dieses Kontos** | `email-content-copy` | keiner |
-| als **Editor-Dokument** (Vorlage, Export) | `email-content-document-import` | keiner |
-| **nur als HTML** | `email-content-import` | die Konvertierung kostet |
-| als **Design im Katalog** | `email-template-search` → `email-template-apply` | keiner |
+| als **andere E-Mail dieses Kontos** | `replace-email-editor-content-from-email` | keiner |
+| als **Editor-Dokument** (Vorlage, Export) | `replace-email-editor-content-from-document` | keiner |
+| **nur als HTML** | `replace-email-editor-content-from-html` | die Konvertierung kostet |
+| als **Design im Katalog** | `search-email-editor-templates` → `replace-email-editor-content-from-template` | keiner |
 | **gar nicht** | selbst schreiben → `references/authoring.md` | — |
 
 Der Katalog ist der Weg, wenn noch gar nichts dasteht und niemand ein bestimmtes Vorbild nennt:
@@ -398,7 +398,7 @@ ist ein Fehler und kein Notbehelf: er bezahlt eine Konvertierung für etwas, das
 vorliegt. Und einen Körper aus einer Reihe von `*-add`-Aufrufen zusammenzusetzen ist der teuerste
 Weg von allen — ein Aufruf kostet 15–30 Sekunden, fast alles davon Denkzeit des Modells, und
 fünfzehn Bausteine sind damit über zehn Minuten für ein Ergebnis, das ein Import in unter einer
-Minute erreicht. Veröffentlicht wird in allen Fällen mit `email-content-publish`. Kein Undo, in
+Minute erreicht. Veröffentlicht wird in allen Fällen mit `publish-newsletter-email-content`. Kein Undo, in
 keinem Fall.
 
 **Zwei Nachschlagewerke hängen daran**, und du brauchst sie nur im jeweiligen Fall:

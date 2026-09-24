@@ -11,18 +11,18 @@ Textersetzung — und dann muss der Nutzer vorher zugestimmt haben.
 
 ## Der Ablauf
 
-1. **`email-get` mit `contentOutline`.** Nicht `content`: du brauchst uuid, Art und den aktuellen
+1. **`get-email-editor-content` mit `contentOutline`.** Nicht `content`: du brauchst uuid, Art und den aktuellen
    Wert jedes schreibbaren Feldes, und genau das ist die Outline — bei einem Viertel der Bytes.
 2. **Die Zuordnung aufschreiben, bevor du schreibst.** Welcher Abschnitt der Quelle gehört zu
    welcher uuid? Mach daraus eine Liste, und zwar vollständig: auch die Bausteine, für die die
    Quelle nichts hergibt, und die Teile der Quelle, für die es keinen Baustein gibt.
 3. **Die Fälle benennen, die keine reine Ersetzung sind** (siehe unten) und den Nutzer
    entscheiden lassen, bevor irgendetwas geschrieben wird.
-4. **Schreiben.** Alle Textbausteine in **einem** `email-text-write` — es nimmt eine Liste. Ein
-   Button bekommt sein `label`/`href` mit `email-button-write`, ein Bild seine `src`/`alt` mit
-   `email-image-write`.
+4. **Schreiben.** Alle Textbausteine in **einem** `update-email-editor-text` — es nimmt eine Liste. Ein
+   Button bekommt sein `label`/`href` mit `update-email-editor-button`, ein Bild seine `src`/`alt` mit
+   `update-email-editor-image-block`.
 5. **Berichten, was du nicht angefasst hast**, nicht nur was du geändert hast.
-6. **Veröffentlichen** mit `email-content-publish`, wenn der Nutzer es will — sonst bleibt es
+6. **Veröffentlichen** mit `publish-newsletter-email-content`, wenn der Nutzer es will — sonst bleibt es
    Entwurf, und das ist auch in Ordnung.
 
 ## Die vier Fälle, die kein reines Ersetzen sind
@@ -30,9 +30,9 @@ Textersetzung — und dann muss der Nutzer vorher zugestimmt haben.
 | Fall | Was zu tun ist |
 | --- | --- |
 | Die Quelle hat **weniger** Text als der Newsletter Bausteine | Der Reihe nach füllen, was zu füllen ist, und die übrigen **benennen**: „drei Absätze und eine Zwischenüberschrift haben keinen neuen Text; ich habe sie unverändert gelassen. Sollen sie raus?" |
-| Die Quelle hat **mehr** Text als Bausteine da sind | Hinzufügen (`email-paragraph-add` und Geschwister), nicht Absätze zusammenziehen. Der neue Baustein braucht das Markup seines Nachbarn als Vorlage. |
+| Die Quelle hat **mehr** Text als Bausteine da sind | Hinzufügen (`add-email-editor-paragraph` und Geschwister), nicht Absätze zusammenziehen. Der neue Baustein braucht das Markup seines Nachbarn als Vorlage. |
 | Die Quelle nennt **eine andere Art** — aus einem Absatz soll eine Überschrift werden | Eine Art lässt sich nicht schreiben: entfernen und neu anlegen, und dem Nutzer sagen, dass der alte Baustein dabei verschwindet. |
-| Die Quelle nennt **Gestaltung** — „mach die Überschrift blau" | Farbe im Text steckt im Markup (`email-text-write`), Hintergrund und Abstand sind die Style-Werkzeuge. Zwei verschiedene Wege, nicht raten. |
+| Die Quelle nennt **Gestaltung** — „mach die Überschrift blau" | Farbe im Text steckt im Markup (`update-email-editor-text`), Hintergrund und Abstand sind die Style-Werkzeuge. Zwei verschiedene Wege, nicht raten. |
 
 ## Was nie Teil einer Textersetzung ist
 
@@ -41,19 +41,19 @@ keinen Fließtext, den eine Textquelle ersetzen könnte. Sie werden bei „Text 
 entfernt noch verschoben**. Ein Button bekommt höchstens ein neues `label`/`href`, wenn die Quelle
 eines nennt.
 
-`email-block-remove` nur auf ausdrückliche Bitte, je Baustein benannt. Nie, weil etwas „übrig" ist,
+`remove-email-editor-block` nur auf ausdrückliche Bitte, je Baustein benannt. Nie, weil etwas „übrig" ist,
 „leer wirkt" oder „nicht mehr passt". Es gibt kein Undo.
 
 ## Wenn stattdessen das ganze Design neu ist
 
-Dann ist es keine Ersetzung, sondern ein Import: `email-content-import` mit dem HTML. Das ist der
+Dann ist es keine Ersetzung, sondern ein Import: `replace-email-editor-content-from-html` mit dem HTML. Das ist der
 einzige Weg für ein Design, das **nur** als HTML existiert — und er kostet, was `importWarnings`
 in der Leseantwort auflistet. Lies das dem Nutzer vor, **bevor** du importierst. Schick niemals
 geändertes HTML durch den Import, um eine Änderung anzubringen.
 
 ## Vor dem Veröffentlichen
 
-`email-content-check` läuft in einem Aufruf über den ganzen Körper: Bilder ohne Alternativtext,
+`validate-email-editor-content` läuft in einem Aufruf über den ganzen Körper: Bilder ohne Alternativtext,
 Buttons ohne Ziel, leere Textbausteine, nie konfigurierte Add-ons, zu geringer Kontrast, fehlende
 Fuß-Platzhalter. Gib die Befunde weiter, statt still zu reparieren — ein blasser Text kann so
 gewollt sein. Ein unkonfiguriertes Add-on ist die Ausnahme, die du gar nicht reparieren kannst:

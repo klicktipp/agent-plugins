@@ -21,14 +21,14 @@ wrongly.
   `subject` optional; the tool requires it.
 
 - **A missing unsubscribe link is a blocker, not a matter of taste.** It sat beside pale text as a
-  finding the user might want. The check calls it an error, `email-content-publish` refuses without
+  finding the user might want. The check calls it an error, `publish-newsletter-email-content` refuses without
   the placeholder, and nothing is dispatched without publishing.
 
 - **`email-ai-text-add` is gone**, so it is no longer documented as a tool. The block itself
   remains, so the AI text now sits with the countdown, the contact card and the Wowing video: made
   in the editor, readable, movable and removable through the tools.
 
-- **The font can be set.** `email-page-style-write` takes `fontFamily`, while the styling guide
+- **The font can be set.** `update-email-editor-page-style` takes `fontFamily`, while the styling guide
   listed the font among the things that cannot be set — so an agent refused work it could do.
 
 - **A tool count in prose** said 51 where the contract said 54. Removed rather than corrected: a
@@ -41,18 +41,18 @@ plugin still said "arrives with the next deployment" for tools that had long sin
 that is the larger half of this entry.
 
 - **Dynamic content.** Four tools write and read what the editor calls display conditions:
-  `email-condition-capabilities-get` for the vocabulary of one account,
-  `email-decision-write` for a named condition, `email-row-condition-write` to bind a row to it,
-  and `email-decisions-get` to see which rows a condition governs. The binding sits as a marker
+  `get-email-editor-display-condition-capabilities` for the vocabulary of one account,
+  `update-email-editor-display-condition` for a named condition, `configure-email-editor-row-display-condition` to bind a row to it,
+  and `list-email-editor-display-conditions` to see which rows a condition governs. The binding sits as a marker
   inside the row and shows up in no other projection, so the last one is the only way to find out
   that a row is conditional at all. The full catalogue of condition kinds is a new reference,
   [display-conditions.md](plugins/klicktipp/skills/email/references/display-conditions.md).
 
-- **`email-preview`** renders the current draft, unpublished changes included, and shows it. The
-  `email` skill now says plainly that "show me the preview" is this tool and not `email-get` —
+- **`preview-email-editor`** renders the current draft, unpublished changes included, and shows it. The
+  `email` skill now says plainly that "show me the preview" is this tool and not `get-email-editor-content` —
   describing an email in words is an answer to a question nobody asked.
 
-- **`create-contact`** adds a contact by hand, subscribed at once and with its field values, the
+- **`upsert-subscribed-contact`** adds a contact by hand, subscribed at once and with its field values, the
   way the Add Contact screen does. An address the account already has is updated rather than added
   twice, and `alreadyExisted` says which of the two happened.
 
@@ -67,13 +67,13 @@ that is the larger half of this entry.
   where pointing at the editor is not an answer.
 
 - **Availability, corrected throughout.** The image tools, the split tests, the contact, tag and
-  field tools, `email-newsletter-cancel` and the subscription tools are on production and are no
+  field tools, `cancel-newsletter-dispatch` and the subscription tools are on production and are no
   longer described as pending. What genuinely is not there: the `email-signature-*` family,
   everything that writes an opt-in process or its confirmation email, and the two deletions.
 
-- **Contracts follow the server word for word**, as always: `email-template-search` takes category
+- **Contracts follow the server word for word**, as always: `search-email-editor-templates` takes category
   and collection as free text now — the enum could refuse a value the same tool had answered with
-  — and `email-page-style-write` writes a default link colour instead of a separate content
+  — and `update-email-editor-page-style` writes a default link colour instead of a separate content
   background.
 
 ## 0.11.6 — 2026-09-23
@@ -92,8 +92,8 @@ that is the larger half of this entry.
 
 ## 0.11.4 — 2026-09-18
 
-- **The last two vendor mentions are gone**, at the source. `email-content-document-import` and
-  `email-preview` name the editor document as what it is — JSON — rather than by brand, and the
+- **The last two vendor mentions are gone**, at the source. `replace-email-editor-content-from-document` and
+  `preview-email-editor` name the editor document as what it is — JSON — rather than by brand, and the
   contract reference follows the server word for word as it always does.
 
 ## 0.11.3 — 2026-09-18
@@ -131,8 +131,8 @@ that is the larger half of this entry.
 - **A description can no longer break its own frontmatter.** Two of the six contained `": "`, which
   in an unquoted YAML scalar is a mapping and not a string.
 - **Seven tools are newly documented in the contract references** — `create-opt-in-process`, the
-  four opt-in confirmation-email tools, `email-template-search` and `email-newsletter-cancel`. The
-  references mirror what the MCP server publishes; of these only `email-newsletter-cancel` is marked
+  four opt-in confirmation-email tools, `search-email-editor-templates` and `cancel-newsletter-dispatch`. The
+  references mirror what the MCP server publishes; of these only `cancel-newsletter-dispatch` is marked
   as not being on production yet.
 - The GitHub Pages site is gone. The documentation is at
   [developers.klicktipp.com](https://developers.klicktipp.com/guides/mcp-server-plugins), split into
@@ -176,7 +176,7 @@ that is the larger half of this entry.
 - **Three ways into a newsletter body, and the skill says which one you are in.** The `email` skill
   described the HTML conversion as the only route, which is what sent a run through it and cost the
   dividers, the box and some images. The form the design is already in decides now: another email of
-  the account is `email-content-copy`, a finished editor document is `email-content-document-import`,
+  the account is `replace-email-editor-content-from-email`, a finished editor document is `replace-email-editor-content-from-document`,
   and only markup that exists nowhere else is worth a conversion. Both new routes replace the body in
   one call and convert nothing.
 - **A body is not assembled from single block calls when it is new.** The skill said both things in
@@ -202,13 +202,13 @@ that is the larger half of this entry.
   contact tools, the four custom-field tools — arriving with the next production deployment.
 - **And a list of what deliberately stays behind, each with its reason** rather than as one
   bucket: the two deletions, because deleting a field takes the value out of every contact of the
-  account; `subscribe`, `unsubscribe` and `get-subscription-redirect-url`, because a subscription
+  account; `subscribe-contact-via-opt-in-process`, `unsubscribe-contact` and `get-opt-in-process-redirect-url`, because a subscription
   sends the confirmation mail, can start automations and changes who really gets post; and
   everything writing an opt-in process or its confirmation email, because that is the record of
   consent.
-- `enrich-contact` is now **`update-contact`** — it never enriched, it wrote contact fields, and it
+- `enrich-contact` is now **`update-contact-values`** — it never enriched, it wrote contact fields, and it
   now reads like `update-manual-tag` and `update-custom-field`.
-- **A dispatch can be taken back.** `email-newsletter-cancel` exists, so `canBeCancelled` no longer
+- **A dispatch can be taken back.** `cancel-newsletter-dispatch` exists, so `canBeCancelled` no longer
   names a state with no way out of it. It does not unsend what already left, it takes the same
   permission as handing a newsletter over, it is not on production yet — and the skill says to ask
   the person before calling it.
@@ -305,8 +305,8 @@ that is the larger half of this entry.
 
 ## 0.8.3 — 2026-09-14
 
-- **Split tests.** `email-split-test-configure` makes a newsletter a split test and says how the
-  winner is found; `email-split-test-variant-add`, `-update` and `-remove` manage the arms, with
+- **Split tests.** `configure-newsletter-split-test` makes a newsletter a split test and says how the
+  winner is found; `add-newsletter-split-test-variant`, `-update` and `-remove` manage the arms, with
   the subject line per arm. The new `splittest` skill explains what changes once a newsletter is
   one — a tool refusing with `split_test_not_supported` is almost never a defect, it is the wrong
   address. (0.7.x)
@@ -324,10 +324,10 @@ that is the larger half of this entry.
 ## 0.6.3 — 2026-09-11
 
 - **The content of an email is edited block by block.** `email-newsletter-content-edit` is gone;
-  in its place a tool per block kind — `email-paragraph-add`, `email-button-write`,
-  `email-image-add`, `email-row-style-write`, `email-block-move`, `email-block-remove` and the
-  rest — each addressing blocks by their `uuid`. Reading is `email-get`, importing HTML
-  `email-content-import`, publishing `email-content-publish`, and `email-content-check` reviews
+  in its place a tool per block kind — `add-email-editor-paragraph`, `update-email-editor-button`,
+  `add-email-editor-image-block`, `update-email-editor-row-style`, `move-email-editor-block`, `remove-email-editor-block` and the
+  rest — each addressing blocks by their `uuid`. Reading is `get-email-editor-content`, importing HTML
+  `replace-email-editor-content-from-html`, publishing `publish-newsletter-email-content`, and `validate-email-editor-content` reviews
   the assembled email before it goes out. (0.6.0)
 - **Two skills instead of one.** `email-erstellung` is split: `email` carries the content of one
   email — what each block is, which fields it takes, how to assemble a finished email from a

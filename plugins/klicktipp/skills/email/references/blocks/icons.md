@@ -6,12 +6,12 @@ Familie **Medien**. Modultyp im Dokument: `mailup-bee-newsletter-modules-icons`.
 
 ## Werkzeuge
 
-| Anlegen | `email-icons-add` |
+| Anlegen | `add-email-editor-icons` |
 | --- | --- |
-| Ändern | `email-icons-write` |
-| Entfernen | `email-block-remove` |
-| Verschieben | `email-block-move` |
-| Aussehen | `email-block-style-write` (Innenabstand, Ausrichtung, Sichtbarkeit je Gerät) |
+| Ändern | `update-email-editor-icons` |
+| Entfernen | `remove-email-editor-block` |
+| Verschieben | `move-email-editor-block` |
+| Aussehen | `update-email-editor-block-style` (Innenabstand, Ausrichtung, Sichtbarkeit je Gerät) |
 
 ## Einträge
 
@@ -31,10 +31,10 @@ Nicht dasselbe wie Social-Links: dieser Baustein trägt **irgendein** Bild mit B
 
 ## Gestaltung
 
-`email-block-style-write` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 
 Kommt als Bilder mit Links zurück; der bearbeitbare Baustein ist weg.
 
-Das gilt **nur** für den Import (`email-content-import`), nicht fürs Ändern: dort wird nichts konvertiert.
+Das gilt **nur** für den Import (`replace-email-editor-content-from-html`), nicht fürs Ändern: dort wird nichts konvertiert.

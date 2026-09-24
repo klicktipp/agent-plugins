@@ -8,20 +8,20 @@ erfüllt — bei allen anderen fällt sie beim Versand ersatzlos heraus.
 niemanden zutrifft, ist kein Fehler. Der Newsletter wird verschickt, nichts wird gemeldet, und die
 Zeile fehlt bei *allen*. Genau so ist ein Test-Tag aus einer alten Sitzung auf der Hauptzeile eines
 Entwurfs liegen geblieben und hätte die Kernbotschaft unsichtbar gemacht. Prüfe deshalb vor dem
-Versand mit `email-decisions-get`, welche Zeilen gebunden sind — und ob die Bedingung überhaupt
+Versand mit `list-email-editor-display-conditions`, welche Zeilen gebunden sind — und ob die Bedingung überhaupt
 jemanden trifft.
 
 ## Der Ablauf
 
-1. **`email-condition-capabilities-get`** — ohne Argumente den Katalog der Bedingungsarten, mit
+1. **`get-email-editor-display-condition-capabilities`** — ohne Argumente den Katalog der Bedingungsarten, mit
    `conditionTypes` zusätzlich für diese Arten: die erlaubten Vergleiche, die Entitäten *dieses
    Kontos* (Tags, Automationen, E-Mails …) und die Zeitfenster. Höchstens fünf Arten pro Aufruf; die
    Entitätsliste ist bei 200 gekappt, `entityCount` sagt, wie viele es wirklich sind.
-2. **`email-decision-write`** — die benannte Bedingung anlegen. Du gibst nur die Wahl an; Operator,
+2. **`update-email-editor-display-condition`** — die benannte Bedingung anlegen. Du gibst nur die Wahl an; Operator,
    Sekunden und das SmartTag-Feld werden daraus abgeleitet. Antwort enthält die `decisionId`.
-3. **`email-row-condition-write`** — die Zeile binden, adressiert über die `uuid` aus
+3. **`configure-email-editor-row-display-condition`** — die Zeile binden, adressiert über die `uuid` aus
    `contentOutline`. `decisionId: null` löst die Bindung wieder.
-4. **`email-decisions-get`** — was die E-Mail trägt und welche Zeilen jede Bedingung steuert. Die
+4. **`list-email-editor-display-conditions`** — was die E-Mail trägt und welche Zeilen jede Bedingung steuert. Die
    Bindung steckt als Marker *in* der Zeile und taucht in keiner anderen Projektion auf; das hier
    ist der einzige Weg, sie zu sehen.
 
@@ -90,17 +90,17 @@ erste der Liste genommen.
 
 Verlasse dich nicht auf diese Tabelle allein, wenn es darauf ankommt: welche Arten ein Konto
 tatsächlich anbieten kann und welche Entitäten es dafür hat, beantwortet
-`email-condition-capabilities-get` — die Tabelle hier sagt, wonach du fragen kannst.
+`get-email-editor-display-condition-capabilities` — die Tabelle hier sagt, wonach du fragen kannst.
 
 ## Ein vollständiges Beispiel
 
 „Diese Zeile nur an Kontakte, die das Tag *Kunde* tragen":
 
 ```json
-// 1. email-condition-capabilities-get  { "conditionTypes": ["App\\Klicktipp\\Tag"] }
+// 1. get-email-editor-display-condition-capabilities  { "conditionTypes": ["App\\Klicktipp\\Tag"] }
 //    -> entities: [{ "entity": 499, "label": "Kunde", "actionFields": { "received": 499 } }, ...]
 
-// 2. email-decision-write
+// 2. update-email-editor-display-condition
 {
   "editorUrl": "…",
   "contentRevision": "…",
@@ -116,23 +116,23 @@ tatsächlich anbieten kann und welche Entitäten es dafür hat, beantwortet
 }
 //    -> decisionId "1"
 
-// 3. email-row-condition-write
+// 3. configure-email-editor-row-display-condition
 { "editorUrl": "…", "contentRevision": "…", "rowUuid": "a4fac5c0-…", "decisionId": "1" }
 ```
 
 Beide Schreibaufrufe sind an die `contentRevision` gebunden und speichern den Entwurf; veröffentlicht
-wird weiterhin mit `email-content-publish`.
+wird weiterhin mit `publish-newsletter-email-content`.
 
 ## Wenn eine Zeile nicht erscheint
 
 Der übliche Fall ist nicht kaputt, sondern leer: die Bedingung trifft niemanden.
 
-1. `email-decisions-get` — welche Bedingung steuert diese Zeile, und wie sieht ihr Baum aus?
+1. `list-email-editor-display-conditions` — welche Bedingung steuert diese Zeile, und wie sieht ihr Baum aus?
 2. Die `entity` in der Bedingung gegen das Konto prüfen: trägt das Tag überhaupt jemand? Ein Tag aus
    einem Test trägt typischerweise **null** Kontakte.
-3. Entweder mit `email-decision-write` und derselben `decisionId` auf eine sinnvolle Entität
-   umschreiben — die Bindung bleibt bestehen —, oder mit `email-row-condition-write` und
+3. Entweder mit `update-email-editor-display-condition` und derselben `decisionId` auf eine sinnvolle Entität
+   umschreiben — die Bindung bleibt bestehen —, oder mit `configure-email-editor-row-display-condition` und
    `decisionId: null` die Zeile wieder für alle sichtbar machen.
 
 Ein HTML-Import löscht Entscheidungen; das meldet der Werkzeug-Hinweis als „KlickTipp decisions are
-deleted". Kopieren (`email-content-copy`) und Dokument-Import erhalten sie.
+deleted". Kopieren (`replace-email-editor-content-from-email`) und Dokument-Import erhalten sie.

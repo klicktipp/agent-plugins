@@ -12,8 +12,8 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 ## Inhalt
 
 `search-opt-in-processes` · `get-opt-in-process` · `delete-opt-in-process` · `search-contacts` ·
-`get-contact` · `create-contact` · `update-contact` · `assign-manual-tag` ·
-`remove-manual-tag` · `subscribe` · `unsubscribe` · `get-subscription-redirect-url` ·
+`get-contact` · `upsert-subscribed-contact` · `update-contact-values` · `tag-contact` ·
+`untag-contact` · `subscribe-contact-via-opt-in-process` · `unsubscribe-contact` · `get-opt-in-process-redirect-url` ·
 `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` ·
 `delete-custom-field` · `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` ·
 `delete-manual-tag`
@@ -78,7 +78,7 @@ Parameter:
 - `referenceId` — integer (minimum 0; Default `0`): Reference whose multi-value fields and manual tags to read; 0 for contact-wide values
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `create-contact` · D O
+## `upsert-subscribed-contact` · D O
 
 **Create contact**
 
@@ -92,7 +92,7 @@ Parameter:
 - `fields` — array (maxItems 50): Contact field values to write with the contact, each {fieldId, value} as get-contact and search-custom-fields name them
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `update-contact` · DO
+## `update-contact-values` · DO
 
 **Update contact**
 
@@ -107,7 +107,7 @@ Parameter:
   - `referenceId` — integer (minimum 0; Default `0`)
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `assign-manual-tag` · O
+## `tag-contact` · O
 
 **Assign manual tag**
 
@@ -121,7 +121,7 @@ Parameter:
 - `referenceId` — integer (minimum 0; Default `0`): Reference for a multi-value manual tag; use 0 for contact-wide tags
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `remove-manual-tag` · DOI
+## `untag-contact` · DOI
 
 **Remove manual tag**
 
@@ -135,7 +135,7 @@ Parameter:
 - `referenceId` — integer (minimum 0; Default `0`): Reference for a multi-value manual tag; use 0 for contact-wide tags
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `subscribe` · DO
+## `subscribe-contact-via-opt-in-process` · DO
 
 **Subscribe contact**
 
@@ -151,7 +151,7 @@ Parameter:
 - `tagId` — null | integer (minimum 1): Tag to additionally assign to the contact after a successful subscription
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `unsubscribe` · DOI
+## `unsubscribe-contact` · DOI
 
 **Unsubscribe contact**
 
@@ -164,7 +164,7 @@ Parameter:
 - `phoneNumber` — null | string (maxLength 50): SMS channel to unsubscribe in E.164 format; mutually exclusive with email
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
-## `get-subscription-redirect-url` · RI
+## `get-opt-in-process-redirect-url` · RI
 
 **Get subscription redirect URL**
 
