@@ -127,7 +127,9 @@ ihn mit Namen und lass bestätigen, statt auf einen Namen zu raten.
 ## 4. Absender und Signatur
 
 `email-newsletter-delivery-configure` setzt Absendername, Absenderadresse, Antwortadresse,
-Versanddomain und Signatur. Die vier Werte haben je einen `*Mode` daneben — lies die Beschreibung des
+Versanddomain und Signatur. Die Signatur wird über ihre `signatureId` benannt; welche das Konto
+hat, steht in der Antwort dieses Werkzeugs, und `0` heißt „KlickTipp wählt per Tagging". Die vier
+Werte haben je einen `*Mode` daneben — lies die Beschreibung des
 Werkzeugs, welche Modi es gibt, statt zu raten; ein freier Wert ist nicht immer erlaubt, weil
 Absenderadressen verifiziert sein müssen.
 
@@ -153,24 +155,6 @@ Dasselbe Werkzeug trägt zwei Schalter aus dem Panel „Erweiterte Einstellungen
   will meistens genau diesen Schalter; als Baustein gibt es die drei nicht. Einzeln im Inhalt
   platzieren geht über die Platzhalter (`%Link:WebBrowser%`, `%Link:Unsubscribe%`), siehe Skill
   `email`.
-
-### Wenn du Signaturtext schreibst
-
-Zwei Dinge, die der Server **nicht** erzwingt und die deshalb an dir hängen:
-
-**Zwei schnelle Kontaktwege im Impressum.** Pflicht sind für den Server nur die Adressplatzhalter.
-Ein Impressum, über das man den Absender tatsächlich erreicht, nennt darüber hinaus mindestens zwei
-schnelle Wege — E-Mail und Telefon, oder E-Mail und Kontaktformular. Weise darauf hin, wenn im
-Entwurf nur einer steht. Prüfe die Rechtslage nicht selbst und behaupte sie nicht; sage, dass es
-ein üblicher Mindeststandard ist und im Zweifel rechtlich geprüft gehört.
-
-**Biete die transaktionale Fassung aktiv an.** Eine SOI-Bestätigungsmail ist der Erstkontakt und
-verträgt keinen Abmeldelink — eine Abmeldung von etwas, das noch gar nicht bestätigt wurde. Genau
-dafür gibt es `useInTransactionalEmails: true` mit eigenem `transactionalHtml`: dort steht
-`%Link:SubscriberInfo%` statt `%Link:Unsubscribe%`, und der Server **weist ein transaktionales HTML
-mit `%Link:Unsubscribe%` ab**. Wer eine Signatur anlegt, wird nicht von selbst danach fragen — also
-frag du, bevor die Signatur steht. Die vollständigen Platzhalterregeln stehen in
-[references/tools.md](references/tools.md).
 
 ## 5. Testversand
 
@@ -272,9 +256,6 @@ Einschätzung ab. Inhalt, Zielgruppe und Absender bleiben unangetastet; wieder a
 Die Berechtigung ist dieselbe wie fürs Freigeben („Email marketing manager"): wer einen Newsletter
 übergeben darf, darf ihn auch zurückholen — ein Texter-Unterkonto keins von beidem.
 
-**Auf Production ist das Werkzeug noch nicht freigeschaltet**; dort ist der Weg die
-`scheduleUrl` aus `deliveryStatus`.
-
 ## Löschen
 
 `email-newsletter-draft-delete` entfernt einen Entwurf endgültig — es gibt kein Zurück und keinen
@@ -300,7 +281,7 @@ Die häufigsten Tore:
 ## Die Werkzeuge im Einzelnen
 
 Was jedes Werkzeug dieses Skills tut, was es ausdrücklich nicht tut, und woran man sich in der
-Praxis stößt — samt der Signatur-Werkzeuge, die die Kandidaten für `signatureId` liefern —, steht in
+Praxis stößt, steht in
 [references/tools.md](references/tools.md). Die vollständigen Verträge, wie der Server sie
 veröffentlicht — jede Beschreibung, jeder Parameter mit Typ und Grenzen —, stehen Wort für Wort in
 [references/contracts.md](references/contracts.md). Das Verfahren steht hier, die Stolperer in der

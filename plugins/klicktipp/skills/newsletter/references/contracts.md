@@ -1,6 +1,6 @@
-# Die veröffentlichten Verträge — Newsletter, Versand und Signaturen
+# Die veröffentlichten Verträge — Newsletter und Versand
 
-Wort für Wort das, was der Server in `tools/list` für die 15 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 9 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -11,140 +11,10 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 
 ## Inhalt
 
-`email-signature-search` · `email-signature-get` · `email-signature-create` ·
-`email-signature-update` · `email-signature-content-replace` ·
-`email-signature-delivery-configure` · `email-newsletter-search` · `email-newsletter-get` ·
-`email-newsletter-draft-create` · `email-newsletter-draft-update` ·
-`email-newsletter-draft-delete` · `email-newsletter-delivery-configure` ·
-`email-newsletter-test-send` · `email-newsletter-send` · `email-newsletter-cancel`
-
-## `email-signature-search` · RI
-
-**Search email signatures**
-
-Lists the email signatures of a KlickTipp account that a newsletter can carry, with ID, name, the sender name and address of their sender profile, the state of that address, and the tags that make KlickTipp pick a signature by itself. A signature that cannot go under a newsletter as it stands -- no content, missing legally required placeholders, or a sender address that may not be sent from -- is left out unless unusable signatures are asked for, in which case it comes with the reasons why. The signature text is not part of the list; use email-signature-get for that. To have KlickTipp pick the signature by tagging instead of naming one, pass signature ID 0 to email-newsletter-delivery-configure; that is not an entry of this list.
-
-Parameter:
-
-- `query` — null | string (maxLength 250): Text the name of a signature has to contain; omit to list them all
-- `includeUnusable` — null | boolean: True to also return signatures that cannot currently be used, with their blockers; omit to leave them out
-- `limit` — null | integer (minimum 1; maximum 200): How many signatures to return at most, 1 to 200, 50 by default
-- `accountId` — null | integer (minimum 1): User ID of the account to list signatures for; omit for the token account, or pass an accessible subaccount ID
-
-## `email-signature-get` · RI
-
-**Get email signature**
-
-Returns one email signature with its name, notes, labels, tag IDs, sender profile, digital business card, content flags, usability and blockers. includeContent adds the HTML, plain and transactional content itself, which is the bulk of the answer.
-
-Parameter:
-
-- `signatureId`* — integer (minimum 1): ID of the signature to read
-- `includeContent` — null | boolean: True to include HTML, plain and transactional content; omit to return only content flags
-- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
-
-## `email-signature-create` · O
-
-**Create email signature**
-
-Creates or copies an email signature. Name and tag IDs replace source values; supplied content, sender and business-card fields override copied values, while omitted copied fields stay. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Tags, addresses and domains must exist, and an assigned sender domain must match. Returns content flags only; use email-signature-get with includeContent true. No newsletter changes.
-
-Parameter:
-
-- `name`* — string (minLength 1; maxLength 250): Unique name of the new signature
-- `tagIds`* — array<integer> (maxItems 50): At least one existing tag ID for the new signature; every tag must be unassigned to another signature
-- `sourceSignatureId` — null | integer (minimum 1): Existing signature of the same account to copy; omit when supplying content for a new signature
-- `content` — object: Complete HTML, plain and transactional content block; required without a source and replaces copied content when supplied
-  - `html`* — string (minLength 1; maxLength 65536)
-  - `plain` — string (maxLength 65536)
-  - `useInTransactionalEmails` — boolean
-  - `transactionalHtml` — string (maxLength 65536)
-- `senderProfile` — object: Optional sender, reply, CC, BCC, recipient and sender-domain fields; omitted copied fields are preserved, and a sender address with an assigned domain requires that matching senderDomain
-  - `senderName` — string (maxLength 250)
-  - `senderEmail` — string (maxLength 250)
-  - `replyToEmail` — string (maxLength 250)
-  - `ccEmail` — string (maxLength 250)
-  - `bccEmail` — string (maxLength 250)
-  - `toEmail` — string (maxLength 250)
-  - `senderDomain` — string (maxLength 250)
-- `vCard` — object: Optional plain-text digital-business-card fields; supplied fields override copied values, omitted copied fields stay, and empty strings clear fields
-  - `firstName` — string (maxLength 128)
-  - `lastName` — string (maxLength 128)
-  - `companyName` — string (maxLength 128)
-  - `emailAddress` — string (maxLength 128)
-  - `phone` — string (maxLength 128)
-  - `cellPhone` — string (maxLength 128)
-  - `street` — string (maxLength 128)
-  - `zip` — string (maxLength 128)
-  - `city` — string (maxLength 128)
-  - `state` — string (maxLength 128)
-  - `country` — string (maxLength 128)
-  - `website` — string (maxLength 250)
-- `notes` — null | string (maxLength 1000): Internal note; on a copy, omit to preserve the source note
-- `metaLabels` — array | null (maxItems 50): Labels; on a copy, omit to preserve the source labels
-- `accountId` — null | integer (minimum 1): User ID of the account in which to create the signature; omit for the token account, or pass an accessible subaccount ID
-
-## `email-signature-update` · I
-
-**Update email signature**
-
-Changes the name, internal note, labels or digital business card of an email signature. Omitted fields stay unchanged and empty business-card strings clear those fields. Content, tag IDs and sender profile are never changed.
-
-Parameter:
-
-- `signatureId`* — integer (minimum 1): ID of the signature to update
-- `name` — null | string (minLength 1; maxLength 250): New unique name; omit to keep it, and note that the default signature cannot be renamed
-- `notes` — null | string (maxLength 1000): New internal note; omit to keep it, or pass an empty string to clear it
-- `metaLabels` — array | null (maxItems 50): Replacement labels; omit to keep them, or pass an empty array to clear them
-- `vCard` — object: Plain-text digital-business-card fields to change; omitted fields stay unchanged and empty strings clear fields
-  - `firstName` — string (maxLength 128)
-  - `lastName` — string (maxLength 128)
-  - `companyName` — string (maxLength 128)
-  - `emailAddress` — string (maxLength 128)
-  - `phone` — string (maxLength 128)
-  - `cellPhone` — string (maxLength 128)
-  - `street` — string (maxLength 128)
-  - `zip` — string (maxLength 128)
-  - `city` — string (maxLength 128)
-  - `state` — string (maxLength 128)
-  - `country` — string (maxLength 128)
-  - `website` — string (maxLength 250)
-- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
-
-## `email-signature-content-replace` · DOI
-
-**Replace email signature content**
-
-Replaces normal HTML and plain content with no MCP undo. Transactional fields change only when supplied; false plus an empty transactionalHtml disables and clears them. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Returns content flags only; use email-signature-get with includeContent true. Name, notes, labels, tags, sender profile and business card stay unchanged.
-
-Parameter:
-
-- `signatureId`* — integer (minimum 1): ID of the signature whose normal content is replaced and whose transactional content may be changed
-- `html`* — string (minLength 1; maxLength 65536): Complete HTML signature content
-- `plain` — null | string (maxLength 65536): Complete plain content; stored trimmed only when plain-content editing is enabled, otherwise regenerated from HTML
-- `useInTransactionalEmails` — null | boolean: Whether the signature is used in transactional emails; omit to keep the current setting
-- `transactionalHtml` — null | string (maxLength 65536): Complete transactional HTML content; omit to keep it, or pass an empty string with useInTransactionalEmails false to clear it
-- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
-
-## `email-signature-delivery-configure` · OI
-
-**Configure email signature delivery**
-
-Changes only assigned tag IDs and sender, reply, CC, BCC, recipient and sender-domain fields. Omitted fields stay unchanged. Every ID must already belong to the account; this tool never creates tags, addresses or domains. A sender address with an assigned domain requires that matching senderDomain. Content, metadata and the digital business card stay unchanged.
-
-Parameter:
-
-- `signatureId`* — integer (minimum 1): ID of the signature whose delivery configuration is changed
-- `tagIds` — array | null (maxItems 50): Replacement tag IDs that already exist; ordinary signatures require at least one, and every tag must be unassigned to another signature, while the default signature may use an empty array
-- `senderProfile` — object: Sender name and configured account address/domain values; reply options are also used for CC, BCC and recipient, empty strings clear optional fields, omitted fields stay unchanged, and a sender address with an assigned domain requires that matching senderDomain
-  - `senderName` — string (maxLength 250)
-  - `senderEmail` — string (maxLength 250)
-  - `replyToEmail` — string (maxLength 250)
-  - `ccEmail` — string (maxLength 250)
-  - `bccEmail` — string (maxLength 250)
-  - `toEmail` — string (maxLength 250)
-  - `senderDomain` — string (maxLength 250)
-- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
+`email-newsletter-search` · `email-newsletter-get` · `email-newsletter-draft-create` ·
+`email-newsletter-draft-update` · `email-newsletter-draft-delete` ·
+`email-newsletter-delivery-configure` · `email-newsletter-test-send` · `email-newsletter-send` ·
+`email-newsletter-cancel`
 
 ## `email-newsletter-search` · RI
 

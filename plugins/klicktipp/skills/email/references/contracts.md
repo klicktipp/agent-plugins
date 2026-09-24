@@ -24,7 +24,8 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `email-video-add` · `email-video-write` · `email-image-search` · `email-image-stock-search` ·
 `email-image-folder-search` · `email-image-folder-create` · `email-image-folder-delete` ·
 `email-image-upload` · `email-image-upload-file` · `email-image-upload-from-url` ·
-`email-image-preview` · `email-template-search` · `email-condition-capabilities-get` ·
+`email-image-preview` · `email-template-search` · `email-template-apply` ·
+`email-condition-capabilities-get` ·
 `email-decision-write` · `email-row-condition-write` · `email-decisions-get`
 
 ## `email-content-import` · DO
@@ -782,6 +783,19 @@ Parameter:
 - `collection` — null | string (maxLength 250): Narrow by one collection as this tool reports them, e.g. "welcome-series"; omit for all
 - `page` — null | integer (minimum 1): Which page of the catalogue, from 1; default 1
 - `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `email-template-apply` · D
+
+**Apply design to email**
+
+Puts one design from the KlickTipp template catalogue into the body of an email, addressed by its editor URL. Takes the templateId email-template-search returned; the design itself is fetched from the catalogue on the call. Works for any email the editor opens -- a newsletter draft, an automation email, a notification email -- so starting a newsletter from a design is email-newsletter-draft-create followed by this. Replaces the stored draft entirely, without undo, and does not publish; use email-content-publish. Bound to the contentRevision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
+
+Parameter:
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as email-get returned it
+- `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the read of that email; a stale one refuses the write
+- `templateId`* — string (minLength 1; maxLength 250): id of the design, as email-template-search returned it
+- `replaceExistingContent` — null | boolean: true to replace content the email already has; omit on the first attempt, so the answer lists what would be lost
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `email-condition-capabilities-get` · R I

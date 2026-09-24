@@ -11,7 +11,7 @@ die du brauchst — nicht alle.
 | Interaktiv | [Button](button.md) · [Menü](menu.md) · [Social-Links](social.md) |
 | Struktur | [Trennlinie](divider.md) · [Abstand](spacer.md) |
 | Tabelle | [Tabelle](table.md) |
-| KlickTipp | [Countdown](countdown.md) · [Kontaktkarte](contact-card.md) · [Wowing-Video](wowing-video.md) · [KI-Text](ai-text.md) · [Personalisierte E-Mail](personalized-email.md) |
+| KlickTipp | [Countdown](countdown.md) · [Kontaktkarte](contact-card.md) · [Wowing-Video](wowing-video.md) · [Personalisierte E-Mail](personalized-email.md) |
 
 Vier Arten gibt es im Editor, aber nicht hier: **Formular, Karussell, Merge-Inhalt und
 Leerbaustein**. Sie haben kein Werkzeug, weil kein echtes Exemplar gefunden wurde, aus dem sich ein

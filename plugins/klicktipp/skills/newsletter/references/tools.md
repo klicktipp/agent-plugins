@@ -21,14 +21,11 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `email-newsletter-delivery-configure` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
 | `email-newsletter-test-send` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `email-content-publish`. |
 | `email-newsletter-send` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
-| `email-newsletter-cancel` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. ⚠ nicht auf Production |
-| `email-signature-search` · `email-signature-get` | R | Signaturen, die unter einen Newsletter können, mit Absenderprofil — die Kandidaten für `signatureId`. ⚠ nicht auf Production |
-| `email-signature-create` · `email-signature-update` · `email-signature-content-replace` · `email-signature-delivery-configure` | / I / DI / I | Signatur anlegen (auch als Kopie), Name/Notiz/Labels, Inhaltsblock komplett ersetzen, Tags und Absenderprofil. ⚠ nicht auf Production |
+| `email-newsletter-cancel` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
 
 ## Inhalt
 
 - Newsletter
-- Signaturen — ⚠ nicht auf Production
 - Antwortformen
 
 ## Newsletter
@@ -153,72 +150,10 @@ abgewiesen — erst `email-content-publish`. `mode` ist Pflicht (`immediate` / `
 Default); `scheduledAt` ist bei `scheduled` Pflicht, bei `immediate` verboten, und trägt seinen
 UTC-Offset. Ändert sich ein gebundener Wert oder läuft die URL ab, neu vorbereiten.
 
-## Signaturen — ⚠ nicht auf Production
-
-Dort noch nicht freigeschaltet: „unknown tool" ist kein Fehler, die Freigabe steht aus. Auf
-Staging heißt die Familie `email-signature-*` (sechs Werkzeuge); die zwei Lesewerkzeuge sind auf
-manchen Ständen noch als `search-signatures` / `get-signature` unterwegs.
-
-### `email-signature-search` · `email-signature-get`
-**Wofür:** Signaturen samt Absenderprofil und ob sie unter einen Newsletter können. **Stolperer:** Die
-Suche lässt Unbrauchbare weg (kein Inhalt, fehlende Pflichtplatzhalter, gesperrte Absenderadresse) —
-`includeUnusable` zeigt sie mit Gründen. Der Signaturtext kommt nur mit `includeContent` (HTML,
-Text, transaktionale Variante), er ist kilobytegroß.
-
-### `email-signature-create`
-**Wofür:** eine Signatur anlegen — mit eigenem `content` oder als Kopie einer Signatur des Kontos
-(`sourceSignatureId`): `name` und `tagIds` ersetzen die Quellwerte, mitgegebener Inhalt und
-Absenderfelder überschreiben die kopierten, die digitale Visitenkarte der Quelle bleibt erhalten;
-weggelassene `notes`/`metaLabels` behalten bei einer Kopie die der Quelle. **Nicht:** Newsletter
-ändern, Tags oder Absenderadressen anlegen — beides muss vorher existieren. **Stolperer:** `tagIds`
-ist Pflicht und braucht mindestens einen Tag, der an keiner anderen Signatur hängt; ohne
-`sourceSignatureId` ist `content` Pflicht. Dazu die Platzhalterregeln unten. Die Antwort meldet nur
-**Flags** (HTML da, Text da, transaktional da), nicht den Inhalt — lesen mit `email-signature-get`
-und `includeContent: true`.
-
-### `email-signature-update`
-**Wofür:** Name, Notiz, Labels. **Nicht:** Inhalt, Tags, Absender. **Stolperer:** Die
-Standardsignatur lässt sich nicht umbenennen. Leerer String löscht die Notiz, leeres Array die
-Labels; weggelassen heißt behalten.
-
-### `email-signature-content-replace`
-**Wofür:** den **kompletten** Inhaltsblock ersetzen — HTML, Text und transaktionale Fassung — über
-denselben Konvertierungs-, Prüf- und Speicherweg wie die App. **Nicht:** Name, Notiz, Labels, Tags,
-Absenderprofil, Visitenkarte. **Stolperer:** Kein Undo. Transaktionale Felder ändern sich nur, wenn
-das Konto sie nutzen darf. Die Antwort meldet Flags, nicht den Inhalt.
-
-### `email-signature-delivery-configure`
-**Wofür:** Tags und Absenderprofil einer Signatur. **Stolperer:** `tagIds` ersetzt die Liste; eine
-normale Signatur braucht mindestens einen Tag, jeder Tag darf nur an einer Signatur hängen, nur die
-Standardsignatur darf eine leere Liste. `senderProfile` nimmt Absendername und die im Konto
-konfigurierten Adressen/Domains; die Antwort-Optionen gelten auch für CC, BCC und Empfänger; leere
-Strings leeren optionale Felder, weggelassene bleiben.
-
-### Die Platzhalterregeln für Signaturinhalt
-Sie gelten für `create` und `content-replace` gleich, und der Server weist ab, was sie verletzt:
-
-- **Normales HTML** braucht `%Link:Unsubscribe%` als `href` eines Links und die Adressplatzhalter
-  `%User:FirstName%`, `%User:LastName%`, `%User:Street%`, `%User:Zip%`, `%User:City%`,
-  `%User:Country%`. Konten, die Adressangaben weglassen dürfen, sind von den Adressplatzhaltern
-  befreit — vom Abmeldelink nicht.
-- **Text (plain)** braucht dieselben Platzhalter; der Abmelde-Platzhalter darf als Text stehen. Ein
-  mitgegebener Text wird getrimmt und **nur gespeichert, wenn das Konto Textbearbeitung erlaubt**;
-  sonst — auch wenn er fehlt oder leer ist — wird er ignoriert und aus dem HTML neu erzeugt. Erwarte
-  also nicht, dass gelieferter Text unverändert zurückkommt, wenn diese Fähigkeit fehlt. Das HTML
-  bleibt HTML.
-- **Transaktionales HTML** braucht die Adressplatzhalter und darf `%Link:Unsubscribe%` **nicht**
-  enthalten. `%Link:SubscriberInfo%` ist empfohlen, nicht Pflicht.
-
-Die transaktionale Fassung ist kein Randfall, sondern der Grund, warum es sie gibt: sie geht an
-Erstkontakte (SOI-Bestätigung), wo ein Abmeldelink von einem noch unbestätigten Abo abmelden würde.
-Biete sie beim Anlegen einer Signatur aktiv an, statt zu warten, bis jemand danach fragt — siehe
-[SKILL.md](../SKILL.md), Abschnitt 4.
-
 ## Antwortformen
 
 **Jedes Werkzeug veröffentlicht ein Output-Schema** (JSON Schema), das ein Client gegen
-`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun. Die einzige Ausnahme
-sind die sechs `email-signature-*`-Werkzeuge; die haben bewusst keines.
+`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun.
 
 Ein Schema **benennt Felder, es erklärt sie nicht**. Diese Seite bleibt deshalb die ausführlichere
 Quelle: was ein Feld bedeutet, wann es fehlt und was eine Absage auslöst, steht hier und nicht im

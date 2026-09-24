@@ -23,6 +23,8 @@ Konten kommt statt einer Antwort die Liste zur Auswahl zurück; dann `accountId`
 | `email-content-import` | DO | HTML → Editor-Dokument, Vollersatz ohne Undo. Der Einstieg **nur für HTML**, nie der Bearbeitungsweg. |
 | `email-content-document-import` | DO | Fertiges Editor-Dokument (JSON) → Körper, Vollersatz ohne Undo. Konvertiert nichts, verliert nichts. |
 | `email-content-copy` | DO | Körper einer anderen E-Mail des Kontos übernehmen, unverändert. Quelle darf versendet sein. |
+| `email-template-search` | ROI | Der Designkatalog des Editors, gefiltert nach Tag, Kategorie, Sammlung; seitenweise mit `total` und `nextPage`. |
+| `email-template-apply` | D | Ein Design in den Körper einer E-Mail legen, Vollersatz ohne Undo. |
 | `email-content-publish` | DO | Der Entwurf wird zum Versandinhalt. Ändert, was echte Empfänger bekämen. |
 
 ### `email-get`
@@ -98,6 +100,26 @@ sein und verliert seinen Körper vollständig. Quelle und Ziel dürfen nicht die
 eine leere Quelle wird abgewiesen, statt das Ziel zu leeren. Die erste Abweisung über bestehendem
 Inhalt sagt „A copy replaces the whole document" und zählt auf, was verloren ginge.
 
+### `email-template-search` · `email-template-apply`
+**Wofür:** mit einem fertigen Design anfangen, statt eine leere E-Mail zu bebausteinen. Die Suche
+liefert den Katalog, den auch der Editor im Vorlagen-Browser zeigt; `email-template-apply` legt
+eines davon in den Körper. Für jede E-Mail, die der Editor öffnet — Newsletter, Automations-Mail,
+Benachrichtigung —, ein Newsletter aus einem Design ist also `email-newsletter-draft-create` und
+dann dieser Aufruf.
+
+**Stolperer:** Die `templateId` ist die **id** aus der Suchantwort, ein Wort wie
+`monthly-marketing-dispatch` — keine Zahl. Was in der Miniaturbild-URL als Nummer steht, gehört dem
+Bildarchiv und wird als Design nicht gefunden. Die drei Filter sind freier Text aus dem Vokabular
+des Katalogs, und jeder Wert, mit dem die Suche **geantwortet** hat, wird auch wieder angenommen;
+ein unbekannter wird nicht abgewiesen, er trifft nur nichts.
+
+**Wähle nicht für den Nutzer aus.** Ein Design ist ein Layout, und sein Name beschreibt es nicht.
+Ein Host mit MCP Apps zeigt die Entwürfe als Bilder; ohne einen solchen nennst du die Namen und
+lässt wählen. Das Anwenden **ersetzt den Körper vollständig und ohne Undo** und veröffentlicht
+nichts. Über bestehendem Inhalt wird der erste Aufruf abgewiesen und zählt auf, was verloren ginge;
+erst `replaceExistingContent: true` schreibt — lass diesen ersten Aufruf laufen, statt das Flag
+vorsorglich mitzugeben, denn die Aufzählung ist das, was der Nutzer vor der Zustimmung sehen muss.
+
 ### `email-content-publish`
 **Wofür:** der Entwurf wird Versandinhalt. **Nicht:** senden. **Stolperer:** Ändert, was echte
 Empfänger bekämen, ohne Undo — nur nach Sichtung und auf Wunsch. Nimmt kein HTML, nur die
@@ -116,7 +138,7 @@ Speicherort und Stolperern — lies die eine, die du brauchst:
 `email-button-add` · `email-menu-add` · `email-social-add` · `email-divider-add` · `email-spacer-add`
 · `email-table-add`
 
-**Countdown, Kontaktkarte, Wowing-Video und KI-Text haben kein Add-Werkzeug mehr.** Es gab eines, und es
+**Countdown, Kontaktkarte und Wowing-Video haben kein Add-Werkzeug.** Es gab eines, und es
 konnte nur eine leere Hülle setzen: der Inhalt dieser drei entsteht in einem Dialog des
 KlickTipp-Editors, den kein Werkzeug hier erreicht. Ein so eingefügter Baustein sah platziert aus
 und zeigte beim Versand nichts. Wer einen Countdown, eine Visitenkarte oder ein Wowing-Video will,
@@ -286,8 +308,7 @@ Bedingungsarten.
 ## Antwortformen
 
 **Jedes Werkzeug veröffentlicht ein Output-Schema** (JSON Schema), das ein Client gegen
-`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun. Die einzige Ausnahme
-sind die sechs `email-signature-*`-Werkzeuge; die haben bewusst keines.
+`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun.
 
 Ein Schema **benennt Felder, es erklärt sie nicht**. Diese Seite bleibt deshalb die ausführlichere
 Quelle: was ein Feld bedeutet, wann es fehlt und was eine Absage auslöst, steht hier und nicht im

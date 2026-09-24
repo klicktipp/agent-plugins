@@ -11,22 +11,10 @@ steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Abl
 echten Empfänger, eine Automation) · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes
 Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Konto des Zugangs.
 
-**Auf Production verfügbar** sind die vierzehn Tag-, Kontakt- und Feld-Werkzeuge — `create-contact`
-eingeschlossen —, die zwei Opt-in-Leser und die drei Anmelde-Werkzeuge (`subscribe`, `unsubscribe`,
-`get-subscription-redirect-url`). **Nicht** freigegeben, jedes aus eigenem Grund: die beiden Löscher
-(`delete-manual-tag`, `delete-custom-field`) und alles am Einwilligungsnachweis. Die Aufschlüsselung
-mit Begründung steht in `../SKILL.md` unter „Verfügbarkeit".
-
 | Werkzeug | | Wofür |
 | --- | --- | --- |
-| `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten). **Auf Production verfügbar.** |
-| `create-opt-in-process` | | Prozess anlegen, optional als Kopie eines bestehenden. Die Bestätigungsmail entsteht mit. |
-| `update-opt-in-process` · `delete-opt-in-process` | I / D | Einstellungen schreiben; löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
-| `get-opt-in-confirmation-email` | R | Absenderseite der Bestätigungsmail: Betreff, Absender, Reply-To, CC/BCC, Domain — plus `senderEmailOptions` und `senderDomainOptions`, also das Erlaubte. |
-| `update-opt-in-confirmation-email` | I | Dieselben Einstellungen schreiben. Absender nur aus `senderEmailOptions`. Rechtlicher Einwilligungsnachweis — nur auf ausdrücklichen Wunsch ändern. |
-| `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content` | R / I | Der Text: HTML und Klartext. **Nicht mit den Baustein-Werkzeugen** — `bodyIsEditable` bleibt `false`. |
-| `preview-opt-in-confirmation-email` | ROI | Die Mail als Bild. Zeigt den gespeicherten Text, ohne Signatur und Bestätigungslink. |
-| `send-opt-in-confirmation-email-test` | DO | Testversand an eine Adresse. Macht aus ihr einen vertaggten Kontakt. |
+| `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten). |
+| `delete-opt-in-process` | D | Löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
 | `get-subscription-redirect-url` | R | Die Weiterleitungs-URL eines Abonnenten (Pending- oder Danke-Seite). |
 | `search-contacts` · `get-contact` | R | Kontakte suchen (Cursor, ohne Gesamtzahl) und Detail lesen. |
 | `subscribe` · `unsubscribe` | DO | Ein Kanal eines Kontakts an-/abmelden. Ändert einen echten Empfänger, kann Automationen starten. Brauchen `approval`. |
@@ -51,26 +39,12 @@ mit Begründung steht in `../SKILL.md` unter „Verfügbarkeit".
 Detail zusätzlich Bestätigungsmail, Weiterleitungen, Löschung ausstehender Abonnenten, Labels,
 Notizen. **Stolperer:** Gelöschte fehlen in der Suche; die volle Konfiguration nur im Detail.
 
-### `create-opt-in-process`
-**Wofür:** einen Prozess anlegen — Name ist Pflicht, alles Weitere wie beim Ändern.
-`copyFromOptInProcessId` kopiert einen bestehenden samt dem Text seiner Bestätigungsmail.
-**Stolperer:** `useForChangeEmail` gibt es hier nicht (es würde einem anderen Prozess eine Rolle
-wegnehmen); zwei gleiche Aufrufe erzeugen zwei Prozesse oder scheitern am doppelten Namen.
-
-### `get-/update-opt-in-confirmation-email-content`
-**Wofür:** den Text der Bestätigungsmail lesen und schreiben — HTML und Klartext, dazu der Betreff.
-**Stolperer:** Beide Körper werden ganz geschrieben, nicht gepatcht; wer nur einen schreibt,
-hinterlässt eine Mail, die zwei Empfängern zwei Dinge sagt. Ein Fehler der Inhaltsprüfung hält den
-Schreibvorgang an — dann steht `stored: false` in der Antwort, und die Mail sagt weiter, was sie
-vorher sagte. Von allen Antworten dieses Skills ist das die, bei der das Nachsehen sich
-lohnt: eine abgelehnte sieht einer erfolgreichen bis auf `stored` zum Verwechseln ähnlich.
-
-### `preview-opt-in-confirmation-email` · `send-opt-in-confirmation-email-test`
-**Wofür:** die Mail prüfen, bevor ein Kontakt sie bekommt — als Bild oder als echte Mail an eine
-Adresse. **Stolperer:** Die Vorschau zeigt den **gespeicherten** Text; Signatur, Bestätigungslink
-und Empfängerdaten kommen erst beim Versand dazu, ihr Fehlen ist kein Fehler. Der Testversand
-dagegen ändert das Konto: eine Adresse, die noch kein Kontakt war, wird einer und wird vertaggt —
-und Vertaggen startet Automationen.
+### `delete-opt-in-process`
+**Wofür:** einen Prozess samt seiner Bestätigungsmail entfernen. **Nicht:** die Kontakte — die
+bleiben angemeldet. **Stolperer:** Der Standard-Prozess des Kontos lässt sich nicht löschen, und ein
+Prozess, auf den Formulare, Kampagnen oder andere Entitäten zeigen, wird abgewiesen; die Absage
+nennt sie beim Namen und ist damit die Arbeitsliste, kein Hindernis. Anlegen und Einstellen gibt es
+hier nicht — was gelöscht ist, entsteht nur in der Oberfläche wieder.
 
 ### `get-subscription-redirect-url`
 **Wofür:** die Pending- (Bestätigung offen) oder Danke-Seite (bestätigt) eines Abonnenten, per

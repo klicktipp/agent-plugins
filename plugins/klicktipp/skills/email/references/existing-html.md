@@ -90,7 +90,7 @@ dem Import „fertig" zu melden.
 nimmt gerendertes HTML und nie das Dokument; je Baustein kommt zurück: Trennlinie als
 gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, Tabelle als
 einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merge-Inhalt und
-Add-ons (Countdown, Kontaktkarte, Wowing-Video, KI-Text, Signatur) als ihr gerendertes Ergebnis;
+Add-ons (Countdown, Kontaktkarte, Wowing-Video, Signatur) als ihr gerendertes Ergebnis;
 Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
 
 **Nach dem Import sagen die `warnings` des Ergebnisses, was diese eine Konvertierung wirklich

@@ -118,7 +118,7 @@ fertig macht. Dort antwortet der Aufruf mit „unknown tool" — verweise auf de
 statt einen Defekt zu suchen.
 
 **Was ein neuer Baustein mitbringt und was nicht** — die `warnings` der Schreibantwort, die drei
-Add-ons, deren Inhalt nur im Editor entsteht, der KI-Text-Baustein, und woher ein neu eingefügter
+Add-ons, deren Inhalt nur im Editor entsteht, und woher ein neu eingefügter
 Baustein sein Aussehen abschaut — steht in `references/adding-blocks.md`. Lies sie, bevor du einen
 Baustein **anlegst**; zum Ändern eines vorhandenen brauchst du sie nicht.
 
@@ -377,7 +377,7 @@ gespeicherte Struktur, und im normalen Ablauf brauchst du sie nicht.
 
 ## Einen Körper füllen
 
-Einen Vollersatz als *Änderung* gibt es nicht. Es gibt drei Wege, einen Körper zu **füllen**, und
+Einen Vollersatz als *Änderung* gibt es nicht. Es gibt vier Wege, einen Körper zu **füllen**, und
 welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorliegt:
 
 | Die Gestaltung liegt vor … | Weg | Verlust |
@@ -385,7 +385,13 @@ welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorlieg
 | als **andere E-Mail dieses Kontos** | `email-content-copy` | keiner |
 | als **Editor-Dokument** (Vorlage, Export) | `email-content-document-import` | keiner |
 | **nur als HTML** | `email-content-import` | die Konvertierung kostet |
+| als **Design im Katalog** | `email-template-search` → `email-template-apply` | keiner |
 | **gar nicht** | selbst schreiben → `references/authoring.md` | — |
+
+Der Katalog ist der Weg, wenn noch gar nichts dasteht und niemand ein bestimmtes Vorbild nennt:
+dieselben Entwürfe, die der Editor im Vorlagen-Browser zeigt. Die Auswahl gehört dem Nutzer — ein
+Layout beschreibt sich nicht durch seinen Namen. Angewandt wird über die **id** aus der
+Suchantwort, nicht über eine Nummer.
 
 Jeder dieser Wege ist **ein** Aufruf. Der Umweg „HTML der alten Mail holen und wieder importieren"
 ist ein Fehler und kein Notbehelf: er bezahlt eine Konvertierung für etwas, das als Dokument schon

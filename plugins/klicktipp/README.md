@@ -90,19 +90,17 @@ activation refuse a split test everywhere, because none of them can pick an arm
 | `assign-manual-tag` · `remove-manual-tag` | put a manual tag on a contact, or take it off |
 | `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` | the custom field definitions |
 
-**Deliberately not on production**, each for its own reason: `delete-manual-tag`
-and `delete-custom-field`, because deleting a field takes the value out of every
-contact of the account and cannot be undone; and everything
-that writes an opt-in process or its confirmation email, because that is the
-record of consent. Those stay with the web interface.
+| `delete-manual-tag` · `delete-custom-field` | remove one; deleting a field takes its value out of every contact of the account, and neither can be undone |
 
-**Opt-in** — reading has always worked on production; changing and deleting a
-process is the web interface's job there
+**Opt-in** — read a process or remove one. Creating a process and writing its
+confirmation email are the web interface's job: that email is the record of
+consent.
 
 | | |
 |---|---|
 | `search-opt-in-processes` | list the account's opt-in processes |
 | `get-opt-in-process` | read the full configuration of one |
+| `delete-opt-in-process` | remove one, with its confirmation email; the contacts stay subscribed |
 
 There is no separate delivery-status tool: where a newsletter stands with its
 dispatch is the `deliveryStatus` projection of `email-newsletter-get`. The
@@ -184,18 +182,15 @@ no layout.
 Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
-**What is not on production** — the `email-signature-*` family, and the tools
-that write an opt-in process or its confirmation email. A handful more is held
-back on purpose: the two deletions; the list above says which and why. Each is
-documented in the skill that uses it, with the note that an "unknown tool" there
-is the missing release and not a defect. What does work on production is picking
-an existing signature through `signatureId` in
-`email-newsletter-delivery-configure`.
+**What the skills describe is what the server serves.** A tool that is not in
+them does not exist here, and neither does the capability behind it: there is no
+tool that writes an email signature — an existing one is picked through
+`signatureId` in `email-newsletter-delivery-configure` — and none that creates
+an opt-in process or writes its confirmation email.
 
-The personalized email block is a case of its own: its two tools are gone
-everywhere, not held back. The add-on behind it is paid for separately and the
-work on it is deferred, and the editor offers the block only inside an
-automation — so a newsletter cannot get one at all. Blocks that already exist
+The personalized email block is a case of its own: the add-on behind it is paid
+for separately and the work on it is deferred, and the editor offers the block
+only inside an automation — so a newsletter cannot get one at all. Blocks that already exist
 stay readable, movable and removable.
 
 ## Support

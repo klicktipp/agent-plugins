@@ -15,26 +15,17 @@ der Antwort: ein Video ohne `thumbSrc`, eine Liste ohne `<ul>`/`<ol>`, ein unkon
 Add-on. Melde nie „hinzugefügt", wenn die Antwort dir sagt, dass der Baustein
 leer bleibt — sag, was noch fehlt und wo es gesetzt wird.
 
-**Countdown, Kontaktkarte, Wowing-Video und KI-Text kannst du nicht einfügen.** Ihr Inhalt entsteht in
+**Countdown, Kontaktkarte und Wowing-Video kannst du nicht einfügen.** Ihr Inhalt entsteht in
 einem Dialog des KlickTipp-Editors, und kein Werkzeug hier erreicht ihn. Es gab einmal Add-Werkzeuge
 dafür; sie setzten eine leere Hülle, die beim Versand nichts anzeigte, und sind genau deshalb weg.
 Wird einer dieser Bausteine gewünscht, ist die Antwort der Editor — nenne ihn, statt etwas
 Ähnliches aus Text und Bild nachzubauen und es als Countdown auszugeben. Vorhandene Bausteine
 dieser Art bleiben lesbar, verschiebbar und entfernbar.
 
-**Der KI-Text-Baustein** kommt dagegen weiterhin leer und bleibt es, bis jemand ihn im Editor
-einrichtet. Füge ihn nur ein, wenn der Nutzer ihn ausdrücklich will, und sag den Satz *vorher*:
-„Ich kann den Baustein setzen, einrichten musst du ihn im Editor — willst du das?"
-
-Der KI-Text-Baustein hat zusätzlich ein Tor: ohne die Freischaltung des Kontos wird sein Add mit
-`kind_not_available` abgewiesen und es ändert sich nichts. Das ist keine Störung, sondern eine
-Berechtigung — melde es als solche, statt es zu umgehen.
-
 **Die personalisierte E-Mail kannst du seit dem 18.09.2026 ebenfalls nicht mehr einfügen** — und
 hier liegt der Grund woanders: mit dem Baustein ist nichts verkehrt, das Add-on dahinter ist
-kostenpflichtig und die Arbeit daran vertagt. `email-personalized-email-add` und
-`email-personalized-email-write` sind deshalb entfallen; das Schreib-Werkzeug ging zudem mit einem
-gemeldeten Fehler heraus (ein Update nur des Namens wurde mit „carries no prompt" abgewiesen).
+kostenpflichtig und die Arbeit daran vertagt. Es gibt für ihn deshalb weder ein Anlege- noch ein
+Schreib-Werkzeug.
 
 Sag den Unterschied dazu, wenn jemand danach fragt: **der Editor hilft hier nicht.** Sein
 Einfügen-Menü führt diesen Baustein nicht — nur Automationen setzen einen. In einem Newsletter ist

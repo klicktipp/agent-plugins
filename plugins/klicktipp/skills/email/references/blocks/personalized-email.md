@@ -22,7 +22,7 @@ Familie **KlickTipp**. Im Dokument liegt er wie jedes Add-on als `mailup-bee-new
 
 Diese Felder nahmen die beiden entfallenen Werkzeuge.
 
-**Seit dem 18.09.2026 gibt es für diesen Baustein kein Werkzeug mehr.** `email-personalized-email-add` und `email-personalized-email-write` sind entfernt: das Add-on ist kostenpflichtig und die Arbeit daran vertagt. Das Schreib-Werkzeug ging zudem mit einem gemeldeten Fehler heraus — ein Update nur des Namens wurde mit „carries no prompt" abgewiesen, ein weggelassenes optionales Feld galt also als geleert.
+**Für diesen Baustein gibt es kein Werkzeug.** Das Add-on dahinter ist kostenpflichtig und die Arbeit daran vertagt; weder anlegen noch schreiben lässt er sich.
 
 **Der Editor ist hier kein Ersatz fürs Anlegen.** Sein Einfügen-Menü führt diesen Baustein nicht; nur Automationen setzen einen. In einem Newsletter ist er damit derzeit nicht anzulegen. Ein vorhandener Baustein bleibt lesbar, verschiebbar und entfernbar, und seine Anweisung ändert man im Editor.
 
