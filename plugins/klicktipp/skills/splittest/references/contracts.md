@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Stand 2026-09-24. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
 Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
 tut und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -13,7 +13,7 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 
 **Read split test**
 
-Reads a split test whole: the share of the audience the variants are sent to, the measuring period, the winner criterion, whether it has started, and every variant with its emailId, label ("A", "B"), name, subject and editorUrl. The test is named either by "campaignId" -- the newsletterId of get-newsletter -- or by the "emailId" of one variant, which answers with that variant`s test and its siblings; exactly one of the two, never both. "needsMoreVariants" is here -- a fresh test has one variant and cannot be sent until it has two -- and so is "hasStarted", which is what makes every further change refuse. Variants are changed by add-newsletter-split-test-variant, -update and -remove, the settings by configure-newsletter-split-test, the content of a variant by the email tools through its editorUrl. A campaign that is not a split test is refused, not answered with an empty test.
+Reads a split test whole: the share of the audience the variants are sent to, the measuring period, the winner criterion, whether it has started, and every variant with its emailId, label ("A", "B"), name, subject and editorUrl. The test is named either by "campaignId" -- the newsletterId of get-newsletter -- or by the "emailId" of one variant, which answers with that variant's test and its siblings; exactly one of the two, never both. "needsMoreVariants" is here -- a fresh test has one variant and cannot be sent until it has two -- and so is "hasStarted", which is what makes every further change refuse. Variants are changed by add-newsletter-split-test-variant, -update and -remove, the settings by configure-newsletter-split-test, the content of a variant by the email tools through its editorUrl. A campaign that is not a split test is refused, not answered with an empty test.
 
 Parameter:
 

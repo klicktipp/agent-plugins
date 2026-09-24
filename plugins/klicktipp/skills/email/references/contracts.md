@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Stand 2026-09-22. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Stand 2026-09-24. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
 Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
 tut und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -32,7 +32,7 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 
 **Import email content from HTML**
 
-Converts HTML into the drag-and-drop editor document of one KlickTipp email newsletter, addressed by its editor URL -- the entry path for a design that exists only as HTML; changes afterwards belong to the block tools. Replaces the stored draft entirely, has no undo, and does not publish: the dispatch content changes only through publish-newsletter-email-content, named in nextAction. Bound to the content revision of the preceding read. A newsletter that already has content is refused on the first call with a list of what it holds; a second call with replaceExistingContent set to true converts. Non-HTML blocks (add-ons, decisions, AI blocks) are rendered or dropped; the warnings record what it cost. The body has to carry the %User:Signature%placeholder or spell out postal details and unsubscribe link, else it is refused. Returns content status, new revision and editor URL.
+Converts HTML into the drag-and-drop editor document of one KlickTipp email newsletter, addressed by its editor URL -- the entry path for a design that exists only as HTML; changes afterwards belong to the block tools. Replaces the stored draft entirely, has no undo, and does not publish: the dispatch content changes only through publish-newsletter-email-content, named in nextAction. Bound to the content revision of the preceding read. A newsletter that already has content is refused on the first call with a list of what it holds; a second call with replaceExistingContent set to true converts. Non-HTML blocks (add-ons, decisions, AI blocks) are rendered or dropped; the warnings record what it cost. The body has to carry the %User:Signature%placeholder or spell out postal details and unsubscribe-contact link, else it is refused. Returns content status, new revision and editor URL.
 
 Parameter:
 
@@ -175,7 +175,7 @@ Parameter:
 
 **Move email block**
 
-Moves one block to another place in its column, or into the column whose uuid it names. The same block moves, so its styling, its uuid and an add-on`s configuration survive -- removing it and adding it again would not. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Moves one block to another place in its column, or into the column whose uuid it names. The same block moves, so its styling, its uuid and an add-on's configuration survive -- removing it and adding it again would not. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -203,7 +203,7 @@ Parameter:
 
 **Write email block style**
 
-Writes the space around one block and how its content sits -- left, centred, right or justified. Works for a block of any kind, an image and a divider included. The typography of a text block is not here: its font, size, line height and colour live in the markup of that block, so they are changed with update-email-editor-text, and the size an image is shown at belongs to the image. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Writes the space around one block and how its content sits -- left, centred, right or justified. Works for a block of any kind, an image and a divider included; those two take left, centre and right only, because justifying a picture or a rule means nothing. The alignment lands where that kind of block keeps it, which is not the same field for all of them, and a read reports it from there, so what comes back is what the recipient sees. The typography of a text block is not here: its font, size, line height and colour live in the markup of that block, so they are changed with update-email-editor-text, and the size an image is shown at belongs to the image. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -223,7 +223,7 @@ Parameter:
 
 **Add email button**
 
-Puts a button into the column whose uuid it names and answers with the uuid of the new block. It takes label, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest button block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a button into the column whose uuid it names and answers with the uuid of the new block. It takes label, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest button block of this email; its markup does not come with it, so start from a neighbour's. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -290,7 +290,7 @@ Parameter:
 
 **Add email heading**
 
-Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour`s, and with none to copy its text colour is the email`s own default, set with update-email-editor-page-style. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a heading into the column whose uuid it names and answers with the uuid of the new block. It takes text and level straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest heading block of this email; its markup does not come with it, so start from a neighbour's, and with none to copy its text colour is the email's own default, set with update-email-editor-page-style. The level is part of the structure, not of the look: h1 is the one headline of the mail, h2 a section, h3 a subsection. A newsletter with several sections wants h2 -- that is what real ones use most. Size and colour are the markup, not the level. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -306,7 +306,7 @@ Parameter:
 
 **Add email custom HTML**
 
-Puts a custom HTML block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest html block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a custom HTML block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest html block of this email; its markup does not come with it, so start from a neighbour's. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -356,7 +356,7 @@ Parameter:
 
 **Add email image**
 
-Puts an image into the column whose uuid it names and answers with the uuid of the new block. It takes src, alt, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest image block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts an image into the column whose uuid it names and answers with the uuid of the new block. It takes src, alt, href straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest image block of this email; its markup does not come with it, so start from a neighbour's. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -373,7 +373,7 @@ Parameter:
 
 **Write email image**
 
-Points image blocks at other images and sets their alternative text or their link, several in one call -- swapping the pictures of a newsletter is one call and one revision, not one per picture. The URL has to be one of this account, from list-email-editor-images or from what open-email-editor-image-upload returned: a provider or stock URL makes every recipient`s mail client contact a third party and breaks the day the picture disappears there. The width the image is shown at belongs to the block and is not changed here. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Points image blocks at other images and sets their alternative text or their link, several in one call -- swapping the pictures of a newsletter is one call and one revision, not one per picture. The URL has to be one of this account, from list-email-editor-images or from what open-email-editor-image-upload returned: a provider or stock URL makes every recipient's mail client contact a third party and breaks the day the picture disappears there. The width the image is shown at belongs to the block and is not changed here. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -390,7 +390,7 @@ Parameter:
 
 **Add email list**
 
-Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a list into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest list block of this email; its markup does not come with it, so start from a neighbour's. With no block of its kind to copy, its text and link colour are the email's own defaults, set with update-email-editor-page-style -- so set those first and add the blocks after. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -456,7 +456,7 @@ Parameter:
 
 **Add email paragraph**
 
-Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a paragraph into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest paragraph block of this email; its markup does not come with it, so start from a neighbour's. With no block of its kind to copy, its text and link colour are the email's own defaults, set with update-email-editor-page-style -- so set those first and add the blocks after. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -516,7 +516,7 @@ Parameter:
 
 **Add email social links**
 
-Puts a social block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The icon pictures come from list-email-editor-social-icons, which hands back the ones this account already uses; any URL from the account`s own image library works too. An invented src resolves to nothing -- a hole in the row that no one sees until the mail is out. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a social block into the column whose uuid it names, with its icons, and answers with the uuid of the new block. The icon pictures come from list-email-editor-social-icons, which hands back the ones this account already uses; any URL from the account's own image library works too. An invented src resolves to nothing -- a hole in the row that no one sees until the mail is out. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -536,7 +536,7 @@ Parameter:
 
 **Search email social icons**
 
-Lists the icon pictures this email already uses, with the network, the alternative text and the tooltip each carries, most used first. The pictures come from the editor`s own icon sets, which this server cannot enumerate, so one reused from here is the only src that stays inside the set a person picked in the editor -- which is why this read precedes add-email-editor-social-links and update-email-editor-social-links. A src from anywhere else resolves to nothing, and that hole in the row stays invisible until the mail is out at every recipient. An account`s own picture works as an icon too and is found with list-email-editor-images. An empty answer means this email carries no icon yet; then the library is the remaining source, and a social block placed once in the editor is the way on.
+Lists the icon pictures this email already uses, with the network, the alternative text and the tooltip each carries, most used first. The pictures come from the editor's own icon sets, which this server cannot enumerate, so one reused from here is the only src that stays inside the set a person picked in the editor -- which is why this read precedes add-email-editor-social-links and update-email-editor-social-links. A src from anywhere else resolves to nothing, and that hole in the row stays invisible until the mail is out at every recipient. An account's own picture works as an icon too and is found with list-email-editor-images. An empty answer means this email carries no icon yet; then the library is the remaining source, and a social block placed once in the editor is the way on.
 
 Parameter:
 
@@ -547,7 +547,7 @@ Parameter:
 
 **Write email social links**
 
-Writes the icons of one social block: the picture of each, where it leads, its name and its alternative text. The list replaces the list: the call carries every icon the block should have, in order. The icon pictures come from the editor`s own icon sets, so a src from what the read returned resolves and an invented URL does not; what an icon is (follow, share) and how its link opens are kept from the icon that was there. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Writes the icons of one social block: the picture of each, where it leads, its name and its alternative text. The list replaces the list: the call carries every icon the block should have, in order. The icon pictures come from the editor's own icon sets, so a src from what the read returned resolves and an invented URL does not; what an icon is (follow, share) and how its link opens are kept from the icon that was there. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -580,7 +580,7 @@ Parameter:
 
 **Add email table**
 
-Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. The block copies the look of the nearest table of this email; with none to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a table into the column whose uuid it names, with its rows, and answers with the uuid of the new block. A table renders as a grid, so every row needs the same number of cells -- a short row is a hole in it. The block copies the look of the nearest table of this email; with none to copy, its text colour is the email's own default and its link colour the email's own link colour, both set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -609,7 +609,7 @@ Parameter:
 
 **Add email text**
 
-Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour`s. With no block of its kind to copy, its text colour is the email`s own default, set with update-email-editor-page-style. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a text block into the column whose uuid it names and answers with the uuid of the new block. It takes html straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest text block of this email; its markup does not come with it, so start from a neighbour's. With no block of its kind to copy, its text and link colour are the email's own defaults, set with update-email-editor-page-style -- so set those first and add the blocks after. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -640,7 +640,7 @@ Parameter:
 
 **Add email video**
 
-Puts a video into the column whose uuid it names and answers with the uuid of the new block. It takes src, thumbSrc straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest video block of this email; its markup does not come with it, so start from a neighbour`s. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+Puts a video into the column whose uuid it names and answers with the uuid of the new block. It takes src, thumbSrc straight away, so a filled block is one call and one revision rather than two. The block copies the look of the nearest video block of this email; its markup does not come with it, so start from a neighbour's. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
 
 Parameter:
 
@@ -775,7 +775,7 @@ Parameter:
 
 **Search email templates**
 
-Searches the design catalogue the email editor's template browser shows, and returns each design with its id, name, thumbnail and the tags, categories and collections it carries -- the same three filters this tool takes, so an answer says how to narrow the next call: a category, collection or tag this tool ANSWERED with is always one it accepts back. All three are free text out of the catalogue`s own vocabulary, and a value it does not know matches nothing rather than being refused. Paged: twelve per page by default, with total and nextPage. A host that renders MCP Apps shows the designs as pictures; without one, offer the names and let the user pick, because a template is a layout and its name does not describe it. Reads only: this does not create anything and does not change an existing email.
+Searches the design catalogue the email editor's template browser shows, and returns each design with a number, its id, name, thumbnail and the tags, categories and collections it carries. The number is for pointing at a design; apply takes the id. The three lists are the same three filters this tool takes, so an answer says how to narrow the next call: a category, collection or tag this tool ANSWERED with is always one it accepts back. All three are free text out of the catalogue's own vocabulary, and a value it does not know matches nothing rather than being refused. Paged: twelve per page by default, with total and nextPage. A host that renders MCP Apps shows the designs as pictures; without one, offer the names and let the user pick, because a template is a layout and its name does not describe it. Reads only: this does not create anything and does not change an existing email.
 
 Parameter:
 - `tag` — null | string (maxLength 250): Narrow by one look-and-feel tag, e.g. "light", "white", "three-columns"; omit for all
@@ -789,7 +789,7 @@ Parameter:
 
 **Apply design to email**
 
-Puts one design from the KlickTipp template catalogue into the body of an email, addressed by its editor URL. Takes the templateId search-email-editor-templates returned; the design itself is fetched from the catalogue on the call. Works for any email the editor opens -- a newsletter draft, an automation email, a notification email -- so starting a newsletter from a design is create-newsletter-draft followed by this. Replaces the stored draft entirely, without undo, and does not publish; use publish-newsletter-email-content. Bound to the contentRevision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
+Puts one design from the KlickTipp template catalogue into the body of an email, addressed by its editor URL. Takes the id search-email-editor-templates returned, not the number beside it; the design itself is fetched from the catalogue on the call. Works for any email the editor opens -- a newsletter draft, an automation email, a notification email -- so starting a newsletter from a design is create-newsletter-draft followed by this. Replaces the stored draft entirely, without undo, and does not publish; use publish-newsletter-email-content. Bound to the contentRevision of the preceding read. An email that already has content is refused once with a list of what it holds; call again with replaceExistingContent true to write. Returns content status, new revision and editor URL.
 
 Parameter:
 - `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email to write, exactly as get-email-editor-content returned it

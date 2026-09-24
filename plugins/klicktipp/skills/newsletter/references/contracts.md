@@ -5,7 +5,7 @@ ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Bes
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
 
-Stand 2026-09-18. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
+Stand 2026-09-24. Diese Datei spiegelt den Server, sie interpretiert ihn nicht: ändert sich eine
 Werkzeugbeschreibung, wird sie hier wörtlich nachgezogen. Wofür ein Werkzeug da ist, was es nicht
 tut und woran man sich stößt, steht in [tools.md](tools.md).
 
@@ -51,7 +51,7 @@ Parameter:
 
 **Create newsletter draft**
 
-Creates an email newsletter draft in KlickTipp -- name, subject, optional preheader -- and returns newsletter ID, email ID and deep links. Nothing is sent. A draft has no audience filter yet: an unfiltered audience means every active contact of the account (mode "all_contacts"). The subject is the line every recipient sees; changing it later through update-newsletter-draft invalidates the content revisions read before. Body: block tools (update-email-editor-text and siblings). Audience: update-newsletter-draft. Sender: configure-newsletter-delivery. "splitTest" makes it a split test, irreversibly, with one variant -- more via add-newsletter-split-test-variant, settings via configure-newsletter-split-test; needs a premium account, "conversions"/"revenue" the conversion pixel, refused before creation.
+Creates an email newsletter draft in KlickTipp -- name, subject, optional preheader -- and returns newsletter ID, email ID and deep links. Nothing is sent. A draft has no audience filter yet: an unfiltered audience means every active contact of the account (mode "all_contacts"). The subject is the line every recipient sees; changing it later through update-newsletter-draft invalidates the content revisions read before. Body: block tools (update-email-editor-text and siblings). Audience: update-newsletter-draft. Sender: configure-newsletter-delivery. "splitTest" makes it a split test, irreversibly, with one variant -- more via add-newsletter-split-test-variant, settings via configure-newsletter-split-test; needs a premium account, "conversions"/"revenue" the conversion pixel, refused before creation. "emailEditor" is fixed at creation; omit it unless the account uses the previous editor.
 
 Parameter:
 
@@ -59,6 +59,7 @@ Parameter:
 - `subject`* — string (minLength 1; maxLength 998): Subject line, without HTML. It is the line every recipient sees, and no part of it is derived from anything else in this call. Correcting it later is update-newsletter-draft, which invalidates the content revisions read before
 - `notes` — null | string (maxLength 1000): Internal note about the purpose of this newsletter, never part of the email
 - `preheader` — null | string (maxLength 120): Inbox preview line, at most 120 characters, without HTML; omit to leave it empty. Not part of the content document: an HTML import cannot set it
+- `emailEditor` — null | string (einer von `drag-and-drop`, `rich-text`): Editor the email is created for. Omit it, which means "drag-and-drop": that is the editor KlickTipp builds on and the one every content and design tool works with. Pass "rich-text" only when the account authors in the previous HTML editor and asked for it. The choice cannot be changed afterwards
 - `splitTest` — object | null: Makes the newsletter a split test, irreversibly: "testSizePercent" (2-98), "testDurationHours" (1-27777), "winnerBy" ("opens", "clicks", "conversions", "revenue"; the last two need the conversion pixel). All three are required and KlickTipp has no default for any of them, so any value here is a choice somebody made; together they settle what share of real recipients gets a test version and for how long. Needs a premium account; omit for a normal newsletter
   - `testSizePercent`* — integer (minimum 2; maximum 98)
   - `testDurationHours`* — integer (minimum 1; maximum 27777)
@@ -103,7 +104,7 @@ Parameter:
 
 **Configure newsletter delivery**
 
-Writes the delivery configuration of an email newsletter in KlickTipp: sender name, sender address, reply address, sending domain and signature. Reports back what is still missing before the newsletter could be sent, together with the sender addresses, sending domains and signatures the account may use -- and refuses anything outside those lists before writing, naming what would be accepted. An explicit sender address and the sending domain have to belong together: changing the address alone is refused when the stored domain is not the one bound to it. This tool neither schedules nor activates anything and reaches no recipient -- activation is a separate tool. Arguments that are left out keep their current value. Only a newsletter that was never scheduled can be configured: any other lifecycle state is refused before anything is written.
+Writes the delivery configuration of an email newsletter in KlickTipp: sender name, sender address, reply address, sending domain and signature. Reports back what is still missing before the newsletter could be sent, together with the sender addresses, sending domains and signatures the account may use. Concrete sender addresses are checked against their live verified domains; changing the address also derives and stores its matching domain. The sender and domain dispatch-profile sources are selected together. This tool neither schedules nor activates anything and reaches no recipient -- activation is a separate tool. Arguments that are left out keep their current value. Only a newsletter that was never scheduled can be configured: any other lifecycle state is refused before anything is written.
 
 Parameter:
 
@@ -150,7 +151,7 @@ Parameter:
 
 **Cancel a newsletter dispatch**
 
-Takes back the dispatch of an email newsletter that was scheduled or has just started, so it becomes a draft again and reaches nobody further. THIS IS THE ANSWER TO "stop it", "cancel the send" AND "undo the schedule". Only while the delivery status says canBeCancelled: once a dispatch is far enough along it cannot be called off, and the refusal says so rather than pretending. What already went out stays out -- this stops what has not been sent yet, it does not recall mail. The newsletter itself, its content and its audience are untouched; only the dispatch is undone, and activating it again is prepare-newsletter-dispatch. Ask the person before calling this: a dispatch someone set up deliberately is not yours to stop on your own reading of a situation.
+Takes back the dispatch of an email newsletter, so it becomes a draft again and reaches nobody further. THIS IS THE ANSWER TO "stop it", "cancel the send" AND "undo the schedule" -- it covers both a dispatch that is under way and one that is still waiting for a future moment, which the platform treats as two different things and a caller does not have to. Only while the delivery status says canBeCancelled: once a dispatch is far enough along it cannot be called off, and the refusal says so rather than pretending. What already went out stays out -- this stops what has not been sent yet, it does not recall mail. The newsletter itself, its content and its audience are untouched; only the dispatch is undone, and activating it again is prepare-newsletter-dispatch. Ask the person before calling this: a dispatch someone set up deliberately is not yours to stop on your own reading of a situation.
 
 Parameter:
 
