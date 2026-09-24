@@ -8,6 +8,59 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.16.1 — 2026-09-24
+
+Datumsangaben aus den Skills entfernt. Eine Referenz, die „Stand 2026-09-24" trägt oder erklärt,
+seit wann ein Baustein fehlt und wie viele Werkzeuge es „vorher" waren, erzählt dem Agenten
+Geschichte statt Gegenwart — und altert bei jeder Server-Änderung, auch wenn die Aussage darunter
+noch stimmt. Betroffen sind neun Dateien in allen fünf Skills; der Inhalt bleibt, nur der Zeitbezug
+fällt weg.
+
+## 0.16.0 — 2026-09-24
+
+Die Werkzeugnamen des Servers sind umbenannt worden, und die Skills ziehen nach. Der Name beginnt
+jetzt mit dem Verb und nennt die Sache so, wie der Katalog sie führt:
+
+- `email-get` → `get-email-editor-content`
+- `email-content-import` → `replace-email-editor-content-from-html`
+- `email-block-style-write` → `update-email-editor-block-style`
+- `email-newsletter-get` → `get-newsletter`
+- `email-content-publish` → `publish-newsletter-email-content`
+- `email-newsletter-send` → `prepare-newsletter-dispatch`
+
+Der letzte ist mehr als eine Umbenennung: der Aufruf bereitet den Versand vor, die Bestätigung ist
+ein zweiter Schritt, und der alte Name behauptete das Gegenteil.
+
+Jeder Name in dieser Fassung wurde gegen den Server geprüft, nicht aus der Umbenennung übernommen.
+Alte Namen funktionieren nicht weiter — eine Sitzung mit einem Skill dieser Fassung gegen einen
+älteren Server findet die Werkzeuge nicht, und umgekehrt.
+
+## 0.15.0 — 2026-09-24
+
+Die Skills beschreiben ab hier genau die Werkzeuge, die Produktion veröffentlicht — nicht die, die
+auf dem Server existieren.
+
+- **Die Signaturen sind raus.** Sechs Verträge von `email-signature-search` bis
+  `email-signature-delivery-configure` standen in den Newsletter-Verträgen, aber `SignatureTool`
+  steht auf keiner Freigabeliste. Wer dem Skill folgte, rief ein Werkzeug auf, das seine Sitzung
+  nicht kennt.
+
+- **Opt-in-Prozesse anlegen und ändern ebenfalls**, zusammen mit der ganzen Familie um die
+  Bestätigungsmail — lesen, schreiben, Inhalt, Testversand, Vorschau. Lesen und Löschen eines
+  Prozesses bleiben dokumentiert, denn die sind freigegeben; Anlegen und Ändern sitzen in eigenen
+  Klassen, die es nicht sind.
+
+- **Der Designkatalog kam dafür dazu.** `email-template-search` liefert den Katalog, den auch der
+  Vorlagen-Browser des Editors zeigt, `email-template-apply` legt eines davon in den Körper — für
+  jede E-Mail, die der Editor öffnet, nicht nur für Newsletter. Mit dem Stolperer, an dem sonst
+  jeder hängenbleibt: die `templateId` ist ein Wort wie `monthly-marketing-dispatch`, keine Zahl.
+  Die Nummer in der Miniaturbild-URL gehört dem Bildarchiv.
+
+- **Die eigene Referenzdatei des KI-Textes ist weg.** Der Baustein hat seit 0.14.1 kein Werkzeug
+  mehr und gehört damit zu denen, die im Editor entstehen und über die Werkzeuge nur lesbar,
+  verschiebbar und entfernbar sind — dieselbe Gruppe wie Countdown, Kontaktkarte und Wowing-Video,
+  und dort steht er jetzt auch.
+
 ## 0.14.1 — 2026-09-22
 
 Five places where a skill told the agent something the server does not say. Each was measured
