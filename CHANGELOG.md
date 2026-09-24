@@ -8,6 +8,24 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.17.0 — 2026-09-24
+
+**Ein Design lässt sich jetzt ansehen, bevor es etwas ersetzt.** `preview-email-editor-template`
+rendert eines aus dem Katalog ganz, in einem eigenen Fenster, und rührt dabei nichts an.
+
+Das schließt die Lücke zwischen den beiden Werkzeugen, die es schon gab. Die Kachel aus der Suche
+ist ein auf feste Höhe beschnittenes Miniaturbild, ein Design ist eine Spalte — alles unter diesem
+Schnitt, meist das meiste, bekam man bisher nur zu sehen, indem man das Design anwendete. Und das
+ersetzt einen Körper ohne Undo. Hinsehen war also ein Schreibzugriff.
+
+Gerendert wird das Dokument des Designs selbst, nicht das Katalogbild, und durch denselben
+Renderer, den die E-Mail-Vorschau benutzt: was hier abgenommen wird, ist das, was
+`replace-email-editor-content-from-template` schreibt. Ohne einen Host mit MCP Apps trägt die
+Antwort `contentHtml`.
+
+Die Auswahlregel im Skill ändert sich damit: erst suchen, dann die engere Auswahl ansehen, dann den
+Nutzer entscheiden lassen — statt ihm Namen vorzulesen, die ein Layout nicht beschreiben.
+
 ## 0.16.1 — 2026-09-24
 
 Datumsangaben aus den Skills entfernt. Eine Referenz, die „Stand 2026-09-24" trägt oder erklärt,

@@ -24,6 +24,7 @@ Konten kommt statt einer Antwort die Liste zur Auswahl zurück; dann `accountId`
 | `replace-email-editor-content-from-document` | DO | Fertiges Editor-Dokument (JSON) → Körper, Vollersatz ohne Undo. Konvertiert nichts, verliert nichts. |
 | `replace-email-editor-content-from-email` | DO | Körper einer anderen E-Mail des Kontos übernehmen, unverändert. Quelle darf versendet sein. |
 | `search-email-editor-templates` | ROI | Der Designkatalog des Editors, gefiltert nach Tag, Kategorie, Sammlung; seitenweise mit `total` und `nextPage`. |
+| `preview-email-editor-template` | ROI | Ein Design ganz ansehen, bevor es etwas ersetzt — gerendert, nicht als Miniaturbild. |
 | `replace-email-editor-content-from-template` | D | Ein Design in den Körper einer E-Mail legen, Vollersatz ohne Undo. |
 | `publish-newsletter-email-content` | DO | Der Entwurf wird zum Versandinhalt. Ändert, was echte Empfänger bekämen. |
 
@@ -100,7 +101,7 @@ sein und verliert seinen Körper vollständig. Quelle und Ziel dürfen nicht die
 eine leere Quelle wird abgewiesen, statt das Ziel zu leeren. Die erste Abweisung über bestehendem
 Inhalt sagt „A copy replaces the whole document" und zählt auf, was verloren ginge.
 
-### `search-email-editor-templates` · `replace-email-editor-content-from-template`
+### `search-email-editor-templates` · `preview-email-editor-template` · `replace-email-editor-content-from-template`
 **Wofür:** mit einem fertigen Design anfangen, statt eine leere E-Mail zu bebausteinen. Die Suche
 liefert den Katalog, den auch der Editor im Vorlagen-Browser zeigt; `replace-email-editor-content-from-template` legt
 eines davon in den Körper. Für jede E-Mail, die der Editor öffnet — Newsletter, Automations-Mail,
@@ -113,9 +114,17 @@ Bildarchiv und wird als Design nicht gefunden. Die drei Filter sind freier Text 
 des Katalogs, und jeder Wert, mit dem die Suche **geantwortet** hat, wird auch wieder angenommen;
 ein unbekannter wird nicht abgewiesen, er trifft nur nichts.
 
+**Dazwischen gehört das Ansehen.** `preview-email-editor-template` rendert ein Design ganz, in
+einem eigenen Fenster, ohne irgendetwas zu berühren. Das ist nicht dasselbe wie die Kachel aus der
+Suche: die ist ein auf feste Höhe beschnittenes Miniaturbild, ein Design ist eine Spalte, und alles
+unter diesem Schnitt — meist das meiste — sieht man erst hier. Gerendert wird das Dokument des
+Designs selbst, also genau das, was `replace-email-editor-content-from-template` schreiben würde.
+
 **Wähle nicht für den Nutzer aus.** Ein Design ist ein Layout, und sein Name beschreibt es nicht.
-Ein Host mit MCP Apps zeigt die Entwürfe als Bilder; ohne einen solchen nennst du die Namen und
-lässt wählen. Das Anwenden **ersetzt den Körper vollständig und ohne Undo** und veröffentlicht
+Zeige es, statt es zu beschreiben: erst die Suche, dann die Vorschau für die engere Auswahl, dann
+die Entscheidung des Nutzers. Ohne einen Host mit MCP Apps trägt die Antwort der Vorschau
+`contentHtml`, und du hast immer noch das Design statt nur seinen Namen. Das Anwenden **ersetzt den
+Körper vollständig und ohne Undo** und veröffentlicht
 nichts. Über bestehendem Inhalt wird der erste Aufruf abgewiesen und zählt auf, was verloren ginge;
 erst `replaceExistingContent: true` schreibt — lass diesen ersten Aufruf laufen, statt das Flag
 vorsorglich mitzugeben, denn die Aufzählung ist das, was der Nutzer vor der Zustimmung sehen muss.

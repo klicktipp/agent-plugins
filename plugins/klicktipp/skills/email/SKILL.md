@@ -385,7 +385,7 @@ welcher es ist, entscheidet allein die Form, in der die Gestaltung schon vorlieg
 | als **andere E-Mail dieses Kontos** | `replace-email-editor-content-from-email` | keiner |
 | als **Editor-Dokument** (Vorlage, Export) | `replace-email-editor-content-from-document` | keiner |
 | **nur als HTML** | `replace-email-editor-content-from-html` | die Konvertierung kostet |
-| als **Design im Katalog** | `search-email-editor-templates` → `replace-email-editor-content-from-template` | keiner |
+| als **Design im Katalog** | `search-email-editor-templates` → `preview-email-editor-template` → `replace-email-editor-content-from-template` | keiner |
 | **gar nicht** | selbst schreiben → `references/authoring.md` | — |
 
 Der Katalog ist der Weg, wenn noch gar nichts dasteht und niemand ein bestimmtes Vorbild nennt:

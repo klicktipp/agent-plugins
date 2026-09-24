@@ -24,7 +24,8 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `add-email-editor-video` · `update-email-editor-video` · `list-email-editor-images` · `search-email-editor-stock-images` ·
 `list-email-editor-image-folders` · `create-email-editor-image-folder` · `delete-email-editor-image-folder` ·
 `open-email-editor-image-upload` · `upload-email-editor-image-file` · `upload-email-editor-image-from-url` ·
-`preview-email-editor-image` · `search-email-editor-templates` · `replace-email-editor-content-from-template` ·
+`preview-email-editor-image` · `search-email-editor-templates` · `preview-email-editor-template` ·
+`replace-email-editor-content-from-template` ·
 `get-email-editor-display-condition-capabilities` ·
 `update-email-editor-display-condition` · `configure-email-editor-row-display-condition` · `list-email-editor-display-conditions`
 
@@ -783,6 +784,16 @@ Parameter:
 - `collection` — null | string (maxLength 250): Narrow by one collection as this tool reports them, e.g. "welcome-series"; omit for all
 - `page` — null | integer (minimum 1): Which page of the catalogue, from 1; default 1
 - `pageSize` — null | integer (minimum 1; maximum 35): How many designs per page, 1-35; default 12
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `preview-email-editor-template` · ROI
+
+**Preview email template**
+
+Renders one design of the KlickTipp template catalogue and shows it whole, in an MCP App window, so a person can see it before it replaces anything. Takes the id search-email-editor-templates returned, the one that reads like "monthly-marketing-dispatch"; a number from that answer is refused by name. Renders the design itself, not the catalogue thumbnail, so what is approved here is what replace-email-editor-content-from-template would write. Reads only: no email is touched, nothing is stored and nothing is sent. The result carries contentHtml for a host without MCP Apps support.
+
+Parameter:
+- `templateId`* — string (minLength 1; maxLength 250): id of the design, as search-email-editor-templates returned it
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `replace-email-editor-content-from-template` · D

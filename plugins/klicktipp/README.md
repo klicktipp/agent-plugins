@@ -55,7 +55,7 @@ Both targets read the same `.mcp.json`.
 | `email-<block>-write` | change the content of an existing block of that kind |
 | `email-<block>-style-write` | change the styling of a block, a column, a row or the page |
 | `move-email-editor-block`, `remove-email-editor-block` | move a block within the document, or take it out |
-| `search-email-editor-templates` · `replace-email-editor-content-from-template` | find a design of the account's catalogue, and put it on an email |
+| `search-email-editor-templates` · `preview-email-editor-template` · `replace-email-editor-content-from-template` | find a design of the account's catalogue, look at one whole, and put it on an email |
 | `get-email-editor-display-condition-capabilities` | what a display condition may say in this account |
 | `update-email-editor-display-condition` · `configure-email-editor-row-display-condition` | write a named display condition, and bind a row to it |
 | `list-email-editor-display-conditions` | which display conditions an email carries, and which rows each governs |
