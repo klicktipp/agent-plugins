@@ -145,8 +145,8 @@ und zeigte beim Versand nichts. Wer einen Countdown, eine Visitenkarte oder ein 
 legt ihn im Editor an — sag das, statt einen Umweg zu suchen. Vorhandene Bausteine dieser Art
 bleiben lesbar, verschiebbar und entfernbar.
 
-Die **personalisierte E-Mail** hat seit dem 18.09.2026 gar kein Werkzeug mehr: `-add` und `-write`
-sind entfernt, weil das Add-on kostenpflichtig und die Arbeit daran vertagt ist. Anders als bei den
+Die **personalisierte E-Mail** hat gar kein Werkzeug: das Add-on dahinter ist kostenpflichtig und
+die Arbeit daran vertagt. Anders als bei den
 drei Arten oben hilft der Verweis auf den Editor hier nicht — dessen Einfügen-Menü führt den
 Baustein nicht, nur Automationen setzen einen. Vorhandene bleiben lesbar, verschiebbar und
 entfernbar; ihre Anweisung ändert man im Editor.
@@ -308,7 +308,7 @@ Bedingungsarten.
 ## Antwortformen
 
 **Jedes Werkzeug veröffentlicht ein Output-Schema** (JSON Schema), das ein Client gegen
-`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun.
+`structuredContent` prüfen kann.
 
 Ein Schema **benennt Felder, es erklärt sie nicht**. Diese Seite bleibt deshalb die ausführlichere
 Quelle: was ein Feld bedeutet, wann es fehlt und was eine Absage auslöst, steht hier und nicht im

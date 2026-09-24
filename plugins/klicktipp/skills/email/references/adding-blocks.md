@@ -22,8 +22,8 @@ Wird einer dieser Bausteine gewünscht, ist die Antwort der Editor — nenne ihn
 Ähnliches aus Text und Bild nachzubauen und es als Countdown auszugeben. Vorhandene Bausteine
 dieser Art bleiben lesbar, verschiebbar und entfernbar.
 
-**Die personalisierte E-Mail kannst du seit dem 18.09.2026 ebenfalls nicht mehr einfügen** — und
-hier liegt der Grund woanders: mit dem Baustein ist nichts verkehrt, das Add-on dahinter ist
+**Die personalisierte E-Mail kannst du ebenfalls nicht einfügen** — und hier liegt der Grund
+woanders: mit dem Baustein ist nichts verkehrt, das Add-on dahinter ist
 kostenpflichtig und die Arbeit daran vertagt. Es gibt für ihn deshalb weder ein Anlege- noch ein
 Schreib-Werkzeug.
 

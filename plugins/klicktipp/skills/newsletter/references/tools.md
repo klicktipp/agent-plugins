@@ -153,7 +153,7 @@ UTC-Offset. Ändert sich ein gebundener Wert oder läuft die URL ab, neu vorbere
 ## Antwortformen
 
 **Jedes Werkzeug veröffentlicht ein Output-Schema** (JSON Schema), das ein Client gegen
-`structuredContent` prüfen kann — seit dem 18.09.2026, vorher waren es neun.
+`structuredContent` prüfen kann.
 
 Ein Schema **benennt Felder, es erklärt sie nicht**. Diese Seite bleibt deshalb die ausführlichere
 Quelle: was ein Feld bedeutet, wann es fehlt und was eine Absage auslöst, steht hier und nicht im
