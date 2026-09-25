@@ -8,6 +8,16 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.17.2 — 2026-09-25
+
+- **A template preview is shown even where no MCP App renders.** In Claude Code and Codex,
+  `preview-email-editor-template` returns only `contentHtml`, and the skill had nothing for that
+  case beyond offering names. Now it builds one page with all candidates, each design in its own
+  `iframe srcdoc` beside its name, id and why it made the shortlist, and publishes it as an artifact
+  (or writes an `.html` without artifacts). `contentHtml` — 30–70 KB per design, sometimes saved to
+  a file by the host — goes into the page with `jq`, not through the conversation. The same applies
+  to `preview-email-editor`.
+
 ## 0.17.1 — 2026-09-25
 
 - **What one real catalogue search taught.** `category: "events"` returns around 300 designs, and the

@@ -50,7 +50,8 @@ veröffentlichten Newsletter ist `publishedContent` leer; das ist kein Fehler.
 **„Zeig mir die Vorschau" heißt `preview-email-editor`, nicht `get-email-editor-content`.** Wer eine Vorschau verlangt,
 will das Mailing *sehen* — nicht seine Bausteinstruktur beschrieben bekommen. `preview-email-editor` rendert
 den aktuellen Entwurf samt unveröffentlichter Änderungen und zeigt ihn als MCP App; wo der Host keine
-MCP Apps kann, trägt das Ergebnis dasselbe HTML in `contentHtml`. Es speichert nichts, veröffentlicht
+MCP Apps kann, trägt das Ergebnis dasselbe HTML in `contentHtml` — das zeigst du dann selbst, auf
+demselben Weg wie eine Template-Vorschau (unten, „Erscheint kein Bild"). Es speichert nichts, veröffentlicht
 nichts und verschickt nichts.
 
 Vom Namen dorthin sind es zwei Schritte, denn `preview-email-editor` nimmt die `editorUrl`, keinen Namen:
@@ -411,6 +412,25 @@ antrifft — und zwar das Design selbst, nicht das Katalog-Thumbnail. Beende ein
 beim Raster und nie bei einem Absatz darüber: Nimm die zwei, drei passenden und rendere **jedes
 einzeln**. Ein Satz dazu, warum eines in die Auswahl kam, ist Kontext für ein Bild und kein Ersatz
 dafür. Am Ende zeigt `preview-email-editor` das Ergebnis im Newsletter.
+
+**Erscheint kein Bild, bleibt das Zeigen deine Aufgabe.** Ein Host ohne MCP Apps (Claude Code,
+Codex) bekommt nur `contentHtml` — das gerenderte Design als vollständige HTML-Seite. Das ist keine
+Sackgasse und kein Grund, auf Namen zurückzufallen:
+
+| Umgebung | Weg |
+| --- | --- |
+| Claude Code | eine Seite, veröffentlicht mit dem `Artifact`-Werkzeug |
+| claude.ai | ein Artifact direkt in der Antwort |
+| ohne Artifacts (z. B. Codex) | `.html` schreiben, öffnen, wenn ein Browser da ist, Pfad nennen |
+
+- **Eine Seite für alle Kandidaten.** Jedes Design in ein eigenes `<iframe srcdoc="…">` (`&` und
+  `"` maskieren), in voller Höhe, daneben Name, `id` und der Satz, warum es in die Auswahl kam. Das
+  iframe hält das CSS jedes Designs bei sich.
+- **`contentHtml` nicht durch das Gespräch ziehen.** Es sind 30–70 KB je Design, und eines allein
+  kann mehr sein, als eine Werkzeugantwort tragen darf — der Host legt die Antwort dann in einer
+  Datei ab. Nimm es von dort mit `jq -r .contentHtml <datei>` direkt in die Seite.
+- Die `previewUrl` der Suchantwort ist das Katalogbild, nicht das Design. Nur nehmen, wenn
+  `contentHtml` fehlt, und sagen, dass es das Thumbnail ist.
 
 Jeder dieser Wege ist **ein** Aufruf. Der Umweg „HTML der alten Mail holen und wieder importieren"
 ist ein Fehler und kein Notbehelf: er bezahlt eine Konvertierung für etwas, das als Dokument schon

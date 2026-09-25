@@ -123,7 +123,9 @@ Designs selbst, also genau das, was `replace-email-editor-content-from-template`
 **Wähle nicht für den Nutzer aus.** Ein Design ist ein Layout, und sein Name beschreibt es nicht.
 Zeige es, statt es zu beschreiben: erst die Suche, dann die Vorschau für die engere Auswahl, dann
 die Entscheidung des Nutzers. Ohne einen Host mit MCP Apps trägt die Antwort der Vorschau
-`contentHtml`, und du hast immer noch das Design statt nur seinen Namen. Das Anwenden **ersetzt den
+`contentHtml`, und du hast immer noch das Design statt nur seinen Namen — dann renderst du es
+selbst: eine Seite, jeder Kandidat in einem eigenen `<iframe srcdoc>`, als Artifact (`../SKILL.md`,
+„Erscheint kein Bild"). Das Anwenden **ersetzt den
 Körper vollständig und ohne Undo** und veröffentlicht
 nichts. Über bestehendem Inhalt wird der erste Aufruf abgewiesen und zählt auf, was verloren ginge;
 erst `replaceExistingContent: true` schreibt — lass diesen ersten Aufruf laufen, statt das Flag
