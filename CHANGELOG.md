@@ -8,6 +8,18 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.17.1 — 2026-09-25
+
+- **What one real catalogue search taught.** `category: "events"` returns around 300 designs, and the
+  first page is almost entirely dated and regional occasions — the Super Bowl, Valentine's Day,
+  Halloween, Juneteenth. What a request like "a community event" actually means sits in the tags:
+  `Community`, `RSVP`, `Invitation`. So the first search is a probe: read the facets the answer
+  carries back and search again with the one that matches, rather than paging through a sample.
+  Categories name the occasion, tags name the purpose.
+- **A template request is answered with a preview, not a grid.** Two or three candidates, each
+  rendered at full height with `preview-email-editor-template`. A sentence about why one made the
+  shortlist is context for a picture, not a replacement for one.
+
 ## 0.17.0 — 2026-09-24
 
 **Ein Design lässt sich jetzt ansehen, bevor es etwas ersetzt.** `preview-email-editor-template`

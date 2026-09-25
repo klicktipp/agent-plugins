@@ -393,6 +393,25 @@ dieselben Entwürfe, die der Editor im Vorlagen-Browser zeigt. Die Auswahl gehö
 Layout beschreibt sich nicht durch seinen Namen. Angewandt wird über die **id** aus der
 Suchantwort, nicht über eine Nummer.
 
+**Die erste Suche ist eine Sondierung, keine Antwort.** Der Katalog ist groß — `category: "events"`
+allein sind rund 300 Designs —, eine erste Seite ist also eine Stichprobe, und sich durchzublättern
+ist der falsche Weg. Lies die `tags`, `categories` und `collections`, die die Antwort mitbringt, und
+such erneut mit der Facette, die zur Absicht passt: Ein Wert, den das Werkzeug **geantwortet** hat,
+wird immer wieder angenommen; ein unbekannter trifft nichts, statt abgelehnt zu werden.
+
+**Kategorien benennen den Anlass, Tags den Zweck.** `events` ist voller datierter und regionaler
+Anlässe — Halloween, Valentinstag, Vatertag, Juneteenth, Super Bowl —, in denen eine allgemeine
+Absicht untergeht. Was hinter „ein Community-Event" steckt, liegt in den Tags: `Community`, `RSVP`,
+`Invitation`, `Ticketing`, `Countdown`. Nimm `tag`, wenn ein **Zweck** genannt wurde, `category` bei
+einem **Anlass**.
+
+**Die Vorschau ist die Antwort, nicht die Trefferliste.** Eine Suchantwort ist eine Wand aus
+Thumbnails; `preview-email-editor-template` zeigt das Design in voller Höhe, so wie der Empfänger es
+antrifft — und zwar das Design selbst, nicht das Katalog-Thumbnail. Beende eine Template-Anfrage nie
+beim Raster und nie bei einem Absatz darüber: Nimm die zwei, drei passenden und rendere **jedes
+einzeln**. Ein Satz dazu, warum eines in die Auswahl kam, ist Kontext für ein Bild und kein Ersatz
+dafür. Am Ende zeigt `preview-email-editor` das Ergebnis im Newsletter.
+
 Jeder dieser Wege ist **ein** Aufruf. Der Umweg „HTML der alten Mail holen und wieder importieren"
 ist ein Fehler und kein Notbehelf: er bezahlt eine Konvertierung für etwas, das als Dokument schon
 vorliegt. Und einen Körper aus einer Reihe von `*-add`-Aufrufen zusammenzusetzen ist der teuerste
