@@ -1,7 +1,7 @@
 # KlickTipp
 
-Write, review and prepare KlickTipp email newsletters from your agent, and read
-the opt-in processes of the account — over the hosted KlickTipp MCP server at
+Write, review and prepare KlickTipp email newsletters from your agent, and manage
+the opt-in processes of the account with their confirmation email — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
@@ -92,15 +92,20 @@ activation refuse a split test everywhere, because none of them can pick an arm
 
 | `delete-manual-tag` · `delete-custom-field` | remove one; deleting a field takes its value out of every contact of the account, and neither can be undone |
 
-**Opt-in** — read a process or remove one. Creating a process and writing its
-confirmation email are the web interface's job: that email is the record of
-consent.
+**Opt-in** — the processes and their confirmation email. That email is the
+record of consent, so the skill changes it only when exactly that was asked.
 
 | | |
 |---|---|
 | `search-opt-in-processes` | list the account's opt-in processes |
 | `get-opt-in-process` | read the full configuration of one |
+| `create-opt-in-process` | create one, optionally as a copy; its confirmation email comes with it |
+| `update-opt-in-process` | change its settings — mode, redirect pages, labels, the change-email role |
 | `delete-opt-in-process` | remove one, with its confirmation email; the contacts stay subscribed |
+| `get-opt-in-confirmation-email` · `update-opt-in-confirmation-email` | the sender side of the confirmation email: subject, sender, reply-to, CC/BCC, domain |
+| `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content` | its text, HTML and plain |
+| `preview-opt-in-confirmation-email` | look at the stored email before a contact gets it |
+| `send-opt-in-confirmation-email-test` | send it to one address — which becomes a tagged contact |
 
 There is no separate delivery-status tool: where a newsletter stands with its
 dispatch is the `deliveryStatus` projection of `get-newsletter`. The
@@ -171,9 +176,8 @@ out of them. Read-only: it creates, changes and sends nothing.
 
 `skills/crm` — the contact data of the account: find, read, subscribe and
 unsubscribe contacts, set field values, manage manual tags and custom field
-definitions, and read the opt-in processes behind them. On production only the
-two opt-in reads are released so far; the skill says so rather than letting an
-agent hunt for a defect.
+definitions, and create and change the opt-in processes behind them together
+with their confirmation email.
 
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
@@ -185,8 +189,7 @@ shapes and their pitfalls. All of them are in German, like the editor itself.
 **What the skills describe is what the server serves.** A tool that is not in
 them does not exist here, and neither does the capability behind it: there is no
 tool that writes an email signature — an existing one is picked through
-`signatureId` in `configure-newsletter-delivery` — and none that creates
-an opt-in process or writes its confirmation email.
+`signatureId` in `configure-newsletter-delivery`.
 
 The personalized email block is a case of its own: the add-on behind it is paid
 for separately and the work on it is deferred, and the editor offers the block

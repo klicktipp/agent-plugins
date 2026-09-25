@@ -8,6 +8,23 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.20.0 — 2026-09-25
+
+- **The opt-in processes are written, not only read.** Eight tools are new in `crm`:
+  `create-opt-in-process` and `update-opt-in-process` for the process, and for its confirmation
+  email `get-`/`update-opt-in-confirmation-email` (sender, subject, reply-to, CC/BCC, domain),
+  `get-`/`update-opt-in-confirmation-email-content` (the HTML and plain text),
+  `preview-opt-in-confirmation-email` and `send-opt-in-confirmation-email-test`. The skill carries
+  what their descriptions cannot: write both bodies, `stored: false` means nothing was written, the
+  preview shows the stored text without signature and confirmation link, and the test send turns an
+  unknown address into a tagged contact. The contract reference holds all eight word for word.
+- **The skill still treats the confirmation email as the record of consent.** It changes it only on
+  an explicit request and says afterwards what changed.
+- **`senderDomain` is usually left out.** The server checks it and derives it from the sender
+  address; one is passed only when `senderDomainOptions` offers a choice.
+- The server publishes the eight with its next production release. Until then it answers
+  "unknown tool" for them, and the skill says what that means rather than hunting for a workaround.
+
 ## 0.17.2 — 2026-09-25
 
 - **A template preview is shown even where no MCP App renders.** In Claude Code and Codex,

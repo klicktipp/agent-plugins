@@ -1,6 +1,6 @@
 ---
 name: crm
-description: Kontakte, Tags und eigene Felder eines KlickTipp-Kontos lesen und ändern, Opt-in-Prozesse lesen. Nutze ihn, sobald ein Kontakt, Abonnent, Lead, Tag, Feld oder eine Anmeldeliste im Spiel ist — auch bei „wer hat Tag X" oder wenn ein Werkzeug ein Tag als unbekannt abweist. Nicht für Newsletter.
+description: Kontakte, Tags, eigene Felder und Opt-in-Prozesse samt Bestätigungsmail eines KlickTipp-Kontos lesen und ändern. Nutze ihn, sobald ein Kontakt, Abonnent, Lead, Tag, Feld oder eine Anmeldeliste im Spiel ist — auch bei „wer hat Tag X" oder wenn ein Werkzeug ein Tag als unbekannt abweist. Nicht für Newsletter.
 ---
 
 # KlickTipp CRM — Kontakte, Tags, Felder, Opt-in
@@ -29,9 +29,11 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
   sie tragen `isGlobal` und sind weder änderbar noch löschbar. Jedes Feld hat einen **Platzhalter**,
   der im Newsletter den Wert des Empfängers rendert — die Brücke zum Skill `email`.
 - **Opt-in-Prozesse** — in der App auch „Abonnentenlisten": `search-opt-in-processes` /
-  `get-opt-in-process` lesen sie, `delete-opt-in-process` entfernt einen, und
-  `get-opt-in-process-redirect-url` gibt die Pending- oder Danke-Seite eines Abonnenten heraus.
-  Angelegt und eingestellt werden sie in der Oberfläche.
+  `get-opt-in-process` lesen sie, `create-opt-in-process` / `update-opt-in-process` legen an und
+  stellen ein, `delete-opt-in-process` entfernt einen, und `get-opt-in-process-redirect-url` gibt
+  die Pending- oder Danke-Seite eines Abonnenten heraus. Zu jedem gehört eine **Bestätigungsmail**
+  mit eigenen Werkzeugen: Absender (`get-`/`update-opt-in-confirmation-email`), Text
+  (`get-`/`update-opt-in-confirmation-email-content`), Vorschau und Testversand.
 
 ## Zustimmung ist ein Argument, kein Freifahrtschein
 
@@ -87,11 +89,79 @@ oder andere Entitäten den Tag oder das Feld noch benutzen — und nennen sie. D
 die man umgeht, sondern die Liste dessen, was der Nutzer vorher entscheiden muss. Ein gelöschtes
 Feld rendert seinen Platzhalter leer, wo Inhalt ihn noch trägt.
 
+## Eine Anmeldeliste anlegen und ändern
+
+Antwortet der Server auf eines der Werkzeuge dieses und des nächsten Abschnitts mit „unknown tool",
+ist die Freigabe dort noch nicht angekommen — kein Defekt. Dann auf die Oberfläche verweisen, statt
+einen Umweg zu suchen.
+
+**`create-opt-in-process`** braucht einen Namen. Die Plattform legt die **Bestätigungsmail** mit an;
+ihre ID kommt als `confirmationEmailId` zurück. `copyFromOptInProcessId` kopiert einen Prozess samt
+Mailtext; daneben übergebene Argumente gewinnen. `useForChangeEmail` gibt es hier nicht. Der neue
+Prozess ist leer und verschickt nichts.
+
+**`update-opt-in-process`** schreibt nur die übergebenen Argumente; ein Aufruf ganz ohne Feld wird
+abgewiesen. Ausnahme: **`metaLabels` ersetzt die Liste**, ein leeres Array entfernt alle.
+
+- `optInMode: "single"` meldet spätere Kontakte ohne Bestätigung an — nicht überall zulässig,
+  frag nach.
+- `useForChangeEmail: true` nimmt die Rolle dem Prozess weg, der sie hatte; es gibt nur einen pro
+  Konto.
+
+Änderungen gelten für neue Anmeldungen; bestehende Kontakte bleiben, nichts wird verschickt. Ein
+neuer Name geht auf die Bestätigungsmail über.
+
+### Weiterleitungsseiten
+
+| | `pendingPageParameters` / `confirmedPageParameters` | `pendingUtmParameters` / `confirmedUtmParameters` |
+|---|---|---|
+| du gibst | den **Namen**, unter dem angehängt wird | den **Wert** (der Name ist per Konvention fest) |
+| Inhalt | Kontakt-ID, E-Mail, Listen-ID, Abonnenten-Schlüssel, auf der Danke-Seite auch der Empfehlungslink | `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content` — für jeden Besucher gleich |
+| aus | ein leerer String hängt nichts an | — |
+
+Beide werden **nur zusammen mit der URL dieser Seite** geschrieben, sonst kommt eine Absage. Von
+Hand in die URL geschriebene Werte gewinnen. `utm_id` gibt es nicht. `get-opt-in-process` liest die
+aktuelle URL und die Werte zurück.
+
+## Die Bestätigungsmail
+
+Nenne immer den **Prozess**, nie die Mail-ID.
+
+**Absender/Betreff** — `get-opt-in-confirmation-email` / `update-opt-in-confirmation-email`:
+
+- Absenderadresse **aus `senderEmailOptions`**; alles andere wird mit Begründung abgewiesen, ohne
+  zu schreiben.
+- Eine **leer gespeicherte** Absender- oder Antwortadresse heißt „die aktuelle Adresse des Kontos".
+  Wer genau diese Adresse schreibt, speichert wieder leer — gewollt.
+- **`senderDomain` meist weglassen.** Dann wird sie zur Absenderadresse geprüft und abgeleitet; eine
+  eigene nur, wenn `senderDomainOptions` eine Wahl anbietet. Hat sich die Domain-Lage des Kontos
+  geändert, kann die gespeicherte Domain dabei normalisiert werden. Ein `dispatchProfile` als
+  Absender entscheidet beide Werte selbst.
+
+**Text** — `get-opt-in-confirmation-email-content` / `update-opt-in-confirmation-email-content`.
+Rich Text, kein Bausteindokument: die Baustein-Werkzeuge weisen ihn ab, daher
+`bodyIsEditable: false`. **Zwei Körper** (`html`, `plain`), jeder wird **ganz** geschrieben, nicht
+gepatcht; was du weglässt, bleibt. **Schreib beide.**
+
+Fehler (fehlender Abmeldelink, nicht unterstütztes HTML, leerer Betreff) **stoppen das Schreiben**:
+`stored: false` plus `validationMessages`. Warnungen stoppen nichts.
+
+**Prüfen:**
+
+- `preview-opt-in-confirmation-email` zeigt den **gespeicherten** Text. Signatur, Bestätigungslink
+  und Empfängerdaten fehlen dort und kommen erst beim Versand dazu — das ist kein Defekt, sag das.
+- `send-opt-in-confirmation-email-test` — **eine unbekannte Adresse wird zum Kontakt**, als
+  Testempfänger getaggt, und Taggen startet Automationen. Kündige es vorher an. Der Link bestätigt
+  niemanden.
+
+Diese Mail ist vielerorts der rechtliche Nachweis der Einwilligung. Ändere sie nur, wenn genau das
+verlangt wurde, und sag danach, was du geändert hast. Sie muss weiterhin sagen, wer wen wozu
+anmeldet.
+
 ## Eine Anmeldeliste löschen heißt: erst aufräumen
 
-Anlegen und Ändern einer Anmeldeliste gehören in die Oberfläche; die Werkzeuge hier lesen sie und
-löschen sie. Was du löschst, legst du also nicht mit einem zweiten Aufruf wieder an — sag das,
-bevor du löschst, nicht danach.
+Was du löschst, legst du nicht mit einem zweiten Aufruf wieder an: `create-opt-in-process` macht
+einen neuen Prozess mit neuer ID, nicht den alten zurück — sag das, bevor du löschst, nicht danach.
 
 `delete-opt-in-process` entfernt den Prozess samt Bestätigungsmail. **Die Kontakte bleiben
 angemeldet** und werden nicht gelöscht — das ist die Frage, die vorher gestellt wird, also
