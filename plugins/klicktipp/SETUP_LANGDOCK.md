@@ -59,18 +59,20 @@ HTML, or that no tool sends a newsletter. That knowledge is in the skills, and
 Langdock takes them natively: **Skills → Add Skill → upload**, one ZIP per skill
 with `SKILL.md` at its top.
 
-Build the ZIPs once, on any machine with git:
+Every release publishes them ready to upload, one per skill — no git, no build.
+These links always point at the latest release:
 
-```bash
-git clone --depth 1 https://github.com/klicktipp/agent-plugins.git /tmp/klicktipp-agent-plugins
-cd /tmp/klicktipp-agent-plugins/plugins/klicktipp/skills
-for s in */; do (cd "$s" && zip -qr "/tmp/klicktipp-${s%/}.zip" . -x 'LICENSE' '*/LICENSE'); done
-ls /tmp/klicktipp-*.zip
-```
+| Skill | Download |
+|---|---|
+| `crm` | [klicktipp-skill-crm.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-crm.zip) |
+| `dashboard` | [klicktipp-skill-dashboard.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-dashboard.zip) |
+| `email` | [klicktipp-skill-email.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email.zip) |
+| `email-template-generator` | [klicktipp-skill-email-template-generator.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email-template-generator.zip) |
+| `newsletter` | [klicktipp-skill-newsletter.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-newsletter.zip) |
+| `splittest` | [klicktipp-skill-splittest.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-splittest.zip) |
 
-`LICENSE` is left out because Langdock accepts only files with a known extension.
-Upload each ZIP, and in the skill's **Integrations** field attach the KlickTipp
-integration from above — its tools then come with the skill whenever the skill is
+Upload each ZIP as it is, and in the skill's **Integrations** field
+attach the KlickTipp integration from above — its tools then come with the skill whenever the skill is
 active in a chat.
 
 ## Set up an agent by prompt

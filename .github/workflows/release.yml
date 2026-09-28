@@ -83,6 +83,18 @@ jobs:
           (cd stage/klicktipp && zip -qr "../../dist/klicktipp-${{ steps.v.outputs.version }}.zip" .)
           unzip -l "dist/klicktipp-${{ steps.v.outputs.version }}.zip" | tail -3
 
+      # one zip per skill, SKILL.md at its top, for hosts that take skills as
+      # uploads (Langdock). Unversioned names, so releases/latest/download/...
+      # stays a stable link. LICENSE is left out: Langdock refuses files
+      # without a known extension.
+      - name: Archive each skill
+        run: |
+          for s in stage/klicktipp/skills/*/; do
+            n=$(basename "$s")
+            (cd "$s" && zip -qr "$GITHUB_WORKSPACE/dist/klicktipp-skill-$n.zip" . -x 'LICENSE' '*/LICENSE')
+          done
+          ls -l dist
+
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
@@ -90,8 +102,8 @@ jobs:
           version="${{ steps.v.outputs.version }}"
           if gh release view "$version" >/dev/null 2>&1; then
             gh release edit "$version" --title "$version" --notes-file notes.md
-            gh release upload "$version" "dist/klicktipp-$version.zip" --clobber
+            gh release upload "$version" dist/*.zip --clobber
           else
-            gh release create "$version" "dist/klicktipp-$version.zip" \
+            gh release create "$version" dist/*.zip \
               --title "$version" --notes-file notes.md
           fi

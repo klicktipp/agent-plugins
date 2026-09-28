@@ -8,6 +8,17 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.20.1 — 2026-09-28
+
+- **Setup guides for opencode and OpenClaw.** Both reach the same server without the plugin and
+  take the same skills. Each guide carries a prompt that has the host add the MCP server and copy
+  the skills itself; only the browser sign-in stays manual. opencode uses the public client
+  `mcp-klicktipp-desktop`, OpenClaw the client metadata URL — neither can register dynamically.
+- **Langdock takes the skills too.** Every release now publishes one ZIP per skill
+  (`klicktipp-skill-<name>.zip`), ready to upload under Skills → Add Skill, with stable
+  `releases/latest` links in [SETUP_LANGDOCK.md](plugins/klicktipp/SETUP_LANGDOCK.md). The guide
+  also carries a prompt for Langdock's Agent Builder and names the 60-tool limit per integration.
+
 ## 0.20.0 — 2026-09-25
 
 - **The opt-in processes are written, not only read.** Eight tools are new in `crm`:
