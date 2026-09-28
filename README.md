@@ -13,9 +13,12 @@ claude mcp login plugin:klicktipp:klicktipp
 
 No API key lives in this repository. The MCP endpoint
 (`https://mcp.klicktipp.com/mcp`) sits behind OAuth and you sign in once,
-interactively — see [SETUP.md](plugins/klicktipp/SETUP.md). For Langdock, which
-reaches the same server without the plugin, see
-[SETUP_LANGDOCK.md](plugins/klicktipp/SETUP_LANGDOCK.md).
+interactively — see [SETUP.md](plugins/klicktipp/SETUP.md). opencode, OpenClaw and
+Langdock reach the same server and take the same skills without the plugin; each guide
+carries a prompt that has the host set both up itself —
+[opencode](plugins/klicktipp/SETUP_OPENCODE.md) ·
+[OpenClaw](plugins/klicktipp/SETUP_OPENCLAW.md) ·
+[Langdock](plugins/klicktipp/SETUP_LANGDOCK.md).
 
 **Documentation** — [the MCP server](https://developers.klicktipp.com/guides/mcp-server) · [the plugins](https://developers.klicktipp.com/guides/mcp-server-plugins). The tools and skills each version ships are listed below and in [the plugin's README](plugins/klicktipp/README.md), because that list moves with the releases.
 
@@ -42,7 +45,9 @@ plugins/klicktipp/
 ├── skills/                        shipped with the plugin: email, newsletter, splittest,
 │                                   crm, dashboard, email-template-generator
 ├── SETUP.md                        walks the agent through the one-time OAuth login
-├── SETUP_LANGDOCK.md               the same server from a Langdock workspace
+├── SETUP_OPENCODE.md               the same server and skills in opencode, set up by prompt
+├── SETUP_OPENCLAW.md               the same in OpenClaw
+├── SETUP_LANGDOCK.md               the same from a Langdock workspace
 └── README.md
 ```
 

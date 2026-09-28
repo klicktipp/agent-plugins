@@ -5,9 +5,10 @@ the opt-in processes of the account with their confirmation email — over the h
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
-once, interactively, on first use. See [SETUP.md](SETUP.md), or
-[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md) to reach the same server from a Langdock
-workspace.
+once, interactively, on first use. See [SETUP.md](SETUP.md). The same server and
+skills work without the plugin in [opencode](SETUP_OPENCODE.md),
+[OpenClaw](SETUP_OPENCLAW.md) and [Langdock](SETUP_LANGDOCK.md) — each guide carries
+a prompt that has the host set both up itself.
 
 ## Install
 

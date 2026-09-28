@@ -48,6 +48,50 @@ should have and save.
 If the list is empty or the test fails, the authorisation did not complete —
 repeat it rather than changing the values above.
 
+Langdock takes at most 60 tools per integration, and the server offers more. Pick
+the ones for the work the workspace does — for newsletters, the `*-newsletter*`
+and `*-email-editor-*` tools — rather than the first sixty.
+
+## Load the skills
+
+The tools alone do not know KlickTipp's rules — that the editor stores blocks, not
+HTML, or that no tool sends a newsletter. That knowledge is in the skills, and
+Langdock takes them natively: **Skills → Add Skill → upload**, one ZIP per skill
+with `SKILL.md` at its top.
+
+Build the ZIPs once, on any machine with git:
+
+```bash
+git clone --depth 1 https://github.com/klicktipp/agent-plugins.git /tmp/klicktipp-agent-plugins
+cd /tmp/klicktipp-agent-plugins/plugins/klicktipp/skills
+for s in */; do (cd "$s" && zip -qr "/tmp/klicktipp-${s%/}.zip" . -x 'LICENSE' '*/LICENSE'); done
+ls /tmp/klicktipp-*.zip
+```
+
+`LICENSE` is left out because Langdock accepts only files with a known extension.
+Upload each ZIP, and in the skill's **Integrations** field attach the KlickTipp
+integration from above — its tools then come with the skill whenever the skill is
+active in a chat.
+
+## Set up an agent by prompt
+
+The integration is the one step no prompt can take: only an admin adds it, in the
+form above. Everything after it can be asked for. Open **Agents → Create agent**
+and give the Agent Builder this:
+
+```text
+Create an agent "KlickTipp". It works in the user's KlickTipp account through the
+KlickTipp integration. Attach the KlickTipp integration and the skills crm,
+dashboard, email, email-template-generator, newsletter and splittest.
+Instructions: Read the matching skill before the first KlickTipp tool call of a
+task. Never send a newsletter yourself: prepare-newsletter-dispatch returns a
+confirmation link, hand it to the user with subject, audience, recipient estimate,
+sender and time. Before any write without undo, say what it costs and ask.
+```
+
+The builder can only attach what is already connected in the workspace, so the
+integration and the skills have to exist first.
+
 ## When it does not work
 
 **`redirect_uri_mismatch`** — Langdock's redirect URL is not on the Keycloak

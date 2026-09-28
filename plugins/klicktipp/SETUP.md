@@ -37,11 +37,14 @@ A browser window opens, the user signs in with their KlickTipp credentials and
 approves the access. After that the token is stored and refreshed automatically —
 this is a one-time step per machine.
 
-## Another host: Langdock
+## Other hosts: opencode, OpenClaw, Langdock
 
-Langdock is not a plugin host — it connects to the same server as a remote MCP
-integration, with the OAuth client named by hand. See
-[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md).
+None of them is a plugin host; each connects to the same server and takes the same
+skills. The guides carry a prompt that has the host set up the server and the
+skills itself — only the browser sign-in stays manual:
+[SETUP_OPENCODE.md](SETUP_OPENCODE.md) (client `mcp-klicktipp-desktop`),
+[SETUP_OPENCLAW.md](SETUP_OPENCLAW.md) (client metadata URL),
+[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md) (client `mcp-klicktipp-langdock`, by hand).
 
 ## Check that it worked
 
