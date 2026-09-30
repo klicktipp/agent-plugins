@@ -23,11 +23,13 @@ Beide Werkzeuge — Anlegen und Ändern — nehmen genau diese Felder.
 
 ## Worauf zu achten ist
 
-Die Typografie steckt **im `html` selbst**: Wrapper-`div`, `<p style=…>`, `<span style=…>`. Ein nacktes `<p>Neuer Text</p>` wirft Schriftgröße, Zeilenhöhe und Farben weg. Nimm das gelesene Markup als Vorlage und tausche nur die Wörter.
+Die Typografie steckt **im `html` selbst**: Wrapper-`div`, `<p style=…>`, `<span style=…>`. Ein nacktes `<p>Neuer Text</p>` wirft Schriftgröße, Zeilenhöhe und Farben weg. Nimm das gelesene Markup als Vorlage und tausche nur die Wörter. Soll sich das Aussehen ändern, ist das `update-email-editor-text-style`, nicht ein anderes Markup.
 
 ## Gestaltung
 
-`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-text-style` setzt die Typografie: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe, die Größe auf dem Telefon und den Abstand zwischen Absätzen (`paragraphSpacing`).
+
+`update-email-editor-block-style` setzt zusätzlich, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 

@@ -27,7 +27,9 @@ Zwei gespeicherte Arten, ein Produktbegriff: `text` und `paragraph` sind für ei
 
 ## Gestaltung
 
-`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-text-style` setzt Farbe, Linkfarbe, Schrift, Laufweite und Zeilenhöhe. Größe und Stärke nimmt der ältere Textbaustein nicht — die stecken bei ihm im Markup, und ein Versuch wird mit Namen abgelehnt.
+
+`update-email-editor-block-style` setzt zusätzlich, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 

@@ -39,7 +39,9 @@ Die Wörter stehen in `text`, **nicht** in `html` — die einzige Textart, die a
 
 ## Gestaltung
 
-`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-text-style` setzt die Typografie: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe und die Größe auf dem Telefon.
+
+`update-email-editor-block-style` setzt zusätzlich, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 

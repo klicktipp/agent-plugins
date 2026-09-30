@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — E-Mail-Inhalt, Bausteine, Gestaltung, Bilder
 
-Wort für Wort das, was der Server in `tools/list` für die 54 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 57 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -13,7 +13,7 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 
 `replace-email-editor-content-from-html` · `publish-newsletter-email-content` · `replace-email-editor-content-from-email` ·
 `replace-email-editor-content-from-document` · `update-email-editor-spacer-style` · `update-email-editor-divider-style` ·
-`update-email-editor-button-style` · `get-email-editor-content` · `preview-email-editor` · `validate-email-editor-content` ·
+`update-email-editor-button-style` · `update-email-editor-text-style` · `get-email-editor-content` · `preview-email-editor` · `validate-email-editor-content` ·
 `move-email-editor-block` · `remove-email-editor-block` · `update-email-editor-block-style` · `add-email-editor-button` ·
 `update-email-editor-button` · `update-email-editor-column-style` · `add-email-editor-divider` · `add-email-editor-heading` ·
 `add-email-editor-html` · `add-email-editor-icons` · `update-email-editor-icons` · `add-email-editor-image-block` ·
@@ -134,6 +134,30 @@ Parameter:
 - `paddingRight` — null | integer (minimum 0; maximum 400): Space right of the label
 - `paddingBottom` — null | integer (minimum 0; maximum 400): Space below the label
 - `paddingLeft` — null | integer (minimum 0; maximum 400): Space left of the label
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `update-email-editor-text-style` · I
+
+**Write email text look**
+
+Sets the typography of heading, paragraph, text and list blocks, several in one call: colour, link colour, font, size, weight, letter spacing, line height, and a size for phones. Stored where the editor keeps it and the only place the email renders it from -- a line-height in the markup is dropped. A paragraph also takes the space between paragraphs, a list its marker and item spacing; the older text block takes neither size nor weight, which live in its markup. A value a kind does not have is refused by name. The words are update-email-editor-text, the space and alignment around the block update-email-editor-block-style. Everything not named stays as it is. Bound to the contentRevision of the read and refused whole if anything in it fails, so nothing half-written is stored. Drafts only. Saves the draft; publishing is publish-newsletter-email-content.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as the read returned it
+- `contentRevision`* — string (minLength 7; maxLength 100): The contentRevision of the read this change is based on
+- `uuids`* — array<string> (minItems 1; maxItems 60): The uuids of the text blocks to write; the same values land on each
+- `textColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Colour of the text
+- `linkColor` — null | string (Muster `^(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|transparent)$`): Colour of the links in it
+- `fontFamily` — null | string (einer von `inherit`, `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`, `Times New Roman`, `Trebuchet MS`, `Verdana`, `ヒラギノ角ゴ Pro W3`, `メイリオ`): Font by name, or "inherit" for the email's font
+- `fontSize` — null | integer (minimum 8; maximum 120): Size in pixels; heading, paragraph and list only
+- `fontWeight` — null | string (einer von `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`): Weight, "400" regular to "700" bold; heading, paragraph and list only
+- `letterSpacing` — null | integer (minimum -10; maximum 30): Space between letters in pixels, negative tightens
+- `lineHeight` — null | string (Muster `^[0-9]{2,3}%$`): Line height as a percentage, "150%"
+- `paragraphSpacing` — null | integer (minimum 0; maximum 100): Space between paragraphs in pixels; paragraph only
+- `listStyleType` — null | string (einer von `disc`, `circle`, `square`, `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman`, `upper-roman`, `none`): Marker of each item; list only
+- `listItemSpacing` — null | integer (minimum 0; maximum 100): Space between items in pixels; list only
+- `mobileFontSize` — null | integer (minimum 8; maximum 120): Size on a phone in pixels; heading, paragraph and list only
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `get-email-editor-content` · RI

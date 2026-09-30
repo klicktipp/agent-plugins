@@ -182,6 +182,7 @@ weggelassenes Feld behält seinen Wert, ein leeres `href` entfernt den Link) · 
 | `update-email-editor-column-style` | I | Spalten: Hintergrund, Innenabstand, Rahmen. |
 | `update-email-editor-block-style` | I | Blöcke: Innenabstand, Ausrichtung, auf Mobil/Desktop verstecken. |
 | `update-email-editor-button-style` · `update-email-editor-divider-style` · `update-email-editor-spacer-style` | I | Aussehen je Bausteinart. |
+| `update-email-editor-text-style` | I | Typografie von Überschrift, Absatz, Text und Liste: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe, Größe auf dem Telefon; dazu Absatz- und Listenabstände. |
 | `move-email-editor-block` | | Block verschieben, in derselben oder eine andere Spalte. |
 | `remove-email-editor-block` | D | Block entfernen — Entfernen und Neuanlegen ist kein Ändern. |
 
@@ -198,6 +199,18 @@ Webschriften der Auswahl — Montserrat, Roboto und Geschwister — fehlen bewus
 das Werkzeug lehnt ein unbekanntes Feld als Ganzes ab (`additionalProperties: false`), also heißt
 ein Schema-Fehler nach einem Versuch mit einem falschen Feldnamen *nicht*, dass der Reiter
 unerreichbar ist. Schau in die Feldliste, statt es aufzugeben.
+
+### `update-email-editor-text-style`
+**Wofür:** wie Text aussieht — Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe und
+eine eigene Größe fürs Telefon, auf mehreren Textbausteinen in einem Aufruf. **Nicht:** die Wörter
+(`update-email-editor-text`) und nicht Abstand und Ausrichtung *um* den Baustein
+(`update-email-editor-block-style`). **Stolperer:** Die Werte landen dort, wo der Editor sie
+speichert, und nur von dort rendert die E-Mail — eine `line-height` im Markup wird verworfen. Also
+nicht das `html` umschreiben, um die Typografie zu ändern. Was eine Art nicht hat, wird mit Namen
+abgelehnt: Größe, Stärke und Telefongröße nur bei Überschrift, Absatz und Liste — der ältere
+Textbaustein trägt beides in seinem Markup —, `paragraphSpacing` nur beim Absatz,
+`listStyleType` und `listItemSpacing` nur bei der Liste. Dieselben Werte landen auf allen `uuids`;
+scheitert einer, wird der ganze Aufruf abgelehnt und nichts gespeichert.
 
 ### `move-email-editor-block` · `remove-email-editor-block`
 **Stolperer:** Entfernen und Neuanlegen ist kein Ändern — Typografie und Add-on-Konfiguration gehen

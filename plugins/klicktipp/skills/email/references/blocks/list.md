@@ -27,7 +27,9 @@ Das `html` ist das vollständige `<ul>`- oder `<ol>`-Markup, nicht nur die Eintr
 
 ## Gestaltung
 
-`update-email-editor-block-style` setzt, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
+`update-email-editor-text-style` setzt die Typografie: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe, die Größe auf dem Telefon, das Aufzählungszeichen (`listStyleType`) und den Abstand zwischen den Einträgen (`listItemSpacing`).
+
+`update-email-editor-block-style` setzt zusätzlich, wie bei jedem Baustein: Innenabstand auf vier Seiten, Ausrichtung des Inhalts und die Sichtbarkeit je Gerät (`hideOnMobile`, `hideOnDesktop`).
 
 ## Beim HTML-Import
 

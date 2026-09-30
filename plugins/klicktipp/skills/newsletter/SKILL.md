@@ -1,6 +1,6 @@
 ---
 name: newsletter
-description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf, Betreff, Pre-Header, Zielgruppe, Absender, Testversand, Terminierung, Versand. Nutze ihn immer, wenn jemand einen Newsletter anlegen, „rausschicken" oder „fertig machen" will, denn Inhalt allein verschickt nichts. Inhalt ist `email`, A/B-Tests sind `splittest`.
+description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf, Betreff, Pre-Header, Zielgruppe, Absender, Signatur, Absenderdomain, Testversand, Terminierung, Versand. Nutze ihn immer, wenn jemand einen Newsletter anlegen, „rausschicken" oder „fertig machen" will, denn Inhalt allein verschickt nichts — und wenn eine E-Mail-Signatur angelegt oder geändert oder eine Absenderdomain eingerichtet und per DNS verifiziert werden soll. Inhalt ist `email`, A/B-Tests sind `splittest`.
 ---
 
 # KlickTipp Newsletter
@@ -155,6 +155,39 @@ Dasselbe Werkzeug trägt zwei Schalter aus dem Panel „Erweiterte Einstellungen
   will meistens genau diesen Schalter; als Baustein gibt es die drei nicht. Einzeln im Inhalt
   platzieren geht über die Platzhalter (`%Link:WebBrowser%`, `%Link:Unsubscribe%`), siehe Skill
   `email`.
+
+### Signaturen verwalten
+
+Welche Signatur ein Newsletter trägt, wählt `configure-newsletter-delivery`. Die Signaturen selbst
+haben eigene Werkzeuge: `search-signatures` und `get-signature` lesen, `create-signature` legt an
+oder kopiert, `update-signature` ändert Name, Notiz, Labels und Visitenkarte,
+`replace-signature-content` den Text, `configure-signature-delivery` Tags und Absenderprofil.
+
+**Eine Signatur gehört nicht einem Newsletter.** Sie wird erst beim Versand angehängt, also trifft
+jede Änderung jeden künftigen Versand, der sie trägt — auch dort, wo KlickTipp sie über ihre Tags
+wählt, weil ein Newsletter `signatureId: 0` trägt. Sag das, bevor du den Text einer bestehenden
+Signatur ersetzt; `replace-signature-content` hat kein Undo.
+
+**Die Pflichtplatzhalter sind kein Stil.** Abmeldelink und Adressplatzhalter stehen im Text, weil
+eine Werbemail sie braucht; fehlt einer, lehnt das Werkzeug ab. Setz die Platzhalter aus
+[references/tools.md](references/tools.md), statt eine Adresse auszuschreiben. Eine Signatur, die
+`search-signatures` nicht zeigt, kann gerade nicht senden — `includeUnusable: true` nennt den Grund.
+
+### Absenderdomains einrichten
+
+Eine eigene Absenderadresse braucht eine verifizierte Domain. Der Weg:
+
+1. `create-sender-domain` registriert sie — unverifiziert, nicht Standard, es geht nichts raus.
+2. `get-sender-domain-dns-setup` nennt die DNS-Einträge. **Die setzt die Person** bei ihrem
+   DNS-Anbieter; kein Werkzeug hier schreibt DNS. Gib die Einträge vollständig weiter.
+3. `request-sender-domain-dns-check` stößt danach die Prüfung an, asynchron und mit Wartezeit je
+   Domain.
+4. `get-sender-domain-dns-setup` zeigt das Ergebnis, sobald jedes `checkedAt` die Anfrage aus
+   Schritt 3 eingeholt hat.
+
+Erst dann steht die Domain in `availableSenderDomains` von `configure-newsletter-delivery`. Die
+Stolperer — Alternativen unter den Einträgen, die Wartezeit, was „noch kein Ergebnis" heißt — stehen
+in [references/tools.md](references/tools.md).
 
 ## 5. Testversand
 

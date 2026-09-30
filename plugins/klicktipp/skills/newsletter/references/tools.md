@@ -22,10 +22,23 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `send-newsletter-test` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `publish-newsletter-email-content`. |
 | `prepare-newsletter-dispatch` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
 | `cancel-newsletter-dispatch` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
+| `search-signatures` | R | Die Signaturen, mit denen sich gerade senden lässt; `includeUnusable` zeigt die übrigen mit Gründen. Kein Text. |
+| `get-signature` | R | Eine Signatur: Absenderprofil, Tags, Visitenkarte, Nutzbarkeit; `includeContent` holt HTML, Plain und transaktionalen Text. |
+| `create-signature` | O | Neu mit `content` oder als Kopie mit `sourceSignatureId`; braucht mindestens ein freies Tag und die Pflichtplatzhalter. |
+| `update-signature` | I | Name, Notiz, Labels, Visitenkarte. Nie Text, Tags oder Absender. |
+| `replace-signature-content` | DOI | Den Text ersetzen — HTML und Plain ganz, ohne Undo. |
+| `configure-signature-delivery` | OI | Tags und Absenderprofil einer Signatur; die Versanddomain wird aus der Absenderadresse abgeleitet. |
+| `list-sender-domains` | R | Die Absenderdomains des Kontos mit Prüfstand; liest gespeicherten Stand, fragt kein DNS. |
+| `get-sender-domain` | R | Eine Domain: Verifizierung, Nutzbarkeit, letzte Prüfanfrage, die Absenderadressen darunter. |
+| `get-sender-domain-dns-setup` | R | Die DNS-Einträge, die die Domain braucht, und der zuletzt gemessene Ist-Stand je Eintrag. |
+| `create-sender-domain` | | Eine Domain registrieren — unverifiziert, nicht Standard, sendet nichts. |
+| `request-sender-domain-dns-check` | O | Eine frische DNS-Prüfung anstoßen, asynchron und mit Wartezeit je Domain. |
 
 ## Inhalt
 
 - Newsletter
+- Signaturen
+- Absenderdomains
 - Antwortformen
 
 ## Newsletter
@@ -149,6 +162,109 @@ Editor-URL. Wurde nach dem Veröffentlichen geändert, wird gesendet, und die An
 abgewiesen — erst `publish-newsletter-email-content`. `mode` ist Pflicht (`immediate` / `scheduled`, kein
 Default); `scheduledAt` ist bei `scheduled` Pflicht, bei `immediate` verboten, und trägt seinen
 UTC-Offset. Ändert sich ein gebundener Wert oder läuft die URL ab, neu vorbereiten.
+
+## Signaturen
+
+Eine Signatur ist mehr als ein Text unter der Mail: sie trägt ein **Absenderprofil** (Absender,
+Antwortadresse, CC, BCC, Empfänger, Versanddomain), **Tags**, über die KlickTipp sie selbst
+auswählt, und eine **digitale Visitenkarte**. Angehängt wird sie erst beim Versand — eine Änderung
+gilt also für jeden künftigen Versand, der sie trägt, nicht nur für den Newsletter, um den es gerade
+geht. Welche Signatur ein Newsletter benutzt, setzt weiterhin `configure-newsletter-delivery` mit
+`signatureId`; `0` heißt „KlickTipp wählt per Tagging" und ist kein Eintrag der Suche.
+
+### `search-signatures`
+**Wofür:** die Signaturen, die ein Newsletter tragen kann, mit ID, Name, gespeicherter und
+wirksamer Absenderadresse, Bereitschaft dieser Absenderidentität und den Tags. **Nicht:** der Text —
+das ist `get-signature`. **Stolperer:** Eine Signatur, die so, wie sie ist, nicht senden kann —
+kein Inhalt, fehlende Pflichtplatzhalter, eine Absenderadresse ohne Freigabe —, **fehlt** in der
+Liste. „Ich finde meine Signatur nicht" heißt deshalb meistens `includeUnusable: true`; dann kommt
+sie mit den Gründen, und die gibst du weiter, statt sie zu verschweigen.
+
+### `get-signature`
+**Wofür:** eine Signatur ganz: Name, Notiz, Labels, Tag-IDs, Absenderprofil, Visitenkarte,
+Inhaltsflags, Nutzbarkeit und was sie blockiert. **Stolperer:** Ohne `includeContent: true` kein
+Text, nur die Flags — der Text ist der größte Teil der Antwort, hol ihn nur, wenn du ihn brauchst.
+Eine leere gespeicherte `senderEmail` heißt „die Adresse des Kontos", nicht „kein Absender".
+
+### `create-signature`
+**Wofür:** eine neue Signatur, entweder mit vollständigem `content` oder als Kopie einer bestehenden
+über `sourceSignatureId`; bei einer Kopie überschreibt, was du mitgibst, und der Rest bleibt vom
+Original. **Nicht:** einen Newsletter ändern — keiner benutzt die neue Signatur, bis sie gewählt wird.
+**Stolperer:** Mindestens ein Tag ist Pflicht, und jedes Tag darf noch keiner anderen Signatur
+gehören. Das HTML braucht `%Link:Unsubscribe%` als `href` eines Links und die Adressplatzhalter
+`%User:FirstName%`, `%User:LastName%`, `%User:Street%`, `%User:Zip%`, `%User:City%`,
+`%User:Country%`; der Plain-Text dieselben, der Abmeldelink darf dort als Text stehen; das
+transaktionale HTML die Adressplatzhalter, aber **kein** `%Link:Unsubscribe%` (`%Link:SubscriberInfo%`
+ist empfohlen). Ein Konto, das Adressangaben weglassen darf, ist von den Adressplatzhaltern befreit,
+nie vom Abmeldelink. Fehlt einer, wird abgelehnt — setz die Platzhalter, statt Adressdaten
+auszuschreiben oder zu erfinden. Der Plain-Text wird nur gespeichert, wenn das Konto ihn frei
+bearbeiten darf, sonst aus dem HTML erzeugt — erwarte ihn also nicht unverändert zurück. **Die
+transaktionale Fassung ist kein Randfall:** sie geht an Erstkontakte, etwa mit einer
+Bestätigungsmail, wo ein Abmeldelink von einer Anmeldung abmelden würde, die nie bestätigt wurde.
+Biete sie beim Anlegen an, statt zu warten, bis jemand danach fragt. Die Absenderadresse braucht eine verifizierte Domain.
+Die Antwort trägt nur Flags; den gespeicherten Text liest `get-signature`.
+
+### `update-signature`
+**Wofür:** Name, interne Notiz, Labels und Visitenkarte. **Nicht:** Text, Tags oder
+Absenderprofil — dafür gibt es die beiden Werkzeuge darunter. **Stolperer:** Die
+Standardsignatur lässt sich nicht umbenennen. Ein leerer String in der Visitenkarte leert das Feld;
+ein weggelassenes Feld bleibt.
+
+### `replace-signature-content`
+**Wofür:** den Text einer Signatur ersetzen. **Nicht:** Name, Tags, Absender, Visitenkarte.
+**Stolperer:** HTML und Plain werden **ganz** ersetzt, ohne Undo — lies den Text vorher mit
+`get-signature` und `includeContent: true`, zeig der Person, was sich ändert, und frag. Weil die
+Signatur erst beim Versand angehängt wird, ändert das jede künftige Mail, die sie trägt. Es gelten
+dieselben Pflichtplatzhalter wie beim Anlegen. Der transaktionale Teil ändert sich nur, wenn du ihn
+mitgibst; `useInTransactionalEmails: false` plus leeres `transactionalHtml` schaltet ihn ab und leert
+ihn.
+
+### `configure-signature-delivery`
+**Wofür:** die Tags einer Signatur und ihr Absenderprofil — Absendername, Absenderadresse,
+Antwortadresse, CC, BCC, Empfänger, Versanddomain. **Nicht:** Text, Name, Visitenkarte, und es legt
+nichts an: jedes Tag, jede Adresse und jede Domain muss es im Konto schon geben. **Stolperer:**
+Ändert sich die Absenderadresse, wird sie gegen ihre verifizierte Domain geprüft und die passende
+Versanddomain abgeleitet und gespeichert, wie die App es tut. Eine gewöhnliche Signatur braucht
+mindestens ein Tag, die Standardsignatur darf ohne auskommen; ein Tag, das schon einer anderen
+Signatur gehört, wird abgelehnt.
+
+## Absenderdomains
+
+Eine Absenderadresse braucht eine **verifizierte** Domain, und verifiziert ist eine Domain erst,
+wenn ihre DNS-Einträge stimmen. Die Einträge setzt die Person bei ihrem DNS-Anbieter — kein Werkzeug
+hier schreibt DNS. Eine neue Domain erscheint in `availableSenderDomains` von
+`configure-newsletter-delivery` erst, wenn sie senden darf.
+
+### `list-sender-domains` · `get-sender-domain`
+**Wofür:** die Domains des Kontos mit Prüfstand, Standard-Markierung und ob die Wartezeit für die
+DNS-Verbreitung vorbei ist; einzeln mit Nutzbarkeit, letzter Prüfanfrage und den Absenderadressen
+darunter, Subdomains eingeschlossen. **Nicht:** eine DNS-Abfrage — beide lesen den gespeicherten
+Stand. **Stolperer:** Eine Adresse in der Liste von `get-sender-domain` ist nicht zwingend bestätigt
+oder sendebereit. Die gemeinsame Rückfall-Infrastruktur von KlickTipp ist keine Domain des Kontos
+und steht deshalb nicht darin.
+
+### `get-sender-domain-dns-setup`
+**Wofür:** jeden DNS-Eintrag, den die Domain braucht — Typ, Host, Wert, Priorität, TTL —, und den
+zuletzt gemessenen Ist-Stand daneben. **Stolperer:** Mehrere erwartete Typen oder Werte sind
+**Alternativen**: veröffentlicht wird genau ein Paar, normalerweise das erste. Gib die Einträge so
+weiter, dass die Person sie abschreiben kann, statt sie zusammenzufassen. Es misst nicht live; ein
+`checkedAt: null` heißt „noch kein Ergebnis", nicht „falsch".
+
+### `create-sender-domain`
+**Wofür:** eine Domain oder Subdomain registrieren, ohne Protokoll, Pfad, Platzhalter oder Punkt am
+Ende. **Nicht:** verifizieren, zur Standarddomain machen, etwas senden. **Stolperer:** Es gelten
+dieselben Regeln wie im Formular des Kontos — Syntax, reservierte Domains, **weltweite
+Eindeutigkeit** und das Limit des Produkts. Frag, bevor du eine Domain anlegst, die niemand genannt
+hat: sie ist danach im Konto, und nutzbar wird sie erst mit den DNS-Einträgen.
+
+### `request-sender-domain-dns-check`
+**Wofür:** eine frische DNS-Prüfung anstoßen, nachdem die Person die Einträge gesetzt hat.
+**Nicht:** senden, und nicht die Wartezeit je Domain umgehen. **Stolperer:** Die Prüfung läuft
+asynchron. In der Wartezeit kommt kein Fehler, sondern `cooldownActive: true` mit der gespeicherten
+Anfrage und dem nächsten möglichen Zeitpunkt — sag der Person, wann es wieder geht, statt erneut
+anzustoßen. Das Ergebnis liest `get-sender-domain-dns-setup`: fertig ist es, wenn jedes `checkedAt`
+mindestens so spät ist wie `lastDnsCheckRequestedAt` aus dieser Antwort. Frag nicht in enger Schleife
+nach — die DNS-Verbreitung braucht ihre Zeit, und die Wartezeit je Domain gilt trotzdem.
 
 ## Antwortformen
 

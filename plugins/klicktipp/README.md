@@ -41,6 +41,22 @@ Both targets read the same `.mcp.json`.
 | `prepare-newsletter-dispatch` | prepare the real dispatch and return a confirmation URL |
 | `cancel-newsletter-dispatch` | take a running dispatch back — it does not unsend what already left |
 
+**Signatures and sender domains**
+
+| | |
+|---|---|
+| `search-signatures` · `get-signature` | the signatures a newsletter can carry, and one with its text, sender profile, tags and business card |
+| `create-signature` | create one, or copy an existing one |
+| `update-signature` | name, internal note, labels and digital business card |
+| `replace-signature-content` | replace its text — it is appended at send time, so every future send that carries it changes |
+| `configure-signature-delivery` | its tags and sender profile |
+| `list-sender-domains` · `get-sender-domain` | the account's sender domains and their verification state |
+| `get-sender-domain-dns-setup` | the DNS records a domain needs, and what was measured last |
+| `create-sender-domain` | register a domain — unverified until its DNS records are in place |
+| `request-sender-domain-dns-check` | ask for a fresh DNS check once the records are set |
+
+No tool writes DNS: the records go in at the domain's DNS provider, by the person.
+
 **Content of one email**
 
 | | |
@@ -127,7 +143,7 @@ and that step does reach real recipients and cannot be taken back. If a bound
 value changes or the link expires, the confirmation is refused and a new one has
 to be prepared.
 
-Three writes have no undo, and the agent is expected to say so before it calls
+These writes have no undo, and the agent is expected to say so before it calls
 them:
 
 - `replace-email-editor-content-from-html` converts HTML only, and it is the entry for a
@@ -150,6 +166,9 @@ them:
   the step, not after.
 - `delete-newsletter-draft` removes the draft with its email, audience
   conditions and system tags.
+- `replace-signature-content` replaces the whole text of a signature. A signature
+  is appended when a mail is sent, so the change reaches every future send that
+  carries it, not only the newsletter at hand.
 
 `get-opt-in-process-redirect-url` returns a URL that identifies a subscriber — it
 carries subscriber ID, email address, list, subscriber key and referral link.
@@ -188,9 +207,9 @@ Each skill carries a `references/` folder with the tools it uses, their answer
 shapes and their pitfalls. All of them are in German, like the editor itself.
 
 **What the skills describe is what the server serves.** A tool that is not in
-them does not exist here, and neither does the capability behind it: there is no
-tool that writes an email signature — an existing one is picked through
-`signatureId` in `configure-newsletter-delivery`.
+them does not exist here, and neither does the capability behind it: there is,
+for example, no tool that writes DNS records — a sender domain is verified once
+its owner has put them in at the DNS provider.
 
 The personalized email block is a case of its own: the add-on behind it is paid
 for separately and the work on it is deferred, and the editor offers the block

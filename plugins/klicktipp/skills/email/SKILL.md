@@ -113,6 +113,7 @@ Konvertierung stattfindet.
 | `update-email-editor-spacer-style` | die Höhe von Abständen |
 | `update-email-editor-divider-style` | Linie und Breite von Trennlinien |
 | `update-email-editor-button-style` | Hintergrund, Textfarbe, Eckenradius, Rahmen und Innenabstand von Buttons |
+| `update-email-editor-text-style` | die Typografie von Überschrift, Absatz, Text und Liste: Farbe, Linkfarbe, **Schrift, Größe, Stärke**, Laufweite, Zeilenhöhe, Größe auf dem Telefon, Absatz- und Listenabstände |
 
 ¹ Auf Production nicht freigeschaltet: beide legen ein Add-on an, das erst der Editor
 fertig macht. Dort antwortet der Aufruf mit „unknown tool" — verweise auf den Editor,
@@ -239,6 +240,11 @@ und Attribute wie `data-mce-style` unverändert und tausche **nur die Wörter**.
 Vereinheitlichung, keine „unnötige" Verschachtelung entfernen. Braucht der neue Text mehr Absätze
 als der alte, wiederhole das vorhandene `<p style=…>` mit seinem Stil; braucht er weniger, lass
 Absätze weg. Bei einer Überschrift gilt dasselbe für `text` (dort steckt der Text in `<span>`s).
+
+**Soll sich das Aussehen ändern, nicht der Wortlaut, ist das kein Markup-Umbau.** Farbe, Schrift,
+Größe, Zeilenhöhe und Abstände der Textbausteine schreibt `update-email-editor-text-style` — dort,
+wo der Editor sie speichert und von wo die E-Mail sie rendert; eine `line-height` im Markup wird
+verworfen. Die Wörter bleiben dabei, wie sie sind.
 
 **Deshalb: einen Körper nicht aus Adds zusammensetzen.** Entsteht eine E-Mail oder ein ganzer
 Abschnitt neu, gehört der ganze Körper in **einen** Aufruf — `replace-email-editor-content-from-email`,

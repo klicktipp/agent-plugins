@@ -8,6 +8,24 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.21.0 — 2026-09-30
+
+- **Signatures and sender domains are written, not only picked.** Eleven tools are new in
+  `newsletter`: `search-signatures`, `get-signature`, `create-signature`, `update-signature`,
+  `replace-signature-content` and `configure-signature-delivery` for the signatures, and
+  `list-sender-domains`, `get-sender-domain`, `get-sender-domain-dns-setup`, `create-sender-domain`
+  and `request-sender-domain-dns-check` for the domains. The skill carries what their descriptions
+  cannot: a signature is appended at send time, so changing it changes every future send that
+  carries it; the required placeholders are refused when missing, never written out; the
+  transactional version belongs to first contacts; and no tool writes DNS — the records go in at
+  the domain's provider, by the person, before the check is asked for.
+- **Text blocks have a look of their own.** `update-email-editor-text-style` is new in `email`:
+  colour, link colour, font, size, weight, letter spacing, line height and a size for phones, plus
+  paragraph and list spacing. The skill no longer says typography lives only in a block's markup —
+  a `line-height` there is dropped — and the block references say which kind takes which value.
+- The README no longer claims there is no tool that writes a signature.
+- The contract references hold all twelve word for word.
+
 ## 0.20.1 — 2026-09-28
 
 - **Setup guides for opencode and OpenClaw.** Both reach the same server without the plugin and

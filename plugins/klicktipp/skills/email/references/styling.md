@@ -5,9 +5,9 @@ Für eine reine Textänderung brauchst du diese Datei nicht — dafür reicht `u
 Gestaltung nicht anfasst.
 
 **Gestaltung geht inzwischen — in benannten Werten, nie in CSS.** Vier Ebenen für alles, was jeder
-Baustein hat (Seite, Zeile, Spalte, Baustein), und drei Werkzeuge für das, was **nur eine Art** hat:
-die Höhe eines Abstands, Linie und Breite einer Trennlinie, das Aussehen eines Buttons. Ein
-artgebundenes Werkzeug auf einer anderen Art wird abgelehnt — eine Überschrift hat keine Höhe.
+Baustein hat (Seite, Zeile, Spalte, Baustein), und vier Werkzeuge für das, was **nur eine Art** hat:
+die Höhe eines Abstands, Linie und Breite einer Trennlinie, das Aussehen eines Buttons und die
+Typografie der Textbausteine. Ein artgebundenes Werkzeug auf einer anderen Art wird abgelehnt — eine Überschrift hat keine Höhe.
 Zusammen setzen sie Farben, Innenabstände, Rahmen, Ausrichtung, Breiten, Eckenradien und die
 Sichtbarkeit je Gerät. Eine Farbe ist
 `#RRGGBB`, `#RGB` oder `transparent`, ein Abstand eine ganze Pixelzahl 0–400, eine Breite 320–1440,
@@ -27,9 +27,14 @@ Was weiterhin **nicht** geht, sagst du offen, statt es zu umgehen: die Spaltenbr
 einer bestehenden Zeile (die Spalten einer Zeile sind gleich breit; eine schiefe Teilung entsteht im
 Editor), eine Zeile entfernen, und die **Breite eines Bildes oder Videos** — die steckt im Dokument
 in zwei gekoppelten Werten plus einem Klassen-Token, und eines davon allein zu setzen bringt Editor
-und Darstellung auseinander; dafür ist der Editor der Weg. Auch die Typografie eines Textbausteins
-gehört nicht hierher: sie steckt in seinem eigenen Markup, also in `update-email-editor-text` — sie an zwei
-Stellen anzubieten hieße, zwei Antworten auf eine Frage zu haben.
+und Darstellung auseinander; dafür ist der Editor der Weg.
+
+**Die Typografie der Textbausteine** — Überschrift, Absatz, Text, Liste — schreibt
+`update-email-editor-text-style`: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe
+und eine eigene Größe fürs Telefon, beim Absatz dazu der Abstand zwischen Absätzen, bei der Liste
+Aufzählungszeichen und Eintragsabstand. Gespeichert wird dort, von wo die E-Mail rendert; eine
+`line-height` im Markup wird verworfen. Der ältere Textbaustein nimmt weder Größe noch Stärke, die
+stecken bei ihm im Markup. Die Wörter bleiben bei `update-email-editor-text`.
 
 **Welches Feld welche Bausteinart hat, welches Werkzeug es schreibt und worauf bei ihr zu achten
 ist, steht je Baustein in `references/blocks/` — eine Datei je Art.** Lies die eine, um die es

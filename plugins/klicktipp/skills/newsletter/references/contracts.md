@@ -1,6 +1,6 @@
-# Die veröffentlichten Verträge — Newsletter und Versand
+# Die veröffentlichten Verträge — Newsletter, Versand, Signaturen und Absenderdomains
 
-Wort für Wort das, was der Server in `tools/list` für die 9 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 20 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -14,7 +14,10 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `search-newsletters` · `get-newsletter` · `create-newsletter-draft` ·
 `update-newsletter-draft` · `delete-newsletter-draft` ·
 `configure-newsletter-delivery` · `send-newsletter-test` · `prepare-newsletter-dispatch` ·
-`cancel-newsletter-dispatch`
+`cancel-newsletter-dispatch` · `search-signatures` · `get-signature` · `create-signature` ·
+`update-signature` · `replace-signature-content` · `configure-signature-delivery` ·
+`list-sender-domains` · `get-sender-domain` · `get-sender-domain-dns-setup` ·
+`create-sender-domain` · `request-sender-domain-dns-check`
 
 ## `search-newsletters` · RI
 
@@ -157,3 +160,185 @@ Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter whose dispatch is to be called off
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `search-signatures` · RI
+
+**Search email signatures**
+
+Lists the email signatures of a KlickTipp account that a newsletter can carry, with ID, name, the stored and effective sender address of their sender profile, the readiness of that identity, and the tags that make KlickTipp pick a signature by itself. A signature that cannot send using its own sender profile as it stands -- no content, missing legally required placeholders, or a sender address that may not be sent from -- is left out unless unusable signatures are asked for, in which case it comes with the reasons why. Each entry also says whether its digital business card carries data, which is what decides if add-email-editor-contact-card may select it. The signature text is not part of the list; use get-signature for that. To have KlickTipp pick the signature by tagging instead of naming one, pass signature ID 0 to configure-newsletter-delivery; that is not an entry of this list.
+
+Parameter:
+
+- `query` — null | string (maxLength 250): Text the name of a signature has to contain; omit to list them all
+- `includeUnusable` — null | boolean: True to also return signatures that cannot currently be used, with their blockers; omit to leave them out
+- `limit` — null | integer (minimum 1; maximum 200): How many signatures to return at most, 1 to 200, 50 by default
+- `accountId` — null | integer (minimum 1): User ID of the account to list signatures for; omit for the token account, or pass an accessible subaccount ID
+
+## `get-signature` · RI
+
+**Get email signature**
+
+Returns one email signature with its name, notes, labels, tag IDs, sender profile, digital business card, content flags, usability and blockers. includeContent adds the HTML, plain and transactional content itself, which is the bulk of the answer. isUsable includes the effective sender identity and domain; an empty stored senderEmail follows the account address.
+
+Parameter:
+
+- `signatureId`* — integer (minimum 1): ID of the signature to read
+- `includeContent` — null | boolean: True to include HTML, plain and transactional content; omit to return only content flags
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
+
+## `create-signature` · O
+
+**Create email signature**
+
+Creates or copies an email signature. Name and tag IDs replace source values; supplied content, sender and business-card fields override copied values, while omitted copied fields stay. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Tags, addresses and domains must exist; the sender address must have a verified domain, and an omitted sender domain is derived and stored. Returns content flags only; use get-signature with includeContent true. No newsletter changes.
+
+Parameter:
+
+- `name`* — string (minLength 1; maxLength 250): Unique name of the new signature
+- `tagIds`* — array<integer> (maxItems 50): At least one existing tag ID for the new signature; every tag must be unassigned to another signature
+- `sourceSignatureId` — null | integer (minimum 1): Existing signature of the same account to copy; omit when supplying content for a new signature
+- `content` — object: Complete HTML, plain and transactional content block; required without a source and replaces copied content when supplied
+  - `html`* — string (minLength 1; maxLength 65536)
+  - `plain` — string (maxLength 65536)
+  - `useInTransactionalEmails` — boolean
+  - `transactionalHtml` — string (maxLength 65536)
+- `senderProfile` — object: Optional sender, reply, CC, BCC, recipient and sender-domain fields; omitted copied fields are preserved, and the sender domain is derived from the resulting sender address when omitted
+  - `senderName` — string (maxLength 250)
+  - `senderEmail` — string (maxLength 250)
+  - `replyToEmail` — string (maxLength 250)
+  - `ccEmail` — string (maxLength 250)
+  - `bccEmail` — string (maxLength 250)
+  - `toEmail` — string (maxLength 250)
+  - `senderDomain` — string (maxLength 250)
+- `vCard` — object: Optional plain-text digital-business-card fields; supplied fields override copied values, omitted copied fields stay, and empty strings clear fields
+  - `firstName` — string (maxLength 128)
+  - `lastName` — string (maxLength 128)
+  - `companyName` — string (maxLength 128)
+  - `emailAddress` — string (maxLength 128)
+  - `phone` — string (maxLength 128)
+  - `cellPhone` — string (maxLength 128)
+  - `street` — string (maxLength 128)
+  - `zip` — string (maxLength 128)
+  - `city` — string (maxLength 128)
+  - `state` — string (maxLength 128)
+  - `country` — string (maxLength 128)
+  - `website` — string (maxLength 250)
+- `notes` — null | string (maxLength 1000): Internal note; on a copy, omit to preserve the source note
+- `metaLabels` — array<string> | null (maxItems 50): Labels; on a copy, omit to preserve the source labels
+- `accountId` — null | integer (minimum 1): User ID of the account in which to create the signature; omit for the token account, or pass an accessible subaccount ID
+
+## `update-signature` · I
+
+**Update email signature**
+
+Changes the name, internal note, labels or digital business card of an email signature. Omitted fields stay unchanged and empty business-card strings clear those fields. Content, tag IDs and sender profile are never changed.
+
+Parameter:
+
+- `signatureId`* — integer (minimum 1): ID of the signature to update
+- `name` — null | string (minLength 1; maxLength 250): New unique name; omit to keep it, and note that the default signature cannot be renamed
+- `notes` — null | string (maxLength 1000): New internal note; omit to keep it, or pass an empty string to clear it
+- `metaLabels` — array<string> | null (maxItems 50): Replacement labels; omit to keep them, or pass an empty array to clear them
+- `vCard` — object: Plain-text digital-business-card fields to change; omitted fields stay unchanged and empty strings clear fields
+  - `firstName` — string (maxLength 128)
+  - `lastName` — string (maxLength 128)
+  - `companyName` — string (maxLength 128)
+  - `emailAddress` — string (maxLength 128)
+  - `phone` — string (maxLength 128)
+  - `cellPhone` — string (maxLength 128)
+  - `street` — string (maxLength 128)
+  - `zip` — string (maxLength 128)
+  - `city` — string (maxLength 128)
+  - `state` — string (maxLength 128)
+  - `country` — string (maxLength 128)
+  - `website` — string (maxLength 250)
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
+
+## `replace-signature-content` · DOI
+
+**Replace email signature content**
+
+Replaces normal HTML and plain content with no MCP undo. Transactional fields change only when supplied; false plus an empty transactionalHtml disables and clears them. HTML needs %Link:Unsubscribe% as the href of a link plus %User:FirstName%, %User:LastName%, %User:Street%, %User:Zip%, %User:City% and %User:Country%; allowed address omissions are exempt. Plain needs the same, but unsubscribe may be text; it is stored only when plain-content editing is allowed, otherwise regenerated from HTML. Transactional HTML needs the address placeholders and no %Link:Unsubscribe%; %Link:SubscriberInfo% is recommended. Returns content flags only; use get-signature with includeContent true. Name, notes, labels, tags, sender profile and business card stay unchanged.
+
+Parameter:
+
+- `signatureId`* — integer (minimum 1): ID of the signature whose normal content is replaced and whose transactional content may be changed
+- `html`* — string (minLength 1; maxLength 65536): Complete HTML signature content
+- `plain` — null | string (maxLength 65536): Complete plain content; stored trimmed only when plain-content editing is enabled, otherwise regenerated from HTML
+- `useInTransactionalEmails` — null | boolean: Whether the signature is used in transactional emails; omit to keep the current setting
+- `transactionalHtml` — null | string (maxLength 65536): Complete transactional HTML content; omit to keep it, or pass an empty string with useInTransactionalEmails false to clear it
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
+
+## `configure-signature-delivery` · OI
+
+**Configure email signature delivery**
+
+Changes only assigned tag IDs and sender, reply, CC, BCC, recipient and sender-domain fields. Omitted fields stay unchanged. Every ID must already belong to the account; this tool never creates tags, addresses or domains. A changed sender address is checked against its verified domain, and the matching sender domain is derived and stored as the app would store it. Content, metadata and the digital business card stay unchanged.
+
+Parameter:
+
+- `signatureId`* — integer (minimum 1): ID of the signature whose delivery configuration is changed
+- `tagIds` — array<integer> | null (maxItems 50): Replacement tag IDs that already exist; ordinary signatures require at least one, and every tag must be unassigned to another signature, while the default signature may use an empty array
+- `senderProfile` — object: Sender name and configured account address/domain values; reply options are also used for CC, BCC and recipient, empty strings clear optional fields, omitted fields stay unchanged, and the sender domain is derived when the sender address changes
+  - `senderName` — string (maxLength 250)
+  - `senderEmail` — string (maxLength 250)
+  - `replyToEmail` — string (maxLength 250)
+  - `ccEmail` — string (maxLength 250)
+  - `bccEmail` — string (maxLength 250)
+  - `toEmail` — string (maxLength 250)
+  - `senderDomain` — string (maxLength 250)
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the signature; omit for the token account, or pass an accessible subaccount ID
+
+## `list-sender-domains` · RI
+
+**Search sender domains**
+
+Lists every sender domain configured by a KlickTipp account, with its verification state, DKIM-only/shared-transport flag, default marker and whether its DNS propagation wait has elapsed. This reads stored state only and performs no DNS lookup. Shared fallback infrastructure is not an account configuration and is therefore not included.
+
+Parameter:
+
+- `accountId` — null | integer (minimum 1): User ID of the account whose configured sender domains to list; omit for the account the access token belongs to, or pass a subaccount the token owner may configure
+
+## `get-sender-domain` · RI
+
+**Get sender domain**
+
+Returns one configured sender domain with its verification and usability state, the last DNS recheck request and configured sender addresses covered by it, including subdomains. An address in the list is not necessarily confirmed or send-ready. It performs no DNS lookup; use get-sender-domain-dns-setup for the stored per-record setup state.
+
+Parameter:
+
+- `domainId`* — integer (minimum 1): ID of the sender domain, as shown in the domain settings
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the domain; omit for the account the access token belongs to, or pass a subaccount the token owner may configure
+
+## `get-sender-domain-dns-setup` · RI
+
+**Get sender domain DNS setup**
+
+Returns every DNS record expected for one sender domain and its most recently stored actual state, including expected and actual type, host, value, priority and TTL where available. It performs no live DNS lookup. Expected types and values are alternatives: publish exactly one type/value pair, normally the first. After requesting a fresh asynchronous check, poll until every record checkedAt is at least the trigger result lastDnsCheckRequestedAt; a null checkedAt means no result exists yet.
+
+Parameter:
+
+- `domainId`* — integer (minimum 1): ID of the sender domain whose required DNS records to read
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the domain; omit for the account the access token belongs to, or pass a subaccount the token owner may configure
+
+## `create-sender-domain`
+
+**Create sender domain**
+
+Registers a sender domain in KlickTipp and returns the stored domain in its initial state. The same normalization, syntax, reserved-domain, global uniqueness and product-limit rules as the account form apply. The new domain is not verified and cannot be used for sending until its DNS setup passes. Creating it sends nothing and does not make it the default domain.
+
+Parameter:
+
+- `domain`* — string (minLength 1; maxLength 250): Domain or subdomain to register, without a protocol, path, wildcard, or trailing dot
+- `accountId` — null | integer (minimum 1): User ID of the account to create the sender domain in; omit for the account the access token belongs to, or pass a subaccount the token owner may configure
+
+## `request-sender-domain-dns-check` · O
+
+**Trigger sender domain DNS check**
+
+Requests an asynchronous fresh DNS check for one sender domain. It sends no email and does not bypass the existing per-domain cooldown. During a cooldown it returns the stored request and next available moments with cooldownActive true instead of failing or queueing another check.
+
+Parameter:
+
+- `domainId`* — integer (minimum 1): ID of the sender domain to recheck
+- `accountId` — null | integer (minimum 1): User ID of the account that owns the domain; omit for the account the access token belongs to, or pass a subaccount the token owner may configure
