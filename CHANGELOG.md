@@ -8,6 +8,21 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.22.1 — 2026-10-01
+
+- **The dashboard says which emails worked and which did not.** A new section judges every send
+  against the account's own median in the period, not against industry figures, and in percentage
+  points so the judgement can be checked. It says which number judges what — opens the subject and
+  send time, click-to-open the content, unsubscriptions and complaints the damage — and turns the
+  combination into a hypothesis, labelled as one: high opens with low click-to-open means the
+  subject promises what the content does not keep. The page now opens with the three strongest and
+  three weakest sends, each with subject, send time, strongest link and one sentence of hypothesis.
+- **No verdict on what cannot carry one.** A send under 200 recipients is shown without a verdict,
+  one younger than three days is marked as still collecting, email and SMS are compared apart, and
+  a decided split test is named as the only real evidence of a cause.
+- The rule against any ranking is replaced by one against a ranking without a measure and a base:
+  the table stays sorted by date, the verdict has its own section.
+
 ## 0.22.0 — 2026-10-01
 
 - **The dashboard reads the statistics, not only the dispatch state.** Seven tools are new in

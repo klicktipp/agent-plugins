@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Die Zahlen eines KlickTipp-Kontos als Dashboard — Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen der Aussendungen, die tägliche Aktivität des Kontos, Tags über die Zeit, Automationen und ihre E-Mails und SMS. Nutze ihn bei Report, Auswertung, Statistik, Öffnungs- oder Klickrate, Zustellbarkeit oder dem Vergleich mehrerer Aussendungen. Baut das Dashboard als Claude-Artifact oder im Canvas von ChatGPT und Codex. Nur lesend.
+description: Die Zahlen eines KlickTipp-Kontos als Dashboard — welche E-Mails gut liefen und welche nicht, Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen der Aussendungen, die tägliche Aktivität des Kontos, Tags über die Zeit, Automationen und ihre E-Mails und SMS. Nutze ihn bei Report, Auswertung, Statistik, Öffnungs- oder Klickrate, Zustellbarkeit oder dem Vergleich mehrerer Aussendungen. Baut das Dashboard als Claude-Artifact oder im Canvas von ChatGPT und Codex. Nur lesend.
 ---
 
 # KlickTipp Dashboard
@@ -67,7 +67,8 @@ search-newsletters  status="scheduled" limit=1  → dito
 ```
 
 Die `newsletterId` aus `search-newsletters` ist die `campaignId` von `get-campaign-statistics`.
-Das sind etwa 25 bis 30 Aufrufe für ein volles Dashboard. Drei Regeln halten es dabei:
+Für die auffälligen Aussendungen kommt je ein `get-newsletter` mit `include: ["metadata"]` dazu —
+der Betreff (Abschnitt 4). Das sind etwa 30 bis 40 Aufrufe für ein volles Dashboard. Drei Regeln halten es dabei:
 
 **Ein Zeitraum, nicht „alles".** Frag nach dem Zeitraum, oder nimm die letzten 90 Tage und schreib
 es hin. `sendDateFrom` und `sendDateBefore` sind halboffen — „From" schließt ein, „Before" schließt
@@ -177,7 +178,77 @@ Zustellbarkeit des ganzen Kontos hängt:
 Diese beiden Grenzen sind Branchenübliches, keine KlickTipp-Einstellung; schreib sie als
 Orientierung dazu, nicht als Urteil.
 
-## 4. Die Seite
+## 4. Was lief gut, was nicht
+
+Das ist die Frage hinter fast jedem Report: **welche E-Mails haben funktioniert, welche nicht, und
+woran lag es vermutlich.** Eine Tabelle mit Raten beantwortet sie nicht — der Leser müsste selbst
+vergleichen. Das Dashboard tut es für ihn, und zwar so, dass das Urteil prüfbar bleibt.
+
+### Der Maßstab ist das eigene Konto
+
+Beurteile jede Aussendung gegen den **Median des Kontos** im selben Zeitraum, nicht gegen
+Branchenwerte. Öffnungsraten hängen an Liste, Branche und Mailanbietern; „22 % ist gut" stimmt für
+das eine Konto und ist für das andere ein Einbruch. Der Median, nicht der Mittelwert: eine einzelne
+Mail an 50 treue Kunden zieht einen Mittelwert hoch, den Median nicht.
+
+Zeig je Aussendung die **Abweichung vom Median in Prozentpunkten** („Klickrate 3,1 %, +1,2 Pp über
+dem Median"). Die einzigen festen Grenzen bleiben die zwei aus Abschnitt 3 — Beschwerden und harte
+Bounces.
+
+### Welche Zahl was beurteilt
+
+| Was beurteilt wird | Kennzahl | Lies so |
+| --- | --- | --- |
+| Betreff, Absender, Versandzeit — wurde die Mail geöffnet? | `openRate` | nur relativ innerhalb des Kontos, wegen Apple Mail Privacy Protection |
+| Inhalt — hat er die Leser zum Klicken gebracht? | `clickRate` (Klick-zu-Öffnung) | die ehrlichste Inhaltskennzahl: misst den Inhalt, nicht den Betreff |
+| Wirkung insgesamt | `clickRateOfRecipients` | was von allen Empfängern übrig blieb |
+| Wert | `conversionsUnique / sent` | nur mit Conversion-Pixel; sonst „nicht gemessen", nicht 0 |
+| Schaden | `unsubscriptions`, `spamComplaints`, `hardBounces` je `sent` | eine Mail mit guten Klicks und doppelt so vielen Abmeldungen wie üblich ist kein Erfolg |
+
+Die Kombination sagt mehr als jede Zahl allein — und genau sie gehört als **Vermutung** an jede
+auffällige Aussendung:
+
+| Muster | Naheliegende Vermutung |
+| --- | --- |
+| Öffnungen hoch, Klick-zu-Öffnung niedrig | der Betreff verspricht etwas, das der Inhalt nicht hält |
+| Öffnungen niedrig, Klick-zu-Öffnung hoch | der Inhalt trägt, Betreff oder Versandzeit nicht |
+| beides hoch | Thema und Aufmachung passen — das ist die Mail, an der man sich orientiert |
+| Abmeldungen oder Beschwerden deutlich über dem Median | Thema, Ton oder Frequenz stößt ab, unabhängig von den Klicks |
+| ein Link zieht fast alle Klicks | der Rest des Inhalts arbeitet nicht mit; `links` zeigt welcher |
+
+### Wann eine Aussendung auffällt
+
+Als Faustregel, die du dazuschreibst:
+
+- **Auffällig** ist eine Rate, die **mehr als ein Viertel** über oder unter dem Median liegt.
+- **Zu klein zum Urteil** ist eine Aussendung mit weniger als **200 Versendeten** — dort entscheidet
+  ein Dutzend Menschen über die Rate. Zeig sie, aber ohne Urteil und ohne Platz in Top oder Flop.
+- **Noch frisch** ist eine Aussendung, die jünger als **drei Tage** ist: die Zähler sind
+  Lebenszeit-Summen und wachsen noch. Markier sie, statt sie mit fertigen zu vergleichen.
+
+Vergleiche nur Vergleichbares: **E-Mail und SMS getrennt** (SMS haben keine Öffnungen), und wo die
+Zielgruppen sehr verschieden sind — ein Newsletter an alle, eine Mail an ein Tag mit 300
+Stammkunden —, sag das neben dem Vergleich. `get-newsletter` mit `include: ["audience"]` zeigt,
+an wen eine Aussendung ging.
+
+### Was dazugehört, um es zu erklären
+
+Für die auffälligen Aussendungen — nicht für alle — lies nach, was eine Vermutung stützt:
+
+- **Betreff**: `get-newsletter` mit `include: ["metadata"]`. Ohne Betreff ist jede Aussage über
+  Öffnungen geraten.
+- **Versandzeit**: Wochentag und Uhrzeit aus dem Versanddatum von `search-newsletters`.
+- **Der stärkste Link**: der erste Eintrag in `links` von `get-campaign-statistics`.
+
+**Ein entschiedener Splittest ist der einzige echte Beweis.** Er schickt Varianten zur selben Zeit an
+dieselbe Zielgruppe; alles andere hier ist Korrelation. Gibt es im Zeitraum einen, gehört
+`get-newsletter-split-test-statistics` mit seinem Gewinner in diesen Abschnitt.
+
+**Automationen** werden nicht gegen Newsletter verglichen, sondern Schritt gegen Schritt: die
+E-Mails einer Automation mit `get-automation-email-statistics` nebeneinander zeigen, wo Leser
+aussteigen.
+
+## 5. Die Seite
 
 **Bau das Dashboard immer, statt die Zahlen nur aufzuzählen** — als **eine** einzelne, in sich
 geschlossene HTML-Seite, die direkt im Gespräch erscheint: bei Claude als **Artifact**, bei Codex
@@ -208,16 +279,22 @@ Was hier steht, ist nur, was dieses Dashboard **inhaltlich** braucht:
 2. **Kachelreihe**: erreichte Kontakte, Aussendungen im Zeitraum, Zustellrate, Öffnungsrate,
    Klickrate (`clickRateOfRecipients`), Klick-zu-Öffnung. Jede Kachel mit der absoluten Zahl
    **unter** der Prozentzahl — Prozente ohne Basis sind nicht prüfbar.
-3. **Tabelle je Aussendung**, nach Versanddatum absteigend: Name, Datum, versendet, Öffnungen,
-   Klicks, Bounces, Abmeldungen. Mit `statisticsUrl` aus der Antwort verlinkt, damit man von jeder
-   Zeile in die App springen kann.
-4. **Verlauf**, sobald es mehr als drei Aussendungen sind: Öffnungs- und Klickrate über der Zeit.
-   Ein Punkt je Aussendung, keine Interpolation zwischen Terminen, die nichts miteinander zu tun
-   haben.
-5. **Aktivität des Kontos**, wenn danach gefragt ist: Anmeldungen und Abmeldungen je Tag aus
+3. **Was lief gut, was nicht** — direkt unter den Kacheln, weil es die Frage ist, mit der jemand
+   den Report öffnet: die **drei stärksten und drei schwächsten** Aussendungen nach Klickrate und
+   Klick-zu-Öffnung, jede mit ihrer Abweichung vom Median, Betreff, Versandzeit, stärkstem Link und
+   **einem Satz Vermutung**, als Vermutung beschriftet. Dazu jede Aussendung, deren Abmeldungen oder
+   Beschwerden auffallen, auch wenn ihre Klicks gut sind. Siehe Abschnitt 4.
+4. **Tabelle je Aussendung**, nach Versanddatum absteigend: Name, Datum, versendet, Öffnungsrate,
+   Klickrate, Klick-zu-Öffnung, Bounces, Abmeldungen — jede Rate mit einer Markierung über oder
+   unter dem Median, und „zu klein" oder „noch frisch", wo es zutrifft. Mit `statisticsUrl` aus der
+   Antwort verlinkt, damit man von jeder Zeile in die App springen kann.
+5. **Verlauf**, sobald es mehr als drei Aussendungen sind: Öffnungs- und Klickrate über der Zeit,
+   mit dem Median als ruhige Bezugslinie. Ein Punkt je Aussendung, keine Interpolation zwischen
+   Terminen, die nichts miteinander zu tun haben.
+6. **Aktivität des Kontos**, wenn danach gefragt ist: Anmeldungen und Abmeldungen je Tag aus
    `activity`, ein Tag-Verlauf aus `get-tag-statistics`, die Mailanbieter aus `ispShares`.
-6. **Fußzeile**: welche Werkzeuge gelesen wurden, dass die Zähler Lebenszeit-Summen sind, und was
-   **nicht** enthalten ist.
+7. **Fußzeile**: welche Werkzeuge gelesen wurden, dass die Zähler Lebenszeit-Summen sind, welche
+   Faustregeln die Markierungen setzen, und was **nicht** enthalten ist.
 
 
 ### Erst die Zahlen, dann die Seite
@@ -284,11 +361,12 @@ zusammenreimen muss, ist keiner.
 **Fehlendes wird benannt, nicht überbrückt.** Fehlt eine Kennzahl, steht dort „nicht verfügbar" mit
 einem Halbsatz warum — nicht ein Strich, den man für eine Null hält.
 
-**Kein Vergleich ohne Vergleichbarkeit.** Zwei Aussendungen an verschiedene Zielgruppen haben
-verschiedene Grundgesamtheiten. Sortier nach Datum, nicht nach Erfolg, und setz keine Rangliste
-daneben, die einen Zufall zur Leistung erklärt.
+**Ein Urteil nur mit Maßstab und Basis.** „Stark" heißt „über dem Median des Kontos", mit der Zahl
+dazu — und nie bei weniger als 200 Versendeten oder bei einer Aussendung, die noch Zähler sammelt.
+Die Tabelle bleibt nach Datum sortiert; das Urteil steht im eigenen Abschnitt, wo man sieht, worauf
+es beruht.
 
-## 5. Was dieser Skill nicht tut
+## 6. Was dieser Skill nicht tut
 
 - **Er schreibt nichts.** Kein Newsletter, kein Kontakt, kein Tag. Wenn aus einer Erkenntnis eine
   Handlung folgen soll, ist dafür der Skill `newsletter` zuständig.
@@ -296,5 +374,6 @@ daneben, die einen Zufall zur Leistung erklärt.
   gibt noch keinen.
 - **Er findet keine Automationen.** Ohne ID aus der App gibt es keine Automations-Zahlen.
 - **Er zählt keine Kontakte durch.** Siehe Abschnitt 1.
-- **Er erklärt keine Ursachen.** „Die Öffnungsrate ist gefallen" ist eine Beobachtung; warum, weiß
-  das Dashboard nicht. Formulier Vermutungen als Vermutungen, wenn überhaupt.
+- **Er beweist keine Ursachen.** „Der Betreff hat nicht gezogen" ist eine Vermutung, gestützt auf
+  ein Muster aus Abschnitt 4 — schreib sie als solche hin, mit den Zahlen, auf denen sie beruht.
+  Bewiesen ist nur, was ein entschiedener Splittest zeigt.
