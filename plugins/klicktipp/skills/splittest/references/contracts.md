@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — Splittests
 
-Wort für Wort das, was der Server in `tools/list` für die 5 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 6 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -20,6 +20,18 @@ Parameter:
 - `campaignId` — null | integer (minimum 1): ID of the split test campaign -- the newsletterId of get-newsletter; pass this or emailId, not both
 - `emailId` — null | integer (minimum 1): Email ID of one variant, as splitTestVariants or an editor URL carries it; the answer is the whole test that variant belongs to. Either this or campaignId, never both
 - `accountId` — null | integer (minimum 1): User ID of the account the campaign belongs to; omit for the account the access token belongs to, or pass the user ID of a subaccount the token owner may act for
+
+## `get-newsletter-split-test-statistics` · RI
+
+**Read split test results**
+
+Reads what a split test found out: every arm with its label ("A", "B"), its email, and how many contacts opened, clicked and converted, plus the revenue attributed to it. winnerBy names the criterion the test is decided by. The winner is reported, never computed: while the measuring period runs, isDecided is false and winnerLabel is null -- the arm that happens to lead is not the winner, and calling it early is how a test gets decided before it has said anything. A campaign that is not a split test is refused rather than answered with an empty result. The test's configuration and its arms are get-newsletter-split-test; one newsletter as a whole is get-campaign-statistics.
+
+Parameter:
+
+- `newsletterId`* — integer (minimum 1): ID of the split-test newsletter, as get-newsletter reports it
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
 
 ## `add-newsletter-split-test-variant`
 

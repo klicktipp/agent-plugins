@@ -31,6 +31,8 @@ Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Kon
 | `create-manual-tag` · `update-manual-tag` · `delete-manual-tag` | / I / D | Nur manuelle Tags. Löschen nimmt den Tag von allen Kontakten. |
 | `search-custom-fields` · `get-custom-field` | R | Felddefinitionen samt Platzhalter für den Inhalt. |
 | `create-custom-field` · `update-custom-field` · `delete-custom-field` | / I / D | Datentyp ist endgültig. Löschen vernichtet die Werte aller Kontakte. |
+| `get-account-settings` | R I | Die Einstellungen des Kontos, nur die, die es ändern darf. Zugangsdaten nur als eingerichtet oder nicht. |
+| `update-account-settings` | I | Nur die genannten Einstellungen schreiben. Ein falscher Wert weist den ganzen Aufruf ab. |
 
 ## Inhalt
 
@@ -38,6 +40,7 @@ Werkzeug nimmt optional `accountId` (ein Unterkonto); weggelassen heißt das Kon
 - Kontakte
 - Tags
 - Felder
+- Konto-Einstellungen
 
 ## Opt-in
 
@@ -167,3 +170,19 @@ Gruppe (`category`; leer sortiert in keine) und Labels — Typ und Mehrwertigkei
 das Ergebnis listet, was das Feld benutzt. Löschen vernichtet die Werte aller Kontakte in diesem
 Feld, ohne Undo; ein noch benutztes Feld wird mit Nennung abgewiesen. Der Platzhalter eines
 gelöschten Felds rendert leer.
+
+## Konto-Einstellungen
+
+### `get-account-settings`
+**Wofür:** die Einstellungsseite des Kontos lesen — Funktionsschalter, Vorschau-Tag, Sperrliste.
+**Nicht:** persönliche Daten, Datenschutz-Einstellungen, Auftragsverarbeitung, Absenderadressen.
+**Stolperer:** Ein Schalter, den das Konto nicht ändern darf, fehlt in der Antwort, statt `false` zu
+sein. Zugangsdaten angebundener Dienste kommen nur als eingerichtet oder nicht.
+
+### `update-account-settings`
+**Wofür:** einzelne Einstellungen ändern; die Antwort ist der Stand danach. **Nicht:** Zugangsdaten
+— die bleiben in der App. **Stolperer:** Nur die genannten Einstellungen werden geschrieben. Ein
+Schalter, den `get-account-settings` nicht zeigt, wird mit Namen abgewiesen; ein falscher oder
+verbotener Wert weist den ganzen Aufruf ab, ohne zu schreiben. `refusals` listet nur, was die
+Plattform erst beim Speichern ablehnte — die übrigen Änderungen sind dann gespeichert.
+`emailBlacklist` ersetzt die ganze Liste, ein leerer String leert sie.

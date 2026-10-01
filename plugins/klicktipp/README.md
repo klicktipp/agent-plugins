@@ -1,7 +1,8 @@
 # KlickTipp
 
-Write, review and prepare KlickTipp email newsletters from your agent, and manage
-the opt-in processes of the account with their confirmation email — over the hosted KlickTipp MCP server at
+Write, review and prepare KlickTipp email newsletters from your agent, manage
+the opt-in processes of the account with their confirmation email, and read its
+statistics — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
@@ -124,6 +125,27 @@ record of consent, so the skill changes it only when exactly that was asked.
 | `preview-opt-in-confirmation-email` | look at the stored email before a contact gets it |
 | `send-opt-in-confirmation-email-test` | send it to one address — which becomes a tagged contact |
 
+**Statistics** — read-only. Every counter is a lifetime total, not restricted to a period;
+only the tag statistics answer per period
+
+| | |
+|---|---|
+| `get-account-statistics` | the account's dashboard in one call: the last ten sends, today's fastest-growing tags, daily subscriptions, unsubscriptions and bounces, mail providers, bounces by kind |
+| `get-campaign-statistics` | what one email or SMS newsletter or autoresponder achieved, with its rates and every tracked link |
+| `get-newsletter-split-test-statistics` | what a split test found out, per arm — and the winner only once the test is decided |
+| `get-tag-statistics` | how many contacts got up to ten tags, per hour, day, month or year |
+| `get-automation-statistics` · `get-automation-waiting-contact-counts` | how an automation is doing, and where its contacts wait right now |
+| `get-automation-email-statistics` · `get-automation-sms-statistics` | what one email or SMS of an automation achieved |
+
+The automation tools take an ID from the KlickTipp app: no tool of this plugin lists automations.
+
+**Account settings**
+
+| | |
+|---|---|
+| `get-account-settings` | the account's settings screen: feature switches, preview tag, email blacklist — only what the account may change, credentials only as set or not |
+| `update-account-settings` | change named settings only; one bad value refuses the whole call, and credentials cannot be set here |
+
 There is no separate delivery-status tool: where a newsletter stands with its
 dispatch is the `deliveryStatus` projection of `get-newsletter`. The
 subject is written once, at creation; afterwards it is changed in the KlickTipp
@@ -191,13 +213,14 @@ test arms, set a subject line per arm, and read what changes once a newsletter
 is one.
 
 `skills/dashboard` — reads the numbers of an account — reach, delivery, opens,
-clicks, bounces, unsubscribes of the last dispatches — and builds a dashboard
-out of them. Read-only: it creates, changes and sends nothing.
+clicks, bounces, unsubscribes of the last dispatches, the daily activity of the
+account, tags over time, automations with their emails and SMS — and builds a
+dashboard out of them. Read-only: it creates, changes and sends nothing.
 
 `skills/crm` — the contact data of the account: find, read, subscribe and
 unsubscribe contacts, set field values, manage manual tags and custom field
-definitions, and create and change the opt-in processes behind them together
-with their confirmation email.
+definitions, create and change the opt-in processes behind them together
+with their confirmation email, and read and change the account's settings.
 
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,

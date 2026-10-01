@@ -86,6 +86,7 @@ die Kampagnenart nennt — das wären zwei Angaben, die sich widersprechen könn
 | --- | --- |
 | Den Test ansehen: Einstellungen, Varianten, ob er läuft | `get-newsletter-split-test` |
 | Von einer Variante zurück zum Test finden | `get-newsletter-split-test` mit `emailId` |
+| Was der Test ergeben hat, ob er entschieden ist | `get-newsletter-split-test-statistics` |
 | Testgröße, Zeitraum, Gewinner-Kriterium ändern | `configure-newsletter-split-test` |
 | Variante hinzufügen (leer oder als Kopie) | `add-newsletter-split-test-variant` |
 | Betreff, Pre-Header, Name einer Variante | `update-newsletter-split-test-variant` |
@@ -190,7 +191,8 @@ Variante beantwortet zu werden, den niemand gewählt hat.
 
 - Absender, Antwortadresse und Signatur **pro Variante** — das ist die App.
 - Testversand und Aktivierung eines Splittests.
-- Den Gewinner vorzeitig küren oder das Kriterium nachträglich ändern.
+- Den Gewinner vorzeitig küren oder das Kriterium nachträglich ändern. `get-newsletter-split-test-statistics`
+  meldet den Gewinner erst, wenn der Test entschieden ist; vorher gibt es keinen.
 - Einen bestehenden Newsletter in einen Splittest verwandeln, oder umgekehrt.
 
 In all diesen Fällen: sag es klar und verweise auf die `appUrl` aus der Antwort.

@@ -8,6 +8,37 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.22.0 — 2026-10-01
+
+- **The dashboard reads the statistics, not only the dispatch state.** Seven tools are new in
+  `dashboard`: `get-account-statistics` (the account's dashboard in one call — the last ten sends,
+  today's fastest-growing tags, daily activity, mail providers, bounces), `get-campaign-statistics`
+  (one newsletter or autoresponder, email or SMS, with every tracked link), `get-tag-statistics`
+  (up to ten tags per hour, day, month or year), and for automations `get-automation-statistics`,
+  `get-automation-waiting-contact-counts`, `get-automation-email-statistics` and
+  `get-automation-sms-statistics`. The skill no longer computes the rates itself: they come as the
+  KlickTipp dashboard computes them, in percent, and `clickRate` is over the opens — a
+  click-to-open rate — while `clickRateOfRecipients` is the click rate over the sends. The skill
+  says so, because labelling `clickRate` "click rate" shows a number several times too large. It
+  also says what the counters are not: lifetime totals, so a period selects sends, not counts; an
+  SMS has no opens; a notification email counts no sends; a missing tag period means zero.
+- **The dashboard is always built, not listed.** The skill now says where: as an artifact in
+  Claude, in the canvas in ChatGPT and Codex, and only as a `.html` file with its path where neither
+  exists.
+- **A split test reports its result.** `get-newsletter-split-test-statistics` is new in
+  `splittest`: per arm opens, clicks, conversions and revenue. The winner is reported once the test
+  is decided and never computed — the arm that happens to lead is not the winner.
+- **The account settings are read and written.** `get-account-settings` and
+  `update-account-settings` are new in `crm`. The skill carries what their descriptions leave to
+  the reader: a missing setting means "not this account's to change", not "off"; only named
+  settings are written, so the read state is never sent back whole; the email blacklist is
+  replaced, not appended to; credentials stay in the app.
+- The automation tools take an ID from the app, since no tool of the plugin lists automations; the
+  skill asks for it rather than guessing.
+- The contract references hold all ten word for word.
+- The server publishes the ten with its next production release. Until then it answers "unknown
+  tool" for them.
+
 ## 0.21.0 — 2026-09-30
 
 - **Signatures and sender domains are written, not only picked.** Eleven tools are new in

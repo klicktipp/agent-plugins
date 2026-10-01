@@ -1,16 +1,19 @@
 ---
 name: dashboard
-description: Die Zahlen der letzten Aussendungen eines KlickTipp-Kontos als Dashboard — Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen. Nutze ihn bei Report, Auswertung, Öffnungs- oder Klickrate, Zustellbarkeit oder dem Vergleich mehrerer Aussendungen. Nur lesend.
+description: Die Zahlen eines KlickTipp-Kontos als Dashboard — Zustellung, Öffnungen, Klicks, Bounces, Abmeldungen der Aussendungen, die tägliche Aktivität des Kontos, Tags über die Zeit, Automationen und ihre E-Mails und SMS. Nutze ihn bei Report, Auswertung, Statistik, Öffnungs- oder Klickrate, Zustellbarkeit oder dem Vergleich mehrerer Aussendungen. Baut das Dashboard als Claude-Artifact oder im Canvas von ChatGPT und Codex. Nur lesend.
 ---
 
 # KlickTipp Dashboard
 
 Ein Dashboard ist nur so gut wie die Zahlen darunter. Dieser Skill beschreibt, **welche Zahlen das
-Konto überhaupt hergibt**, wie man sie günstig einsammelt, wie man sie richtig rechnet, und wie
+Konto überhaupt hergibt**, wie man sie günstig einsammelt, wie man sie richtig liest, und wie
 daraus eine Seite wird, die jemand ohne Erklärung versteht.
 
 Die Reihenfolge ist Absicht: erst messen, dann rechnen, dann gestalten. Ein hübsches Dashboard mit
 einer falsch gerechneten Öffnungsrate ist schlechter als gar keins, weil ihm geglaubt wird.
+
+Die veröffentlichten Verträge der Statistik-Werkzeuge, Wort für Wort mit jedem Parameter, stehen in
+[references/contracts.md](references/contracts.md).
 
 ## 1. Was es wirklich gibt — und was nicht
 
@@ -19,35 +22,64 @@ versprechen, die die Werkzeuge nicht hergeben, und sie dann zu schätzen, ohne e
 
 | Frage | Antwort | Woher |
 | --- | --- | --- |
-| Wie lief eine Aussendung? | **vollständig** | `get-newsletter`, `include: ["deliveryStatus"]` |
+| Wie steht das Konto insgesamt da? | **ein Aufruf** | `get-account-statistics` — die letzten zehn Aussendungen mit Raten, die Tags mit dem meisten Zuwachs heute, die Aktivität je Tag, die Mailanbieter der Kontakte, die Bounces nach Art |
+| Was hat eine Aussendung erreicht? | **vollständig** | `get-campaign-statistics` — E-Mail- und SMS-Newsletter und jeder Autoresponder |
+| Wann ging sie raus, in welchem Zustand ist sie? | **vollständig** | `search-newsletters` (Versanddatum) · `get-newsletter`, `include: ["deliveryStatus"]` |
 | Wie viele erreicht ein Versand gerade? | **vollständig** | `get-newsletter`, `include: ["audienceReach"]` |
-| Welche Newsletter gibt es, in welchem Zustand? | **vollständig** | `search-newsletters`, nach `status` gefiltert |
-| Welche Tags hat das Konto? | **Liste, ohne Zahlen** | `search-tags` |
+| Wie haben Kontakte einen Tag über die Zeit bekommen? | **je Stunde, Tag, Monat, Jahr** | `get-tag-statistics` |
+| Was hat ein Splittest ergeben? | **vollständig** | `get-newsletter-split-test-statistics`, Skill `splittest` |
+| Wie läuft eine Automation, wo warten ihre Kontakte? | **mit ihrer ID** | `get-automation-statistics` · `get-automation-waiting-contact-counts` |
+| Was hat eine E-Mail oder SMS einer Automation erreicht? | **mit ihrer ID** | `get-automation-email-statistics` · `get-automation-sms-statistics` |
 | **Wie viele Kontakte hat das Konto?** | **gibt es nicht** | siehe unten |
 
 **Die Kontaktzahl ist die Lücke.** `search-contacts` ist Cursor-paginiert, maximal 100 pro Seite,
 und liefert **keine Gesamtzahl**. Ein Konto mit 80.000 Kontakten zu zählen hieße 800 Aufrufe. Tu
-das nicht.
+das nicht. Auch `ispShares` aus `get-account-statistics` ist keine Kontaktzahl, sondern eine
+Verteilung — addier sie nicht zu einer Summe, die niemand gemessen hat.
 
 Nimm stattdessen `audienceReach` eines Newsletters mit Zielgruppe `all_contacts`: das ist die Zahl
 der aktiven Kontakte, die KlickTipp selbst berechnet, in einem Aufruf. Es kommen `minRecipients`
 und `maxRecipients` zurück — sind sie verschieden, ist es eine Spanne, und dann zeig eine Spanne.
 Gibt es keinen solchen Newsletter, **lass die Kachel weg**, statt eine Zahl zu erfinden.
 
+**Automationen brauchen ihre ID von außen.** Die vier Automations-Werkzeuge nehmen eine
+Automations-, E-Mail- oder SMS-ID, aber kein Werkzeug dieses Plugins listet Automationen auf.
+`get-campaign-statistics` weist eine Automation ab und verweist auf `get-automation-statistics`.
+Die ID steht in der App-URL der Automation; frag danach, statt zu raten. Eine Aktions-ID der
+Automation ist **keine** E-Mail- oder SMS-ID.
+
 ## 2. Einsammeln, ohne das Konto leerzulesen
 
+Für den Überblick reicht oft ein einziger Aufruf:
+
 ```
-search-newsletters  status="sent"  limit=25     → die letzten Aussendungen
-  └─ je Newsletter: get-newsletter  include=["deliveryStatus"]
+get-account-statistics  days=30                 → die letzten zehn Aussendungen, Aktivität,
+                                                  Tags, Anbieter, Bounces
+```
+
+Mehr als zehn Aussendungen, oder ein bestimmter Zeitraum:
+
+```
+search-newsletters  status="sent"  sendDateFrom=…  sendDateBefore=…  limit=25
+  └─ je Newsletter: get-campaign-statistics  campaignId=<newsletterId>
 search-newsletters  status="draft"  limit=1     → nur für die Zählung
 search-newsletters  status="scheduled" limit=1  → dito
 ```
 
-Das sind etwa 25 bis 30 Aufrufe für ein volles Dashboard. Zwei Regeln halten es dabei:
+Die `newsletterId` aus `search-newsletters` ist die `campaignId` von `get-campaign-statistics`.
+Das sind etwa 25 bis 30 Aufrufe für ein volles Dashboard. Drei Regeln halten es dabei:
 
 **Ein Zeitraum, nicht „alles".** Frag nach dem Zeitraum, oder nimm die letzten 90 Tage und schreib
 es hin. `sendDateFrom` und `sendDateBefore` sind halboffen — „From" schließt ein, „Before" schließt
 aus — und ISO 8601 mit explizitem Offset (`2026-09-01T10:00:00+02:00`).
+
+**Der Zeitraum wählt Aussendungen aus, nicht Zähler.** Die Zahlen von `get-campaign-statistics`,
+`get-automation-*-statistics` und die Lebenszeit-Summen von `get-automation-statistics` sind
+**Summen über die ganze Lebenszeit** und nicht auf einen Zeitraum beschränkt. Eine Öffnung von
+gestern auf einen Newsletter vom Juni zählt beim Juni-Newsletter. Schreib das dazu, wenn ein
+Zeitraum über der Seite steht. Nur `get-tag-statistics` antwortet wirklich über einen Zeitraum,
+`get-account-statistics` mit `activity` je Tag, und `get-automation-statistics` mit `conversion`
+zwischen `from` und `to`.
 
 **Entwürfe haben kein Versanddatum.** Ein Entwurf fällt in kein `sendDate`-Fenster, auch wenn ein
 Termin gesetzt und wieder abgesagt wurde. Für „wie viele Entwürfe liegen herum" zählst du über
@@ -56,32 +88,81 @@ Termin gesetzt und wieder abgesagt wurde. Für „wie viele Entwürfe liegen her
 Wird die Liste lang, kommt ein `nextCursor` zurück: unverändert zurückgeben, zusammen mit
 **denselben** Filtern. Ein Cursor aus einer anderen Suche wird abgewiesen.
 
-## 3. Rechnen — hier werden Dashboards falsch
+## 3. Lesen und rechnen — hier werden Dashboards falsch
 
-`deliveryStatus` liefert die Zähler roh. Die Quoten rechnest du selbst, und jede hat einen Nenner,
-den man falsch wählen kann.
+**Die Raten kommen fertig.** `get-campaign-statistics` und `get-account-statistics` liefern sie so,
+wie das KlickTipp-Dashboard sie rechnet, in **Prozent mit einer Nachkommastelle** — `42.3` heißt
+42,3 %, nicht 4230 %. Rechne sie nicht selbst nach anderen Formeln nach: dann stünde im Report eine
+andere Zahl als in der App, und beide wären „richtig".
+
+| Feld | Nenner | Was es ist |
+| --- | --- | --- |
+| `openRate` | `sent` | Öffnungsrate |
+| `clickRate` | **`opensUnique`** | **Klick-zu-Öffnung (CTOR)** — der Anteil der Leser, die klickten. Nicht die Klickrate über alle Empfänger |
+| `clickRateOfRecipients` | `sent` | Klickrate über alle Empfänger — die Zahl, die man neben die Öffnungsrate stellt |
+
+**`clickRate` ist die Falle.** Wer sie als „Klickrate" beschriftet, zeigt eine Zahl, die um den
+Kehrwert der Öffnungsrate größer ist als das, was der Leser unter dem Wort versteht — bei 25 %
+Öffnungen das Vierfache. Beschrifte sie als
+„Klick-zu-Öffnung" und stell `clickRateOfRecipients` als „Klickrate" daneben. In
+`recentCampaigns` von `get-account-statistics` gibt es nur `openRate` und `clickRate` — dort ist
+`clickRate` dieselbe Klick-zu-Öffnung.
+
+Was nicht fertig kommt, rechnest du aus den Zählern, immer über `sent`:
 
 | Kennzahl | Formel | Fallstrick |
 | --- | --- | --- |
-| Zustellrate | `sentCount / estimatedRecipients` | `estimatedRecipients` ist die Schätzung **vor** dem Versand, nicht die Wahrheit danach |
-| Öffnungsrate | `uniqueOpenCount / sentCount` | **nicht** `totalOpenCount` — das zählt jedes Öffnen derselben Person |
-| Klickrate | `uniqueClickCount / sentCount` | dito |
-| Klick-zu-Öffnung (CTOR) | `uniqueClickCount / uniqueOpenCount` | die ehrlichste Inhaltskennzahl: misst den Inhalt, nicht die Betreffzeile |
-| Bounce-Rate | `(hardBounceCount + softBounceCount) / sentCount` | hart und weich **getrennt** zeigen — hart ist eine tote Adresse, weich ein Moment |
-| Abmelderate | `unsubscriptionCount / sentCount` | |
-| Beschwerderate | `spamComplaintCount / sentCount` | die wichtigste Zahl im Dashboard, siehe unten |
+| Zustellrate | `sent / recipients` | `failed` sagt, was nicht rausging |
+| Bounce-Rate | `(hardBounces + softBounces + spamBounces) / sent` | hart, weich und Spam **getrennt** zeigen — hart ist eine tote Adresse, weich ein Moment, Spam eine Ablehnung als Spam |
+| Abmelderate | `unsubscriptions / sent` | |
+| Beschwerderate | `spamComplaints / sent` | die wichtigste Zahl im Dashboard, siehe unten |
 
-**Teile nie durch null.** Ein Newsletter, dessen Versand noch läuft, hat `sentCount: 0` bei
-gesetztem `sendDate`. Zeig „—", nicht „0 %" und nicht `NaN`.
+**Teile nie durch null, und zeig keine Null, die keine ist.** Eine Aussendung, die noch nicht
+rausging, antwortet mit Nullen, und die fertigen Raten sind dann `0.0`. Bei `sent: 0` zeig „—",
+nicht „0 %" und nicht `NaN`.
 
-**`totalOpenCount` gehört trotzdem hin**, aber als eigene Zahl: `totalOpenCount / uniqueOpenCount`
-sagt, wie oft eine Öffnerin im Schnitt zurückkommt. Das ist interessant und wird selten gezeigt.
+**SMS haben keine Öffnungen.** Für eine SMS-Kampagne sind `opensTotal`, `opensUnique`, `openRate`,
+`clickRate` und die Browser-Ansichten `null` — nicht null Prozent, sondern nicht vorhanden. Dort ist
+`clickRateOfRecipients` die Kennzahl. Mischt die Seite E-Mail und SMS, steht bei der SMS
+„keine Öffnungen (SMS)", nicht ein leeres Feld.
+
+**`opensTotal` gehört trotzdem hin**, aber als eigene Zahl: `opensTotal / opensUnique` sagt, wie
+oft eine Öffnerin im Schnitt zurückkommt. Das ist interessant und wird selten gezeigt.
 
 **Sag dazu, was eine Öffnung heute wert ist.** Apple Mail Privacy Protection lädt Bilder vorab, ohne
 dass jemand die Mail gesehen hat. Öffnungsraten sind dadurch nach oben verzerrt und über die Zeit
 nicht sauber vergleichbar. Ein Dashboard, das die Öffnungsrate groß und unkommentiert zeigt, führt
 in die Irre — **Klicks sind das härtere Signal**, und der Skill stellt sie deshalb gleichberechtigt
 daneben.
+
+**`links` ist schon sortiert**, meistgeklickt zuerst, mit `clicksTotal` und `clicksUnique`. Für
+„welcher Link zog" reicht die Liste; sie gehört in die Detailansicht einer Aussendung.
+
+### Was die übrigen Werkzeuge sagen — und was nicht
+
+- **`get-account-statistics`.** `activity` hat je Tag Anmeldungen, Abmeldungen, SMS-Anmeldungen,
+  Importe, Bounces und Beschwerden, **aber keine Versände, Öffnungen oder Klicks** — die gibt es
+  nur je Aussendung. `days` (1–90) wirkt nur auf `activity`. `topTags` ist der Zuwachs von heute,
+  gestern und vorgestern, kein Ranking über den Zeitraum.
+- **`get-tag-statistics`.** Zählt die Kontakte, die den Tag **jetzt** tragen, jeweils in der
+  Periode, in der sie ihn zuletzt bekamen. Ein wieder entfernter Tag zählt nirgends, ein zweites
+  Taggen verschiebt den Kontakt in die neuere Periode — kein Protokoll jeder Vergabe. **Eine
+  fehlende Periode heißt null**, nicht „keine Daten": füll sie im Diagramm mit null auf, statt die
+  Linie über die Lücke zu ziehen. Höchstens zehn Tags und 2000 Perioden je Aufruf; `from`/`to` sind
+  Unix-Zeitstempel.
+- **`get-automation-statistics`.** `totals` sind Lebenszeit-Summen. `conversion` gilt nur zwischen
+  `from` und `to` und ist `null`, wenn das Konto keine Conversion-Statistik hat
+  (`conversionAvailable: false`) — dann die Conversion-Kachel weglassen und den Grund nennen.
+- **`get-automation-waiting-contact-counts`.** Eine Momentaufnahme, wer gerade an welcher Aktion
+  wartet. Aktionen ohne Wartende fehlen in der Liste.
+- **`get-automation-email-statistics`.** Eine **Benachrichtigungs-E-Mail** zählt keine Versände,
+  Öffnungen und Klicks: `sent`, `opened`, `clicked` sind `null`, `links` ist leer. Nur Bounces und
+  Beschwerden gibt es dort.
+- **`get-automation-sms-statistics`.** Keine Öffnungen, `clickRateOfRecipients` wie bei
+  `get-campaign-statistics`. Eine SMS ohne Versand antwortet mit Nullen und ohne Bounces.
+- **`get-newsletter-split-test-statistics`.** Der Gewinner wird **gemeldet, nie berechnet**:
+  solange `isDecided` `false` ist, gibt es keinen, auch wenn eine Variante vorn liegt. Zeig dann
+  „Test läuft", keinen Sieger.
 
 ### Was hervorzuheben ist
 
@@ -98,17 +179,20 @@ Orientierung dazu, nicht als Urteil.
 
 ## 4. Die Seite
 
-Bau sie als **ein** Artifact, eine einzelne, in sich geschlossene HTML-Seite — und zwar wirklich
-als Artifact, nicht als Datei mit einem Pfad daneben. Ein Report soll sich öffnen und weiterreichen
-lassen, ohne dass jemand erst etwas herunterlädt.
+**Bau das Dashboard immer, statt die Zahlen nur aufzuzählen** — als **eine** einzelne, in sich
+geschlossene HTML-Seite, die direkt im Gespräch erscheint: bei Claude als **Artifact**, bei Codex
+und ChatGPT im **Canvas**. Nicht als Datei mit einem Pfad daneben, und nicht als Tabelle im
+Fließtext. Ein Report soll sich öffnen und weiterreichen lassen, ohne dass jemand erst etwas
+herunterlädt.
 
 Wie das geht, hängt von der Umgebung ab, und das ist der einzige Unterschied:
 
 | Umgebung | Weg |
 | --- | --- |
 | Claude Code | das `Artifact`-Werkzeug: HTML-Datei schreiben, dann veröffentlichen |
-| claude.ai | ein Artifact direkt in der Antwort |
-| ohne Artifacts (z. B. Codex) | `.html` schreiben und den Pfad nennen — inhaltlich identisch |
+| claude.ai, Claude Desktop | ein Artifact direkt in der Antwort |
+| ChatGPT | im Canvas, als HTML-Seite, die der Canvas als Vorschau rendert |
+| Codex | im Canvas, wo es ihn gibt; sonst `.html` schreiben und den Pfad nennen — inhaltlich identisch |
 
 **Das Handwerk steht in [references/craft.md](references/craft.md)** — Farbtokens für Hell und
 Dunkel, Schriftwahl, der Aufbau einer Kennzahl-Kachel, Liniendiagramme in reinem SVG samt
@@ -118,18 +202,22 @@ Seite schreibst.
 
 Was hier steht, ist nur, was dieses Dashboard **inhaltlich** braucht:
 
-1. **Kopf**: Kontoname, Zeitraum und **der Beobachtungszeitpunkt**. `deliveryStatus` liefert
-   `observedAt` — schreib ihn hin. Ein Dashboard ohne Datum wird Wochen später für aktuell gehalten.
+1. **Kopf**: Kontoname, Zeitraum und **der Beobachtungszeitpunkt** — wann du gemessen hast
+   (`deliveryStatus` liefert ihn als `observedAt`, sonst die Uhrzeit deiner Aufrufe). Ein Dashboard
+   ohne Datum wird Wochen später für aktuell gehalten.
 2. **Kachelreihe**: erreichte Kontakte, Aussendungen im Zeitraum, Zustellrate, Öffnungsrate,
-   Klickrate. Jede Kachel mit der absoluten Zahl **unter** der Prozentzahl — Prozente ohne Basis
-   sind nicht prüfbar.
-3. **Tabelle je Newsletter**, nach Versanddatum absteigend: Name, Datum, versendet, Öffnungen,
+   Klickrate (`clickRateOfRecipients`), Klick-zu-Öffnung. Jede Kachel mit der absoluten Zahl
+   **unter** der Prozentzahl — Prozente ohne Basis sind nicht prüfbar.
+3. **Tabelle je Aussendung**, nach Versanddatum absteigend: Name, Datum, versendet, Öffnungen,
    Klicks, Bounces, Abmeldungen. Mit `statisticsUrl` aus der Antwort verlinkt, damit man von jeder
    Zeile in die App springen kann.
 4. **Verlauf**, sobald es mehr als drei Aussendungen sind: Öffnungs- und Klickrate über der Zeit.
    Ein Punkt je Aussendung, keine Interpolation zwischen Terminen, die nichts miteinander zu tun
    haben.
-5. **Fußzeile**: welche Werkzeuge gelesen wurden und was **nicht** enthalten ist.
+5. **Aktivität des Kontos**, wenn danach gefragt ist: Anmeldungen und Abmeldungen je Tag aus
+   `activity`, ein Tag-Verlauf aus `get-tag-statistics`, die Mailanbieter aus `ispShares`.
+6. **Fußzeile**: welche Werkzeuge gelesen wurden, dass die Zähler Lebenszeit-Summen sind, und was
+   **nicht** enthalten ist.
 
 
 ### Erst die Zahlen, dann die Seite
@@ -204,6 +292,9 @@ daneben, die einen Zufall zur Leistung erklärt.
 
 - **Er schreibt nichts.** Kein Newsletter, kein Kontakt, kein Tag. Wenn aus einer Erkenntnis eine
   Handlung folgen soll, ist dafür der Skill `newsletter` zuständig.
+- **Er kürt keinen Splittest-Gewinner.** Den meldet `get-newsletter-split-test-statistics`, oder es
+  gibt noch keinen.
+- **Er findet keine Automationen.** Ohne ID aus der App gibt es keine Automations-Zahlen.
 - **Er zählt keine Kontakte durch.** Siehe Abschnitt 1.
 - **Er erklärt keine Ursachen.** „Die Öffnungsrate ist gefallen" ist eine Beobachtung; warum, weiß
   das Dashboard nicht. Formulier Vermutungen als Vermutungen, wenn überhaupt.

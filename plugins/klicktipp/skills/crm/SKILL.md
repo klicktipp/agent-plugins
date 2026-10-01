@@ -1,9 +1,9 @@
 ---
 name: crm
-description: Kontakte, Tags, eigene Felder und Opt-in-Prozesse samt Bestätigungsmail eines KlickTipp-Kontos lesen und ändern. Nutze ihn, sobald ein Kontakt, Abonnent, Lead, Tag, Feld oder eine Anmeldeliste im Spiel ist — auch bei „wer hat Tag X" oder wenn ein Werkzeug ein Tag als unbekannt abweist. Nicht für Newsletter.
+description: Kontakte, Tags, eigene Felder, Opt-in-Prozesse samt Bestätigungsmail und die Einstellungen eines KlickTipp-Kontos lesen und ändern. Nutze ihn, sobald ein Kontakt, Abonnent, Lead, Tag, Feld oder eine Anmeldeliste im Spiel ist — auch bei „wer hat Tag X" oder wenn ein Werkzeug ein Tag als unbekannt abweist. Nicht für Newsletter.
 ---
 
-# KlickTipp CRM — Kontakte, Tags, Felder, Opt-in
+# KlickTipp CRM — Kontakte, Tags, Felder, Opt-in, Konto-Einstellungen
 
 Alles hier betrifft **Menschen, die echte E-Mails bekommen**. Lesen ist frei. Jeder Schreibzugriff
 an einem Kontakt — anmelden, abmelden, taggen, Feldwerte setzen — kann sofort eine Bestätigungsmail
@@ -34,6 +34,9 @@ Parameter samt Typ und Grenzen, in [references/contracts.md](references/contract
   die Pending- oder Danke-Seite eines Abonnenten heraus. Zu jedem gehört eine **Bestätigungsmail**
   mit eigenen Werkzeugen: Absender (`get-`/`update-opt-in-confirmation-email`), Text
   (`get-`/`update-opt-in-confirmation-email-content`), Vorschau und Testversand.
+- **Konto-Einstellungen** — `get-account-settings` / `update-account-settings`: die Schalter der
+  Einstellungsseite, der Tag für Vorschau-Kontakte und die Sperrliste der Adressen, an die das
+  Konto nie schickt. Siehe [unten](#konto-einstellungen).
 
 ## Zustimmung ist ein Argument, kein Freifahrtschein
 
@@ -224,6 +227,34 @@ keine Fehlkonfiguration:** dieser Kontakt hat das Double-Opt-in noch nicht best�
 einen bestätigten treffen, wenn der Prozess seine Bestätigungsmail bei jeder Anmeldung erneut
 schickt — dann wurde er gerade wieder um eine Bestätigung gebeten. Erklär das mit, statt die URL
 kommentarlos hinzulegen.
+
+## Konto-Einstellungen
+
+`get-account-settings` liest die Einstellungsseite des Kontos: die Funktionsschalter, den Tag, der
+Vorschau-Kontakte markiert (`previewSubscriberMarkerTag`), und die Sperrliste (`emailBlacklist`).
+**Was fehlt, darf das Konto nicht ändern** — es fehlt, statt `false` zu sein, weil KlickTipp einige
+Schalter für den Support vorhält. Ein fehlender Schalter heißt also „nicht deiner", nicht „aus".
+Zugangsdaten angebundener Dienste stehen nur als eingerichtet oder nicht da, nie mit Wert.
+
+`update-account-settings` schreibt **nur die genannten** Einstellungen, alles andere bleibt. Schick
+also nie den ganzen Stand zurück, den du gelesen hast, sondern nur, was sich ändern soll.
+
+- **Erst lesen, dann schreiben.** Ein Schalter, den `get-account-settings` nicht zeigt, wird beim
+  Schreiben mit Namen abgewiesen.
+- **Alles oder nichts.** Jeder Wert wird vorher geprüft — der Vorschau-Tag muss im Konto existieren,
+  die Sperrliste wohlgeformt sein. Ein falscher oder verbotener Wert weist den **ganzen** Aufruf ab,
+  ohne etwas zu schreiben. Nur was die Plattform erst beim Speichern ablehnt, steht in `refusals`;
+  die übrigen Änderungen sind dann gespeichert — lies `refusals` und sag, was nicht ging.
+- **Die Sperrliste wird ersetzt, nicht ergänzt.** `emailBlacklist` ist der ganze Text, eine Adresse
+  oder Domain je Zeile; ein leerer String leert sie. Wer eine Adresse hinzufügen soll, liest die
+  Liste, hängt die Zeile an und schreibt das Ganze zurück — sonst ist der Rest weg.
+- **Zugangsdaten gehen hier gar nicht.** Ein API-Schlüssel gehört in die App, nicht in einen
+  Werkzeugaufruf, wo er im Klartext im Verlauf stünde.
+
+Die Schalter verändern, wie das ganze Konto sendet und arbeitet — `deactivateGlobalBounceManagement`
+etwa schaltet die Bounce-Behandlung ab, `allowSingleOptInProcess` erlaubt Anmeldungen ohne
+Bestätigung. Ändere einen nur auf ausdrücklichen Wunsch, nenne ihn vorher beim Namen und sag, was er
+bewirkt. Die Antwort zeigt den Stand danach; zeig ihn.
 
 ## Kontoauswahl
 

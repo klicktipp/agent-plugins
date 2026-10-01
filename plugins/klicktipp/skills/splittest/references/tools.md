@@ -23,6 +23,7 @@ nur noch in der App wieder; erfinde dafür keinen Umweg.
 | `update-newsletter-split-test-variant` | I | Name, Betreff, Pre-Header **einer Variante** — die einzige Stelle dafür. |
 | `remove-newsletter-split-test-variant` | D | Variante entfernen; ihre E-Mail ist damit weg. |
 | `configure-newsletter-split-test` | I | Testgröße, Zeitraum, Gewinner-Kriterium. Nicht: ob es ein Splittest ist. |
+| `get-newsletter-split-test-statistics` | R I | Was der Test ergeben hat: je Variante Öffnungen, Klicks, Conversions, Umsatz, und ob er entschieden ist. |
 
 Der Splittest selbst entsteht bei `create-newsletter-draft` mit `splitTest` (Skill
 `newsletter`); die vier Schreibwerkzeuge nehmen `campaignId`, und die ID entscheidet über die
@@ -40,10 +41,18 @@ Test er gehört und welche Geschwister er hat. Das ist der Weg von einer E-Mail 
 damit zu `editorUrl` und `campaignId`, mit denen sich beide bearbeiten lassen. Beide zusammen werden
 abgewiesen: sie können verschiedene Tests meinen, und dieses Werkzeug wählt nicht aus.
 
-**Nicht:** die Ergebnisse des laufenden Tests — die stehen in der App, `statisticsUrl` aus
-`get-newsletter` führt hin. **Stolperer:** Dieselbe Antwort geben auch die vier
+**Nicht:** die Ergebnisse — die liest `get-newsletter-split-test-statistics`. **Stolperer:** Dieselbe Antwort geben auch die vier
 Schreibwerkzeuge zurück; wer gerade eines aufgerufen hat, braucht diesen Aufruf nicht noch einmal.
 Eine Kampagne, die kein Splittest ist, wird abgewiesen statt mit einem leeren Test beantwortet.
+
+### `get-newsletter-split-test-statistics`
+**Wofür:** was der Test herausgefunden hat — je Variante `label`, `emailId`, `name`, `opened`,
+`clicked`, `converted`, `revenue` und `isWinner`, dazu `winnerBy`, `hasStarted`, `isDecided` und
+`winnerLabel`. Nimmt die `newsletterId` aus `get-newsletter`. **Nicht:** den Gewinner ausrechnen.
+**Stolperer:** Solange `isDecided` `false` ist, ist `winnerLabel` `null` — die Variante, die gerade
+vorn liegt, ist **nicht** der Gewinner, und wer sie so nennt, entscheidet den Test, bevor er etwas
+gesagt hat. Zeig „läuft noch" und die Zahlen ohne Sieger. Eine Kampagne, die kein Splittest ist,
+wird abgewiesen.
 
 ### `add-newsletter-split-test-variant`
 **Wofür:** zweiter und weiterer Variante. **Nicht:** die Test-Einstellungen. **Stolperer:** Fast immer

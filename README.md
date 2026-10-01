@@ -26,8 +26,8 @@ carries a prompt that has the host set both up itself —
 |---|---|
 | Plugin | `klicktipp` |
 | Endpoint | `https://mcp.klicktipp.com/mcp` |
-| Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation) and reading opt-in processes. Split tests, contacts, tags, fields, images and signatures are documented but not released on production yet |
-| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `crm` — contacts, tags, fields, opt-in · `dashboard` — the account's numbers as a readable dashboard · `email-template-generator` — plain business emails |
+| Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation), split tests, contacts, tags, fields, opt-in processes, images, signatures and sender domains, the statistics of sends, tags and automations, and the account settings |
+| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `crm` — contacts, tags, fields, opt-in · `dashboard` — the account's numbers as a readable dashboard: sends, daily activity, tags over time, automations · `email-template-generator` — plain business emails |
 | Agents | Claude Code and the Claude directory (`.claude-plugin/`), Codex and ChatGPT (`.codex-plugin/`) |
 | Requires | a KlickTipp account |
 

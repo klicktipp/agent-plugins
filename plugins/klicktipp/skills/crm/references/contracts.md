@@ -1,6 +1,6 @@
-# Die veröffentlichten Verträge — Kontakte, Tags, Felder, Opt-in
+# Die veröffentlichten Verträge — Kontakte, Tags, Felder, Opt-in, Konto-Einstellungen
 
-Wort für Wort das, was der Server in `tools/list` für die 30 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 32 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -19,7 +19,7 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `untag-contact` · `subscribe-contact-via-opt-in-process` · `unsubscribe-contact` · `get-opt-in-process-redirect-url` ·
 `search-custom-fields` · `get-custom-field` · `create-custom-field` · `update-custom-field` ·
 `delete-custom-field` · `search-tags` · `get-tag` · `create-manual-tag` · `update-manual-tag` ·
-`delete-manual-tag`
+`delete-manual-tag` · `get-account-settings` · `update-account-settings`
 
 ## `search-opt-in-processes` · RI
 
@@ -434,3 +434,41 @@ Parameter:
 
 - `tagId`* — integer (minimum 1): ID of the manual tag to delete
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `get-account-settings` · RI
+
+**Get Account Settings**
+
+Reads the settings of a KlickTipp account, the ones its settings screen shows: the feature switches, the preview marker tag and the email blacklist. Only the settings this account may actually edit are in the answer -- one it may not edit is absent rather than false, because the platform keeps several of them for support. Credentials of connected services are reported as configured or not, never by value, so no API key ends up in an answer. Personal information, privacy settings, the data processing order and sender addresses are not part of this tool. Change a setting with update-account-settings. Reads only: this writes nothing.
+
+Parameter:
+
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `update-account-settings` · I
+
+**Update Account Settings**
+
+Changes settings of a KlickTipp account and answers with the settings as they now stand. Only the settings named in the call are written; everything else keeps its value, so a caller does not have to send back what it does not change. A setting this account may not edit is refused by name rather than ignored -- the platform keeps several of them for support, and get-account-settings reports which ones this account has. Credentials of connected services cannot be set here at all; that stays in the KlickTipp app. Read the current state with get-account-settings first. Every named value is checked first -- a preview tag must exist in the account, the blacklist must be well formed -- and one bad or forbidden setting refuses the whole call with nothing written. refusals only lists what the platform turned down while saving; the other changes are then saved.
+
+Parameter:
+
+- `settings`* — object: The settings to change, by name; every setting left out keeps its value
+  - `enableMetaLabels` — boolean
+  - `enableNotes` — boolean
+  - `enableDdEditorManualSaveButton` — boolean
+  - `disableEmailSignatureSeparator` — boolean
+  - `deactivateUserNotificationEmails` — boolean
+  - `plainTextContentByUser` — boolean
+  - `useEnglishSubscriberArea` — boolean
+  - `deactivateGlobalBounceManagement` — boolean
+  - `unlimitedEmailsPerDay` — boolean
+  - `allowSingleOptInProcess` — boolean
+  - `allowSignaturesWithoutParameters` — boolean
+  - `allowKlicktippSenderAddress` — boolean
+  - `allowEmailRewriting` — boolean
+  - `knownForSpamActivity` — boolean
+  - `previewSubscriberMarkerTag` — string (maxLength 100; pattern ^[0-9]*$): ID of an existing tag of this account that marks preview subscribers; empty string removes it
+  - `emailBlacklist` — string (maxLength 100000): Addresses and domains this account never sends to, one per line; empty string clears it
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+

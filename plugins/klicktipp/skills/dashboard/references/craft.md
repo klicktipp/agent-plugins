@@ -224,7 +224,7 @@ Sechs Punkte, die sich in zwei Minuten prüfen lassen und die häufigsten Fehler
 2. Beide Modi umschalten, Warnfarben in **beiden** lesbar.
 3. Mit Tab durch die Seite: jeder Datenpunkt erreichbar, Fokus sichtbar.
 4. Jede Prozentzahl hat ihre Basis daneben.
-5. Kein `NaN`, kein `Infinity`, kein `0 %` bei `sentCount: 0`.
+5. Kein `NaN`, kein `Infinity`, kein `0 %` bei `sent: 0`.
 6. Suche nach `http://` und `https://` im fertigen HTML — außer den Links in die App darf nichts
    nachgeladen werden.
 
