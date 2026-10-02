@@ -38,7 +38,7 @@ Both targets read the same `.mcp.json`.
 | `update-newsletter-draft` | name, internal note and audience of a draft |
 | `delete-newsletter-draft` | discard a draft |
 | `configure-newsletter-delivery` | sender name, sender address, reply address, signature |
-| `send-newsletter-test` | test send to any address — the recipient becomes a tagged contact, which can start an automation |
+| `send-newsletter-test` | test send to any address — the recipient becomes a tagged contact, which can start an automation; for a split test, one variant per call |
 | `prepare-newsletter-dispatch` | prepare the real dispatch and return a confirmation URL |
 | `cancel-newsletter-dispatch` | take a running dispatch back — it does not unsend what already left |
 
@@ -73,6 +73,8 @@ No tool writes DNS: the records go in at the domain's DNS provider, by the perso
 | `email-<block>-write` | change the content of an existing block of that kind |
 | `email-<block>-style-write` | change the styling of a block, a column, a row or the page |
 | `move-email-editor-block`, `remove-email-editor-block` | move a block within the document, or take it out |
+| `search-email-editor-placeholders` | the placeholders one email can carry, with the IDs of the account's own — look them up instead of guessing |
+| `get-email-editor-rich-text-content` · `replace-email-editor-rich-text-content` | read and replace the whole body of an email from the previous HTML editor — no publish step, the next send carries it |
 | `search-email-editor-templates` · `preview-email-editor-template` · `replace-email-editor-content-from-template` | find a design of the account's catalogue, look at one whole, and put it on an email |
 | `get-email-editor-display-condition-capabilities` | what a display condition may say in this account |
 | `update-email-editor-display-condition` · `configure-email-editor-row-display-condition` | write a named display condition, and bind a row to it |

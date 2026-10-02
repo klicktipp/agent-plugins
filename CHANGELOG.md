@@ -8,6 +8,26 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.23.0 — 2026-10-02
+
+- **Placeholders that name something of the account are looked up, not built.**
+  `search-email-editor-placeholders` is new in `email`: it lists the placeholders one email can
+  carry, the way its editor offers them, with label and group. A marketing-tool redirect, a
+  countdown, a data field or a vCard carries a numeric ID that cannot be guessed, and a generic
+  placeholder written in its place looks right in the draft and resolves to something else in the
+  mail. It takes a newsletter's editor URL and the editUrl of a confirmation email, because the set
+  differs between them.
+- **Emails from the previous HTML editor can be read and rewritten.**
+  `get-email-editor-rich-text-content` and `replace-email-editor-rich-text-content` are new in
+  `email`. The skill says what sets them apart from the block tools: the body is always written
+  whole, bound to the revision of the read, and there is no publish step — the next send carries
+  what was stored. The editorUrl they return names the email for the tools; to open it, a person
+  gets `contentUrl` from `get-newsletter`.
+- **A split test can be test-sent, one variant per call.** `send-newsletter-test` takes `messageId`,
+  the `emailId` of a variant from `get-newsletter-split-test`, and sends exactly that variant with
+  its content and subject; audience, schedule and winner selection stay untouched. `splittest` and
+  `newsletter` no longer send the person to the app for this.
+
 ## 0.22.1 — 2026-10-01
 
 - **The dashboard says which emails worked and which did not.** A new section judges every send

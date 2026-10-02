@@ -190,18 +190,23 @@ Variante beantwortet zu werden, den niemand gewählt hat.
 ## Was nicht über diese Werkzeuge geht
 
 - Absender, Antwortadresse und Signatur **pro Variante** — das ist die App.
-- Testversand und Aktivierung eines Splittests.
+- Die Aktivierung eines Splittests. (Der Testversand einer Variante geht, siehe unten.)
 - Den Gewinner vorzeitig küren oder das Kriterium nachträglich ändern. `get-newsletter-split-test-statistics`
   meldet den Gewinner erst, wenn der Test entschieden ist; vorher gibt es keinen.
 - Einen bestehenden Newsletter in einen Splittest verwandeln, oder umgekehrt.
 
 In all diesen Fällen: sag es klar und verweise auf die `appUrl` aus der Antwort.
 
-**Der Abschluss gehört der App, und das ändert sich auch nicht**, wenn diese Werkzeuge überall
-verfügbar sind. `configure-newsletter-delivery`, `send-newsletter-test` und
-`prepare-newsletter-dispatch` weisen einen Splittest in *jeder* Umgebung ab — nicht weil etwas fehlt,
-sondern weil keines von ihnen eine Variante auswählen kann. Der Weg von hier ist also: anlegen, Varianten
-bauen, Inhalte schreiben — und für Absender, Testversand und Freigabe in die Oberfläche wechseln.
+**Testversand je Variante geht hier:** `send-newsletter-test` nimmt mit `messageId` die `emailId`
+einer Variante aus `get-newsletter-split-test` und schickt genau diese, mit ihrem Inhalt und Betreff.
+Zielgruppe, Zeitplan und Gewinnerauswahl ändert das nicht. Für jede Variante, die geprüft werden
+soll, ein eigener Aufruf — und wie bei jedem Test vorher sagen, dass die Adresse Kontakt wird.
+
+**Der Abschluss gehört der App**, und das ändert sich auch nicht, wenn diese Werkzeuge überall
+verfügbar sind. `configure-newsletter-delivery` und `prepare-newsletter-dispatch` weisen einen
+Splittest in *jeder* Umgebung ab — nicht weil etwas fehlt, sondern weil keines von ihnen eine Variante
+auswählen kann. Der Weg von hier ist also: anlegen, Varianten bauen, Inhalte schreiben, Varianten
+testen — und für Absender und Freigabe in die Oberfläche wechseln.
 Kündige einen Splittest deshalb nie als „verschicke ich dir" an.
 
 ## Die Werkzeuge im Einzelnen

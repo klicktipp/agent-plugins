@@ -325,7 +325,10 @@ machen und zu speichern. Ein Zeichen tippen und wieder löschen genügt nicht, d
 
 **Grenzen, die keine Fehler sind.** Inhaltlich änderbar sind nur Entwürfe — ist der Newsletter
 terminiert, unterwegs oder versendet, lehne ab statt zu umgehen. Ältere Newsletter im
-Rich-Text-Editor haben keinen Bausteininhalt. Ein separat gepflegter Textteil blockiert das
+Rich-Text-Editor haben keinen Bausteininhalt — ihren Körper liest
+`get-email-editor-rich-text-content` und ersetzt `replace-email-editor-rich-text-content`, immer
+als Ganzes und ohne Veröffentlichungsschritt. Platzhalter, die etwas des Kontos mit ID benennen,
+schlägst du mit `search-email-editor-placeholders` nach, statt sie zu bauen. Ein separat gepflegter Textteil blockiert das
 Ersetzen, damit die Textfassung nicht überschrieben wird. Der Betreff gehört nicht zum Inhalt: er
 wird beim Anlegen gesetzt und danach im Editor geändert — frag ihn beim Nutzer ab, erfinde ihn
 nicht. Split-Tests verlangen, dass du eine konkrete Variante benennst.

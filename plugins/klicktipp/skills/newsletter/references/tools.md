@@ -19,7 +19,7 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `update-newsletter-draft` | I | Name, Notiz, Betreff, Pre-Header, Zielgruppe eines Entwurfs. Betreff/Pre-Header machen `contentRevision` ungültig. |
 | `delete-newsletter-draft` | D | Entwurf endgültig löschen. |
 | `configure-newsletter-delivery` | I | Absender, Antwortadresse, Versanddomain, Signatur, Link-Tracking, KlickTipp-Kopfzeile. Prüft gegen die Listen, die es selbst mitliefert. |
-| `send-newsletter-test` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `publish-newsletter-email-content`. |
+| `send-newsletter-test` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `publish-newsletter-email-content`. Beim Splittest mit `messageId` je Variante. |
 | `prepare-newsletter-dispatch` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
 | `cancel-newsletter-dispatch` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
 | `search-signatures` | R | Die Signaturen, mit denen sich gerade senden lässt; `includeUnusable` zeigt die übrigen mit Gründen. Kein Text. |
@@ -154,7 +154,11 @@ veröffentlichten Inhalt: ein nie veröffentlichter Body wird mit
 was die Oberfläche vor einem Test verlangt — Betreff, Pflicht-Tags im Inhalt — mit
 `newsletter_send_not_ready`; beide nennen die Gründe in `details.missingRequirements` und die
 Editor-URL. Wurde nach dem Veröffentlichen geändert, wird gesendet, und die Antwort trägt
-`warnings`: der Test zeigt den älteren Stand.
+`warnings`: der Test zeigt den älteren Stand. Bei einem Splittest ist `messageId` Pflicht — die
+`emailId` der Variante aus `get-newsletter-split-test`; gesendet wird genau diese Variante mit
+ihrem Betreff, Zeitplan und Gewinnerauswahl bleiben unberührt. Ohne `messageId`, mit einer
+Variante eines anderen Tests oder mit `messageId` bei einem normalen Newsletter wird abgewiesen,
+bevor ein Testkontakt entsteht.
 
 ### `prepare-newsletter-dispatch`
 **Wofür:** die Vorbereitung — Prüfung, Empfängerschätzung, Bestätigungs-URL. **Nicht:** senden. Nie.

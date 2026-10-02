@@ -28,6 +28,44 @@ Konten kommt statt einer Antwort die Liste zur Auswahl zurück; dann `accountId`
 | `replace-email-editor-content-from-template` | D | Ein Design in den Körper einer E-Mail legen, Vollersatz ohne Undo. |
 | `publish-newsletter-email-content` | DO | Der Entwurf wird zum Versandinhalt. Ändert, was echte Empfänger bekämen. |
 
+## Platzhalter und Rich-Text-Körper
+
+| Werkzeug | | Wofür |
+| --- | --- | --- |
+| `search-email-editor-placeholders` | RI | Die Platzhalter, die **diese** E-Mail tragen kann, wie ihr Editor sie anbietet — mit Label und Gruppe. Per `editorUrl`; nimmt auch die `editUrl` einer Bestätigungsmail. |
+| `get-email-editor-rich-text-content` | RI | Der ganze Körper einer E-Mail aus dem alten Rich-Text-Editor: HTML, Text, Betreff, `contentRevision`. |
+| `replace-email-editor-rich-text-content` | DI | Diesen Körper komplett ersetzen. Kein Undo, kein Veröffentlichungsschritt — was gespeichert ist, versendet ein Versand. |
+
+### `search-email-editor-placeholders`
+**Wofür:** nachschlagen, bevor du einen Platzhalter schreibst, der etwas des Kontos benennt —
+Marketing-Tool-Weiterleitung, Countdown, Datenfeld, vCard. Die tragen eine numerische ID, die man
+nicht raten kann; ein generischer Platzhalter an ihrer Stelle sieht im Entwurf richtig aus und
+löst in der Mail etwas anderes auf. **Nicht:** in die E-Mail schreiben. **Stolperer:** Die Menge
+hängt von der E-Mail ab — eine Bestätigungsmail bietet andere als ein Newsletter, deshalb die
+`editorUrl` statt eines Kontos. `query` filtert Platzhalter und Label; `limit` bis 200, Standard
+50. `hasMore: true` heißt: enger suchen, nicht blättern. `%Subscriber:SubscriptionReferrer%`
+fehlt absichtlich — beim Versand wird er nur noch durch einen festen Text ersetzt.
+
+### `get-email-editor-rich-text-content`
+**Wofür:** der Körper, wenn `get-email-editor-content` `emailEditor: "rich-text"` meldet — die
+Baustein-Projektionen gibt es dort nicht. **Nicht:** eine Drag-and-Drop-E-Mail (abgewiesen), und
+keine Hülle (Name, Zielgruppe — `get-newsletter`). **Stolperer:** Auch ein versendeter oder
+terminierter Newsletter ist lesbar; `editable` und `blockers` sagen, ob und warum ein Schreiben
+abgewiesen würde. So lässt sich ein alter Körper in einen neuen Entwurf tragen. Die `editorUrl`
+ist die Kennung für die Werkzeuge, **kein Link zum Öffnen** — einem Menschen gibst du
+`contentUrl` aus `get-newsletter`.
+
+### `replace-email-editor-rich-text-content`
+**Wofür:** den Rich-Text-Körper ändern. **Nicht:** Betreff, Name, Absender, Zielgruppe — die
+bleiben unberührt. **Stolperer:** Immer der **ganze** Körper: lesen, ändern, alles zurückgeben,
+mit der `contentRevision` dieses Lesens; dazwischen geändert heißt abgewiesen. Es gibt keinen
+Entwurf und keine Veröffentlichung dazwischen — der nächste Versand trägt genau das. Unerlaubtes
+HTML wird mit der Stelle des ersten Verstoßes abgewiesen, die Meldung nennt die verbotenen Tags.
+Ohne Betreff kommt `ErrorNoSubject`. Ein mitgegebener Text bleibt nur, wenn das Konto die
+Textfassung selbst pflegt; sonst wird er aus dem HTML erzeugt, und `warnings` sagt es. Für einen
+neuen Newsletter bleibt der Drag-and-Drop-Editor die Wahl — nur dort arbeiten Bausteine, Designs
+und Veröffentlichen.
+
 ### `get-email-editor-content`
 **Wofür:** der Körper. `contentOutline` vor einer Textänderung (uuid, Art und aktueller Wert jedes
 schreibbaren Felds, Markup wörtlich), `styleOutline` vor einer Gestaltungsänderung (je Seite, Zeile,

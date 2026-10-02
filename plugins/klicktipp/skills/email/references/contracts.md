@@ -1,6 +1,6 @@
 # Die veröffentlichten Verträge — E-Mail-Inhalt, Bausteine, Gestaltung, Bilder
 
-Wort für Wort das, was der Server in `tools/list` für die 57 Werkzeuge dieses Skills
+Wort für Wort das, was der Server in `tools/list` für die 60 Werkzeuge dieses Skills
 ausliefert: Beschreibung, Annotationen, jeder Parameter mit Typ, Grenzen und Beschreibung. Ein `*`
 markiert Pflichtparameter. `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht etwas
 außerhalb des Kontos · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
@@ -27,7 +27,47 @@ tut und woran man sich stößt, steht in [tools.md](tools.md).
 `preview-email-editor-image` · `search-email-editor-templates` · `preview-email-editor-template` ·
 `replace-email-editor-content-from-template` ·
 `get-email-editor-display-condition-capabilities` ·
+`search-email-editor-placeholders` · `get-email-editor-rich-text-content` · `replace-email-editor-rich-text-content` ·
 `update-email-editor-display-condition` · `configure-email-editor-row-display-condition` · `list-email-editor-display-conditions`
+
+## `search-email-editor-placeholders` · RI
+
+**Search email placeholders**
+
+Lists the placeholders one email may carry, the way its own editor offers them: the text placeholders KlickTipp replaces per recipient and the system links, each with its label and group. Addressed by editor URL, because the set depends on the email -- a confirmation mail offers other placeholders than a newsletter. Use it before writing any placeholder that names something the account owns: a marketing-tool redirect, a countdown, a data field and a vCard all carry a numeric ID that cannot be guessed, and a generic placeholder written in its place looks right in the draft and resolves to something else in the mail. Narrow with query, which matches placeholder and label. Reads only: this writes nothing into the email.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as get-email-editor-content returned it, or the editUrl of a double opt-in confirmation email
+- `query` — null | string (maxLength 250): Text the placeholder or its label has to contain; omit for all of them
+- `limit` — null | integer (minimum 1; maximum 200): How many to return at most, 1 to 200; 50 by default
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `get-email-editor-rich-text-content` · RI
+
+**Get rich-text email content**
+
+Reads the complete body of a KlickTipp newsletter email built with the previous HTML editor: HTML, plain text, which of the two the email uses, the subject and a contentRevision the write takes back. Use it when get-email-editor-content reports emailEditor "rich-text"; a drag-and-drop email is refused. A sent or scheduled newsletter can be read too -- editable and blockers say whether and why a write would be refused -- so its body can be carried into a new draft with replace-email-editor-rich-text-content. Reads only; newsletter emails only. For a new newsletter, prefer the drag-and-drop editor: the block, design, template and publish tools work only with that one. editorUrl names the email for the tools and is not a link to open in KlickTipp; to show the email to a person, use contentUrl from get-newsletter.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as get-email-editor-content returned it
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
+
+## `replace-email-editor-rich-text-content` · DI
+
+**Replace rich-text email content**
+
+Replaces the whole body of a KlickTipp newsletter email built with the previous HTML editor. No undo, no publish step: what is stored is what a dispatch sends. Always the complete body -- read it with get-email-editor-rich-text-content, change it and send all of it back. Bound to that read's contentRevision, so a newsletter changed meanwhile is refused. HTML is held to the editor's check and refused with the position of the first unsupported markup. Needs a subject already (else ErrorNoSubject); subject, name, sender and audience stay untouched. A plain text passed in is kept only if the account maintains plain text itself, else it is generated and warnings say so. Drag-and-drop emails belong to the block tools. The editorUrl returned is not a link to open in KlickTipp; use contentUrl from get-newsletter for that.
+
+Parameter:
+
+- `editorUrl`* — string (minLength 12; maxLength 500): Editor URL of the email, as get-email-editor-content returned it
+- `contentRevision`* — string (minLength 7; maxLength 100): contentRevision of the preceding get-email-editor-rich-text-content; a stale one refuses the write
+- `html`* — string (maxLength 100000): Complete HTML body, at most what a read hands back; pass an empty string only with contentType "plain-only"
+- `plain` — null | string (maxLength 100000): Complete plain-text body, kept only if the account maintains plain text itself (else generated from the HTML, with a warning); omit to have KlickTipp generate it
+- `contentType` — null | string (einer von `html-and-plain`, `plain-only`): "html-and-plain" or "plain-only"; omit to keep what the email uses
+- `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `replace-email-editor-content-from-html` · DO
 

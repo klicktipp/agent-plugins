@@ -129,12 +129,13 @@ Parameter:
 
 **Send newsletter test**
 
-Sends one email newsletter as a test to a single address, so its content can be checked before it goes out -- the same send the test dialog of KlickTipp performs, with the same rules. Any address may receive one, and an address that is not a contact of the account yet becomes one and is tagged as a test recipient, which can start automations; name the address and say what it will become before calling this. A test carries the PUBLISHED content of the email: a body that was never published is refused -- publish it with publish-newsletter-email-content -- and one changed after publication is sent with a warning that the test shows the older content. The audience of the newsletter is never a recipient, and its delivery state does not change.
+Sends one email newsletter as a test to a single address, so its content can be checked before it goes out -- the same send the test dialog of KlickTipp performs, with the same rules. Any address may receive one, and an address that is not a contact of the account yet becomes one and is tagged as a test recipient, which can start automations; name the address and say what it will become before calling this. A test carries the PUBLISHED content of the email: a body that was never published is refused -- publish it with publish-newsletter-email-content -- and one changed after publication is sent with a warning that the test shows the older content. The audience of the newsletter is never a recipient, and its delivery state does not change. For a split test, messageId takes the emailId of the variant to send; schedule and winner selection stay untouched.
 
 Parameter:
 
 - `newsletterId`* — integer (minimum 1): ID of the newsletter to send a test of
 - `recipientEmail`* — string (minLength 3; maxLength 250): Address to send the test to; any address, and one that is not a contact yet becomes one
+- `messageId` — null | integer (minimum 1): For a split test: the emailId of the variant to test, as get-newsletter-split-test lists it; omit otherwise
 - `accountId` — null | integer (minimum 1): User ID of the account; omit for the account the access token works in
 
 ## `prepare-newsletter-dispatch` · DO
