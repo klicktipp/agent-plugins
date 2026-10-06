@@ -64,12 +64,15 @@ These links always point at the latest release:
 
 | Skill | Download |
 |---|---|
-| `crm` | [klicktipp-skill-crm.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-crm.zip) |
+| `contacts` | [klicktipp-skill-contacts.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-contacts.zip) |
+| `custom-fields` | [klicktipp-skill-custom-fields.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-custom-fields.zip) |
 | `dashboard` | [klicktipp-skill-dashboard.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-dashboard.zip) |
 | `email` | [klicktipp-skill-email.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email.zip) |
 | `email-template-generator` | [klicktipp-skill-email-template-generator.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email-template-generator.zip) |
 | `newsletter` | [klicktipp-skill-newsletter.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-newsletter.zip) |
+| `opt-in` | [klicktipp-skill-opt-in.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-opt-in.zip) |
 | `splittest` | [klicktipp-skill-splittest.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-splittest.zip) |
+| `tags` | [klicktipp-skill-tags.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-tags.zip) |
 
 Upload each ZIP as it is, and in the skill's **Integrations** field
 attach the KlickTipp integration from above — its tools then come with the skill whenever the skill is
@@ -83,8 +86,9 @@ and give the Agent Builder this:
 
 ```text
 Create an agent "KlickTipp". It works in the user's KlickTipp account through the
-KlickTipp integration. Attach the KlickTipp integration and the skills crm,
-dashboard, email, email-template-generator, newsletter and splittest.
+KlickTipp integration. Attach the KlickTipp integration and the skills contacts,
+custom-fields, dashboard, email, email-template-generator, newsletter, opt-in,
+splittest and tags.
 Instructions: Read the matching skill before the first KlickTipp tool call of a
 task. Never send a newsletter yourself: prepare-newsletter-dispatch returns a
 confirmation link, hand it to the user with subject, audience, recipient estimate,

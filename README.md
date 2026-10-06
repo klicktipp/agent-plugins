@@ -27,7 +27,7 @@ carries a prompt that has the host set both up itself —
 | Plugin | `klicktipp` |
 | Endpoint | `https://mcp.klicktipp.com/mcp` |
 | Tools | newsletters (draft, block-by-block content, audience, sender, test send, dispatch confirmation), split tests, contacts, tags, fields, opt-in processes, images, signatures and sender domains, the statistics of sends, tags and automations, and the account settings |
-| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `crm` — contacts, tags, fields, opt-in · `dashboard` — the account's numbers as a readable dashboard: sends, daily activity, tags over time, automations · `email-template-generator` — plain business emails |
+| Skills | `email` — the content of one email, block by block · `newsletter` — draft, audience, sender, dispatch · `splittest` — A/B tests and their arms · `contacts` — contacts, their field values and the account settings · `tags` — manual tags and who carries them · `custom-fields` — field definitions and their placeholders · `opt-in` — opt-in processes and their confirmation email · `dashboard` — the account's numbers as a readable dashboard: sends, daily activity, tags over time, automations · `email-template-generator` — plain business emails |
 | Agents | Claude Code and the Claude directory (`.claude-plugin/`), Codex and ChatGPT (`.codex-plugin/`) |
 | Requires | a KlickTipp account |
 
@@ -43,7 +43,8 @@ plugins/klicktipp/
 ├── .mcp.json                       the MCP server — both manifests read this one file
 ├── assets/logo.svg
 ├── skills/                        shipped with the plugin: email, newsletter, splittest,
-│                                   crm, dashboard, email-template-generator
+│                                   contacts, tags, custom-fields, opt-in, dashboard,
+│                                   email-template-generator
 ├── SETUP.md                        walks the agent through the one-time OAuth login
 ├── SETUP_OPENCODE.md               the same server and skills in opencode, set up by prompt
 ├── SETUP_OPENCLAW.md               the same in OpenClaw

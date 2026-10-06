@@ -73,7 +73,7 @@ Alle drei Felder gehören zusammen; fehlt eins, wird abgewiesen, bevor irgendetw
 
 ### Was danach da ist
 
-**Genau eine Variante** — die mit dem Betreff aus dem `draft-create`. Ein Test braucht mindestens zwei,
+**Genau eine Variante** — die mit dem Betreff aus dem `create-newsletter-draft`. Ein Test braucht mindestens zwei,
 und bis dahin lässt sich nichts verschicken. Die Antwort sagt das selbst: `needsMoreVariants: true`.
 
 ## Die Varianten
@@ -156,7 +156,7 @@ beim Anlegen fest.
 Ein **gestarteter** Test lässt seine Varianten nicht mehr ändern — sie beschreiben, was schon verschickt
 wurde. Und der **letzte** Variante lässt sich nicht entfernen.
 
-`variant-remove` löscht die E-Mail dieser Variante **mit ihrem Inhalt**, und diese Werkzeuge machen das
+`remove-newsletter-split-test-variant` löscht die E-Mail dieser Variante **mit ihrem Inhalt**, und diese Werkzeuge machen das
 nicht rückgängig. Zeig vorher, welche Variante gemeint ist: Label und Betreff stehen in
 `splitTestVariants`.
 

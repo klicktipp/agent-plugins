@@ -8,6 +8,35 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.24.0 — 2026-10-06
+
+- **Four skills in place of `crm`: `contacts`, `tags`, `custom-fields` and `opt-in`.** Each one
+  is loaded for its own question instead of one skill for everything that touches a contact, and
+  each carries its own `references/tools.md` and `references/contracts.md`. The account settings —
+  switches, preview tag, blocklist — moved to `contacts`. Whoever copied the skill folders by hand
+  (opencode, OpenClaw) or uploaded them (Langdock) removes the old `crm` folder and takes the four
+  new ones.
+- **What the split adds.** A pending double opt-in stays pending: nothing confirms it for the
+  recipient, not an upsert, a status change or the personal link. `contacts` tells contact,
+  address and `referenceId` apart, reads every write back with its own `get-contact`, and searches
+  once more broadly before concluding a contact has no second address. `tags` says what decides
+  whether a tag holds for an address — `multiValue` of the definition, not `referenceId: 0` — and
+  that `create-manual-tag` always creates a multidimensional tag. `opt-in` says what belongs in a
+  confirmation email and what a stored consent covers, and that the link is `%Link:Confirm%`.
+- **One statement corrected.** `update-custom-field` does change `multiValue`, from `true` to
+  `false` only, and that deletes the extra values for good; `crm` said it was refused. And
+  `create-custom-field` without `multiValue` creates a field with one value per subscription.
+- **The newsletter skill agrees on the brief first.** Few questions while exploring, every open
+  choice in one proposal before a write, and a final review of exactly the values that will go out
+  before every dispatch. A new step 4a reads back after each write, validates and previews the
+  draft and publishes with the latest `contentRevision`. The signature mode is explained
+  (`signatureId: 0` picks by tags, and the order of `search-signatures` is not that priority), and
+  that the footer reaches the body only through `%User:Signature%` or the email's own details.
+  Reach comes only from the audience, sender values are shown as saved, and a newsletter is
+  "prepared" until `deliveryStatus` says otherwise.
+- Retired shorthand names (`draft-create`, `variant-remove`, `email-split-test-variant-*`) replaced
+  by the tool names production publishes.
+
 ## 0.23.0 — 2026-10-02
 
 - **Placeholders that name something of the account are looked up, not built.**

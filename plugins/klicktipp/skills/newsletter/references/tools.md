@@ -22,7 +22,7 @@ Unterkonto); weggelassen heißt das Konto des Zugangs.
 | `send-newsletter-test` | DO | Eine echte Testmail an eine beliebige Adresse; der Empfänger wird Kontakt des Kontos und als Testempfänger getaggt. Trägt den **veröffentlichten** Inhalt — vorher `publish-newsletter-email-content`. Beim Splittest mit `messageId` je Variante. |
 | `prepare-newsletter-dispatch` | DO | **Sendet nicht** — bereitet vor und gibt die Bestätigungs-URL, die ein Mensch in KlickTipp klickt. Der Klick erreicht echte Empfänger. |
 | `cancel-newsletter-dispatch` | D | Einen terminierten oder eben angelaufenen Versand zurücknehmen — der Newsletter wird wieder Entwurf. Nur solange `canBeCancelled`; holt nichts zurück, was schon raus ist. |
-| `search-signatures` | R | Die Signaturen, mit denen sich gerade senden lässt; `includeUnusable` zeigt die übrigen mit Gründen. Kein Text. |
+| `search-signatures` | R | Die Signaturen, mit denen sich gerade senden lässt; `includeUnusable` zeigt die übrigen mit Gründen. Kein Text. Die Reihenfolge ist **nicht** die Tag-Priorität; `signatureId: 0` („nach Tags wählen") ist kein Eintrag dieser Liste. |
 | `get-signature` | R | Eine Signatur: Absenderprofil, Tags, Visitenkarte, Nutzbarkeit; `includeContent` holt HTML, Plain und transaktionalen Text. |
 | `create-signature` | O | Neu mit `content` oder als Kopie mit `sourceSignatureId`; braucht mindestens ein freies Tag und die Pflichtplatzhalter. |
 | `update-signature` | I | Name, Notiz, Labels, Visitenkarte. Nie Text, Tags oder Absender. |

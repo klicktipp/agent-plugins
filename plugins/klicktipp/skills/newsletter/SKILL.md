@@ -1,6 +1,6 @@
 ---
 name: newsletter
-description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf, Betreff, Pre-Header, Zielgruppe, Absender, Signatur, Absenderdomain, Testversand, Terminierung, Versand. Nutze ihn immer, wenn jemand einen Newsletter anlegen, „rausschicken" oder „fertig machen" will, denn Inhalt allein verschickt nichts — und wenn eine E-Mail-Signatur angelegt oder geändert oder eine Absenderdomain eingerichtet und per DNS verifiziert werden soll. Inhalt ist `email`, A/B-Tests sind `splittest`.
+description: Die Hülle um den Inhalt eines KlickTipp-Newsletters — Entwurf, Betreff, Pre-Header, Zielgruppe, Absender, Signatur, Absenderdomain, Testversand, Terminierung, Versand. Nutze ihn immer, wenn jemand einen Newsletter anlegen, „rausschicken" oder „fertig machen" will oder fragt, wen er erreichen würde, denn Inhalt allein verschickt nichts — und wenn eine E-Mail-Signatur angelegt oder geändert oder eine Absenderdomain eingerichtet und per DNS verifiziert werden soll. Inhalt ist `email`, A/B-Tests sind `splittest`.
 ---
 
 # KlickTipp Newsletter
@@ -14,6 +14,30 @@ die `emailId` oder `contentUrl` adressiert, die `get-newsletter` zurückgibt.
 Diese Trennung ist der häufigste Stolperstein: ein fertig geschriebener Inhalt verschickt nichts,
 und ein aktivierter Newsletter ohne Inhalt ist genauso wenig fertig.
 
+Halte fünf Zustände auseinander: gespeicherter Entwurf, Editor-Vorschau, veröffentlichter Inhalt,
+Testmail, Versand. Vorschau und Veröffentlichen schicken nichts; eine Testmail erreicht nur ihre eine
+Adresse.
+
+## Erst das Briefing
+
+Richte dich nach der Phase, in der die Person ist.
+
+- **Erkundend** („was brauchst du von mir?"): frag nur nach dem, was die Botschaft formt — Angebot
+  und Hauptnutzen, Zielgruppe und woran sie erkennbar ist, Link für den Call-to-Action, Termin oder
+  Frist. Eine kurze Frage mit höchstens vier Teilen; biete an, Betreff und Ton vorzuschlagen. Was sich
+  lesend klären lässt, klär selbst (Lesen braucht keine Erlaubnis). Noch keine Einstellungsinventur,
+  keine Frage nach Ausschluss-Tags oder Testempfängern, keine angekündigte Freigabekette.
+- **Ein Schreibauftrag**: nimm, was schon gesagt wurde, und leg die offenen Entscheidungen
+  **gemeinsam** vor, mit den tatsächlichen Werten des Kontos, wo sie lesbar sind — Zielgruppe,
+  Absender, Antwortadresse, Signatur-Modus, Tracking, Kopfzeile, UTM-Kampagne. Bitte um eine
+  Bestätigung oder Korrekturen und frag bestätigte Vorgaben nicht erneut ab. Einzeln fragen nur bei
+  blockierenden Entscheidungen (mehrdeutige Zielgruppe, fehlender Call-to-Action). Eine Freigabe des
+  Texts vor dem Entwurf nur, wenn die Person ihn vorher sehen wollte.
+- **Ein vorläufiger Entwurf** wird mit seinen offenen Einstellungen gemeldet, nie als versandfertig.
+- **Ein Versand** bekommt immer die Schlussprüfung aus Schritt 6.
+
+Sprich die Sprache der Kundin. Erfinde keine persönliche Grußformel.
+
 ## Der Ablauf
 
 Die Reihenfolge ist keine Konvention, sondern ergibt sich aus den Toren: jeder Schritt prüft, was
@@ -24,13 +48,15 @@ der vorige hinterlassen hat.
 | 1 | Entwurf anlegen | `create-newsletter-draft` |
 | 2 | Inhalt schreiben | → Skill `email` |
 | 3 | Betreff und Zielgruppe setzen | `update-newsletter-draft` |
-| 3a | *nur beim Splittest:* weitere Testvarianten und ihre Betreffzeilen | `email-split-test-variant-*` |
+| 3a | *nur beim Splittest:* weitere Testvarianten und ihre Betreffzeilen | `add-` / `update-` / `remove-newsletter-split-test-variant` → Skill `splittest` |
 | 4 | Absender, Antwortadresse, Signatur | `configure-newsletter-delivery` |
-| 5 | Testversand und Prüfung | `send-newsletter-test` |
+| 4a | Prüfen und veröffentlichen | `validate-email-editor-content`, `preview-email-editor`, `publish-newsletter-email-content` |
+| 5 | Testversand | `send-newsletter-test` |
 | 6 | Aktivierung vorbereiten | `prepare-newsletter-dispatch` |
 | 7 | **Mensch bestätigt in KlickTipp** | — |
 
-Schritt 2 bis 5 sind in der Reihenfolge frei. Schritt 1, 6 und 7 nicht.
+Schritt 2 bis 4 sind in der Reihenfolge frei; 4a kommt vor 5 und 6, weil beide den veröffentlichten
+Inhalt tragen. Schritt 1, 6 und 7 liegen fest.
 
 Nach Schritt 7 gibt es noch einen Rückweg: `cancel-newsletter-dispatch` nimmt einen Versand zurück, solange er nicht zu weit ist — siehe „Einen Versand zurücknehmen".
 
@@ -81,7 +107,7 @@ Nicht hier. `get-newsletter` liefert `emailId` und `contentUrl` — damit weiter
 `utmCampaignName`. Es schreibt **nur** diese sechs: Absender, Signatur und Sendetermin sind bewusst
 nicht erreichbar, ein Versuch wird abgewiesen statt still ignoriert.
 
-Der Pre-Header ist hier nachträglich änderbar, auch wenn er schon bei `draft-create` gesetzt wurde.
+Der Pre-Header ist hier nachträglich änderbar, auch wenn er schon bei `create-newsletter-draft` gesetzt wurde.
 
 **Der Pre-Header gehört nicht zum Inhalt.** Er sitzt neben dem Betreff an der E-Mail, nicht im
 Baustein-Dokument — ein HTML-Import kann ihn also nicht setzen, und eine versteckte Vorschauzeile im
@@ -105,15 +131,25 @@ Revision neu — sonst wird der Schreibvorgang als „geändert" abgewiesen. Die
 `utm_campaign` an die getrackten Links hängt. Er gehört zur Kampagne, deshalb steht er hier. Setze
 ihn nicht von dir aus: wer ein Tracking-Setup pflegt, hat eine Namenskonvention, und ein geratener
 Name zerschießt die Auswertung. Frag nach oder lass das Feld in Ruhe. Ein leerer String stellt die
-kontoweiten UTM-Einstellungen wieder her.
+kontoweiten UTM-Einstellungen wieder her. Was diese Einstellung einsetzt, ist hier nicht lesbar — sie
+kann den internen Namen des Newsletters nehmen, muss aber nicht. Nenne im Briefing die Regel und den
+gespeicherten Wert, statt einen Kampagnennamen anzunehmen.
 
 **Die Zielgruppe wird ersetzt, nicht ergänzt.** Wer „nimm noch Tag X dazu" umsetzt, muss die
 bestehende Zielgruppe erst mit `get-newsletter` und `include: ["audience"]` lesen und die
 vollständige neue Menge schicken. Sonst verschwindet, was vorher da stand.
 
-**Frage nach einem Ausschluss für lange inaktive Kontakte.** Wer seit Monaten nichts öffnet und
+- **„Alle Kontakte" wird ausgesprochen** und bestätigt, nie stillschweigend gelassen.
+- **Genannte Tags oder gespeicherte Zielgruppen** erst mit `search-tags` auflösen, dann die IDs
+  nehmen. Leg keinen neuen Tag an und schlag keinen vor, als Antwort auf eine unklare Zielgruppe.
+- **Reichweite nur aus der Zielgruppe selbst:** `get-newsletter` mit `audienceReach` oder die
+  Schätzung aus Schritt 6. Kontosummen und Statistiken sind keine Empfängerzahlen, und eine Schätzung
+  ist keine genaue Zahl.
+
+**Frage nach einem Ausschluss für lange inaktive Kontakte** — wenn die Zielgruppe für einen
+Schreibzugriff festgelegt wird, nicht schon in einer ersten, erkundenden Antwort. Wer seit Monaten nichts öffnet und
 trotzdem jede Mail bekommt, drückt Zustellrate und Absenderreputation — und damit die Zustellung
-für alle anderen. Frage deshalb beim Setzen oder Ändern einer Zielgruppe einmal aktiv, ob das Konto
+für alle anderen. Frage deshalb dann einmal aktiv, ob das Konto
 einen Tag für inaktive Kontakte pflegt (Namen wie „Seit 6 Monaten inaktiv"), und trage ihn dann in
 `excludeTagIds`.
 
@@ -138,6 +174,11 @@ und `availableSenderDomains`, und das Werkzeug lehnt alles ab, was nicht darin s
 Schreiben, mit der Liste in der Meldung. Eine leere Domainliste heißt „dieses Konto wählt keine
 Domain", nicht „such dir eine".
 
+**Zeig die gespeicherten Werte, keine abgeleiteten.** Lies `deliveryConfiguration` und nenne
+Absenderdomain, -adresse, -name und Antwortadresse so, wie sie gespeichert sind, mit den nutzbaren
+Alternativen. Leite den wirksamen Absender nicht aus der Kontoadresse, dem `isDefault` einer Domain
+oder einer Signatur allein ab.
+
 **Adresse und Domain gehören zusammen.** Wer nur die Absenderadresse ändert, lässt die alte Domain
 stehen, und der Newsletter ginge durch eine Domain, die nicht zu seinem Absender gehört. Das wird
 abgelehnt, und die Meldung nennt die passende Domain — schick beides in einem Aufruf.
@@ -155,6 +196,26 @@ Dasselbe Werkzeug trägt zwei Schalter aus dem Panel „Erweiterte Einstellungen
   will meistens genau diesen Schalter; als Baustein gibt es die drei nicht. Einzeln im Inhalt
   platzieren geht über die Platzhalter (`%Link:WebBrowser%`, `%Link:Unsubscribe%`), siehe Skill
   `email`.
+
+### Der Signatur-Modus
+
+`signatureId: 0` lässt KlickTipp nach Tags in der Priorität des Kontos wählen, mit der Signatur ohne
+Tags als Rückfall, wenn keine passt; jede andere ID legt eine Signatur fest. Sag, welcher Modus gesetzt
+ist, und lass ihn bestätigen oder eine bestimmte Signatur auflösen.
+
+- `search-signatures` zeigt nur nutzbare Signaturen, solange `includeUnusable` fehlt, und ihre
+  Reihenfolge ist **nicht** die Priorität — leite sie nicht daraus ab.
+- Eine leer gespeicherte Absenderadresse folgt der Kontoadresse; `get-signature` nennt die wirksame
+  Identität und was blockiert. Melde einen unbrauchbaren Weg; ersetze ihn nie still durch eine feste
+  Signatur.
+- Ist ein Signaturprofil unbrauchbar, der Newsletter aber hat einen nutzbaren festen Absender, nenne
+  die Wirkung auf den Versand offen, bis Schritt 6 diesen Newsletter geprüft hat.
+
+**Die Fußzeile kommt nicht von selbst.** Im Drag-and-Drop-Editor bringt die gewählte Signatur ihre
+Fußzeile nicht in den Inhalt. Entweder trägt der Inhalt `%User:Signature%` in einem Textbaustein, oder
+er trägt die Absenderangaben und `%Link:Unsubscribe%` selbst (Skill `email`). Bevor du die Fußzeile
+als geprüft meldest, lies die Signatur mit `get-signature` und `includeContent: true`. Passt der Ton
+des Inhalts nicht zum Wortlaut der Signatur, sag es — ändere eine geteilte Signatur nicht von dir aus.
 
 ### Signaturen verwalten
 
@@ -189,10 +250,32 @@ Erst dann steht die Domain in `availableSenderDomains` von `configure-newsletter
 Stolperer — Alternativen unter den Einträgen, die Wartezeit, was „noch kein Ergebnis" heißt — stehen
 in [references/tools.md](references/tools.md).
 
+## 4a. Prüfen und veröffentlichen
+
+Nach jedem Schreibzugriff mit `get-newsletter` (`metadata`, `audience`, `deliveryConfiguration`)
+zurücklesen, bevor du ihn meldest: Name, Zielgruppe, UTM-Override, Absender, Antwortadresse,
+Signatur-Modus, Tracking. Wo der Server keinen wirksamen Standardwert zeigt, nenne die Regel und den
+gespeicherten Override, statt einen Wert zu erfinden.
+
+- **Entwurf**: `validate-email-editor-content` **und** die gerenderte `preview-email-editor` — ein
+  Validator ohne Befund beweist die Platzhalter, nicht das Aussehen. Offensichtliche, umkehrbare
+  Fehler beheben und erneut ansehen; bleibt ein Stil wirkungslos, nenne die Grenze, statt den
+  Schreibzugriff zu wiederholen. HTML-Import und seine Warnungen → Skill `email`.
+- Bei einem Auftrag für Entwurf oder Vorschau hier aufhören.
+- **Veröffentlichen** für einen Test, einen Versand oder auf Wunsch: `publish-newsletter-email-content`
+  mit der neuesten `contentRevision`; Status und Revision der Antwort nennen. Nach jeder Änderung
+  erneut veröffentlichen.
+- **Je Empfänger** gibt es hier keine Vorschau: die Editor-Vorschau lässt Platzhalter offen, und
+  welche Signatur ein Kontakt bekommt, entscheidet erst der Versand. Die Fußzeile prüfst du am Inhalt
+  und an der Signatur selbst; was beim Empfänger ankommt, zeigt am ehesten der Testversand.
+
 ## 5. Testversand
 
 `send-newsletter-test` schickt eine echte Mail an **eine** Adresse — dieselbe Aktion, die der
-Testdialog in KlickTipp auslöst, mit denselben Regeln. Jede Adresse ist erlaubt.
+Testdialog in KlickTipp auslöst, mit denselben Regeln. Jede Adresse ist erlaubt. Nimm nur die Adresse,
+die die Person genannt hat, oder frag nach einer; diese Bitte erlaubt den Test nach dem
+Veröffentlichen. Melde das tatsächliche Ergebnis und behaupte Zustellung ins Postfach nur, wenn sie
+bestätigt ist. Ein Testauftrag führt nie zu Schritt 6.
 
 **Und genau deshalb hat der Schritt eine Nebenwirkung, die du vorher sagst:** ist die Adresse noch
 kein Kontakt des Kontos, wird sie einer und bekommt den Testempfänger-Tag. So landet sie in der
@@ -216,9 +299,17 @@ Die Reihenfolge ist damit: Inhalt schreiben → `publish-newsletter-email-conten
 
 ## 6. Aktivierung — und was dieses Werkzeug wirklich tut
 
+**Erst die Schlussprüfung, jedes Mal.** Vor einem Versand oder Termin zeigst du in einem kompakten
+Block: Name, Betreff und Pre-Header, Zielgruppe mit Reichweite, Absender und Antwortadresse,
+Signaturweg, Tracking und Kopfzeile, veröffentlichte Inhaltsrevision, Ergebnis der Vorschau,
+Call-to-Action-URL, Zeitpunkt. Markiere Platzhalter- oder Test-URLs. Hol eine ausdrückliche Freigabe
+genau für diese Werte.
+
 `prepare-newsletter-dispatch` klingt, als würde es senden. **Es sendet nicht.** Es prüft die
 Voraussetzungen, bindet den veröffentlichungsfähigen Inhalt, schätzt die Empfängerzahl — und gibt
-die Bestätigung zurück, die ein Mensch in KlickTipp klicken muss. Geschrieben wird dabei nichts.
+die Bestätigung zurück, die ein Mensch in KlickTipp klicken muss. Geschrieben wird dabei nichts. Die
+URL ist kurzlebig und nur einmal gültig; ein geänderter Wert oder eine abgelaufene URL braucht eine
+neue Vorbereitung.
 
 Argumente: `newsletterId`, `mode` (`immediate` oder `scheduled`), bei `scheduled` zusätzlich
 `scheduledAt`.
@@ -227,7 +318,8 @@ Die Antwort enthält `estimatedRecipientsMin` / `estimatedRecipientsMax`, eine `
 Lieferstatus mit `scheduleUrl`. Gib diese Zahlen und den Link weiter — das ist der Punkt, an dem
 eine Person entscheidet, und sie braucht dafür die Zahl, nicht deine Zusammenfassung.
 
-Sage nach diesem Aufruf niemals „der Newsletter wurde verschickt". Er wurde vorbereitet.
+Sage nach diesem Aufruf niemals „der Newsletter wurde verschickt". Er wurde vorbereitet. Terminiert
+oder versendet meldest du erst, wenn `get-newsletter` mit `deliveryStatus` es zeigt.
 
 ## Lesen: Suche und Detail
 
@@ -299,7 +391,9 @@ ihn selbst über die Suche gefunden hast: eine Namensähnlichkeit ist keine Zust
 
 Die Werkzeuge antworten mit einem Fehlercode plus `remediation`, nicht nur mit Prosa. Gib den Code
 weiter, statt ihn zu verallgemeinern — „der Zugriff ist fehlgeschlagen, prüfe deine Berechtigungen"
-hilft niemandem, `newsletter_content_not_found` schon.
+hilft niemandem, `newsletter_content_not_found` schon. Nach einem Schemafehler, einem unklaren
+Schreibergebnis oder einem fehlenden Zurücklesen meldest du keine Bereitschaft: erst den Stand lesen,
+dann den Schreibzugriff wiederholen, und den blockierten Schritt mit dem beobachteten Fehler nennen.
 
 Die häufigsten Tore:
 

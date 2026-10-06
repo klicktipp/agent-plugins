@@ -219,10 +219,20 @@ clicks, bounces, unsubscribes of the last dispatches, the daily activity of the
 account, tags over time, automations with their emails and SMS — and builds a
 dashboard out of them. Read-only: it creates, changes and sends nothing.
 
-`skills/crm` — the contact data of the account: find, read, subscribe and
-unsubscribe contacts, set field values, manage manual tags and custom field
-definitions, create and change the opt-in processes behind them together
-with their confirmation email, and read and change the account's settings.
+`skills/contacts` — find, read, add, subscribe and unsubscribe contacts, set
+their field values, and read and change the account's settings, its blocklist
+included. A pending double opt-in stays pending: nothing here confirms it for
+the recipient.
+
+`skills/tags` — find, create, rename and delete manual tags, put them on and
+take them off contacts, and tell which addresses a tag really applies to.
+
+`skills/custom-fields` — custom field definitions: type, one value per
+subscription or per contact, the placeholder that renders a field in content.
+
+`skills/opt-in` — create and change the opt-in processes behind the contacts
+together with their confirmation email, its redirect pages, and what an
+existing consent covers.
 
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
