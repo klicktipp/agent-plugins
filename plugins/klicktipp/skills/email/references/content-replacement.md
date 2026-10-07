@@ -1,60 +1,59 @@
-# Inhalt ersetzen — ein Vorgehen
+# Replacing content — a procedure
 
-Der häufigste Auftrag und der, bei dem am meisten kaputtgeht: „hier ist der neue Text, setz ihn in
-den Newsletter ein". Das ist passiert: ein Agent hat eine Trennlinie, den Video-Button, eine
-Zwischenüberschrift und einen Absatz entfernt, weil die Textdatei sie nicht erwähnte. Der Auftrag
-war „Text ersetzen", das Ergebnis war ein anderes Design.
+The most common request and the one that breaks the most: "here is the new text, put it into the
+newsletter". This happened: an agent removed a divider, the video button, a sub-heading and a
+paragraph because the text file did not mention them. The request was "replace the text", the result
+was a different design.
 
-**Die Faustregel:** Nach einer Textersetzung hat der Newsletter **dieselbe Anzahl und Reihenfolge
-von Bausteinen wie vorher**, nur mit anderem Text. Weicht dein Ergebnis davon ab, war es keine
-Textersetzung — und dann muss der Nutzer vorher zugestimmt haben.
+**The rule of thumb:** after a text replacement the newsletter has **the same number and order of
+blocks as before**, only with different text. If your result differs, it was not a text replacement
+— and then the user had to agree first.
 
-## Der Ablauf
+## The procedure
 
-1. **`get-email-editor-content` mit `contentOutline`.** Nicht `content`: du brauchst uuid, Art und den aktuellen
-   Wert jedes schreibbaren Feldes, und genau das ist die Outline — bei einem Viertel der Bytes.
-2. **Die Zuordnung aufschreiben, bevor du schreibst.** Welcher Abschnitt der Quelle gehört zu
-   welcher uuid? Mach daraus eine Liste, und zwar vollständig: auch die Bausteine, für die die
-   Quelle nichts hergibt, und die Teile der Quelle, für die es keinen Baustein gibt.
-3. **Die Fälle benennen, die keine reine Ersetzung sind** (siehe unten) und den Nutzer
-   entscheiden lassen, bevor irgendetwas geschrieben wird.
-4. **Schreiben.** Alle Textbausteine in **einem** `update-email-editor-text` — es nimmt eine Liste. Ein
-   Button bekommt sein `label`/`href` mit `update-email-editor-button`, ein Bild seine `src`/`alt` mit
+1. **`get-email-editor-content` with `contentOutline`.** Not `content`: you need the uuid, kind and current value
+   of every writable field, which is exactly what the outline is — at a quarter of the bytes.
+2. **Write down the mapping before you write anything.** Which section of the source belongs to
+   which uuid? Make that a list, and a complete one: including the blocks the source has nothing
+   for, and the parts of the source that have no block.
+3. **Name the cases that are not a pure replacement** (below) and let the user decide before
+   anything is written.
+4. **Write.** All text blocks in **one** `update-email-editor-text` — it takes a list. A button gets its
+   `label`/`href` through `update-email-editor-button`, an image its `src`/`alt` through
    `update-email-editor-image-block`.
-5. **Berichten, was du nicht angefasst hast**, nicht nur was du geändert hast.
-6. **Veröffentlichen** mit `publish-newsletter-email-content`, wenn der Nutzer es will — sonst bleibt es
-   Entwurf, und das ist auch in Ordnung.
+5. **Report what you did not touch**, not only what you changed.
+6. **Publish** with `publish-newsletter-email-content` if the user wants it — otherwise it stays a draft, and
+   that is fine too.
 
-## Die vier Fälle, die kein reines Ersetzen sind
+## The four cases that are not a pure replacement
 
-| Fall | Was zu tun ist |
+| Case | What to do |
 | --- | --- |
-| Die Quelle hat **weniger** Text als der Newsletter Bausteine | Der Reihe nach füllen, was zu füllen ist, und die übrigen **benennen**: „drei Absätze und eine Zwischenüberschrift haben keinen neuen Text; ich habe sie unverändert gelassen. Sollen sie raus?" |
-| Die Quelle hat **mehr** Text als Bausteine da sind | Hinzufügen (`add-email-editor-paragraph` und Geschwister), nicht Absätze zusammenziehen. Der neue Baustein braucht das Markup seines Nachbarn als Vorlage. |
-| Die Quelle nennt **eine andere Art** — aus einem Absatz soll eine Überschrift werden | Eine Art lässt sich nicht schreiben: entfernen und neu anlegen, und dem Nutzer sagen, dass der alte Baustein dabei verschwindet. |
-| Die Quelle nennt **Gestaltung** — „mach die Überschrift blau" | Farbe im Text steckt im Markup (`update-email-editor-text`), Hintergrund und Abstand sind die Style-Werkzeuge. Zwei verschiedene Wege, nicht raten. |
+| The source has **less** text than the newsletter has blocks | Fill what can be filled, in order, and **name** the rest: "three paragraphs and a sub-heading have no new text; I left them unchanged. Should they go?" |
+| The source has **more** text than there are blocks | Add (`add-email-editor-paragraph` and siblings), do not merge paragraphs. The new block needs its neighbour's markup as a template. |
+| The source calls for **another kind** — a paragraph should become a heading | A kind cannot be written: remove and create, and tell the user the old block disappears in the process. |
+| The source calls for **styling** — "make the heading blue" | Colour inside text sits in the markup (`update-email-editor-text`), background and spacing are the style tools. Two different ways, do not guess. |
 
-## Was nie Teil einer Textersetzung ist
+## What is never part of a text replacement
 
-Trennlinie, Abstand, Bild, Video, Button, Menü, Icons, Social-Links, Tabelle und die Add-ons tragen
-keinen Fließtext, den eine Textquelle ersetzen könnte. Sie werden bei „Text ersetzen" **weder
-entfernt noch verschoben**. Ein Button bekommt höchstens ein neues `label`/`href`, wenn die Quelle
-eines nennt.
+Divider, spacer, image, video, button, menu, icons, social links, table and the add-ons carry no
+running text a text source could replace. On "replace the text" they are **neither removed nor
+moved**. A button gets at most a new `label`/`href` when the source names one.
 
-`remove-email-editor-block` nur auf ausdrückliche Bitte, je Baustein benannt. Nie, weil etwas „übrig" ist,
-„leer wirkt" oder „nicht mehr passt". Es gibt kein Undo.
+`remove-email-editor-block` only on an explicit request, named block by block. Never because something is
+"left over", "looks empty" or "does not fit any more". There is no undo.
 
-## Wenn stattdessen das ganze Design neu ist
+## When the whole design is new instead
 
-Dann ist es keine Ersetzung, sondern ein Import: `replace-email-editor-content-from-html` mit dem HTML. Das ist der
-einzige Weg für ein Design, das **nur** als HTML existiert — und er kostet, was `importWarnings`
-in der Leseantwort auflistet. Lies das dem Nutzer vor, **bevor** du importierst. Schick niemals
-geändertes HTML durch den Import, um eine Änderung anzubringen.
+Then it is not a replacement but an import: `replace-email-editor-content-from-html` with the HTML. That is the only
+way for a design that exists **only** as HTML — and it costs what `importWarnings` lists in the read
+response. Read that out to the user **before** you import. Never push edited HTML through the import
+to apply a change.
 
-## Vor dem Veröffentlichen
+## Before publishing
 
-`validate-email-editor-content` läuft in einem Aufruf über den ganzen Körper: Bilder ohne Alternativtext,
-Buttons ohne Ziel, leere Textbausteine, nie konfigurierte Add-ons, zu geringer Kontrast, fehlende
-Fuß-Platzhalter. Gib die Befunde weiter, statt still zu reparieren — ein blasser Text kann so
-gewollt sein. Ein unkonfiguriertes Add-on ist die Ausnahme, die du gar nicht reparieren kannst:
-seine Auswahl trifft der Nutzer im Editor.
+`validate-email-editor-content` runs over the whole body in one call: images without alt text, buttons without
+a target, empty text blocks, never-configured add-ons, insufficient contrast, missing footer
+placeholders. Pass the findings on instead of fixing silently — pale text can be intended. An
+unconfigured add-on is the exception you cannot fix at all: the user makes that choice in the
+editor.

@@ -1,116 +1,109 @@
-# Eine neue E-Mail entstehen lassen
+# Bringing a new email into being
 
-Wann du hier landest: der Körper einer E-Mail soll **neu entstehen** — es gibt noch keine Gestaltung,
-die du übernehmen könntest, oder du musst sie selbst schreiben. Geht es nur darum, eine vorhandene
-Gestaltung hineinzuholen, steht der kurze Weg in `SKILL.md` und du brauchst diese Datei nicht.
+You land here when the body of an email has to **come into being** — there is no styling yet to take
+over, or you have to write it yourself. If it is only about pulling in existing styling, the short
+way is in `SKILL.md` and you do not need this file.
 
-**Zuerst die Frage, die alles andere entscheidet: Gibt es die Gestaltung schon irgendwo?**
+**First the question that decides everything else: does the styling already exist somewhere?**
 
-- Als **andere E-Mail dieses Kontos** — die letzte Ausgabe, eine Vorlagen-Mail → `replace-email-editor-content-from-email`.
-  Ein Aufruf.
-- Als **Editor-Dokument** — Vorlage, Export → `replace-email-editor-content-from-document`. Ein Aufruf.
-- **Nur als HTML** — von einer Agentur, aus einem anderen Werkzeug → `replace-email-editor-content-from-html`. Ein
-  Aufruf, plus die Konvertierungskosten aus `importWarnings`.
+- As **another email of this account** — the last issue, a template mail → `replace-email-editor-content-from-email`. One
+  call.
+- As an **editor document** — template, export → `replace-email-editor-content-from-document`. One call.
+- **Only as HTML** — from an agency, from another tool → `replace-email-editor-content-from-html`. One call, plus the
+  conversion cost listed in `importWarnings`.
 
-Nur wenn **nichts** davon existiert, entsteht der Körper wirklich neu — und auch dann gehört er in
-einen Aufruf: schreib das Dokument selbst (`references/document-skeleton.json` für die Form,
-`references/simple-schema/` für die Felder) und leg es mit `replace-email-editor-content-from-document` ab.
+Only when **none** of these exists does the body genuinely come into being — and even then it belongs
+in one call: write the document yourself (`references/document-skeleton.json` for the form,
+`references/simple-schema/` for the fields) and store it with `replace-email-editor-content-from-document`.
 
-**Warum das keine Stilfrage ist.** Jeder Werkzeugaufruf kostet 15–30 Sekunden, davon das meiste
-nicht im Server, sondern im Modell davor. Eine E-Mail aus fünfzehn Bausteinen zusammenzusetzen sind
-fünfzehn Runden plus Zeilen und Gestaltung — gemessene Läufe landen so bei über zehn Minuten, für
-ein Ergebnis, das ein einziger Import in unter einer Minute erreicht.
+**Why this is not a matter of taste.** Every tool call costs 15–30 seconds, most of it not in the
+server but in the model ahead of it. Assembling an email out of fifteen blocks is fifteen rounds plus
+rows and styling — measured runs land at over ten minutes, for a result a single import reaches in
+under one.
 
-**Baustein für Baustein** (`add-email-editor-row`, dann je Baustein ein `email-<art>-add`) bleibt der Weg
-für den **einzelnen zusätzlichen** Block in einem Entwurf, der schon steht — nicht für einen ganzen
-Körper. Und es ist die Notlösung, wenn ein Dokument nicht zustande kommt: sag dem Nutzer dann, dass
-es länger dauert.
+**Block by block** (`add-email-editor-row`, then one `add-email-editor-<kind>` per block) remains the way for the
+**single additional** block in a draft that already stands — not for a whole body. And it is the
+fallback when a document cannot be produced: tell the user it will take longer then.
 
-Was ein neu entstehender Körper **nicht** von selbst mitbringt, ist Gestaltung. Ein leerer Entwurf
-hat keinen Baustein, von dem ein neuer sein Aussehen abschauen könnte — jeder Block landet mit
-seinem Startzustand, und ohne Gegenmaßnahme sieht das Ergebnis zusammengewürfelt aus, egal wie gut
-die Texte sind. Setz
-Typografie, Abstände und Farben deshalb selbst, und zwar **für alle Bausteine gemeinsam**:
-`update-email-editor-page-style` für die Seite, `update-email-editor-row-style` je Zeile, `update-email-editor-block-style`
-für den einzelnen Block. **Setz die Seite zuerst**, bevor der erste Baustein entsteht: die
-Textfarbe der Seite geht beim Anlegen in Absätze, Überschriften, Texte, Listen und Tabellen ein,
-die keinen Vorgänger zum Abschauen haben. Danach gesetzt, erreicht sie die bestehenden nicht mehr. Eine E-Mail wirkt professionell durch Abstände und konsequente
-Typografie, nicht durch Dekoration; eine halb umgestellte Skala sieht schlechter aus als gar keine.
+What a newly created body does **not** bring along is styling. An empty draft has no block for a new
+one to copy its look from — every block lands in its initial state, and without a countermeasure the
+result looks thrown together, however good the texts are. So set typography, spacing and colours
+yourself, and **for all blocks together**: `update-email-editor-page-style` for the page,
+`update-email-editor-row-style` per row, `update-email-editor-block-style` for the individual block. **Set the page
+first**, before the first block comes into being: the page's text colour goes into paragraphs,
+headings, texts, lists and tables at creation time when they have no predecessor to copy from. Set
+afterwards, it no longer reaches the existing ones. An email looks professional through spacing and
+consistent typography, not through decoration; a half-converted scale looks worse than none.
 
-Zwei Dinge gehören dabei auf die richtige Ebene:
+Two things belong on the right level:
 
-**Die Schriftart setzt du einmal auf der Seite**, mit `fontFamily` in `update-email-editor-page-style` —
-nicht je Baustein. Die Bausteine stehen im Startzustand auf `inherit`, greifen die Seitenvorgabe
-also von selbst. Angeboten sind die Systemschriften der Auswahl im Editor, unter **genau den
-Namen, die dort stehen**: `Arial`, `Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`,
-`Times New Roman`, `Trebuchet MS`, `Verdana` sowie die beiden japanischen `ヒラギノ角ゴ Pro W3`
-und `メイリオ`. Du nennst den **Namen**, nicht den Stack — die Ausweichkette schreibt der Server.
-`Helvetica` und `Courier New` werden weiter angenommen; sie standen früher in der Liste.
+**Set the font once on the page**, with `fontFamily` in `update-email-editor-page-style` — not per block. The
+blocks stand at `inherit` in their initial state and pick up the page setting by themselves. On offer
+are the system fonts of the editor's own list, under **exactly the names used there**: `Arial`,
+`Courier`, `Georgia`, `Helvetica Neue`, `Lucida Sans`, `Tahoma`, `Times New Roman`, `Trebuchet MS`,
+`Verdana` plus the two Japanese ones `ヒラギノ角ゴ Pro W3` and `メイリオ`. You give the **name**, not
+the stack — the server writes the fallback chain. `Helvetica` and `Courier New` are still accepted;
+they used to be in the list.
 
-**Eine Webschrift wie Montserrat oder Roboto kannst du nicht setzen**, obwohl der Editor sie
-anbietet: die braucht zusätzlich einen Eintrag in `page.body.webFonts` mit einer Google-Fonts-URL,
-damit der Editor den `<link>` erzeugt. Ohne den fällt sie beim Empfänger still auf eine
-Systemschrift zurück, und niemand sieht es. Deshalb stehen die acht — Bitter, Droid Serif, Lato,
-Montserrat, Open Sans, Roboto, Source Sans Pro, Ubuntu — hier gar nicht zur Wahl, statt als Namen,
-die nichts tun. Wer eine davon will, setzt sie im KlickTipp-Editor.
+**A web font such as Montserrat or Roboto cannot be set** even though the editor offers it: that also
+needs an entry in `page.body.webFonts` with a Google Fonts URL so the editor produces the `<link>`.
+Without it, it silently falls back to a system font at the recipient's end and nobody sees it. That is
+why the eight — Bitter, Droid Serif, Lato, Montserrat, Open Sans, Roboto, Source Sans Pro, Ubuntu —
+are not on offer here at all, rather than as names that do nothing. Whoever wants one sets it in the
+KlickTipp editor.
 
-**Die Ausrichtung der ganzen E-Mail** ist `contentAlign` — `left`, `center` oder `right` — im
-selben Werkzeug, neben `contentWidth`. Sie entscheidet, wo die Nachricht steht, wenn das Fenster
-breiter ist als sie; mit den Ausrichtungen *innerhalb* eines Blocks (`textAlign` in
-`update-email-editor-block-style`) hat sie nichts zu tun. Ein neuer Entwurf startet mit dem
-Standarddokument, nicht mit dem Aussehen eines anderen Newsletters — wer eine Vorlage nachbaut,
-setzt Breite, Ausrichtung und Schrift also selbst.
+**The alignment of the whole email** is `contentAlign` — `left`, `center` or `right` — in the same
+tool, next to `contentWidth`. It decides where the message sits when the window is wider than it is;
+it has nothing to do with the alignments *inside* a block (`textAlign` in
+`update-email-editor-block-style`). A new draft starts from the default document, not from the look of another
+newsletter — so whoever rebuilds a template sets width, alignment and font themselves.
 
-**Einen Rahmen um eine Zeile setzt du auf der Zeile**, mit `borderTop`/`-Right`/`-Bottom`/`-Left`
-in `update-email-editor-row-style` — nicht auf ihren Spalten. Ein Rahmen je Spalte zeichnet eine Box je
-Spalte, mit sichtbaren Nähten dazwischen, statt einer Linie um die ganze Zeile. Dasselbe gilt für
-den Innenabstand: `paddingTop` und Geschwister auf der Zeile halten den Inhalt von der Kante der
-Zeile weg, die Spalten-Variante nur von der Kante der Spalte.
+**Put a border around a row on the row**, with `borderTop`/`-Right`/`-Bottom`/`-Left` in
+`update-email-editor-row-style` — not on its columns. A border per column draws a box per column with visible
+seams between them, instead of one line around the whole row. The same goes for padding: `paddingTop`
+and siblings on the row keep the content away from the row's edge, the column variant only from the
+column's.
 
-Liegt bereits HTML vor — von einer Agentur, aus einem anderen Werkzeug —, ist
-`replace-email-editor-content-from-html` der Weg dafür (siehe „Bestehendes HTML bearbeiten" und die zwingenden
-Regeln in `references/html-authoring.md`). **Schreib aber kein HTML, nur um es dann zu
-importieren.** Die Konvertierung kostet, was `importWarnings` auflistet, und was du gerade gebaut
-hast, ist bereits ein Dokument — die Bausteinwerkzeuge kommen ohne Umweg ans Ziel.
+If HTML already exists — from an agency, from another tool — `replace-email-editor-content-from-html` is the way for it
+(see "Editing existing HTML" and the mandatory rules in `references/html-authoring.md`). **But do not
+write HTML just to import it.** The conversion costs what `importWarnings` lists, and what you have
+just built is already a document — the block tools get there without the detour.
 
-### So generierst du eine
+### How to generate one
 
-1. **Entscheide selbst, ohne Rückfrage** — Reihenfolge der Zeilen, Farben, Bildsprache. Der
-   Auftrag sagt, worum es geht; daraus folgt die Gestaltung. Sag hinterher in einem Satz, was du
-   entschieden hast — das kann der Nutzer korrigieren und hat dann etwas Fertiges vor sich statt
-   einer Frage. **Das gilt für Gestaltung, nicht für Festlegungen über die Zielgruppe**: Betreff,
-   Empfängerkreis, Versandzeitpunkt und die Einstellungen eines Splittests fragst du ab, statt sie
-   zu wählen — und was du am Ende doch selbst gewählt hast, nennst du als deine Wahl und nie als
-   Standardwert.
-2. **Den ganzen Körper in einem Aufruf ablegen** — nach der Routing-Frage oben. Schreibst du das
-   Dokument selbst, ist `references/blocks/` trotzdem die Quelle dafür, was jede Bausteinart an
-   Feldern trägt (`blocks/README.md` ist der Index); die Add-Werkzeuge und das Dokument kennen
-   dieselben Felder. Nur wenn es bausteinweise sein muss: `add-email-editor-row`, dann die Bausteine
-   darin — Überschrift, Absatz, Bild, Button, Liste, Abstand als Grundausstattung.
-3. **Gestaltung setzen, zusammenhängend.** Seite, Zeilen, Blöcke — mit den Style-Werkzeugen aus
-   dem Absatz oben, nicht Block für Block nach Gefühl.
-4. **Die Fußzeile gehört in jede E-Mail**: Abmeldelink und Anbieterkennzeichnung. Wer sie vergisst,
-   bekommt sie spätestens vom `validate-email-editor-content` vorgehalten — besser vorher.
-5. **Bilder besorgen — in dieser Reihenfolge.** Erst `list-email-editor-images`: Logo, Produktfoto,
-   Teambild liegen in der Mediathek des Kontos und in keinem Stockarchiv. Das Werkzeug **listet
-   auf, es sucht nicht** — es gibt eine Seite der Bibliothek heraus, und mit `nextCursor` holst du
-   die nächste. Eine Suchanfrage nimmt es nicht, weil der Speicher Dateinamen kennt und keine
-   Motive: „Auto" hätte nie ein Foto eines Autos gefunden. Lies also eine Seite und wähl daraus.
-   Findet sich dort nichts, `search-email-editor-stock-images` — dieselben freien Archive (Pexels,
-   Pixabay), die auch der Editor anbietet. Eigenes Material kommt über `open-email-editor-image-upload` herein.
+1. **Decide yourself, without asking** — order of rows, colours, imagery. The brief says what it is
+   about; the styling follows from that. Say afterwards in one sentence what you decided — the user
+   can correct that and then has something finished in front of them instead of a question. **This
+   applies to styling, not to decisions about the audience**: subject, recipients, send time and a
+   split test's settings you ask for rather than choose — and whatever you did choose yourself, you
+   name as your choice and never as a default.
+2. **Store the whole body in one call** — after the routing question above. If you write the document
+   yourself, `references/blocks.md` is still the source for what fields each block kind carries; the
+   add tools and the document know the same fields. Only if it
+   has to be block by block: `add-email-editor-row`, then the blocks inside it — heading, paragraph, image,
+   button, list, spacer as the basic kit.
+3. **Set the styling, coherently.** Page, rows, blocks — with the style tools from the paragraph
+   above, not block by block by feel.
+4. **The footer belongs in every email**: unsubscribe link and provider identification. Whoever
+   forgets it gets it held up by `validate-email-editor-content` at the latest — better beforehand.
+5. **Getting images — in this order.** First `list-email-editor-images`: logo, product photo, team picture
+   are in the account's media library and in no stock archive. The tool **lists, it does not search**
+   — it hands out a page of the library, and `nextCursor` fetches the next. It takes no query,
+   because the store knows file names and not subjects: "car" would never have found a photo of a
+   car. So read a page and choose from it. If nothing is there, `search-email-editor-stock-images` — the same
+   free archives (Pexels, Pixabay) the editor offers. Your own material comes in through
+   `open-email-editor-image-upload`.
 
-   **Eine Stock-URL darf nicht in den Newsletter.** Gib `sourceUrl` und `fileName` des gewählten
-   Fotos an `upload-email-editor-image-from-url` und nimm die URL, die zurückkommt. Eine fremde URL lässt jedes
-   Postfach einen Dritten kontaktieren und bricht an dem Tag, an dem das Foto dort verschwindet.
+   **A stock URL must not go into the newsletter.** Pass `sourceUrl` and `fileName` of the chosen
+   photo to `upload-email-editor-image-from-url` and use the URL that comes back. A foreign URL makes every
+   mailbox contact a third party and breaks on the day the photo disappears there.
 
-   Zwei Dinge, die dich sonst blamieren: Die Stock-Suche kommt **nie leer zurück** — zu einer
-   Anfrage ohne Treffer liefert sie unverwandte Fotos. Schau an, was gekommen ist, und sag, was es
-   zeigt, statt es als Fund zu präsentieren. Und **lass den Nutzer wählen**: die Lizenz verlangt
-   keine Namensnennung, schränkt aber erkennbare Personen ein — das ist seine Entscheidung.
-6. **`validate-email-editor-content`**, bevor veröffentlicht wird — und die Befunde weitergeben, statt still
-   zu reparieren.
+   Two things that will otherwise embarrass you: the stock search **never comes back empty** — for a
+   query without matches it returns unrelated photos. Look at what came back and say what it shows,
+   instead of presenting it as a find. And **let the user choose**: the licence requires no
+   attribution but restricts recognisable people — that is their decision.
+6. **`validate-email-editor-content`** before publishing — and pass the findings on instead of fixing silently.
 
-**Wo trotzdem gefragt wird**, weil es nicht Gestaltung ist: bevor ein Import bestehenden Inhalt
-ersetzt, bevor ein Baustein entfernt wird, und bei der Wahl eines Stockfotos — dessen Lizenz
-schränkt erkennbare Personen ein, und das ist die Entscheidung des Nutzers. Gestaltung entscheidest
-du, Verluste und Rechte entscheidet er.
+**Where you do ask**, because it is not styling: before an import replaces existing content, before a
+block is removed, and when choosing a stock photo — its licence restricts recognisable people, and
+that is the user's decision. You decide styling, they decide losses and rights.

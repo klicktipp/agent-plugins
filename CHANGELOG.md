@@ -30,8 +30,19 @@ nothing in the production plugin leaves no entry of its own.
   of an automation email, and the SMS readiness check stay in KlickTipp. The skill says so where a
   step would need one of them; a refused SMS test that names `check-sms-readiness` is read with
   `get-automation-sms` instead.
+- **`email`, `newsletter` and `splittest` follow the staging plugin and are now in English.** They
+  take over the staging counter-test of 2026-10-07: `newsletter` keeps draft, preview, published
+  content, test and dispatch apart up to the dispatch preparation and no longer asks for an
+  inactive-contact exclusion on its own; `email` tells the draft from the published content, shows
+  a template's own preview unchanged, judges a design by its full height before recommending it,
+  and revises an overloaded template as one controlled document replacement
+  (`references/template-revision.md`); `splittest` asks for test share, duration and winning
+  criterion before creating one, keeps confirmed values, and describes the variant test send
+  through `send-newsletter-test` with `messageId`, which no longer refuses a split test. The block
+  references of `email` are one file again, `references/blocks.md`. Tools the production server
+  does not serve are left out of the production texts.
 - Whoever copied the skill folders by hand (opencode, OpenClaw) or uploaded them (Langdock) adds
-  the new `automation` folder.
+  the new `automation` folder and replaces `email`, `newsletter` and `splittest`.
 
 ## 0.24.0 — 2026-10-06
 

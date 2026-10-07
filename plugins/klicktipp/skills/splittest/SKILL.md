@@ -1,216 +1,144 @@
 ---
 name: splittest
-description: A/B-Tests eines KlickTipp-Newsletters — anlegen, Varianten hinzufügen, kopieren, entfernen, Betreffzeile je Variante. Nutze ihn bei Splittest, Variante, Gewinner oder „zwei Betreffzeilen testen", und wenn ein Werkzeug `split_test_not_supported` meldet. Der Lebenszyklus ist `newsletter`.
+description: A/B tests of a KlickTipp newsletter — create, add, copy and remove variants, subject line per variant. Use it for split test, variant, winner or "test two subject lines", and when a tool reports `split_test_not_supported`. The lifecycle is `newsletter`.
 ---
 
-# KlickTipp Splittests
+# KlickTipp split tests
 
-Ein Splittest verschickt mehrere Fassungen derselben Aussendung an einen Teil der Zielgruppe,
-misst eine Weile, und schickt dann die erfolgreichere an den Rest.
+Several versions of the same send go to part of the audience, get measured, and the better one goes
+to the rest.
 
-## Die eine Sache, die alles andere erklärt
+Choose the intended connector and account before account-specific reads or writes; confirm them
+from a tool response or account URL. Load the live contract for the next needed tool and reuse it.
+Do not treat a staging label, an authorization error or a skill load as proof of account or version.
 
-**Ein Splittest-Newsletter hat keine einzelne E-Mail.** Jede Testvariante *ist* eine eigene E-Mail.
+## The sentence everything follows from
 
-Daraus folgt fast jede Besonderheit unten. `emailId` und `contentUrl` sind `null`.
-`update-newsletter-draft` weist einen Betreff ab — er hätte keine Variante, zu der er gehört.
-Jede Variante wird über ihre eigene `editorUrl` angesprochen, die `get-newsletter` in
-`splitTestVariants` zurückgibt.
+**A split-test newsletter has no single email** — each variant *is* one.
 
-Wenn ein Werkzeug mit `split_test_not_supported` antwortet, ist das **kein Fehler**: es sagt, dass
-die Anfrage an den Newsletter ging, wo sie an eine Variante gehört hätte. Die Antwort enthält eine
-`appUrl` für den Fall, dass etwas nur in der App geht.
+Therefore: `emailId`, `contentUrl` and `metadata.subject` are `null`.
+`update-newsletter-draft` rejects a subject. Each variant is addressed through its own
+`editorUrl` from `splitTestVariants`. `deliveryConfiguration` is rejected without an `editorUrl`.
 
-## Anlegen — und warum nur dort
+**`split_test_not_supported` is not an error** — it means "the request went to the newsletter but
+belongs to a variant". The response carries an `appUrl`.
 
-`create-newsletter-draft` nimmt ein `splitTest`-Objekt:
+## Creating
 
-| Feld | Bedeutung |
+Only `create-newsletter-draft` with a `splitTest` object. **All three fields are required and
+none has a default:**
+
+| field | |
+|---|---|
+| `testSizePercent` | 2–98. Share of the audience receiving a test variant. The app's slider starts at 20. |
+| `testDurationHours` | 1–27777. |
+| `winnerBy` | `opens` · `clicks` · `conversions` · `revenue` |
+
+**Obtain all three before creating.** Ask for the missing values together: what share of real
+recipients gets a test version, how long the wait is, and how the winner is chosen. Keep values
+already supplied or confirmed across turns; do not ask for them again. Even a "just do it" request
+needs these three decisions before creation. Never silently substitute the app's initial slider value
+or call a suggestion a default.
+
+**How to ask:** Prefer the client's native selection UI when it is actually available in this chat.
+Offer short, understandable options for winner criterion and examples for test share and duration;
+let the user enter a different valid value. A skipped question leaves that value missing, so ask
+again before creation. If the client has no native selection UI or it fails to render, ask the
+missing values in one clear text message with numbered choices. Do not describe plain text as
+clickable. In either form, use everyday wording in user-facing questions (for example, “Öffnungen”
+rather than `winnerBy: opens`); keep parameter keys and tool names for internal use unless the user
+asks for them. A skill can request this interaction but cannot guarantee how every Claude client
+renders it.
+
+**Two gates apply first:**
+
+- Split tests are **premium** — without `klicktipp premium` the refusal comes before anything is
+  created.
+- `conversions` and `revenue` need the **conversion pixel**; without it they are rejected. `opens`
+  and `clicks` always work. Do not offer a criterion the account cannot measure.
+
+**The decision is made at creation and never after, in both directions.** An ordinary newsletter
+never becomes one, a split test never stops being one. Anyone wanting it later creates a new one —
+say so early if the newsletter already exists.
+
+**Afterwards exactly one variant exists** (with the subject from `create-newsletter-draft`). A test needs at
+least two; the response says `needsMoreVariants: true`.
+
+For a tiny audience, explain that the split can be checked technically but cannot provide a
+meaningful comparison of open or click rates. Percentages describe the requested configuration;
+do not claim a recipient distribution until the server has produced one, including its rounding.
+
+When reusing another email, read its body with `get-email-editor-content` before describing its
+wording or promising the variants will match. Newsletter metadata and subject are not the body.
+If the source has not been read, say that content copying is planned but its text and fidelity are
+not yet verified.
+
+## Variants
+
+The tools take **`campaignId`**, not the newsletter ID.
+
+| What | With |
 | --- | --- |
-| `testSizePercent` | 2–98. Anteil der Zielgruppe, der die Testvarianten bekommt. Der Schieberegler in der App deckt genau diese Spanne ab und steht anfangs auf 20. |
-| `testDurationHours` | 1–27777 Stunden. Die App bietet dieselbe Spanne als Stunden, Tage oder Monate an. |
-| `winnerBy` | `opens` (höchste Öffnungsrate), `clicks` (meiste eindeutige Klicks), `conversions` (meiste eindeutige Conversions), `revenue` (höchster Umsatz). |
+| Inspect the test (settings, variants, `hasStarted`) | `get-newsletter-split-test` |
+| From a variant back to the test | `get-newsletter-split-test` with `emailId` |
+| Change size, duration, criterion | `configure-newsletter-split-test` |
+| Add a variant (empty or as a copy) | `add-newsletter-split-test-variant` |
+| Subject, pre-header, name | `update-newsletter-split-test-variant` |
+| Remove a variant | `remove-newsletter-split-test-variant` |
+| Content of a variant | skill `email` through its `editorUrl` |
 
-**Alle drei sind Pflicht, und KlickTipp hat für keines davon einen Standardwert.** Was der Nutzer
-nicht genannt hat, entscheidest *du* — und diese drei Werte entscheiden, welcher Anteil echter
-Empfänger eine Testversion bekommt, wie lange gewartet wird und woran der Gewinner festgemacht wird.
-Das ist keine Gestaltungsfrage, bei der du vorangehen sollst, sondern eine Festlegung über die
-Zielgruppe.
+Every response contains the **whole** test — adding and removing redistribute the shares.
 
-**Frag die drei in *einer* Frage ab, bevor du anlegst.** Nur wenn der Nutzer nicht antworten will
-oder „mach einfach" sagt, wählst du selbst — und nennst deine Wahl dann als *deine* Wahl.
-**Nenne eigene Werte nie „Standardwerte".** Genau das ist passiert: ein Test wurde mit 20 %, 24
-Stunden und Öffnungsrate angelegt und die drei als Standard gemeldet, obwohl niemand sie gesetzt
-hatte. Nachträglich änderbar sind sie über `configure-newsletter-split-test` — aber nur, solange der Test
-nicht gestartet ist, und der Nutzer muss wissen, dass er etwas zu ändern hat.
+- **`copyFromEmailId` is almost always right.** An empty variant against a finished email only
+  measures that people prefer emails with content. Create empty only when the variants are genuinely
+  independent.
+- **`copyFromEmailId` is the `emailId` of a variant of *this* test**, not of the template
+  newsletter. Otherwise: "Email … is not a test variant of campaign …". The right IDs come from
+  `get-newsletter-split-test`.
+- **Write the content in one go**, not block by block: a block inserted individually takes its look
+  from the **first block of the same kind in the column**, not from its neighbour — ten paragraphs
+  all get the same padding, the template's rhythm is gone, and dividers and sub-headings never
+  appear at all. Fill the body in a single call the way the skill `email` describes under "Filling a
+  body": from a sibling variant with `replace-email-editor-content-from-email`, from an editor document with
+  `replace-email-editor-content-from-document`, and only from HTML with `replace-email-editor-content-from-html`. Then adjust
+  individual spots with `update-email-editor-text`. With split tests this shows twice over: every later run
+  of block calls makes the variants differ in something the test never meant to measure.
+- **One test tests one thing.** Variants differing in subject *and* content *and* timing produce a
+  number without a cause. Say so and let the user decide. The common case: copy, then
+  `update-newsletter-split-test-variant` with a new `subject`.
 
-Ein Anhaltspunkt, falls du wählen musst: der Schieberegler der App steht anfangs auf 20 %. Für Dauer
-und Kriterium gibt es keine Entsprechung — die stellt in der App immer ein Mensch ein.
+**`configure-newsletter-split-test`** writes only `testSizePercent`, `testDurationHours`, `winnerBy`;
+omitted values stay, a call without a change is rejected. Only while the test has not started.
 
-### Zwei Berechtigungen, die vorher greifen
+**Two locks:** a **started** test no longer lets its variants be changed, and the **last** variant
+cannot be removed. `remove-newsletter-split-test-variant` deletes the email **with its content**, no undo — show label and
+subject from `splitTestVariants` first.
 
-**Splittests sind ein Premium-Feature.** Ein Konto ohne `klicktipp premium` bekommt eine Absage,
-bevor irgendetwas angelegt wird — dann bleibt nur der normale Newsletter.
+## Reading
 
-**`conversions` und `revenue` brauchen zusätzlich den Conversion-Pixel.** Beide werden darüber
-gemessen; ohne ihn lässt die App sie gar nicht erst im Dropdown erscheinen, und die Werkzeuge
-weisen sie ab. `opens` und `clicks` stehen immer zur Verfügung.
+**Every variant brings its own `contentRevision`.** So do **not** read them individually before
+writing — `get-newsletter` / `get-newsletter-split-test` deliver `editorUrl` and token together.
+That saves one call per variant (15–30 s). Read a variant only when you need its **content**.
 
-Frag also nicht nach einem Kriterium, das das Konto nicht messen kann — und wenn eine Absage kommt,
-ist das keine Fehlfunktion, sondern die Ausstattung des Kontos.
+- **`get-newsletter-split-test`** — settings, `hasStarted`, all variants, `needsMoreVariants`. Takes
+  `campaignId` **or** the `emailId` of a variant (the way back from an editor URL). The four write
+  tools return the same response.
+- **`get-newsletter`** — `splitTestVariants` with `emailId`, `label` ("A", "B"), `name`,
+  `subject`, `editorUrl`. The test settings are not there.
 
-Alle drei lassen sich später mit `configure-newsletter-split-test` ändern, solange der Test nicht
-gestartet ist.
+## What does not work here
 
-**Diese Entscheidung fällt beim Anlegen und nie danach — in beide Richtungen.** Der Test ist ein
-eigenes Objekt, an das die Kampagne bei der Erzeugung gebunden wird. Ein normaler Newsletter wird
-keiner mehr, und ein Splittest hört nicht auf, einer zu sein. Wer es nachträglich will, legt neu an.
+Turning an existing newsletter into a split test and changing a started test are unavailable. For
+delivery configuration, activation and winner handling, inspect the current tool contracts and
+state the supported path; use the `appUrl` where the available tools do not support the operation.
+Do not claim that every split-test action is limited to the interface.
 
-Frag also **vorher**, wenn jemand „zwei Betreffzeilen ausprobieren" sagt und noch kein Newsletter
-existiert. Ist er schon da, ist das die schlechte Nachricht, die früh gehört werden will.
+The observed `send-newsletter-test` contract describes `messageId` to select a split-test variant by
+its `emailId`; this path was not exercised in the read-only retest. A test still needs that variant's
+published content, an explicitly named recipient and disclosure of the real-mail/contact-tagging
+effect. Never call it during a read-only plan.
+Check the live contract before any action, because a skill cannot guarantee what a deployment offers.
 
-Alle drei Felder gehören zusammen; fehlt eins, wird abgewiesen, bevor irgendetwas entsteht.
+## References
 
-### Was danach da ist
-
-**Genau eine Variante** — die mit dem Betreff aus dem `create-newsletter-draft`. Ein Test braucht mindestens zwei,
-und bis dahin lässt sich nichts verschicken. Die Antwort sagt das selbst: `needsMoreVariants: true`.
-
-## Die Varianten
-
-Die Varianten-Werkzeuge sprechen **die Kampagne** an, nicht den Newsletter: sie nehmen `campaignId`, und
-woraufhin die ID auflöst, entscheidet über den Typ. Es gibt bewusst keinen zweiten Parameter, der
-die Kampagnenart nennt — das wären zwei Angaben, die sich widersprechen können.
-
-| Was | Womit |
-| --- | --- |
-| Den Test ansehen: Einstellungen, Varianten, ob er läuft | `get-newsletter-split-test` |
-| Von einer Variante zurück zum Test finden | `get-newsletter-split-test` mit `emailId` |
-| Was der Test ergeben hat, ob er entschieden ist | `get-newsletter-split-test-statistics` |
-| Testgröße, Zeitraum, Gewinner-Kriterium ändern | `configure-newsletter-split-test` |
-| Variante hinzufügen (leer oder als Kopie) | `add-newsletter-split-test-variant` |
-| Betreff, Pre-Header, Name einer Variante | `update-newsletter-split-test-variant` |
-| Variante entfernen | `remove-newsletter-split-test-variant` |
-| Inhalt einer Variante | Skill `email`, über die `editorUrl` dieser Variante |
-
-Jede dieser Antworten enthält den **ganzen** Test, nicht nur die berührte Variante: Hinzufügen und
-Entfernen verteilen die Anteile neu, eine Antwort über eine einzelne Variante wäre für die anderen
-schon überholt.
-
-### Kopieren, nicht leer anlegen
-
-`copyFromEmailId` ist fast immer richtig. Eine kopierte Variante bringt den Inhalt des Originals mit,
-und dann wird genau die eine Sache geändert, um die es geht.
-
-**Eine leere Variante gegen eine fertige E-Mail misst nichts** — der Unterschied wäre der gesamte
-Inhalt, und das Ergebnis sagt nur, dass Menschen lieber eine E-Mail mit Inhalt lesen. Leer anlegen
-ergibt Sinn, wenn die Varianten wirklich unabhängig entstehen sollen.
-
-**`copyFromEmailId` ist die `emailId` einer Variante *dieses* Tests** — aus `splitTestVariants`, nicht
-die ID des Newsletters, der als Vorlage gedient hat. Ein fremder Newsletter wird abgewiesen mit
-„Email … is not a test variant of campaign …". Das ist kein Fehler des Werkzeugs, sondern die falsche
-Zahl: `get-newsletter-split-test` (oder `get-newsletter`) nennt die richtigen.
-
-### Den Inhalt einer Variante in einem Zug schreiben
-
-Eine Variante ist eine E-Mail, und sein Körper entsteht über den Skill `email` mit der `editorUrl` dieser
-Variante. **Dafür `replace-email-editor-content-from-html` nehmen, nicht Baustein für Baustein.**
-
-Der Grund ist nicht Geschwindigkeit, sondern das Ergebnis: Ein Block, der einzeln hinzugefügt wird,
-übernimmt sein Aussehen vom **ersten Block gleicher Art in der Spalte** — nicht vom Nachbarn über
-der Einfügestelle. Zehn Absätze nacheinander eingefügt bekommen deshalb alle dasselbe Padding, und
-der Rhythmus des Entwurfs, dessen Abstände sich von Abschnitt zu Abschnitt unterscheiden, ist weg.
-Trenner und Zwischenüberschriften, die eine Vorlage zwischen ihren Textblöcken hat, entstehen dabei
-ohnehin nicht.
-
-`replace-email-editor-content-from-html` baut das Dokument in einem Aufruf und in einer Revision. Danach einzelne
-Stellen mit `update-email-editor-text` ändern — das schreibt in vorhandene Blöcke und rührt die Gestaltung
-nicht an. Die `*-add`-Werkzeuge sind für einen einzelnen zusätzlichen Block gedacht, nicht dafür,
-eine E-Mail zusammenzusetzen.
-
-Das gilt für jede E-Mail, fällt bei Splittests aber besonders auf: Variante A wird importiert, Variante B
-kopiert, und jede nachträgliche Baustein-Reihe macht die beiden Varianten in etwas unterschiedlich, das
-der Test nicht messen wollte.
-
-### Ein Test testet eine Sache
-
-Das ist keine Regel des Werkzeugs, sondern der Grund, warum man testet. Zwei Varianten, die sich in
-Betreff *und* Inhalt *und* Absendezeit unterscheiden, liefern eine Zahl, aus der niemand ableiten
-kann, was sie verursacht hat. Wenn jemand mehrere Änderungen auf einmal will, sag es — und lass
-ihn entscheiden.
-
-Der häufigste Fall ist der Betreff, und dafür reicht: kopieren, dann
-`update-newsletter-split-test-variant` mit dem neuen `subject`.
-
-### Einstellungen nachträglich ändern
-
-`configure-newsletter-split-test` schreibt genau die drei Felder, die der Dialog in KlickTipp zeigt:
-`testSizePercent`, `testDurationHours`, `winnerBy`. Weggelassenes bleibt, wie es ist; ein Aufruf
-ohne eine einzige Änderung wird abgewiesen.
-
-Was sich hier **nicht** ändern lässt, ist, ob die Kampagne überhaupt ein Splittest ist — das steht
-beim Anlegen fest.
-
-### Zwei Sperren
-
-Ein **gestarteter** Test lässt seine Varianten nicht mehr ändern — sie beschreiben, was schon verschickt
-wurde. Und der **letzte** Variante lässt sich nicht entfernen.
-
-`remove-newsletter-split-test-variant` löscht die E-Mail dieser Variante **mit ihrem Inhalt**, und diese Werkzeuge machen das
-nicht rückgängig. Zeig vorher, welche Variante gemeint ist: Label und Betreff stehen in
-`splitTestVariants`.
-
-## Lesen
-
-**Jede Variante bringt ihre `contentRevision` mit.** Du musst sie also **nicht** einzeln lesen, bevor
-du in sie schreibst: `get-newsletter` beziehungsweise `get-newsletter-split-test` liefert neben
-`editorUrl` gleich den Token, an den jeder Schreibvorgang gebunden ist. Das spart pro Variante einen
-Aufruf — und ein Aufruf kostet 15–30 Sekunden, fast alles davon Denkzeit des Modells. Lies eine
-Variante nur, wenn du ihren **Inhalt** brauchst (Bausteine ändern, uuids holen); zum Befüllen einer
-frisch angelegten Variante brauchst du ihn nicht.
-
-**`get-newsletter-split-test` zeigt den Test als Ganzes** und schreibt nichts: `testSizePercent`,
-`testDurationHours`, `winnerBy`, `hasStarted`, dazu jede Variante und `needsMoreVariants`. Das ist die
-Antwort auf „wie ist der Test eingestellt" und der Blick, bevor etwas geändert wird. Dieselbe
-Antwort liefern auch die vier Schreibwerkzeuge — wer gerade eines aufgerufen hat, hat sie schon.
-
-Es nimmt `campaignId` **oder** die `emailId` einer Variante, genau eines von beiden. Der zweite Weg ist
-der Rückweg: Wer nur eine E-Mail vor sich hat — die Zahl aus einer Editor-URL — bekommt den Test
-dahinter samt `campaignId` und den `editorUrl` aller Varianten und kann von dort aus weiterarbeiten. Ohne
-ihn führte von einer Variante kein Weg zurück zum Test.
-
-`get-newsletter` liefert `splitTestVariants` — pro Variante `emailId`, `label` (das „A", „B", das
-auch die App zeigt), `name`, `subject` und `editorUrl`. Für die Varianten allein reicht das; die
-Einstellungen des Tests stehen dort nicht.
-
-Für einen Splittest sind `emailId`, `contentUrl` und `metadata.subject` **null**, und
-`deliveryConfiguration` gehört zu einer Variante: sie wird ohne `editorUrl` abgewiesen, statt für eine
-Variante beantwortet zu werden, den niemand gewählt hat.
-
-## Was nicht über diese Werkzeuge geht
-
-- Absender, Antwortadresse und Signatur **pro Variante** — das ist die App.
-- Die Aktivierung eines Splittests. (Der Testversand einer Variante geht, siehe unten.)
-- Den Gewinner vorzeitig küren oder das Kriterium nachträglich ändern. `get-newsletter-split-test-statistics`
-  meldet den Gewinner erst, wenn der Test entschieden ist; vorher gibt es keinen.
-- Einen bestehenden Newsletter in einen Splittest verwandeln, oder umgekehrt.
-
-In all diesen Fällen: sag es klar und verweise auf die `appUrl` aus der Antwort.
-
-**Testversand je Variante geht hier:** `send-newsletter-test` nimmt mit `messageId` die `emailId`
-einer Variante aus `get-newsletter-split-test` und schickt genau diese, mit ihrem Inhalt und Betreff.
-Zielgruppe, Zeitplan und Gewinnerauswahl ändert das nicht. Für jede Variante, die geprüft werden
-soll, ein eigener Aufruf — und wie bei jedem Test vorher sagen, dass die Adresse Kontakt wird.
-
-**Der Abschluss gehört der App**, und das ändert sich auch nicht, wenn diese Werkzeuge überall
-verfügbar sind. `configure-newsletter-delivery` und `prepare-newsletter-dispatch` weisen einen
-Splittest in *jeder* Umgebung ab — nicht weil etwas fehlt, sondern weil keines von ihnen eine Variante
-auswählen kann. Der Weg von hier ist also: anlegen, Varianten bauen, Inhalte schreiben, Varianten
-testen — und für Absender und Freigabe in die Oberfläche wechseln.
-Kündige einen Splittest deshalb nie als „verschicke ich dir" an.
-
-## Die Werkzeuge im Einzelnen
-
-Die vier Variante- und Einstellungs-Werkzeuge mit Wertebereichen und Stolperern stehen in
-[references/tools.md](references/tools.md); ihre veröffentlichten Verträge Wort für Wort, mit jedem
-Parameter, in [references/contracts.md](references/contracts.md).
+What the tool descriptions do not say → [references/tools.md](references/tools.md).

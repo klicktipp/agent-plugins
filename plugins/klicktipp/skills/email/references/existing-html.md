@@ -1,125 +1,112 @@
-# Bestehendes HTML bearbeiten, und HTML für den Import schreiben
+# Editing existing HTML, and writing HTML for the import
 
-Wann du hier landest: dir liegt fertiges E-Mail-HTML vor — aus einer Agentur, einem anderen Werkzeug,
-einer Datei — und es soll geändert oder importiert werden. Für einen Newsletter, der als Dokument
-schon existiert, ist das der falsche Weg; dann führt `replace-email-editor-content-from-email` oder
-`replace-email-editor-content-from-document` verlustfrei ans Ziel.
+You land here when finished email HTML is at hand — from an agency, another tool, a file — and it is
+to be changed or imported. For a newsletter that already exists as a document this is the wrong way;
+`replace-email-editor-content-from-email` or `replace-email-editor-content-from-document` get there without loss.
 
-Liegt bereits E-Mail-HTML vor, ist die Aufgabe eine Inhaltsänderung, kein Redesign. Ändere
-ausschließlich das, was inhaltlich beauftragt wurde. Das übrige Dokument bleibt Zeichen für
-Zeichen identisch.
+When email HTML already exists, the task is a content change, not a redesign. Change only what was
+requested in terms of content. The rest of the document stays identical character for character.
 
-Was Inhalt ist und geändert werden darf:
+What is content and may be changed:
 
-- Texte, Überschriften, Listeneinträge, Tabellenzellen, eine sichtbare Vorschauzeile im Dokument.
-  (Das **Pre-Header-Feld** der E-Mail liegt nicht im Dokument — es wird über
-  `update-newsletter-draft` gesetzt, Feld `preheader`.)
-- Button-Labels und Link-Ziele, `href`, `alt`-Texte, Bild-URLs.
-- KlickTipp-Variablen und Systemlinks.
+- Texts, headings, list items, table cells, a visible preview line inside the document. (The email's
+  **pre-header field** is not in the document — it is set through `update-newsletter-draft`,
+  field `preheader`.)
+- Button labels and link targets, `href`, `alt` texts, image URLs.
+- KlickTipp variables and system links.
 
-Was Design ist und unangetastet bleibt:
+What is design and stays untouched:
 
-- Struktur und Reihenfolge von Zeilen, Spalten und Blöcken; Spaltenanzahl und -breiten.
-- Alle Klassen, inklusive der `block-[n]`-Nummerierung, und alle Attribute wie `width`, `align`,
+- Structure and order of rows, columns and blocks; column count and widths.
+- All classes, including the `block-[n]` numbering, and all attributes such as `width`, `align`,
   `cellpadding`.
-- Inline-Styles, Farben, Schriftarten, Schriftgrößen, Zeilenhöhen, Padding, Abstände, Rahmen.
-- Spacer, Divider, Wrapper-Tabellen — auch scheinbar überflüssige.
+- Inline styles, colours, fonts, font sizes, line heights, padding, spacing, borders.
+- Spacers, dividers, wrapper tables — even apparently superfluous ones.
 
-Zusätzlich gilt beim Bearbeiten:
+While editing, also:
 
-- Kein Aufräumen nebenbei: keine Neuformatierung des Codes, keine Umsortierung von Attributen,
-  keine Vereinheitlichung von Styles, kein Entfernen „unnötiger" Verschachtelung, keine
-  Neunummerierung von Blöcken.
-- Verstößt das vorhandene HTML gegen Regeln dieses Skills, etwa eine `http`-Bild-URL, ein
-  Background-Image oder ein `menu_block`: nicht eigenmächtig umbauen, sondern nach dem Code-Block
-  in einem Satz benennen. Ausnahme sind Fehler, die Import oder Speicherung zwingend brechen —
-  fehlender `DOCTYPE`, fehlendes `<meta charset="UTF-8">`, fehlende Pflicht-Footer-Variablen sowie
-  invalides HTML wie ein nicht geschlossenes oder überkreuztes Tag. Diese korrigieren und die
-  Korrektur benennen.
-- Braucht der neue Inhalt mehr Platz, als das Layout hergibt, wird der Text angepasst, nicht das
-  Layout. Geht das nicht sinnvoll, den Konflikt benennen und nach der gewünschten Layoutänderung
-  fragen.
-- Design nur ändern, wenn es ausdrücklich verlangt ist, zum Beispiel „mach den Button grün",
-  „zwei Spalten statt einer" oder „mehr Abstand über der Überschrift". Dann genau diese Änderung
-  umsetzen und nichts darüber hinaus.
-- Ist unklar, ob eine Anweisung Inhalt oder Design meint, als Inhalt behandeln und die
-  Design-Frage stellen.
+- No tidying up on the side: no reformatting of the code, no reordering of attributes, no
+  harmonising of styles, no removal of "unnecessary" nesting, no renumbering of blocks.
+- If the existing HTML breaks a rule of this skill — an `http` image URL, a background image, a
+  `menu_block` — do not rebuild it on your own authority but name it in one sentence after the code
+  block. The exception is errors that necessarily break the import or storage: a missing `DOCTYPE`, a
+  missing `<meta charset="UTF-8">`, missing mandatory footer variables, and invalid HTML such as an
+  unclosed or crossed tag. Correct those and name the correction.
+- If the new content needs more room than the layout allows, adjust the text, not the layout. If that
+  does not work sensibly, name the conflict and ask for the layout change you should make.
+- Change design only when explicitly asked — "make the button green", "two columns instead of one",
+  "more space above the heading". Then make exactly that change and nothing beyond it.
+- If it is unclear whether an instruction means content or design, treat it as content and ask the
+  design question.
 
-Wenn kein bestehendes HTML vorliegt, gestaltest du frei nach den Regeln unten.
+If no existing HTML is at hand, you design freely by the rules below.
 
-## Inhalt
+## Contents
 
-- Import-HTML schreiben
-- Was der Import tut, meldet und kostet
+- Writing import HTML
+- What the import does, reports and costs
 
-## Import-HTML schreiben
+## Writing import HTML
 
-Sobald du HTML erzeugst, das durch `replace-email-editor-content-from-html` geht — beim Bearbeiten vorhandenen
-E-Mail-HTMLs oder wenn du fremdes HTML importfähig machst —, **lies zuerst `references/html-authoring.md`**.
-Dort stehen die zwingenden Regeln: Grundgerüst, das Zwölfer-Grid, die Blockklassen des Editors,
-was mit CSS und Bildern erlaubt ist, die KlickTipp-Variablen, der Pflicht-Footer, valides HTML und
-der Qualitätscheck vor der Ausgabe.
+As soon as you produce HTML that goes through `replace-email-editor-content-from-html` — editing existing email HTML or
+making foreign HTML importable — **read `references/html-authoring.md` first**. That is where the
+mandatory rules live: the scaffold, the twelve-column grid, the editor's block classes, what is
+permitted in CSS and images, the KlickTipp variables, the mandatory footer, valid HTML, and the
+quality check before output.
 
-Sie sind nicht optional und nicht zusammenfassbar: HTML, das sie verletzt, importiert der Editor
-entweder gar nicht oder als einen Klumpen, der sich nicht mehr bearbeiten lässt. Verlass dich
-nicht darauf, sie zu kennen — sie sind fünf Bildschirmseiten lang, und der Unterschied steckt in
-den Details.
+They are neither optional nor summarisable: HTML that breaks them is either not imported at all or
+imported as a lump that can no longer be edited. Do not rely on knowing them — they are five screens
+long, and the difference is in the details.
 
-Für Änderungen über die Bausteinwerkzeuge gelten sie **nicht**: dort wird nichts konvertiert.
+For changes through the block tools they do **not** apply: nothing is converted there.
 
-## Was der Import tut, meldet und kostet
+## What the import does, reports and costs
 
-**Was `importWarnings` in einer Leseantwort sagt.** Es ist die Kostenliste **eines HTML-Imports** auf
-genau diesen Newsletter — und nur dafür. Sie gilt nicht für das Bearbeiten: dort wird nichts
-konvertiert, also verliert kein Baustein Gestaltung oder Bearbeitbarkeit. Lies sie dem Nutzer vor,
-**bevor** du importierst, nie als Kommentar zu einer Änderung. Leer heißt: eine Konvertierung würde
-hier nichts kosten.
+**What `importWarnings` says in a read response.** It is the cost list **of an HTML import** onto this
+particular newsletter — and only that. It does not apply to editing: nothing is converted there, so no
+block loses styling or editability. Read it out to the user **before** you import, never as a comment
+on a change. Empty means a conversion would cost nothing here.
 
-**Ein Import über bestehenden Inhalt wird beim ersten Aufruf abgewiesen** — mit Absicht. Die
-Antwort zählt auf, wie viele Zeilen und Bausteine der Newsletter hat und welcher Art sie sind, und
-ändert nichts. Erst ein zweiter Aufruf mit `replaceExistingContent: true` konvertiert. Zeig dem
-Nutzer diese Liste und lass ihn entscheiden: ein Import über einen gestalteten Newsletter nimmt
-jeden Baustein, sein Layout und die Identität jedes Blocks mit, und es gibt kein Zurück. Ein leerer
-Entwurf braucht keine Bestätigung.
+**An import over existing content is rejected on the first call** — deliberately. The response counts
+how many rows and blocks the newsletter has and of what kinds, and changes nothing. Only a second
+call with `replaceExistingContent: true` converts. Show the user that list and let them decide: an
+import over a designed newsletter takes every block, its layout and the identity of every block with
+it, and there is no way back. An empty draft needs no confirmation.
 
-**Der Import veröffentlicht nicht.** Er speichert den Entwurf; der Versandinhalt ändert sich erst
-durch `publish-newsletter-email-content`. Die Antwort nennt genau das in `nextAction` — lies es, statt nach
-dem Import „fertig" zu melden.
+**The import does not publish.** It stores the draft; the dispatch content only changes through
+`publish-newsletter-email-content`. The response says exactly that in `nextAction` — read it instead of
+reporting "done" after the import.
 
-**Was ein HTML-Import kostet** (`replace-email-editor-content-from-html`). Ein Import
-nimmt gerendertes HTML und nie das Dokument; je Baustein kommt zurück: Trennlinie als
-gestaltete Linie, Menü als Links, Social-Links und Icons als Bilder mit Links, Tabelle als
-einfaches Markup, Video als Vorschaubild mit Link, eigenes HTML, Karussell, Merge-Inhalt und
-Add-ons (Countdown, Kontaktkarte, Wowing-Video, Signatur) als ihr gerendertes Ergebnis;
-Web-Fonts, Zeilen-Hintergrundbilder und eigene Kopfbereich-Styles fallen weg.
+**What an HTML import costs** (`replace-email-editor-content-from-html`). An import takes rendered HTML and never the
+document; per block it comes back as: a divider as a styled line, a menu as links, social links and
+icons as images with links, a table as plain markup, a video as a preview image with a link, custom
+HTML, carousel, merge content and add-ons (countdown, contact card, wowing video, signature)
+as their rendered result; web fonts, row background images and custom head styles are dropped.
 
-**Nach dem Import sagen die `warnings` des Ergebnisses, was diese eine Konvertierung wirklich
-gekostet hat** — nicht als Vorhersage, sondern gezählt auf beiden Seiten. Immer dabei: das Layout
-ist neu gebaut, Zeilen, Spalten und Abstände sind danach die des Editors, und es stehen
-Abstandhalter darin, die niemand geschickt hat. Dazu je eine Zeile mit Zahlen für Trennlinien,
-Listen, Tabellen, Bilder und Videos, die nicht als eigener Baustein zurückkamen, samt dem Werkzeug
-zum Nachziehen. Eine Tabelle, deren Zellen als `Zelle AZelle B` zusammenlaufen, steht genau dort.
-Gib diese Zeilen weiter; ein „Import hat geklappt" ohne sie ist die Meldung, die den Nutzer den
-Verlust erst im Editor entdecken lässt.
+**After the import the result's `warnings` say what this one conversion actually cost** — not as a
+forecast but counted on both sides. Always included: the layout has been rebuilt, rows, columns and
+spacing are the editor's afterwards, and there are spacers in it nobody sent. Plus one line with
+numbers each for dividers, lists, tables, images and videos that did not come back as their own
+block, together with the tool to restore them. A table whose cells run together as `cell Acell B` is
+exactly there. Pass those lines on; an "import worked" without them is the report that lets the user
+discover the loss in the editor.
 
-**Sag vorher nicht zu, was aus einem HTML wird.** Die Konvertierung macht ein externer Dienst; was
-aus einer Tabelle oder einer Trennlinie wird, entscheidet nicht KlickTipp, und es kann sich ändern,
-ohne dass hier etwas neu ausgeliefert wird. Die Aufzählung weiter oben ist deshalb eine Erwartung,
-kein Vertrag — verbindlich ist immer erst der Bericht **nach** dem Import. Formuliere entsprechend:
-„so etwas überlebt die Konvertierung erfahrungsgemäß nicht" vor dem Aufruf, und die gemessenen
-Zeilen danach.
+**Do not promise beforehand what will become of an HTML.** The conversion is done by an external
+service; what becomes of a table or a divider is not decided by KlickTipp, and it can change without
+anything being shipped here. The list above is therefore an expectation, not a contract — what is
+binding is always the report **after** the import. Phrase it accordingly: "in our experience
+something like that does not survive the conversion" before the call, and the measured lines after.
 
-Der Import lässt **Name, Betreff und Pre-Header unberührt** — er schreibt nur das Dokument. Ein
-`<title>` im importierten HTML landet nirgends, eine versteckte Preheader-Zeile wirft der Konverter
-weg. Name, Betreff und Pre-Header setzt der Skill `newsletter` über seine eigenen Werkzeuge.
+The import leaves **name, subject and pre-header untouched** — it writes only the document. A
+`<title>` in the imported HTML lands nowhere, and a hidden pre-header line is discarded by the
+converter. Name, subject and pre-header are set by the skill `newsletter` through its own tools.
 
-Und Entscheidungen wie KI-Blöcke sind nach einem Import **weg**: sie stehen nicht im HTML, kein
-Vorgehen deinerseits kann sie erhalten — sag das ausdrücklich, bevor du importierst. Im Dokument stehen sie dagegen sehr wohl, und
-ein Bearbeiten lässt sie unangetastet: das ist der Grund, einen gestalteten Newsletter nie über HTML
-zu ändern.
+And decisions as well as AI blocks are **gone** after an import: they are not in the HTML, and no
+approach of yours can preserve them — say so explicitly before you import. In the document they are
+very much there, and editing leaves them untouched: that is the reason never to change a designed
+newsletter through HTML.
 
-**Die Liste ist eine Untergrenze, keine vollständige Aufzählung.** Nicht enthalten, aber
-nachgewiesen: Abstände, Rahmen, Rundungen und Inline-Farben bleiben nicht erhalten, Innenabstände
-verschieben sich mit jedem Durchlauf weiter, und das Layout wird normalisiert — Spaltenzahl,
-zusätzliche Abstandsblöcke und eine geänderte Inhaltsbreite sind vorgekommen. Gib diesen Satz mit
-weiter: eine Liste, die vollständig klingt, ist schlimmer als keine.
+**The list is a lower bound, not a complete enumeration.** Not included but demonstrated: spacing,
+borders, rounding and inline colours are not preserved, padding shifts further with every pass, and
+the layout is normalised — column count, additional spacer blocks and a changed content width have
+all occurred. Pass that sentence on too: a list that sounds complete is worse than none.

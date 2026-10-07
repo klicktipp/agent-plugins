@@ -1,80 +1,75 @@
-# Die Werkzeuge dieses Skills — Wofür, Nicht, Stolperer
+# The tools of this skill — what for, what not, pitfalls
 
-Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters, wie der Server ihn veröffentlicht,
-trägt [contracts.md](contracts.md); hier steht die Deutung.
+**This file does not repeat the tool descriptions.** The MCP server already sends you every
+description and every parameter with its type and limits. What is here is what those cannot say:
+the order between calls, the pitfalls, and what one tool means for another. The procedure is in
+`../SKILL.md`. `R` reads only · `D` deletes
+without undo · `I` a second identical call changes nothing.
 
-Die Werkzeugbeschreibungen, die der Server ausliefert, sind **Verträge, keine Handbücher**. Hier
-steht, woran man sich stößt, wenn man eines einzeln in die Hand nimmt; der Ablauf steht in
-`../SKILL.md`. `R` liest nur · `D` löscht ohne Undo · `I` ein zweiter gleicher Aufruf ändert nichts
-mehr.
+**Released, but only from the next production release onwards.** All five are in the production
+allowlist; until that release is out, production keeps answering "unknown tool" — the state of the
+deployment, not a defect. On staging and locally they are there.
 
-**Auf Production verfügbar** — alle fünf.
+They were **not** released while `create-newsletter-draft` already published its `splitTest`
+argument. That was a dead end: split test yes/no is irreversible in both directions, a fresh test has
+**one** variant and needs two — and the second came from exactly one of these tools. Anyone meeting
+that on an older deployment finds the newsletter only in the app; do not invent a detour.
 
-Sie waren vorher **nicht** freigegeben, während `create-newsletter-draft` sein
-`splitTest`-Argument schon veröffentlichte. Das war eine Sackgasse: Splittest ja/nein ist in beide
-Richtungen unumkehrbar, ein frischer Test hat **eine** Variante und braucht zwei — und der zweite kam
-genau aus einem dieser Werkzeuge. Wer auf einem älteren Stand darauf trifft, findet den Newsletter
-nur noch in der App wieder; erfinde dafür keinen Umweg.
-
-| Werkzeug | | Wofür |
+| Tool | | What for |
 | --- | --- | --- |
-| `get-newsletter-split-test` | R I | Den ganzen Test lesen — über `campaignId` **oder** die `emailId` einer Variante. |
-| `add-newsletter-split-test-variant` | | Testvariante anlegen, leer oder als Kopie (`copyFromEmailId`). |
-| `update-newsletter-split-test-variant` | I | Name, Betreff, Pre-Header **einer Variante** — die einzige Stelle dafür. |
-| `remove-newsletter-split-test-variant` | D | Variante entfernen; ihre E-Mail ist damit weg. |
-| `configure-newsletter-split-test` | I | Testgröße, Zeitraum, Gewinner-Kriterium. Nicht: ob es ein Splittest ist. |
-| `get-newsletter-split-test-statistics` | R I | Was der Test ergeben hat: je Variante Öffnungen, Klicks, Conversions, Umsatz, und ob er entschieden ist. |
+| `get-newsletter-split-test` | R I | Read the whole test — by `campaignId` **or** the `emailId` of a variant. |
+| `add-newsletter-split-test-variant` | | Create a test variant, empty or as a copy (`copyFromEmailId`). |
+| `update-newsletter-split-test-variant` | I | Name, subject, pre-header **of one variant** — the only place for it. |
+| `remove-newsletter-split-test-variant` | D | Remove a variant; its email goes with it. |
+| `configure-newsletter-split-test` | I | Test size, duration, winner criterion. Not: whether it is a split test. |
 
-Der Splittest selbst entsteht bei `create-newsletter-draft` mit `splitTest` (Skill
-`newsletter`); die vier Schreibwerkzeuge nehmen `campaignId`, und die ID entscheidet über die
-Kampagnenart — `get-newsletter-split-test` nimmt wahlweise auch die `emailId` einer Variante. Jedes nimmt
-optional `accountId` (ein Unterkonto).
+`send-newsletter-test` is a separate newsletter tool. The observed live contract describes
+`messageId` with the split-test variant's `emailId` to target one variant; this path was not
+exercised in the read-only retest. Read its current contract before use; it sends a real email to
+the specified address and can create and tag a contact. Do not generalize earlier
+unsupported-tool reports to every deployment.
+
+The split test itself comes into being through `create-newsletter-draft` with `splitTest`
+(skill `newsletter`); the four write tools take `campaignId`, and the ID decides the campaign kind —
+`get-newsletter-split-test` optionally takes the `emailId` of a variant instead. Each takes an optional
+`accountId` (a subaccount).
 
 ### `get-newsletter-split-test`
-**Wofür:** den Test ansehen, ohne ihn anzufassen — `testSizePercent`, `testDurationHours`,
-`winnerBy`, `hasStarted`, dazu jede Variante mit `emailId`, `label`, `name`, `subject` und `editorUrl`,
-sowie `variantCount`, `sharePerVariantPercent` und `needsMoreVariants`.
+**What for:** inspecting the test without touching it — `testSizePercent`, `testDurationHours`,
+`winnerBy`, `hasStarted`, plus every variant with `emailId`, `label`, `name`, `subject` and
+`editorUrl`, as well as `variantCount`, `sharePerVariantPercent` and `needsMoreVariants`.
 
-**Zwei Wege hinein, genau einer pro Aufruf.** `campaignId` ist der Test selbst. `emailId` ist **eine
-Variante** — die Zahl aus der Editor-URL, die jemand gerade offen hat — und die Antwort sagt, zu welchem
-Test er gehört und welche Geschwister er hat. Das ist der Weg von einer E-Mail zurück zum Test und
-damit zu `editorUrl` und `campaignId`, mit denen sich beide bearbeiten lassen. Beide zusammen werden
-abgewiesen: sie können verschiedene Tests meinen, und dieses Werkzeug wählt nicht aus.
+**Two ways in, exactly one per call.** `campaignId` is the test itself. `emailId` is **one variant** —
+the number from the editor URL someone has open — and the response says which test it belongs to and
+what siblings it has. That is the way from an email back to the test and therefore to `editorUrl` and
+`campaignId`, with which both can be edited. Passing both is rejected: they can mean different tests,
+and this tool does not choose.
 
-**Nicht:** die Ergebnisse — die liest `get-newsletter-split-test-statistics`. **Stolperer:** Dieselbe Antwort geben auch die vier
-Schreibwerkzeuge zurück; wer gerade eines aufgerufen hat, braucht diesen Aufruf nicht noch einmal.
-Eine Kampagne, die kein Splittest ist, wird abgewiesen statt mit einem leeren Test beantwortet.
-
-### `get-newsletter-split-test-statistics`
-**Wofür:** was der Test herausgefunden hat — je Variante `label`, `emailId`, `name`, `opened`,
-`clicked`, `converted`, `revenue` und `isWinner`, dazu `winnerBy`, `hasStarted`, `isDecided` und
-`winnerLabel`. Nimmt die `newsletterId` aus `get-newsletter`. **Nicht:** den Gewinner ausrechnen.
-**Stolperer:** Solange `isDecided` `false` ist, ist `winnerLabel` `null` — die Variante, die gerade
-vorn liegt, ist **nicht** der Gewinner, und wer sie so nennt, entscheidet den Test, bevor er etwas
-gesagt hat. Zeig „läuft noch" und die Zahlen ohne Sieger. Eine Kampagne, die kein Splittest ist,
-wird abgewiesen.
+**Not:** the results of a running test — those are in the app, `statisticsUrl` from
+`get-newsletter` leads there. **Pitfall:** the four write tools return the same response;
+whoever just called one does not need this call again. A campaign that is not a split test is
+rejected rather than answered with an empty test.
 
 ### `add-newsletter-split-test-variant`
-**Wofür:** zweiter und weiterer Variante. **Nicht:** die Test-Einstellungen. **Stolperer:** Fast immer
-`copyFromEmailId` (die `emailId` einer Variante aus `splitTestVariants`) — eine Kopie trägt den Inhalt
-des Originals und ist der Weg, *eine* Änderung zu messen; eine leere Variante gegen eine fertige misst
-nichts. Nach dem Start gesperrt.
+**What for:** the second and further variants. **Not:** the test settings. **Pitfall:** almost always
+`copyFromEmailId` (the `emailId` of a variant from `splitTestVariants`) — a copy carries the
+original's content and is the way to measure *one* change; an empty variant against a finished one
+measures nothing. Locked once the test has started.
 
 ### `update-newsletter-split-test-variant`
-**Wofür:** Name, Betreff, Pre-Header (≤ 120 Zeichen; leer entfernt, weggelassen behält) **einer
-Variante**, adressiert per `emailId` aus `splitTestVariants`. **Nicht:** der Körper (Baustein-Werkzeuge
-über die `editorUrl` die Variante, Skill `email`). **Stolperer:** Macht die `contentRevision` dieser
-Variante ungültig. Nach dem Start gesperrt. Ein leerer Betreff wird abgewiesen — und ein Betreff kommt
-vom Menschen, nie erfunden.
+**What for:** name, subject, pre-header (≤ 120 characters; empty removes, omitted keeps) **of one
+variant**, addressed by `emailId` from `splitTestVariants`. **Not:** the body (block tools through
+that variant's `editorUrl`, skill `email`). **Pitfall:** invalidates that variant's
+`contentRevision`. Locked once started. An empty subject is rejected — and a subject comes from a
+human, never invented.
 
 ### `remove-newsletter-split-test-variant`
-**Wofür:** Variante entfernen. **Stolperer:** Die E-Mail die Variante ist damit weg, ohne Undo. Die letzte Variante
-bleibt. Nach dem Start gesperrt. Vorher zeigen, welche Variante gemeint ist — Label und Betreff.
+**What for:** removing a variant. **Pitfall:** that variant's email goes with it, without undo. The
+last variant stays. Locked once started. Show which variant is meant first — label and subject.
 
 ### `configure-newsletter-split-test`
-**Wofür:** `testSizePercent` (2–98, der Anteil der Zielgruppe für die Varianten; der Rest bekommt den
-Gewinner), `testDurationHours` (1–27777; die App bietet dieselbe Spanne als Stunden, Tage oder
-Monate), `winnerBy` (`opens` = höchste Öffnungsrate, `clicks` = meiste eindeutige Klicks,
-`conversions`, `revenue`). Weggelassen heißt behalten. **Nicht:** ob es ein Splittest ist.
-**Stolperer:** `conversions`/`revenue` nur mit Conversion-Pixel, sonst abgewiesen. Nach dem Start
-gesperrt.
+**What for:** `testSizePercent` (2–98, the share of the audience going to the variants; the rest gets
+the winner), `testDurationHours` (1–27777; the app offers the same range as hours, days or months),
+`winnerBy` (`opens` = highest open rate, `clicks` = most unique clicks, `conversions`, `revenue`).
+Omitted means keep. **Not:** whether it is a split test. **Pitfall:** `conversions`/`revenue` only
+with the conversion pixel, otherwise rejected. Locked once started.

@@ -1,41 +1,32 @@
-# Gestaltung
+# Styling
 
-Wann du hier landest: Farben, Abstände, Rahmen, Breiten, Ausrichtung oder Schrift sollen sich ändern.
-Für eine reine Textänderung brauchst du diese Datei nicht — dafür reicht `update-email-editor-text`, das die
-Gestaltung nicht anfasst.
+You land here when colours, spacing, borders, widths, alignment or type need to change. For a pure
+text change you do not need this file — `update-email-editor-text` handles that and leaves the styling
+alone.
 
-**Gestaltung geht inzwischen — in benannten Werten, nie in CSS.** Vier Ebenen für alles, was jeder
-Baustein hat (Seite, Zeile, Spalte, Baustein), und vier Werkzeuge für das, was **nur eine Art** hat:
-die Höhe eines Abstands, Linie und Breite einer Trennlinie, das Aussehen eines Buttons und die
-Typografie der Textbausteine. Ein artgebundenes Werkzeug auf einer anderen Art wird abgelehnt — eine Überschrift hat keine Höhe.
-Zusammen setzen sie Farben, Innenabstände, Rahmen, Ausrichtung, Breiten, Eckenradien und die
-Sichtbarkeit je Gerät. Eine Farbe ist
-`#RRGGBB`, `#RGB` oder `transparent`, ein Abstand eine ganze Pixelzahl 0–400, eine Breite 320–1440,
-ein Rahmen `1px solid #000000`. Eine CSS-Deklaration wird abgelehnt — sie könnte
-`background-image: url(...)` in die E-Mail tragen. Jedes Werkzeug schreibt nur, was du benennst;
-alles andere bleibt. Style-Schreibungen sind **absolut**: „mach den Hintergrund weiß" braucht keine
-Lesung, „acht Pixel mehr Abstand" schon — dafür ist `styleOutline` da.
+**Styling works, in named values, never in CSS.** Four levels for everything every block has (page,
+row, column, block), and three tools for what **only one kind** has: the height of a spacer, the
+line and width of a divider, the look of a button. A kind-bound tool on another kind is rejected — a
+heading has no height. Together they set colours, padding, borders, alignment, widths, corner radii
+and per-device visibility. A colour is `#RRGGBB`, `#RGB` or `transparent`, a spacing an integer
+number of pixels 0–400, a width 320–1440, a border `1px solid #000000`. A CSS declaration is
+rejected — it could carry `background-image: url(...)` into the email. Every tool writes only what
+you name; everything else stays. Style writes are **absolute**: "make the background white" needs no
+read, "eight pixels more padding" does — that is what `styleOutline` is for.
 
-**Im `styleOutline` trägt ein Baustein zwei Karten.** `style` sind Außenabstand und Ausrichtung, die
-jeder Baustein hat; `kindStyle` ist das, was nur diese Art hat — die Höhe eines Abstandhalters, die
-Linie einer Trennlinie, der ganze Look eines Buttons. Getrennt, weil beide ein `paddingTop` führen
-und das nicht derselbe Abstand ist: einmal um den Button herum, einmal darin. `kindStyle` ist `null`
-bei jeder Art ohne eigenes Stil-Werkzeug. Eine leere Karte heißt „hier ist nichts gesetzt", nicht
-„hier geht nichts": der Editor legt seine Voreinstellungen erst beim Rendern an, nicht ins Dokument.
+**In `styleOutline` a block carries two cards.** `style` is the outer spacing and alignment every
+block has; `kindStyle` is what only this kind has — a spacer's height, a divider's line, a button's
+whole look. Kept apart because both carry a `paddingTop` and it is not the same spacing: once around
+the button, once inside it. `kindStyle` is `null` for every kind without its own style tool. An
+empty card means "nothing is set here", not "nothing works here": the editor applies its defaults at
+render time, not into the document.
 
-Was weiterhin **nicht** geht, sagst du offen, statt es zu umgehen: die Spaltenbreiten
-einer bestehenden Zeile (die Spalten einer Zeile sind gleich breit; eine schiefe Teilung entsteht im
-Editor), eine Zeile entfernen, und die **Breite eines Bildes oder Videos** — die steckt im Dokument
-in zwei gekoppelten Werten plus einem Klassen-Token, und eines davon allein zu setzen bringt Editor
-und Darstellung auseinander; dafür ist der Editor der Weg.
+State plainly what still does **not** work, rather than working around it: the column widths of an
+existing row (a row's columns are equally wide; an uneven split comes from the editor), removing a
+row, and the **width of an image or video** — that sits in the document as two coupled values plus a
+class token, and setting one of them alone pulls editor and rendering apart; the editor is the way
+there. The typography of a text block does not belong here either: it sits in that block's own
+markup, so in `update-email-editor-text` — offering it in two places would mean two answers to one question.
 
-**Die Typografie der Textbausteine** — Überschrift, Absatz, Text, Liste — schreibt
-`update-email-editor-text-style`: Farbe, Linkfarbe, Schrift, Größe, Stärke, Laufweite, Zeilenhöhe
-und eine eigene Größe fürs Telefon, beim Absatz dazu der Abstand zwischen Absätzen, bei der Liste
-Aufzählungszeichen und Eintragsabstand. Gespeichert wird dort, von wo die E-Mail rendert; eine
-`line-height` im Markup wird verworfen. Der ältere Textbaustein nimmt weder Größe noch Stärke, die
-stecken bei ihm im Markup. Die Wörter bleiben bei `update-email-editor-text`.
-
-**Welches Feld welche Bausteinart hat, welches Werkzeug es schreibt und worauf bei ihr zu achten
-ist, steht je Baustein in `references/blocks/` — eine Datei je Art.** Lies die eine, um die es
-geht, statt alle. Der Index ist `references/blocks/README.md`.
+**Which field a block kind has, which tool writes it and what to watch out for is in
+`references/blocks.md`, one row per kind.**

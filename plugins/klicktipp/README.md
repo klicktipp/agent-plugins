@@ -275,7 +275,8 @@ not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
 no layout.
 
 Each skill carries a `references/` folder with the tools it uses, their answer
-shapes and their pitfalls. All of them are in German, like the editor itself.
+shapes and their pitfalls. `email`, `newsletter` and `splittest` are in English; the others are
+in German, like the editor itself.
 
 **What the skills describe is what the server serves.** A tool that is not in
 them does not exist here, and neither does the capability behind it: there is,

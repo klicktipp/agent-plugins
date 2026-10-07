@@ -1,100 +1,106 @@
-# Dynamischer Inhalt: eine Zeile nur für einen Teil der Empfänger
+# Dynamic content: a row for part of the recipients only
 
-Im Editor heißt es *Dynamischer Inhalt → Anzeigebedingung*, in den Werkzeugen **Entscheidung**
-(`decision`). Eine Zeile, die daran gebunden ist, erscheint nur bei den Kontakten, die die Bedingung
-erfüllt — bei allen anderen fällt sie beim Versand ersatzlos heraus.
+In the editor it is called *Dynamic content → Display condition*, in the tools a **decision**
+(`decision`). A row bound to one appears only for the contacts that satisfy the condition — for
+everyone else it drops out of the dispatch entirely.
 
-**Das Wichtigste zuerst, weil es der Fehler ist, den niemand sieht:** Eine Bedingung, die auf
-niemanden zutrifft, ist kein Fehler. Der Newsletter wird verschickt, nichts wird gemeldet, und die
-Zeile fehlt bei *allen*. Genau so ist ein Test-Tag aus einer alten Sitzung auf der Hauptzeile eines
-Entwurfs liegen geblieben und hätte die Kernbotschaft unsichtbar gemacht. Prüfe deshalb vor dem
-Versand mit `list-email-editor-display-conditions`, welche Zeilen gebunden sind — und ob die Bedingung überhaupt
-jemanden trifft.
+**The most important thing first, because it is the error nobody sees:** a condition that matches
+nobody is not an error. The newsletter goes out, nothing is reported, and the row is missing for
+*everyone*. That is exactly how a test tag from an old session stayed on the main row of a draft and
+would have made the core message invisible. So before sending, check with `list-email-editor-display-conditions` which
+rows are bound — and whether the condition matches anybody at all.
 
-## Der Ablauf
+## Contents
 
-1. **`get-email-editor-display-condition-capabilities`** — ohne Argumente den Katalog der Bedingungsarten, mit
-   `conditionTypes` zusätzlich für diese Arten: die erlaubten Vergleiche, die Entitäten *dieses
-   Kontos* (Tags, Automationen, E-Mails …) und die Zeitfenster. Höchstens fünf Arten pro Aufruf; die
-   Entitätsliste ist bei 200 gekappt, `entityCount` sagt, wie viele es wirklich sind.
-2. **`update-email-editor-display-condition`** — die benannte Bedingung anlegen. Du gibst nur die Wahl an; Operator,
-   Sekunden und das SmartTag-Feld werden daraus abgeleitet. Antwort enthält die `decisionId`.
-3. **`configure-email-editor-row-display-condition`** — die Zeile binden, adressiert über die `uuid` aus
-   `contentOutline`. `decisionId: null` löst die Bindung wieder.
-4. **`list-email-editor-display-conditions`** — was die E-Mail trägt und welche Zeilen jede Bedingung steuert. Die
-   Bindung steckt als Marker *in* der Zeile und taucht in keiner anderen Projektion auf; das hier
-   ist der einzige Weg, sie zu sehen.
+- The procedure
+- What makes up a condition
+- The time frames
+- The catalogue of condition types
+- A complete example
+- When a row does not appear
 
-Eine Bedingung ohne gebundene Zeile steuert nichts und wird beim nächsten Speichern im Editor
-verworfen. Eine Bedingung kann mehrere Zeilen steuern.
+## The procedure
 
-## Was eine Bedingung ausmacht
+1. **`get-email-editor-display-condition-capabilities`** — without arguments, the catalogue of condition types; with
+   `conditionTypes`, additionally for those types: the permitted comparisons, the entities *of this
+   account* (tags, automations, emails …) and the time frames. At most five types per call; the
+   entity list is capped at 200, and `entityCount` says how many there really are.
+2. **`update-email-editor-display-condition`** — create the named condition. You state only the choice; operator,
+   seconds and the smart-tag field are derived from it. The response contains the `decisionId`.
+3. **`configure-email-editor-row-display-condition`** — bind the row, addressed by the `uuid` from `contentOutline`.
+   `decisionId: null` releases the binding again.
+4. **`list-email-editor-display-conditions`** — what the email carries and which rows each condition controls. The
+   binding sits as a marker *inside* the row and appears in no other projection; this is the only way
+   to see it.
 
-Du wählst vier Dinge, alles andere ergibt sich:
+A condition with no bound row controls nothing and is discarded the next time the editor saves. One
+condition can control several rows.
 
-| Feld | was es ist | woher |
+## What makes up a condition
+
+You choose four things, everything else follows:
+
+| Field | what it is | from |
 | --- | --- | --- |
-| `conditionType` | **was** geprüft wird | Katalog unten, Klassenname |
-| `condition` | **wie** verglichen wird | `has`, `has-not`, `has-any`, `has-not-any` |
-| `entity` | **welche** Entität — nur bei `has` und `has-not` | Fähigkeiten dieses Kontos |
-| `timeframe` | **wann** — Vorgabe `anytime` | feste Liste unten |
-| `action` | welches Ereignis der Entität zählt | je Art, siehe Katalog |
+| `conditionType` | **what** is checked | catalogue below, class name |
+| `condition` | **how** it is compared | `has`, `has-not`, `has-any`, `has-not-any` |
+| `entity` | **which** entity — only for `has` and `has-not` | this account's capabilities |
+| `timeframe` | **when** — default `anytime` | fixed list below |
+| `action` | which event of the entity counts | per type, see catalogue |
 
-`has` und `has-not` brauchen eine `entity`; `has-any` und `has-not-any` fragen „irgendeine Entität
-dieser Art" und nehmen keine. Eine `entity`, die dem Konto nicht gehört, wird **abgelehnt** — nicht
-gespeichert.
+`has` and `has-not` need an `entity`; `has-any` and `has-not-any` ask "any entity of this kind" and
+take none. An `entity` that does not belong to the account is **rejected**, not stored.
 
-**Segmente und ihre Verknüpfung.** `segments` ist eine Liste; innerhalb eines Segments verknüpft
-`conditionsOpAND` die Bedingungen, zwischen den Segmenten `segmentsOpAND` (beides Vorgabe `true`).
-Ein Kontakt sieht die Zeile, wenn der Baum insgesamt zutrifft.
+**Segments and how they join.** `segments` is a list; within a segment `conditionsOpAND` joins the
+conditions, between segments `segmentsOpAND` (both default to `true`). A contact sees the row when
+the tree as a whole is satisfied.
 
-## Die Zeitfenster
+## The time frames
 
-Feste Liste, für jede Art dieselbe: `anytime` (immer), `24h`, `3d`, `30d`, `90d`, `1y`. Sie zählen
-zurück vom Moment des Versands.
+A fixed list, the same for every type: `anytime`, `24h`, `3d`, `30d`, `90d`, `1y`. They count back
+from the moment of dispatch.
 
-## Der Katalog der Bedingungsarten
+## The catalogue of condition types
 
-Alle 22 Arten, mit ihren Aktionen. Die Vergleiche sind überall `has`, `has-not`, `has-any`,
-`has-not-any` — mit **einer** Ausnahme, die unten markiert ist. `conditionType` ist der vollständige
-Klassenname, also `App\Klicktipp\Tag` und nicht `Tag`.
+All 22 types with their actions. The comparisons are `has`, `has-not`, `has-any`, `has-not-any`
+everywhere — with **one** exception, marked below. `conditionType` is the full class name, so
+`App\Klicktipp\Tag` and not `Tag`.
 
-| `conditionType` (ohne `App\Klicktipp\`) | im Editor | `action` |
+| `conditionType` (without `App\Klicktipp\`) | in the editor | `action` |
 | --- | --- | --- |
-| `Tag` | Manuelles Tag | `received` |
+| `Tag` | Manual tag | `received` |
 | `TagCategorySmartLink` | SmartLink | `clicked` |
 | `CampaignsProcessFlow` | Automation | `started`, `finished` |
-| `EmailsAutomationEmail` | E-Mails (Automation) | `sent`, `opened`, `clicked`, `viewed` |
-| `EmailsAutomationSMS` | SMS (Automation) | `sent`, `clicked` |
-| `CampaignsNewsletter` | Newsletter/Autoresponder | `sent`, `opened`, `clicked`, `viewed`, `converted` |
-| `Requests` | Eintragung per E-Mail | `subscribed` |
-| `SMSListbuildings` | Eintragung per SMS | `subscribed` |
-| `APIKey` | API-Key | `subscribed` |
-| `BusinessCardReader` | Visitenkartenscanner | `subscribed` |
-| `Event` | Visitenkartenscanner-Event | `subscribed` |
-| `SubscriptionFormsCustom` | Anmeldeformular | `subscribed` |
-| `LandingPage\LandingPage` | Landingpage | `subscribed` |
-| `PaymentIPNs` | Produkt | `bought` |
-| `PaymentRefund` | Rückerstattung | `refunded` |
-| `PaymentChargeback` | Rückbuchung | `chargedback` |
-| `PaymentSubsequent` | Folgezahlung | `bought subsequently` |
-| `PaymentDeferred` | Aufgeschobene Zahlung | `bought deferred` |
-| `PaymentRebill` | Abo | `canceled`, `resumed` |
-| `PaymentRebillStatus` | Abo-Status | `completed`, `expired` — **nur `has` und `has-any`** |
-| `PaymentAffiliation` | Digistore-Affiliate | `affiliated` |
+| `EmailsAutomationEmail` | Emails (automation) | `sent`, `opened`, `clicked`, `viewed` |
+| `EmailsAutomationSMS` | SMS (automation) | `sent`, `clicked` |
+| `CampaignsNewsletter` | Newsletter/autoresponder | `sent`, `opened`, `clicked`, `viewed`, `converted` |
+| `Requests` | Sign-up by email | `subscribed` |
+| `SMSListbuildings` | Sign-up by SMS | `subscribed` |
+| `APIKey` | API key | `subscribed` |
+| `BusinessCardReader` | Business card scanner | `subscribed` |
+| `Event` | Business card scanner event | `subscribed` |
+| `SubscriptionFormsCustom` | Sign-up form | `subscribed` |
+| `LandingPage\LandingPage` | Landing page | `subscribed` |
+| `PaymentIPNs` | Product | `bought` |
+| `PaymentRefund` | Refund | `refunded` |
+| `PaymentChargeback` | Chargeback | `chargedback` |
+| `PaymentSubsequent` | Subsequent payment | `bought subsequently` |
+| `PaymentDeferred` | Deferred payment | `bought deferred` |
+| `PaymentRebill` | Subscription | `canceled`, `resumed` |
+| `PaymentRebillStatus` | Subscription status | `completed`, `expired` — **only `has` and `has-any`** |
+| `PaymentAffiliation` | Digistore affiliate | `affiliated` |
 | `ToolOutbound` | Outbound | `triggered` |
 
-Die Aktion entscheidet, *welches* Ereignis zählt: bei einem Newsletter ist `sent` etwas anderes als
-`clicked`, und beide sind erlaubte Bedingungen für dieselbe E-Mail. Lässt du `action` weg, wird die
-erste der Liste genommen.
+The action decides *which* event counts: for a newsletter `sent` is something other than `clicked`,
+and both are permitted conditions on the same email. Omitting `action` takes the first of the list.
 
-Verlasse dich nicht auf diese Tabelle allein, wenn es darauf ankommt: welche Arten ein Konto
-tatsächlich anbieten kann und welche Entitäten es dafür hat, beantwortet
-`get-email-editor-display-condition-capabilities` — die Tabelle hier sagt, wonach du fragen kannst.
+Do not rely on this table alone when it matters: which types an account can actually offer, and which
+entities it has for them, is answered by `get-email-editor-display-condition-capabilities` — the table here says
+what you can ask for.
 
-## Ein vollständiges Beispiel
+## A complete example
 
-„Diese Zeile nur an Kontakte, die das Tag *Kunde* tragen":
+"This row only to contacts carrying the tag *Kunde*":
 
 ```json
 // 1. get-email-editor-display-condition-capabilities  { "conditionTypes": ["App\\Klicktipp\\Tag"] }
@@ -104,7 +110,7 @@ tatsächlich anbieten kann und welche Entitäten es dafür hat, beantwortet
 {
   "editorUrl": "…",
   "contentRevision": "…",
-  "name": "Nur Kunden",
+  "name": "Customers only",
   "segments": [
     {
       "conditionsOpAND": true,
@@ -120,19 +126,16 @@ tatsächlich anbieten kann und welche Entitäten es dafür hat, beantwortet
 { "editorUrl": "…", "contentRevision": "…", "rowUuid": "a4fac5c0-…", "decisionId": "1" }
 ```
 
-Beide Schreibaufrufe sind an die `contentRevision` gebunden und speichern den Entwurf; veröffentlicht
-wird weiterhin mit `publish-newsletter-email-content`.
+Both write calls are bound to the `contentRevision` and store the draft; publishing still happens
+through `publish-newsletter-email-content`.
 
-## Wenn eine Zeile nicht erscheint
+## When a row does not appear
 
-Der übliche Fall ist nicht kaputt, sondern leer: die Bedingung trifft niemanden.
+The usual case is not broken but empty: the condition matches nobody.
 
-1. `list-email-editor-display-conditions` — welche Bedingung steuert diese Zeile, und wie sieht ihr Baum aus?
-2. Die `entity` in der Bedingung gegen das Konto prüfen: trägt das Tag überhaupt jemand? Ein Tag aus
-   einem Test trägt typischerweise **null** Kontakte.
-3. Entweder mit `update-email-editor-display-condition` und derselben `decisionId` auf eine sinnvolle Entität
-   umschreiben — die Bindung bleibt bestehen —, oder mit `configure-email-editor-row-display-condition` und
-   `decisionId: null` die Zeile wieder für alle sichtbar machen.
-
-Ein HTML-Import löscht Entscheidungen; das meldet der Werkzeug-Hinweis als „KlickTipp decisions are
-deleted". Kopieren (`replace-email-editor-content-from-email`) und Dokument-Import erhalten sie.
+1. `list-email-editor-display-conditions` — which condition controls this row, and what does its tree look like?
+2. Check the `entity` in the condition against the account: does anybody carry that tag at all? A tag
+   from a test typically carries **zero** contacts.
+3. Either rewrite it onto a sensible entity with `update-email-editor-display-condition` and the same `decisionId` —
+   the binding stays — or make the row visible to everyone again with `configure-email-editor-row-display-condition` and
+   `decisionId: null`.
