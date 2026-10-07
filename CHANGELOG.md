@@ -8,6 +8,31 @@ The plugin is generated from the internal `agent-plugin` repository, and the ver
 that repository's tags: only its production build is published here, so a version that changed
 nothing in the production plugin leaves no entry of its own.
 
+## 0.25.0 — 2026-10-07
+
+- **Automations, with a skill of their own.** The production server now serves the automation
+  tools: reading and validating an automation, a draft with its start action, one add and one
+  update tool per action type, moving, copying and deleting actions, the editor's capabilities and
+  references, the audience estimate, the activation dialog, stopping an automation and moving its
+  waiting contacts, the Business Automation Masterclass templates and shared template links, and
+  the emails and SMS of an automation and of its notifications with their test sends and the Gmail
+  placement check. The new `automation` skill carries the order of the steps, what each action
+  type does and needs in `settings`, goals instead of waits for a reaction, dated campaigns
+  anchored on a date field, late entrants and empty fields, and the template import, with its
+  published contracts word for word in `references/contracts.md`.
+- **No tool activates an automation.** `prepare-automation-activation` validates and returns the
+  activation dialog; a person starts the automation in KlickTipp. Building reaches nobody and an
+  imported template arrives paused, but both leave their objects in the account.
+  `stop-automation` and `move-automation-contacts` act on contacts already in a running
+  automation and cannot be undone.
+- **Not part of this release.** Deleting an automation or a draft, the Facebook-audience and
+  FullContact actions, copying a notification email or SMS, the personalized preview and spam check
+  of an automation email, and the SMS readiness check stay in KlickTipp. The skill says so where a
+  step would need one of them; a refused SMS test that names `check-sms-readiness` is read with
+  `get-automation-sms` instead.
+- Whoever copied the skill folders by hand (opencode, OpenClaw) or uploaded them (Langdock) adds
+  the new `automation` folder.
+
 ## 0.24.0 — 2026-10-06
 
 - **Four skills in place of `crm`: `contacts`, `tags`, `custom-fields` and `opt-in`.** Each one

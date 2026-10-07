@@ -1,8 +1,8 @@
 # KlickTipp
 
-Write, review and prepare KlickTipp email newsletters from your agent, manage
-the opt-in processes of the account with their confirmation email, and read its
-statistics — over the hosted KlickTipp MCP server at
+Write, review and prepare KlickTipp email newsletters from your agent, build
+and change its automations, manage the opt-in processes of the account with
+their confirmation email, and read its statistics — over the hosted KlickTipp MCP server at
 `https://mcp.klicktipp.com/mcp`.
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
@@ -139,7 +139,7 @@ only the tag statistics answer per period
 | `get-automation-statistics` · `get-automation-waiting-contact-counts` | how an automation is doing, and where its contacts wait right now |
 | `get-automation-email-statistics` · `get-automation-sms-statistics` | what one email or SMS of an automation achieved |
 
-The automation tools take an ID from the KlickTipp app: no tool of this plugin lists automations.
+An automation's ID comes from `search-automations`, an email's or SMS's from `search-emails` or `search-automation-editor-references`.
 
 **Account settings**
 
@@ -147,6 +147,30 @@ The automation tools take an ID from the KlickTipp app: no tool of this plugin l
 |---|---|
 | `get-account-settings` | the account's settings screen: feature switches, preview tag, email blacklist — only what the account may change, credentials only as set or not |
 | `update-account-settings` | change named settings only; one bad value refuses the whole call, and credentials cannot be set here |
+
+**Automations** — the graph, its actions, the Masterclass templates and the
+messages an automation sends. Every write needs an inactive automation and its
+current revision; activating is confirmed by a person in KlickTipp
+
+| | |
+|---|---|
+| `search-automations` · `get-automation` · `validate-automation` | find an automation, read its graph with action IDs and revision, and check it |
+| `create-automation-draft` · `update-automation-draft` | create an inactive draft with its start action, optionally as a copy, and change its name, notes and labels |
+| `add-automation-<kind>-action` · `update-automation-<kind>-action` | one pair per action type: email, SMS, notifications, wait, decision, goal, tag, untag, set field, go-to, exit, restart, start and stop another automation, split test, outbound, name and gender detection, unsubscribe; the start action is configured with `update-automation-start-action` |
+| `move-automation-action` · `copy-automation-action` · `delete-automation-action` | rearrange the graph; a copied action shares its message, a deleted one leaves its email in place |
+| `get-automation-editor-capabilities` · `search-automation-editor-references` | which settings and condition operators an action takes, and the IDs of the tags, fields, messages and automations it names |
+| `estimate-automation-audience` | estimate the initial audience of an automation, in batches |
+| `prepare-automation-activation` | validate and return the activation dialog — it activates nothing |
+| `stop-automation` · `move-automation-contacts` | stop a running automation, or move waiting contacts to another action — both reach contacts already in it |
+| `search-automation-templates` · `get-automation-template` · `import-automation-template` | the Business Automation Masterclass catalogue and shared template links: find one, see what it brings, import it paused |
+| `get-automation-email` · `create-…` · `update-…` · `delete-automation-email-draft` · `copy-automation-email` | the emails of an automation; the same without copying for notification emails, the content is written with the email tools above |
+| `get-automation-sms` · `create-…` · `update-…` · `delete-automation-sms-draft` · `replace-automation-sms-content` · `copy-automation-sms` | the SMS of an automation; the same without copying for notification SMS |
+| `send-automation-email-test` · `send-notification-email-test` · `send-automation-sms-test` · `send-notification-sms-test` | test sends — an unknown address becomes a tagged contact, an SMS test costs SMS credit |
+| `send-email-for-gmail-placement-preview` · `get-email-gmail-placement-preview-result` | the Gmail inbox placement check of an email, and its result |
+
+Deleting an automation or an automation draft, the Facebook-audience and
+FullContact actions, and the personalized preview and spam check of an
+automation email are not available here; they stay in KlickTipp.
 
 There is no separate delivery-status tool: where a newsletter stands with its
 dispatch is the `deliveryStatus` projection of `get-newsletter`. The
@@ -194,6 +218,13 @@ them:
   is appended when a mail is sent, so the change reaches every future send that
   carries it, not only the newsletter at hand.
 
+**No tool activates an automation.** `prepare-automation-activation` validates
+it and returns the activation dialog; a person starts it there. Building and
+importing reach nobody — a draft is inactive and an imported automation is
+paused — but both leave their objects in the account. `stop-automation` and
+`move-automation-contacts` act on contacts already in a running automation and
+cannot be undone; the agent is expected to say what will happen and ask first.
+
 `get-opt-in-process-redirect-url` returns a URL that identifies a subscriber — it
 carries subscriber ID, email address, list, subscriber key and referral link.
 Treat its result as personal data.
@@ -218,6 +249,11 @@ is one.
 clicks, bounces, unsubscribes of the last dispatches, the daily activity of the
 account, tags over time, automations with their emails and SMS — and builds a
 dashboard out of them. Read-only: it creates, changes and sends nothing.
+
+`skills/automation` — build and change automations: the order of the steps,
+which action type does what and which settings it needs, goals instead of
+waits, dated campaigns anchored on a date field, and importing a Masterclass
+template or a shared template link.
 
 `skills/contacts` — find, read, add, subscribe and unsubscribe contacts, set
 their field values, and read and change the account's settings, its blocklist
