@@ -56,7 +56,7 @@ Both targets read the same `.mcp.json`.
 | `create-sender-domain` | register a domain — unverified until its DNS records are in place |
 | `request-sender-domain-dns-check` | ask for a fresh DNS check once the records are set |
 
-No tool writes DNS: the records go in at the domain's DNS provider, by the person.
+No KlickTipp tool writes DNS. The `dns-setup` skill guides provider changes or uses a connected provider integration with the user's approval.
 
 **Content of one email**
 
@@ -241,6 +241,9 @@ drag-and-drop blocks rather than one undividable wall of text — the HTML
 `skills/newsletter` — the hull around that content: draft, audience, sender and
 reply address, test send, and the dispatch confirmation.
 
+`skills/dns-setup` — sending-domain DNS records, provider-specific setup and
+verification, including the optional assisted mailserver route where available.
+
 `skills/splittest` — A/B tests: make a newsletter a split test, add and copy
 test arms, set a subject line per arm, and read what changes once a newsletter
 is one.
@@ -274,14 +277,15 @@ existing consent covers.
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
 no layout.
 
-Each skill carries a `references/` folder with the tools it uses, their answer
-shapes and their pitfalls. `email`, `newsletter` and `splittest` are in English; the others are
-in German, like the editor itself.
+The tool-focused skills carry `references/` folders with the tools they use,
+their answer shapes and their pitfalls. `dns-setup` covers provider guidance
+directly. `email`, `newsletter`, `splittest` and `dns-setup` are in English; the
+others are in German, like the editor itself.
 
 **What the skills describe is what the server serves.** A tool that is not in
 them does not exist here, and neither does the capability behind it: there is,
-for example, no tool that writes DNS records — a sender domain is verified once
-its owner has put them in at the DNS provider.
+for example, no KlickTipp tool that writes DNS records — `dns-setup` can use a
+separately connected provider integration, or guide the owner through their DNS provider.
 
 The personalized email block is a case of its own: the add-on behind it is paid
 for separately and the work on it is deferred, and the editor offers the block

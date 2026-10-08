@@ -67,6 +67,7 @@ These links always point at the latest release:
 | `contacts` | [klicktipp-skill-contacts.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-contacts.zip) |
 | `custom-fields` | [klicktipp-skill-custom-fields.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-custom-fields.zip) |
 | `dashboard` | [klicktipp-skill-dashboard.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-dashboard.zip) |
+| `dns-setup` | [klicktipp-skill-dns-setup.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-dns-setup.zip) |
 | `email` | [klicktipp-skill-email.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email.zip) |
 | `email-template-generator` | [klicktipp-skill-email-template-generator.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-email-template-generator.zip) |
 | `newsletter` | [klicktipp-skill-newsletter.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-newsletter.zip) |
@@ -87,7 +88,7 @@ and give the Agent Builder this:
 ```text
 Create an agent "KlickTipp". It works in the user's KlickTipp account through the
 KlickTipp integration. Attach the KlickTipp integration and the skills contacts,
-custom-fields, dashboard, email, email-template-generator, newsletter, opt-in,
+custom-fields, dashboard, dns-setup, email, email-template-generator, newsletter, opt-in,
 splittest and tags.
 Instructions: Read the matching skill before the first KlickTipp tool call of a
 task. Never send a newsletter yourself: prepare-newsletter-dispatch returns a

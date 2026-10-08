@@ -4,9 +4,13 @@ One entry per released version. Both manifests — `.claude-plugin/plugin.json` 
 `.codex-plugin/plugin.json` — carry the same version, and every version is a tag in this
 repository.
 
-The plugin is generated from the internal `agent-plugin` repository, and the version numbers are
-that repository's tags: only its production build is published here, so a version that changed
-nothing in the production plugin leaves no entry of its own.
+The production plugin takes changes from the internal staging plugin where applicable.
+This repository has its own version tags; each published version has its own entry here.
+
+## 0.26.0 — 2026-10-08
+
+- **DNS setup has its own skill.** `dns-setup` takes the current sending-domain record table from KlickTipp, identifies the authoritative DNS provider, inspects existing records, and guides or (with approval) applies the minimum DNS changes. It distinguishes DKIM-only from Whitelabel mail-server setups, accepted alternatives from multiple required records, and stored check results from live DNS.
+- Provider guidance covers ALL-INKL, IONOS Hosting and Cloud, Cloudflare, STRATO, GoDaddy and Hetzner. If eligible, the optional assisted mailserver setup form is linked on the production site; credentials remain with the user. Whoever installs skills manually adds `dns-setup` to their collection.
 
 ## 0.25.0 — 2026-10-07
 
