@@ -1,48 +1,43 @@
-# Handwerk: eine Dashboard-Seite, die etwas hermacht
+# Craft: a dashboard page that holds up
 
-Diese Datei ist die Gestaltungsseite von `dashboard`. Sie setzt **nichts** voraus — keine
-Bibliothek, kein CDN, keinen weiteren Skill. Alles hier lässt sich in einer einzigen HTML-Datei
-umsetzen, und genau das ist der Punkt: ein Report wird Wochen später geöffnet, oft ohne Netz.
+Requires nothing — no library, no CDN, no other skill. Everything here fits in one HTML file, and
+that is the point: a report is opened weeks later, often offline.
 
-## Inhalt
+## Contents
 
-- 0. Was ein Artifact von einer HTML-Datei unterscheidet
-- 1. Der Farb-Layer
-- 2. Schrift
-- 3. Die Kachel
-- 4. Diagramme in reinem SVG
-- 5. Interaktion
-- 6. Layout
-- 7. Prüfen, bevor es rausgeht
+- The artifact frame
+- Colour layer
+- Type
+- The tile
+- Charts in plain SVG
+- Interaction
+- Layout
+- Check before it goes out
 
-## 0. Was ein Artifact von einer HTML-Datei unterscheidet
+## The artifact frame
 
-**Schreib die Seite ohne Dokumentrahmen.** Kein `<!DOCTYPE>`, kein `<html>`, kein `<head>`, kein
-`<body>` — die Artifact-Umgebung setzt diesen Rahmen selbst, und ein zweiter darin ist ein Fehler.
-Fang direkt mit `<title>` und `<style>` an, dann kommt der Inhalt. Der `<title>` ist der Name in
-Tab und Galerie: ein kurzer Eigenname wie „Newsletter-Report September", keine Beschreibung.
+**Write the page without a document frame.** No `<!DOCTYPE>`, `<html>`, `<head>` or `<body>` — the
+artifact environment supplies those, and a second one inside is an error. Start with `<title>` and
+`<style>`, then the content. The `<title>` is the name in the tab and the gallery: a short proper
+name like "Newsletter report September", not a description.
 
-**Nachladen ist gesperrt, nicht nur unerwünscht.** Die Artifact-Umgebung erlaubt externe Skripte
-nur von wenigen CDNs und blockiert Stylesheets, Bilder und `fetch` von überall sonst — **ohne
-sichtbaren Fehler**. Eine Diagrammbibliothek von einem beliebigen Host lädt also nicht, und die
-Seite bleibt an dieser Stelle einfach leer. Das ist der zweite Grund für alles Folgende: SVG von
-Hand, CSS und JS inline, Schriften aus der Fallback-Kette.
+**Loading is blocked, not merely discouraged.** External scripts are allowed from a few CDNs only,
+and stylesheets, images and `fetch` from anywhere else are blocked **without a visible error** — a
+chart library from an arbitrary host simply does not load and the page stays empty there. Hence:
+SVG by hand, CSS and JS inline, fonts from the fallback chain.
 
-**Das Ergebnis muss unter 16 MB bleiben** — bei einem Report nie ein Thema, außer jemand bettet
-Bilder als `data:`-URI ein.
+## Colour layer
 
-## 1. Der Farb-Layer
+Define colours **once** as CSS variables and use only the names afterwards. Never a hex colour in
+the markup — otherwise there is no second mode.
 
-Definier Farben **einmal** als CSS-Variablen und benutze danach nur noch die Namen. Nie eine
-Hex-Farbe mitten im Markup — sonst gibt es keinen zweiten Modus mehr.
-
-**Als Artifact hat der Betrachter drei Theme-Zustände, nicht zwei.** Eine ausdrückliche Wahl setzt
-`data-theme="dark"` oder `data-theme="light"` auf das Wurzelelement; die Voreinstellung „System"
-setzt gar nichts, dort entscheidet allein `prefers-color-scheme`. Wer nur die Media-Query schreibt,
-baut eine Seite, die den Umschalter ignoriert. Deshalb **drei** Blöcke:
+**As an artifact the viewer has three theme states, not two.** An explicit choice sets
+`data-theme="dark"` or `="light"` on the root; the "System" default sets nothing and
+`prefers-color-scheme` decides. Writing only the media query builds a page that ignores the toggle.
+So three blocks:
 
 ```css
-/* 1. Hell als Grundlage — nie nur in einem Media-Block definiert */
+/* 1. Light as the base — never defined inside a media block only */
 :root {
   color-scheme: light dark;
 
@@ -50,15 +45,15 @@ baut eine Seite, die den Umschalter ignoriert. Deshalb **drei** Blöcke:
   --grid:  #e2e8f0;  --panel-border: #e2e8f0;
   --text:  #0f172a;  --text-muted:   #64748b;  --text-dim: #94a3b8;
 
-  /* Serien und Zustände — nach Bedeutung benannt, nicht nach Farbe */
-  --series-open:  #22d3ee;  /* Öffnungen  */
-  --series-click: #34d399;  /* Klicks     */
-  --series-bounce:#fb923c;  /* Bounces    */
-  --warn:         #fbbf24;  /* Achtung    */
-  --danger:       #fb7185;  /* Schwelle überschritten */
+  /* series and states — named by meaning, not by colour */
+  --series-open:  #22d3ee;
+  --series-click: #34d399;
+  --series-bounce:#fb923c;
+  --warn:         #fbbf24;
+  --danger:       #fb7185;
 }
 
-/* 2. System steht auf dunkel — aber nicht, wenn hell ausdrücklich gewählt wurde */
+/* 2. System is dark — but not when light was chosen explicitly */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #020617;  --panel: #0f172a;
@@ -67,7 +62,7 @@ baut eine Seite, die den Umschalter ignoriert. Deshalb **drei** Blöcke:
   }
 }
 
-/* 3. Dunkel ausdrücklich gewählt — gewinnt auch auf einem hellen System */
+/* 3. Dark chosen explicitly — wins on a light system too */
 :root[data-theme="dark"] {
   --bg: #020617;  --panel: #0f172a;
   --grid: #1e293b; --panel-border: #1e293b;
@@ -75,24 +70,19 @@ baut eine Seite, die den Umschalter ignoriert. Deshalb **drei** Blöcke:
 }
 ```
 
-Und **`body` braucht eine eigene Hintergrundfarbe** (`background: var(--bg)`). Ein durchsichtiger
-Body übernimmt den Untergrund der Umgebung — die Seite sieht dann in einem Modus richtig aus und
-im anderen wie ein Fehler.
+`body` needs its own `background: var(--bg)`. A transparent body takes the environment's backdrop and
+looks right in one mode and broken in the other.
 
-Vier Dinge, die diese Zeilen richtig machen:
+- **No tone defined only inside a media block** — it would be missing in one of the three states.
+- **Accent colours do not switch.** They come from the middle brightness range so they stay legible
+  in both modes; a pure `#ff0000` disappears on dark exactly where it should warn.
+- **`--series-open`, not `--cyan`.** If the mapping changes, one line changes and the legend stays
+  right.
+- **`color-scheme`** makes scrollbars and form controls follow.
 
-- **Kein Ton ist nur in einem Media-Block definiert.** Sonst fehlt er in einem der drei Zustände.
-- **Die Akzentfarben wechseln nicht mit.** Cyan, Grün, Orange, Bernstein und Rosé sind in beiden
-  Modi lesbar — das ist der Grund, warum sie aus dem mittleren Helligkeitsbereich stammen und nicht
-  aus dem satten. Ein reines `#ff0000` verschwindet auf Dunkel genau dort, wo es warnen soll.
-- **`--series-open` statt `--cyan`.** Wenn die Zuordnung sich ändert, ändert sich eine Zeile, und
-  die Legende bleibt richtig.
-- **`color-scheme`** sorgt dafür, dass auch Scrollbalken und Formularelemente mitziehen.
+Check every warning colour **in both modes** before the page goes out.
 
-Prüf jede Warnfarbe **in beiden Modi**, bevor die Seite rausgeht. Eine Schwellenwertfarbe, die nur
-hell funktioniert, ist schlimmer als keine.
-
-## 2. Schrift
+## Type
 
 ```css
 --font-data: ui-monospace, SFMono-Regular, Menlo, Consolas,
@@ -100,132 +90,107 @@ hell funktioniert, ist schlimmer als keine.
 --font-ui:   system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 ```
 
-**Zahlen monospace.** Untereinanderstehende Werte sollen sich vergleichen lassen; mit
-Proportionalschrift springen die Spalten. Für Tabellenspalten zusätzlich
+**Numbers monospace**, so stacked values compare; for table columns also
 `font-variant-numeric: tabular-nums`.
 
-Feinheiten, die den Unterschied zwischen „gebaut" und „gestaltet" ausmachen:
-
-| Wo | Wert | Warum |
+| Where | Value | Why |
 | --- | --- | --- |
-| Große Zahl in der Kachel | `letter-spacing: -0.02em`, `font-weight: 700` | Große Ziffern wirken sonst auseinandergerissen |
-| Kachel-Beschriftung | `letter-spacing: 0.02em`, `text-transform: uppercase`, klein | Ruhig, klar als Etikett erkennbar |
-| Fließtext | normal | Nicht tracken, was gelesen wird |
+| Big number in a tile | `letter-spacing: -0.02em`, `font-weight: 700` | large digits otherwise look pulled apart |
+| Tile label | `letter-spacing: 0.02em`, `text-transform: uppercase`, small | quiet, clearly a label |
+| Running text | normal | do not track what gets read |
 
-**Keine Webfonts laden.** Die Fallback-Kette oben sieht auf jedem System gut aus und braucht kein
-Netz.
+**No web fonts.** The chain above looks good on every system and needs no network.
 
-## 3. Die Kachel
-
-Eine Kennzahl-Kachel hat drei Ebenen, immer in derselben Reihenfolge:
+## The tile
 
 ```html
 <div class="tile">
-  <div class="tile-label">Öffnungsrate</div>
-  <div class="tile-value">42,0<span class="tile-unit">%</span></div>
-  <div class="tile-base">1.208 von 2.876</div>
+  <div class="tile-label">Open rate</div>
+  <div class="tile-value">42.0<span class="tile-unit">%</span></div>
+  <div class="tile-base">1,208 of 2,876</div>
 </div>
 ```
 
-Die **dritte Zeile ist nicht optional**. Eine Prozentzahl ohne Basis ist nicht prüfbar, und die
-Kachel ist genau der Ort, an dem jemand sie für bare Münze nimmt. Die Einheit kommt in ein eigenes
-`<span>`, kleiner und in `--text-muted` — dann dominiert die Zahl.
+The **third line is not optional** — a percentage without its base cannot be checked, and a tile is
+exactly where someone takes it at face value. The unit goes in its own `<span>`, smaller and in
+`--text-muted`, so the number dominates.
 
-Ist ein Wert nicht verfügbar, steht dort **„nicht verfügbar"** und eine halbe Zeile warum. Kein
-Strich, kein `0 %`, kein `–`.
+If a value is unavailable, it says **"not available"** plus half a line why. No dash, no `0 %`.
 
-## 4. Diagramme in reinem SVG
+## Charts in plain SVG
 
-Ohne Bibliothek, von Hand — für ein Liniendiagramm sind das ungefähr 30 Zeilen.
+No library — a line chart is about 30 lines.
 
 ```
-viewBox="0 0 800 300"   Feste Innenmaße, außen skaliert die Seite.
-Rand: 48 links (Achsenbeschriftung), 16 rechts, 16 oben, 32 unten.
+viewBox="0 0 800 300"   fixed inner size, the page scales it
+margins: 48 left (axis labels), 16 right, 16 top, 32 bottom
 ```
 
-**Die Reihenfolge der Elemente ist die Reihenfolge im Markup** — SVG kennt kein z-index:
+**Markup order is stacking order** — SVG has no z-index:
 
-1. Gitterlinien (`--grid`, `stroke-width: 1`) — vier bis fünf waagerechte, mehr nicht
-2. Achsenbeschriftung (`--text-dim`, klein, monospace)
-3. Fläche unter der Linie, wenn es *eine* Serie ist: dieselbe Farbe mit `opacity: 0.12`
-4. Die Linie: `fill="none"`, `stroke-width: 2`, `stroke-linejoin="round"`, `stroke-linecap="round"`
-5. Die Punkte: `r="3.5"`, gefüllt in Serienfarbe, `stroke="var(--panel)"`, `stroke-width="2"` —
-   der Rand in Hintergrundfarbe trennt Punkte, die dicht beieinanderliegen
-6. Die unsichtbaren Trefferflächen für Hover, siehe unten
+1. grid lines (`--grid`, `stroke-width: 1`) — four or five horizontal, no more
+2. axis labels (`--text-dim`, small, monospace)
+3. area under the line for a single series: same colour at `opacity: 0.12`
+4. the line: `fill="none"`, `stroke-width: 2`, `stroke-linejoin="round"`, `stroke-linecap="round"`
+5. the points: `r="3.5"`, filled in the series colour, `stroke="var(--panel)"`, `stroke-width="2"` —
+   the background-coloured rim separates points that sit close together
+6. the invisible hit areas for hover
 
-**Keine Interpolation zwischen Terminen, die nichts miteinander zu tun haben.** Aussendungen sind
-Einzelereignisse: gerade Segmente, keine Bézier-Glättung. Eine geschwungene Kurve behauptet einen
-Verlauf, den es nicht gibt.
+**No interpolation between dates that have nothing to do with each other.** Sends are single events:
+straight segments, no Bézier smoothing. A curve claims a trend that does not exist.
 
-**Ein Punkt allein ist kein Verlauf.** Unter vier Aussendungen: lass das Diagramm weg und zeig die
-Tabelle.
+**One point is not a trend.** Under four sends, drop the chart and show the table.
 
-### Die Trefferfläche
-
-Ein Punkt mit `r="3.5"` ist mit der Maus kaum zu treffen und mit dem Finger gar nicht. Leg über
-jeden Datenpunkt einen unsichtbaren, großzügigen Bereich:
+**The hit area.** A point at `r="3.5"` is hard to hit with a mouse and impossible with a finger:
 
 ```html
 <circle cx="..." cy="..." r="14" fill="transparent"
         tabindex="0" role="button"
-        aria-label="14. März: Öffnungsrate 42,0 Prozent, 1208 von 2876"/>
+        aria-label="14 March: open rate 42.0 percent, 1208 of 2876"/>
 ```
 
-Das `aria-label` ist zugleich die Tastatur-Antwort: wer mit Tab durchgeht, hört genau das, was ein
-anderer im Tooltip liest.
+The `aria-label` is also the keyboard answer: tabbing through hears exactly what hovering reads.
 
-## 5. Interaktion
+## Interaction
 
-**`pointerover` / `pointerout`, nicht `mouseover`.** Deckt Maus, Stift und Touch mit einem
-Handler ab.
-
-**Jede Mausaktion hat eine Tastatur-Entsprechung.** Was per Hover erscheint, erscheint auch bei
-`focus`. Ein Report wird weitergereicht.
+- **`pointerover`/`pointerout`, not `mouseover`** — covers mouse, pen and touch in one handler.
+- **Every mouse action has a keyboard equivalent.** What appears on hover appears on `focus`.
 
 ```js
-const show = (el) => { /* Tooltip positionieren und füllen */ };
+const show = (el) => { /* position and fill the tooltip */ };
 pt.addEventListener('pointerover', () => show(pt));
 pt.addEventListener('focus',       () => show(pt));
 pt.addEventListener('pointerout',  hide);
 pt.addEventListener('blur',        hide);
 ```
 
-**Änderungen ansagen.** Ein Umschalter zwischen Öffnungs- und Klickrate ändert das Bild, ohne dass
-ein Screenreader etwas merkt — außer es gibt eine Live-Region:
+- **Announce changes.** A toggle between open and click rate changes the picture without a screen
+  reader noticing — unless there is a live region:
+  `<div aria-live="polite" class="sr-only">Now showing the click rate.</div>`
+- **State on the element, not in a class alone.** A toggle carries `aria-pressed="true|false"`, a
+  collapsible panel `aria-expanded`. CSS may style on `[aria-pressed="true"]` so looks and meaning
+  cannot drift apart.
+- **The tooltip shows what the chart cannot**: the exact value, the base and the date. It does not
+  repeat the label beside it.
 
-```html
-<div aria-live="polite" class="sr-only">Zeigt jetzt die Klickrate.</div>
-```
+## Layout
 
-**Zustand am Element, nicht in einer Klasse allein.** Ein Umschalter trägt `aria-pressed="true|false"`,
-ein aufklappbares Panel `aria-expanded`. Das CSS darf auf `[aria-pressed="true"]` stylen — dann
-können Aussehen und Bedeutung nicht auseinanderlaufen.
+- **One column, read top to bottom**: header → tiles → chart → table → footer.
+- Tiles in `display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))` — adapts
+  without breakpoints.
+- **Maximum reading width** for the page (about 1200px), centred.
+- The table may scroll in its own `overflow-x: auto` container. **The page may not.**
 
-**Der Tooltip zeigt, was das Diagramm nicht kann**: den exakten Wert, die Basis und das Datum. Er
-wiederholt nicht die Beschriftung, die daneben steht.
+## Check before it goes out
 
-## 6. Layout
+1. `document.documentElement.scrollWidth <= window.innerWidth` at **1440×900 and 1920×1080**. Fix by
+   removing content or tightening spacing — **never** `overflow: hidden`, an inner scroller or
+   smaller type.
+2. Switch both modes; warning colours legible in **both**.
+3. Tab through: every data point reachable, focus visible.
+4. Every percentage has its base beside it.
+5. No `NaN`, no `Infinity`, no `0 %` at `sentCount: 0`.
+6. Search the finished HTML for `http://` and `https://` — nothing but the links into the app may
+   load.
 
-- **Eine Spalte, von oben nach unten gelesen**: Kopf → Kacheln → Diagramm → Tabelle → Fußzeile.
-  Kein Raster, in dem das Auge suchen muss, wo es anfängt.
-- Kacheln in `display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))` — passt
-  sich ohne Breakpoints an.
-- **Maximale Lesebreite** für die Seite (etwa 1200px), zentriert. Eine Tabelle über 2560px ist
-  unlesbar.
-- Die Tabelle darf in einem eigenen `overflow-x: auto`-Container scrollen. **Die Seite nicht.**
-
-## 7. Prüfen, bevor es rausgeht
-
-Sechs Punkte, die sich in zwei Minuten prüfen lassen und die häufigsten Fehler abfangen:
-
-1. `document.documentElement.scrollWidth <= window.innerWidth` bei **1440×900 und 1920×1080**.
-   Repariert wird durch Weglassen oder engere Abstände — **nie** mit `overflow: hidden`, einem
-   inneren Scroller oder kleinerer Schrift. Das versteckt den Fehler.
-2. Beide Modi umschalten, Warnfarben in **beiden** lesbar.
-3. Mit Tab durch die Seite: jeder Datenpunkt erreichbar, Fokus sichtbar.
-4. Jede Prozentzahl hat ihre Basis daneben.
-5. Kein `NaN`, kein `Infinity`, kein `0 %` bei `sent: 0`.
-6. Suche nach `http://` und `https://` im fertigen HTML — außer den Links in die App darf nichts
-   nachgeladen werden.
-
-**„Sieht gut aus" ist keine Prüfung.** Sag getrennt, was du gemessen und was du nur angesehen hast.
+**"Looks good" is not a check.** Say separately what you measured and what you merely looked at.

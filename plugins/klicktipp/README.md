@@ -248,10 +248,11 @@ verification, including the optional assisted mailserver route where available.
 test arms, set a subject line per arm, and read what changes once a newsletter
 is one.
 
-`skills/dashboard` — reads the numbers of an account — reach, delivery, opens,
-clicks, bounces, unsubscribes of the last dispatches, the daily activity of the
-account, tags over time, automations with their emails and SMS — and builds a
-dashboard out of them. Read-only: it creates, changes and sends nothing.
+`skills/dashboard` — reads the numbers of an account — the account overview with
+its daily activity, top tags and recent newsletters, the rates of one send, tag
+counts and tags over time, saved reports — keeps the unit, window and denominator
+of each figure visible, and builds a dashboard out of them only when asked.
+Read-only: it creates, changes and sends nothing.
 
 `skills/automation` — build and change automations: the order of the steps,
 which action type does what and which settings it needs, goals instead of

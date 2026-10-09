@@ -7,6 +7,20 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.27.0 — 2026-10-09
+
+- **`dashboard` follows the staging plugin and is now in English.** It starts from
+  `get-account-statistics` and `get-campaign-statistics` and says which figure answers which
+  question: the overview's `days` filters only the daily activity, Top 5 Tags is a three-day tagging
+  trend rather than a ranking by size, and the overview's newsletter click rate is per unique
+  opener. Tag holders, digital IDs, contact search rows, daily list events and recipients are kept
+  apart as different units instead of being reconciled into one count, and a rate whose
+  denominator is missing is shown as unavailable rather than zero.
+- **It answers a number directly and builds a page only when asked.** The published contracts stay
+  in `references/contracts.md`; `references/craft.md` is the staging version. The skill no longer
+  carries its own guidance for automation statistics; those tools are unchanged, and their
+  contracts are still in `references/contracts.md`.
+
 ## 0.26.0 — 2026-10-08
 
 - **DNS setup has its own skill.** `dns-setup` takes the current sending-domain record table from KlickTipp, identifies the authoritative DNS provider, inspects existing records, and guides or (with approval) applies the minimum DNS changes. It distinguishes DKIM-only from Whitelabel mail-server setups, accepted alternatives from multiple required records, and stored check results from live DNS.
