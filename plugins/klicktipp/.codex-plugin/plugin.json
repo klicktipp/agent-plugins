@@ -1,9 +1,9 @@
 {
   "name": "klicktipp",
-  "version": "0.27.1",
+  "version": "0.27.2",
   "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, audience, sender, test sends and the dispatch confirmation — build and change its automations from a blank draft or a template, manage contacts, tags, custom fields and the opt-in processes of the account with their confirmation email, and read the statistics of its sends, tags and automations, over the KlickTipp MCP server.",
   "author": {
-    "name": "KlickTipp",
+    "name": "Klick-Tipp Limited",
     "url": "https://www.klick-tipp.com"
   },
   "homepage": "https://developers.klicktipp.com/guides/mcp-server-plugins",
