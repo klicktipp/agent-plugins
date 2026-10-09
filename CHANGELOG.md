@@ -7,6 +7,10 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.27.1 — 2026-10-09
+
+- Correct the assisted mailserver setup link to prefill the domain using `mailserver_domain` instead of `domain`. Hoster credentials are entered in the form, never included in the URL.
+
 ## 0.27.0 — 2026-10-09
 
 - **`dashboard` follows the staging plugin and is now in English.** It starts from
