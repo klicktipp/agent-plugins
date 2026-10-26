@@ -15,7 +15,7 @@ Create a date ~25 min ahead.
 
 Check after each step with `get-contact-history`; compare field values with `get-contact`.
 
-## Simulating Webinaris (no Webinaris connection, e.g. a staging account)
+## Simulating Webinaris (no Webinaris connection, e.g. a test account)
 
 Only on the user's request, only with their plus-addresses, and only after activation. Do what
 Webinaris would do, at the same minutes; announce each step with its time before you do it.
@@ -36,4 +36,6 @@ Say clearly that a simulation tests the campaign, not the Webinaris settings.
 - Rebook after confirmation (≥ 6 min after start of the run) → new confirmation, reminders follow.
 - Rebook before confirming the opt-in → new date is used.
 - Confirm only after the room closed → no mail until the result mail.
+- Confirm only after the webinar ended (after Webinaris set the result tag) → the result mail
+  still comes, within 5 min of the confirmation.
 - Repeat registration of a contact who finished an earlier run → restarts, no opt-in mail.

@@ -7,6 +7,24 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.2 — 2026-10-26
+
+- **`webinaris-webinar` imports from the official template account.** The template link points to
+  the campaign template "Webinaris | Webinar Erinnerungskampagne" in KlickTipp's template account
+  instead of a demo account. The emails carry readable markers `[[Webinar Datum]]` and
+  `[[Webinar Uhrzeit]]` in the text and the template's field placeholders with the field name as
+  link title on buttons; the skill replaces both with the new fields after the import, because the
+  import remaps subjects only. New steps: pass the prefix without a trailing space (the import adds
+  one) and check the sender of every imported email.
+- **Campaign corrections in the template.** A contact who confirms the opt-in only after the
+  webinar ended keeps the result tags Webinaris set and gets the thank-you or missed-you mail; the
+  result check also ends when the date field is empty.
+- **Clearer guidance.** The skill explains the activation notes in the wording customers see
+  ("Diese Aktion sendet E-Mails in einer Schleife …", about 600, possible paths, not loops), counts
+  the mails one recipient gets within 24 hours and warns from six on, states that only the first
+  rebooking in a run is confirmed at once, and lists the rules to tell the user (only Webinaris
+  sets "Angemeldet", no manual changes to the date field or result tags, one prefix per webinar).
+
 ## 0.29.1 — 2026-10-26
 
 - **One documentation address.** The plugin's homepage in both manifests and the documentation

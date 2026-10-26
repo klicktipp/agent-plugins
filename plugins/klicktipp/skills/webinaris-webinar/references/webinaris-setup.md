@@ -1,6 +1,6 @@
 # Webinaris setup
 
-Values for the template. `<P>` is the prefix chosen at import plus the template's own prefix, e.g. `Webinar Oktober | Webinaris |`. Use the
+Values for the template. `<P>` is the prefix chosen at import plus the template's own prefix, e.g. `Webinar Masterclass | Webinaris |`. Use the
 names the import actually created — read them back from the import answer, never from memory.
 
 ## Two ways to run it

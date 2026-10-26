@@ -44,9 +44,9 @@ Ask in one message, with a recipient-side example for each, and offer the defaul
 |---|---|---|---|
 | 1 | Does the webinar already exist in Webinaris? New or cloned from another webinar? | — | A clone already carries plugin and settings; check, don't redo. |
 | 2 | Which dates: 3/5/7 automatic, or own dates (incl. spontaneous slots)? | 5 automatic | All work; spontaneous slots simply skip reminders that are already in the past. |
-| 3 | Reminder times before the start | 24 h, 1 h, 15 min | Configures the three `[CFG: Erinnerungszeitpunkt]` slots. Fewer reminders = remove a slot. |
+| 3 | Reminder times before the start | 24 h, 1 h, 15 min | Configures the three `[CFG: Erinnerungszeitpunkt]` slots. Fewer reminders = remove a slot. Count the mails one recipient can get within 24 h (see *Mails per day*). |
 | 4 | Recording link: 3 or 7 days, with or without pause/seek? | 7 days with pause/seek | Chooses the Webinaris variable for the recording field and the "7 Tage" text in the missed-you mail. |
-| 5 | Name and prefix of the campaign | "Webinar <Thema> \|" | Keeps tags/fields of this webinar apart. Example of a resulting tag: "Webinar Oktober \| Webinaris \| Angemeldet". |
+| 5 | Name and prefix of the campaign | "Webinar <Thema> \|" | Keeps tags/fields of this webinar apart. Example of a resulting tag: "Webinar Masterclass \| Webinaris \| Angemeldet". |
 | 6 | Which opt-in process should Webinaris use? | a dedicated double opt-in | Webinaris' own DOI stays off. |
 | 7 | Is the Claude browser extension connected? May I make the Webinaris changes after you confirm them? | ask | Decides between guided and automated setup. |
 
@@ -84,7 +84,9 @@ All minutes count from the webinar start.
 2. Campaign LIVE-CHECK wait = **N + 4** (default 9). Webinaris delivers tags 1–2 min late.
 3. Webinaris "Webinarraum schließen" **R ≥ N + 4 + 5** (default 15), so whoever gets the live mail
    can still enter.
-4. Campaign decision "ZU SPÄT FÜR LIVE" = start + **R** minutes.
+4. Campaign decision "ZU SPÄT FÜR LIVE" = start + **R** minutes. It also decides whether old
+   result tags are removed: only while the room is still open (*no* branch). Later, the result
+   tags Webinaris already set stay, so a late confirmer still gets the result mail.
 5. Webinaris "Startverzögerung" = **Nein**. Otherwise every campaign time is too early.
 6. Webinaris "Erneute Registrierung" = **"Schnittstellen-Aufrufe sollen immer nur für die letzte
    Registrierung gesendet werden"**. With "alle Aufrufe" the old booking keeps sending and overwrites
@@ -99,15 +101,41 @@ All minutes count from the webinar start.
 - Normal path: confirmation → reminders → at N+4 the live mail to everyone not in the room →
   after the end thank-you (attended) or missed-you with recording (not attended).
 - Registered after the start, room still open → only the live mail with the room link, then result.
-- Confirmed only after the room closed → no mail until the result mail.
-- Rebooking (also before opt-in confirmation) → new confirmation immediately, reminders follow the
-  new date. Repeat registrations weeks later restart the campaign automatically.
+- Confirmed only after the room closed, even after the webinar ended → no mail until the result
+  mail. Webinaris sets the result tags for unconfirmed contacts too; the campaign keeps them.
+- Rebooking (also before opt-in confirmation) → the **first** rebooking in a run gets a new
+  confirmation immediately. Any further rebooking in the same run is confirmed at the next check
+  point (next reminder slot or the live check). Reminders always follow the new date. Repeat
+  registrations weeks later restart the campaign automatically.
 
 ## Known behaviour worth telling the user
 
 - Webinaris transfers registrations and tags 1–2 min late; the campaign is built for that.
 - Two mails in a row (opt-in, then confirmation) are expected.
-- Activation warns "possible delay" at the go-to actions — expected, not an error.
+- Activation lists several hundred notes (about 600 for the template), one per possible path,
+  each under a go-to action such as "ENDE nach Follow-up: Neubuchung → zurück zum Start-Ablauf",
+  worded: "Info: Diese Aktion sendet E-Mails in einer Schleife. Wir begrenzen den Versand als
+  Schutz vor Dauer-Versand auf maximal sechs E-Mails in Folge pro 24 Stunden an denselben
+  Empfänger." (API: "possible delay"). Tell the user before they open the dialog: these are
+  *possible* paths, not loops that happen. Every path back to the start passes "Angemeldet
+  entziehen" and needs a new registration from Webinaris. Activating is fine.
+
+## Mails per day
+
+Count the mails one recipient can get within any 24 hours: confirmation, reminders inside that
+window, live mail, result mail. The default plan reaches 5 for a same-day registration. If the
+user's choice gives **6 or more**, say so before building: KlickTipp sends at most six mails in a
+row per 24 hours from a loop to the same recipient and delays the rest (possibly the recording
+mail), and recipients feel spammed long before that. Each rebooking adds one confirmation.
+
+## Rules to tell the user
+
+- Only Webinaris sets "Angemeldet". No other campaign, import, form, tagging pixel or smart link
+  may set it or react to it. A campaign that sets it, e.g. on "missed-you mail sent", creates a
+  real endless loop with mails.
+- Do not change the date field ("Webinar Termin") or the result tags by hand. An empty date makes
+  every wait "now"; a result tag sends the thank-you or missed-you mail at once.
+- One webinar = one prefix. Two webinars must never share tags or fields.
 - Webinaris only transfers into **Zeile** (single-line) fields, except the Unix timestamp, which
   must go into a **Datum & Zeit** field. A URL field also works for links.
 
@@ -119,5 +147,5 @@ styling → `email`. Opt-in wording and consent scope → `opt-in`. Tags and fie
 
 ## Sources
 
-- Template: the link and source ids in [references/klicktipp-adapt.md](references/klicktipp-adapt.md).
+- Template: the template source in [references/klicktipp-adapt.md](references/klicktipp-adapt.md) § Import.
 - Webinaris help: the plugin hint in "Schnittstellen" lists the data types; there is no public API.
