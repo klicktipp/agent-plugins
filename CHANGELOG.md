@@ -7,6 +7,19 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.3 — 2026-10-29
+
+- **The IONOS DNS reference no longer reads an API key from the environment.** Hosting DNS goes
+  through a connected official IONOS Hosting DNS MCP, where the user enters the key, or through
+  the IONOS portal; the `curl` examples with `$IONOS_API_KEY` are gone. The Claude directory held
+  new versions for manual review over them.
+- **The setup guides for other hosts moved to the repository root.** `SETUP_OPENCODE.md`,
+  `SETUP_OPENCLAW.md` and `SETUP_LANGDOCK.md` are no longer part of the plugin: they clone this
+  repository and copy the skills, which the plugin directory flags as code fetched at install
+  time. The plugin links to them on GitHub.
+- **The Claude manifest names the privacy policy** in `privacyPolicyUrl`, the same address the
+  Codex manifest already carried.
+
 ## 0.29.2 — 2026-10-26
 
 - **`webinaris-webinar` imports from the official template account.** The template link points to

@@ -42,9 +42,9 @@ this is a one-time step per machine.
 None of them is a plugin host; each connects to the same server and takes the same
 skills. The guides carry a prompt that has the host set up the server and the
 skills itself — only the browser sign-in stays manual:
-[SETUP_OPENCODE.md](SETUP_OPENCODE.md) (client `mcp-klicktipp-desktop`),
-[SETUP_OPENCLAW.md](SETUP_OPENCLAW.md) (client metadata URL),
-[SETUP_LANGDOCK.md](SETUP_LANGDOCK.md) (client `mcp-klicktipp-langdock`, by hand).
+[SETUP_OPENCODE.md](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_OPENCODE.md) (client `mcp-klicktipp-desktop`),
+[SETUP_OPENCLAW.md](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_OPENCLAW.md) (client metadata URL),
+[SETUP_LANGDOCK.md](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_LANGDOCK.md) (client `mcp-klicktipp-langdock`, by hand).
 
 ## Check that it worked
 

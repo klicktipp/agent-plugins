@@ -76,6 +76,11 @@ def main():
         if not codex.get("interface", {}).get(field):
             fail(f"codex manifest: interface.{field} is missing")
 
+    # the Claude directory holds every version for review without it, because
+    # the plugin talks to a remote MCP server
+    if claude.get("privacyPolicyUrl") != codex.get("interface", {}).get("privacyPolicyURL"):
+        fail("claude manifest: privacyPolicyUrl must match the Codex interface.privacyPolicyURL")
+
     if not (ROOT / "LICENSE").exists():
         fail("no LICENSE file — the plugin directory requires one")
 

@@ -117,6 +117,6 @@ the folder name must equal the `name` in its frontmatter.
 
 ## Before writing anything
 
-Everything under "Before writing anything" in [SETUP.md](SETUP.md) applies here unchanged.
+Everything under "Before writing anything" in [SETUP.md](plugins/klicktipp/SETUP.md) applies here unchanged.
 opencode is another way in to the same account, and a tool that writes reaches a live customer
 account whichever host called it.

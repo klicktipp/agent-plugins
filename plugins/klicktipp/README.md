@@ -7,8 +7,8 @@ their confirmation email, and read its statistics — over the hosted KlickTipp 
 
 The plugin carries no API key. The endpoint sits behind OAuth and you sign in
 once, interactively, on first use. See [SETUP.md](SETUP.md). The same server and
-skills work without the plugin in [opencode](SETUP_OPENCODE.md),
-[OpenClaw](SETUP_OPENCLAW.md) and [Langdock](SETUP_LANGDOCK.md) — each guide carries
+skills work without the plugin in [opencode](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_OPENCODE.md),
+[OpenClaw](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_OPENCLAW.md) and [Langdock](https://github.com/klicktipp/agent-plugins/blob/main/SETUP_LANGDOCK.md) — each guide carries
 a prompt that has the host set both up itself.
 
 ## Install

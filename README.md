@@ -16,9 +16,9 @@ No API key lives in this repository. The MCP endpoint
 interactively — see [SETUP.md](plugins/klicktipp/SETUP.md). opencode, OpenClaw and
 Langdock reach the same server and take the same skills without the plugin; each guide
 carries a prompt that has the host set both up itself —
-[opencode](plugins/klicktipp/SETUP_OPENCODE.md) ·
-[OpenClaw](plugins/klicktipp/SETUP_OPENCLAW.md) ·
-[Langdock](plugins/klicktipp/SETUP_LANGDOCK.md).
+[opencode](SETUP_OPENCODE.md) ·
+[OpenClaw](SETUP_OPENCLAW.md) ·
+[Langdock](SETUP_LANGDOCK.md).
 
 **Documentation** — [developers.klicktipp.com/mcp-tools](https://developers.klicktipp.com/mcp-tools). The tools and skills each version ships are listed below and in [the plugin's README](plugins/klicktipp/README.md), because that list moves with the releases.
 
@@ -37,6 +37,10 @@ carries a prompt that has the host set both up itself —
 .claude-plugin/marketplace.json     the marketplace this repository is, for Claude Code
 .agents/plugins/marketplace.json    the same, where Codex looks for it
 CHANGELOG.md                        one entry per released version, and the release notes
+SETUP_OPENCODE.md                   the same server and skills in opencode, set up by prompt
+SETUP_OPENCLAW.md                   the same in OpenClaw
+SETUP_LANGDOCK.md                   the same from a Langdock workspace — these three stay out of
+                                    the plugin, which ships only what its own hosts use
 plugins/klicktipp/
 ├── .claude-plugin/plugin.json      manifest for Claude
 ├── .codex-plugin/plugin.json       manifest for Codex/ChatGPT, kept at the same version
@@ -46,9 +50,6 @@ plugins/klicktipp/
 │                                   automation, contacts, tags, custom-fields, opt-in, dashboard,
 │                                   email-template-generator, webinaris-webinar
 ├── SETUP.md                        walks the agent through the one-time OAuth login
-├── SETUP_OPENCODE.md               the same server and skills in opencode, set up by prompt
-├── SETUP_OPENCLAW.md               the same in OpenClaw
-├── SETUP_LANGDOCK.md               the same from a Langdock workspace
 └── README.md
 ```
 
