@@ -204,7 +204,7 @@ Parameter:
 
 **Find automation references**
 
-Searches existing emails, SMS, tags, fields, signatures, calendars, outbounds, Facebook audiences, automations or saved segment selectors by name to resolve automation editor IDs, without connection secrets. Email IDs are message references; event conditions use their smart tags from get-automation-email or get-notification-email. Create missing tags or fields with the tag/field tools.
+Searches existing emails, SMS, tags, fields, signatures, calendars, outbounds, Facebook audiences, automations or saved segment selectors by name to resolve automation editor IDs; returns only IDs and names. Email IDs are message references; event conditions use their smart tags from get-automation-email or get-notification-email. Create missing tags or fields with the tag/field tools.
 
 Parameter:
 
@@ -921,7 +921,7 @@ Parameter:
 
 **Add outbound action**
 
-Adds an automation outbound action that sends the contact's data to a configured webhook or connected service when reached. outboundID comes from search-automation-editor-references. Requires an unscheduled, inactive automation and its current revision from get-automation; dryRun previews without saving. Place it with afterActionId and branch (next after a regular action, yes/no after a decision).
+Adds an automation outbound action that hands the contact's data to the selected outbound when reached. outboundID comes from search-automation-editor-references. Requires an unscheduled, inactive automation and its current revision from get-automation; dryRun previews without saving. Place it with afterActionId and branch (next after a regular action, yes/no after a decision).
 
 Parameter:
 

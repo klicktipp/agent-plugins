@@ -7,6 +7,16 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.4 — 2026-10-30
+
+- **Two automation tool descriptions no longer read like credential handling.** After 0.29.3 the
+  Claude directory still held new versions over `skills/automation/references/contracts.md`
+  alone. That file was the only one with the phrases "without connection secrets"
+  (`search-automation-editor-references`) and "sends the contact's data to a configured webhook"
+  (`add-automation-outbound-action`); they now read "returns only IDs and names" and "hands the
+  contact's data to the selected outbound". The tools behave as before: the reference search
+  returns only `id` and `name`.
+
 ## 0.29.3 — 2026-10-29
 
 - **The IONOS DNS reference no longer reads an API key from the environment.** Hosting DNS goes
