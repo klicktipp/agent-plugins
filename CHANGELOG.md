@@ -7,6 +7,16 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.7 — 2026-11-02
+
+- **Import Policy notice before direct subscription.** Before the first `upsert-subscribed-contact`
+  call in a conversation, the `contacts` skill has the agent say that the contact is subscribed
+  immediately and without double opt-in, and link the
+  [KlickTipp Import Policy](https://www.klicktipp.com/import-policy/), the same notice the app's
+  *Add contact* dialog shows. The link comes as ordinary chat text before any choices or the
+  client's permission prompt, because some clients treat picking a choice as confirmation. It is
+  shown once per conversation; after that the client's own permission setting decides.
+
 ## 0.29.6 — 2026-11-02
 
 - **The DNS skill no longer handles provider logins.** With 0.29.5 the Claude directory still held

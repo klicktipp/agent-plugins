@@ -53,6 +53,26 @@ Import-Referenz.
 | Über einen Opt-in-Prozess anmelden | `subscribe-contact-via-opt-in-process`, genau ein Kanal (E-Mail *oder* SMS). Kann eine Bestätigungsmail schicken und Automationen starten. `approval` erst nach Zustimmung. |
 | Einen unbestätigten Lead festhalten | Prüfen, ob ein passendes Werkzeug da ist. Sofortiges Anmelden ist kein Ersatz. |
 
+## Import Policy vor dem direkten Anmelden
+
+Vor dem **ersten** `upsert-subscribed-contact` in einem Gespräch ein kurzer Hinweis — derselbe, den das
+Fenster *Kontakt hinzufügen* in der App zeigt:
+
+- der Kontakt wird **sofort und ohne Double-Opt-in** angemeldet, ohne Bestätigungsmail; mitgegebene
+  Werte können bestehende überschreiben, Automationen können starten;
+- die Person bestätigt, dass sie die Einwilligung hat, die die
+  [KlickTipp Import Policy](https://www.klicktipp.com/import-policy/) verlangt.
+
+Den Link als gewöhnlichen Chat-Text bringen, **bevor** Auswahlmöglichkeiten erscheinen oder der
+Client seine Berechtigungsabfrage zeigt — nicht in einer Auswahl, einem Codeblock oder dem
+Werkzeugaufruf versteckt: Manche Clients werten das Anklicken einer Auswahl schon als Bestätigung,
+und ein Link darin ist nicht klickbar. Danach den Aufruf machen; die Berechtigungsabfrage des Clients
+ist die Zustimmung. Lehnt die Person dort ab oder bricht ab, ändert sich nichts, und es gibt keinen
+zweiten Versuch über ein anderes Werkzeug. Der Hinweis kommt **einmal pro Gespräch**: Weitere
+Kontakte im selben Gespräch brauchen keine zweite KlickTipp-Bestätigung — dann entscheidet die
+Berechtigungswahl des Clients (einmal, Sitzung, immer erlauben). Versprich keinen Berechtigungsumfang,
+den der Client nicht anbietet, und erfinde für dieses Werkzeug kein `approval`.
+
 **Ein ausstehendes Double-Opt-in (Status `optin`) wird nicht bestätigt** — nicht per Upsert, nicht per
 Statusänderung und nicht, indem jemand den persönlichen Bestätigungslink öffnet. Empfiehl auch keinen
 Umweg über die Oberfläche. Für Datenpflege: `update-contact-values` und danach zurücklesen, dass der

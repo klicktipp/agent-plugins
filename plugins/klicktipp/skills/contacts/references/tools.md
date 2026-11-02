@@ -36,6 +36,9 @@ ist sofort `subscribed` und in der Zielgruppe des nächsten Mailings. **Stolpere
 Adresse wird abgewiesen, nicht wieder angemeldet. Eine bestehende Adresse wird *aktualisiert* — die
 mitgegebenen Werte überschreiben die alten, `alreadyExisted` sagt es. Zählt gegen das
 Tagesimportlimit. Unbekannte Feld-ID oder unbekannter Tag: Absage, nichts wird übersprungen.
+**Vor dem ersten Aufruf im Gespräch** die Anmeldung ohne Double-Opt-in nennen und die
+[Import Policy](https://www.klicktipp.com/import-policy/) verlinken — siehe „Import Policy vor dem
+direkten Anmelden" im Skill.
 
 ### `subscribe-contact-via-opt-in-process` · `unsubscribe-contact`
 **Wofür:** genau einen Kanal (E-Mail *oder* Telefon, nie beides) an- oder abmelden; Anmelden über
