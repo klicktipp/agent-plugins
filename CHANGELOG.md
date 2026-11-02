@@ -7,6 +7,13 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.15 — 2026-11-02
+
+- **The mailserver setup form in `dns-setup` links without the language path**
+  (`https://www.klicktipp.com/mailserver-domain-einrichten`); the site redirects it to its
+  language version and keeps the `mailserver_domain` parameter. The knowledge-base articles keep
+  `/de/`, because they answer 404 without it.
+
 ## 0.29.14 — 2026-11-02
 
 - **Company links without the language path.** Author and marketplace owner point at
