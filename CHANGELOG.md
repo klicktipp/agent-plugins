@@ -7,6 +7,12 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.11 — 2026-11-02
+
+- **The Claude manifest names its documentation** in `documentationUrl`:
+  [developers.klicktipp.com/guides/mcp-server-plugins](https://developers.klicktipp.com/guides/mcp-server-plugins).
+  `homepage` stays at developers.klicktipp.com/mcp-tools.
+
 ## 0.29.10 — 2026-11-02
 
 - **The privacy policy points at [www.klicktipp.com/de/datenschutzerklarung/](https://www.klicktipp.com/de/datenschutzerklarung/)**
