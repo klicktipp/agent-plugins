@@ -73,7 +73,7 @@ The exact list is data-driven. Enterprise access only unlocks mail-server config
 
 Safety rules:
 
-- Never ask the user to paste an API token, password, or recovery code into chat. Prefer interactive login; if a tool requires credentials in environment variables or local configuration, have the user set them privately and explain where they will be stored. Do not put secrets in example commands, shell history, chat, or project files.
+- Never ask the user to paste an API token, password, or recovery code into chat. Provider access goes through the provider's own integration or CLI with its own interactive login; this skill never reads, stores or passes on provider credentials. Do not put secrets in example commands, shell history, chat, or project files.
 - Never install or configure a CLI, package manager, plugin, MCP server, or credential helper without explicit approval. State what will be installed, its source (and whether it is third-party), its access scope, and why it is needed.
 - Existing read-only access needs no repeated approval. Creating, replacing, or deleting DNS records always requires approval of the proposed changes.
 - Stop when a requested CNAME owner already has another record type; a CNAME cannot coexist with it.

@@ -7,6 +7,16 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.6 — 2026-11-02
+
+- **The DNS skill no longer handles provider logins.** With 0.29.5 the Claude directory still held
+  the plugin under "reads a credential and could send it to a server", now without naming a file.
+  The ALL-INKL reference was the last place that did: it set up a third-party `npx` MCP server with
+  `KAS_LOGIN`/`KAS_PASSWORD` from local configuration and pointed at the KAS SOAP API and libraries.
+  Those sections are gone; ALL-INKL uses an already-connected integration or the KAS website. The
+  safety rule in `dns-setup` no longer tells the agent to have credentials set in environment
+  variables — provider access goes through the provider's own integration or CLI login.
+
 ## 0.29.5 — 2026-11-02
 
 - **The automation skill no longer ships its own copy of the tool contracts.** After 0.29.4 the
