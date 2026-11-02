@@ -86,5 +86,5 @@ support@klick-tipp.com.
 
 Proprietary — see [LICENSE](LICENSE). Use of the KlickTipp service through this
 plugin is governed by the KlickTipp
-[terms](https://www.klicktipp.com/de/nutzungsbedingungen/) and
-[privacy policy](https://www.klicktipp.com/de/datenschutzerklarung/).
+[terms](https://www.klicktipp.com/nutzungsbedingungen/) and
+[privacy policy](https://www.klicktipp.com/datenschutzerklarung/).

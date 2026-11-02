@@ -7,6 +7,13 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.14 — 2026-11-02
+
+- **Company links without the language path.** Author and marketplace owner point at
+  https://www.klicktipp.com, privacy policy and terms at `/datenschutzerklarung/` and
+  `/nutzungsbedingungen/` on the same host, in both manifests, both READMEs and the license. The
+  site redirects each to its language version.
+
 ## 0.29.13 — 2026-11-02
 
 - **The terms of service point at [www.klicktipp.com/de/nutzungsbedingungen/](https://www.klicktipp.com/de/nutzungsbedingungen/)**

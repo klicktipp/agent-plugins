@@ -2,7 +2,7 @@
   "name": "klicktipp",
   "owner": {
     "name": "Klick-Tipp Limited",
-    "url": "https://www.klicktipp.com/de/"
+    "url": "https://www.klicktipp.com"
   },
   "metadata": {
     "description": "The official KlickTipp plugin for Claude and Codex."

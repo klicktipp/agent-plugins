@@ -1,18 +1,18 @@
 {
   "name": "klicktipp",
   "displayName": "KlickTipp",
-  "version": "0.29.13",
+  "version": "0.29.14",
   "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, audience, sender, test sends and the dispatch confirmation — build and change its automations from a blank draft or a template, manage contacts, tags, custom fields and the opt-in processes of the account with their confirmation email, and read the statistics of its sends, tags and automations, over the KlickTipp MCP server.",
   "author": {
     "name": "Klick-Tipp Limited",
-    "url": "https://www.klicktipp.com/de/"
+    "url": "https://www.klicktipp.com"
   },
   "homepage": "https://developers.klicktipp.com/mcp-tools",
   "documentationUrl": "https://developers.klicktipp.com/guides/mcp-server-plugins",
   "supportUrl": "https://www.klicktipp.com/support/",
   "repository": "https://github.com/klicktipp/agent-plugins",
-  "privacyPolicyUrl": "https://www.klicktipp.com/de/datenschutzerklarung/",
-  "termsOfServiceUrl": "https://www.klicktipp.com/de/nutzungsbedingungen/",
+  "privacyPolicyUrl": "https://www.klicktipp.com/datenschutzerklarung/",
+  "termsOfServiceUrl": "https://www.klicktipp.com/nutzungsbedingungen/",
   "license": "Proprietary",
   "keywords": [
     "klicktipp",
