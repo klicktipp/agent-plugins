@@ -7,6 +7,11 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.12 — 2026-11-02
+
+- **The Claude manifest names its support page** in `supportUrl`:
+  [www.klicktipp.com/support/](https://www.klicktipp.com/support/).
+
 ## 0.29.11 — 2026-11-02
 
 - **The Claude manifest names its documentation** in `documentationUrl`:
