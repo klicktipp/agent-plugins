@@ -7,6 +7,13 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.10 — 2026-11-02
+
+- **The privacy policy points at [www.klicktipp.com/de/datenschutzerklarung/](https://www.klicktipp.com/de/datenschutzerklarung/)**
+  instead of www.klick-tipp.com/datenschutz — `privacyPolicyUrl` in the Claude manifest,
+  `privacyPolicyURL` in the Codex manifest, both READMEs and the license. The tag `0.29.9` was
+  pushed by mistake onto the 0.29.8 commit and is not a release of its own.
+
 ## 0.29.8 — 2026-11-02
 
 - **The author and marketplace owner link to [www.klicktipp.com/de/](https://www.klicktipp.com/de/)**

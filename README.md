@@ -87,4 +87,4 @@ support@klick-tipp.com.
 Proprietary — see [LICENSE](LICENSE). Use of the KlickTipp service through this
 plugin is governed by the KlickTipp
 [terms](https://www.klick-tipp.com/agb) and
-[privacy policy](https://www.klick-tipp.com/datenschutz).
+[privacy policy](https://www.klicktipp.com/de/datenschutzerklarung/).

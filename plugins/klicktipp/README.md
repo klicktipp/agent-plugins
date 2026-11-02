@@ -318,5 +318,5 @@ stay readable, movable and removable.
 
 support@klick-tipp.com ·
 [Documentation](https://developers.klicktipp.com/mcp-tools) ·
-[Privacy policy](https://www.klick-tipp.com/datenschutz) ·
+[Privacy policy](https://www.klicktipp.com/de/datenschutzerklarung/) ·
 [Terms](https://www.klick-tipp.com/agb)
