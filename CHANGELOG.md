@@ -7,6 +7,12 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.8 — 2026-11-02
+
+- **The author and marketplace owner link to [www.klicktipp.com/de/](https://www.klicktipp.com/de/)**
+  instead of www.klick-tipp.com, in both manifests and the marketplace. Privacy policy and terms
+  keep their addresses.
+
 ## 0.29.7 — 2026-11-02
 
 - **Import Policy notice before direct subscription.** Before the first `upsert-subscribed-contact`
