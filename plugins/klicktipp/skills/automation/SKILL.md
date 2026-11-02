@@ -10,8 +10,8 @@ Ziel, Sprung, Benachrichtigung, Splittest, Ende. Sag nie „das geht nur im Edit
 Ausnahme: **Aktivieren** tut ein Mensch in KlickTipp, siehe Reihenfolge, Schritt 7.
 
 Die Werkzeugbeschreibungen kommen aus einer Vorlage und unterscheiden die Aktionstypen kaum. Wähle
-nach [references/actions.md](references/actions.md), nicht nach der Beschreibung. Die
-veröffentlichten Verträge stehen Wort für Wort in [references/contracts.md](references/contracts.md).
+nach [references/actions.md](references/actions.md), nicht nach der Beschreibung. Parameter und
+Grenzen jedes Werkzeugs liefert der Server selbst mit seiner Werkzeugliste.
 
 ## Mit einer Vorlage anfangen, wenn eine passt
 

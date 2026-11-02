@@ -7,6 +7,15 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.5 — 2026-11-02
+
+- **The automation skill no longer ships its own copy of the tool contracts.** After 0.29.4 the
+  Claude directory still held new versions over `skills/automation/references/contracts.md`, now
+  as a credential read from the user's machine and forwarded to the MCP server. Nothing in the
+  plugin reads one — the server sits behind OAuth — but the file was a word-for-word mirror of the
+  server's `tools/list`, which every client receives at connect time anyway. It is gone; the skill
+  points at the server's own tool list instead. `actions.md` and `templates.md` stay unchanged.
+
 ## 0.29.4 — 2026-10-30
 
 - **Two automation tool descriptions no longer read like credential handling.** After 0.29.3 the
