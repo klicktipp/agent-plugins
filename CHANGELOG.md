@@ -7,6 +7,12 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.13 — 2026-11-02
+
+- **The terms of service point at [www.klicktipp.com/de/nutzungsbedingungen/](https://www.klicktipp.com/de/nutzungsbedingungen/)**
+  instead of www.klick-tipp.com/agb: new `termsOfServiceUrl` in the Claude manifest,
+  `termsOfServiceURL` in the Codex manifest, both READMEs and the license.
+
 ## 0.29.12 — 2026-11-02
 
 - **The Claude manifest names its support page** in `supportUrl`:
