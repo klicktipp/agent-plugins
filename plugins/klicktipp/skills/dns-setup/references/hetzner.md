@@ -1,23 +1,7 @@
 ## Provider: Hetzner
 
-Hetzner DNS is managed through the official `hcloud` CLI/API. Authenticate interactively and keep credentials out of chat.
+This plugin brings no Hetzner integration and handles no Hetzner login or API token. If the user already has a connected Hetzner DNS integration, use it for reading and, with approval, for changes. Otherwise guide them through the **Hetzner Console -> DNS -> select zone -> Records** page.
 
-```bash
-command -v hcloud
-hcloud context create klicktipp-dns
-hcloud zone list
-hcloud zone rrset list example.com
-hcloud zone rrset create --help
-```
+Hetzner expects record names relative to the zone. Replacing a record set replaces all of its values, so have the user inspect the existing values first; adding a value must not create duplicate SPF or DMARC policies.
 
-If `hcloud` is missing, offer the matching official package and wait for approval:
-
-- macOS/Linux with Homebrew: `brew install hcloud`
-- Windows: `winget install --id HetznerCloud.CLI --exact`
-
-If the user declines, use the Hetzner Console or official API instead.
-
-`hcloud` expects names relative to the zone. Inspect an RRSet with `hcloud zone rrset describe <zone> <name> <type>`. `set-records` replaces the complete RRSet; use it only after displaying the existing values and receiving approval. `add-records` preserves existing values but must not create duplicate SPF or DMARC policies.
-
-Sources: [Hetzner DNS](https://www.hetzner.com/dns/), [`hcloud zone` reference](https://github.com/hetznercloud/cli/blob/main/docs/reference/manual/hcloud_zone.md)
-
+Source: [Hetzner DNS](https://www.hetzner.com/dns/)

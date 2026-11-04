@@ -1,16 +1,7 @@
 ## Provider: GoDaddy
 
-The plugin has no GoDaddy server. The official `gddy` CLI supports browser login and DNS CRUD, though GoDaddy labels it beta.
+This plugin brings no GoDaddy integration and handles no GoDaddy login or API key. If the user already has a connected GoDaddy DNS integration, use it for reading and, with approval, for changes. Otherwise guide them through **My Products -> Domain -> DNS -> Manage DNS**.
 
-```bash
-gddy auth login
-gddy dns list example.com
-gddy dns add --help
-```
+Changing or deleting a record can affect every record with the same name and type, so have the user inspect the complete set first. The domain must use GoDaddy authoritative DNS.
 
-If `gddy` is missing, offer GoDaddy's official installer for the current operating system and ask before running it. Disclose that the macOS/Linux installer downloads and executes GoDaddy's installation script; provide the linked setup page so the user can choose manual installation instead.
-
-Use `--dry-run` where offered before approved changes. `set` and `delete` can affect every record matching a name/type pair, so inspect the complete RRSet first. The domain must use GoDaddy authoritative DNS.
-
-Sources: [`gddy` setup](https://developer.godaddy.com/en/docs/api-users/cli/set-up), [DNS workflow](https://developer.godaddy.com/en/docs/api-users/domains/manage/dns)
-
+Source: [GoDaddy DNS records](https://www.godaddy.com/help/manage-dns-records-680)

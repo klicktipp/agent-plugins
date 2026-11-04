@@ -7,6 +7,16 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.16 — 2026-11-04
+
+- **The DNS skill no longer runs provider CLIs.** The Claude directory still held the plugin under
+  `MCP_FORWARDS_CREDENTIAL_ENV` ("reads a credential and could send it to a server") after 0.29.6.
+  The remaining readers were the CLI routes in `dns-setup`: `hcloud` (Hetzner), `gddy auth login`
+  (GoDaddy) and `ionosctl config login` (IONOS Cloud) each use a token stored on the user's machine.
+  Those sections are gone. Hetzner, GoDaddy and IONOS Cloud now use an already-connected integration
+  or the provider's website; the skill no longer offers to install CLIs or API clients and states
+  that it never reads provider credentials from the environment or local files.
+
 ## 0.29.15 — 2026-11-02
 
 - **The mailserver setup form in `dns-setup` links without the language path**

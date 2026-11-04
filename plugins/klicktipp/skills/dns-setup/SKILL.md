@@ -1,18 +1,18 @@
 ---
 name: dns-setup
-description: Use for KlickTipp sending-domain setup, DNS verification, DKIM, DMARC, SPF, CNAME, TXT, MX, A records, and provider-specific DNS changes through the provider's DNS connectors, APIs, CLIs, or guided portal steps.
+description: Use for KlickTipp sending-domain setup, DNS verification, DKIM, DMARC, SPF, CNAME, TXT, MX, A records, and provider-specific DNS changes through the provider's connected DNS integration or guided portal steps.
 ---
 
 # KlickTipp DNS setup
 
-Help the user publish and verify the DNS records KlickTipp requires for a sending domain. Use the connected KlickTipp and DNS-provider tools when available; otherwise offer to set up a suitable provider integration or CLI if the environment permits it. Guide the user through the provider's website when direct access is unavailable or declined. KlickTipp's current record table, not the examples below, determines what to publish.
+Help the user publish and verify the DNS records KlickTipp requires for a sending domain. Use the connected KlickTipp and DNS-provider tools when available; otherwise offer to connect the provider's official integration through the client's settings where one exists. Guide the user through the provider's website when direct access is unavailable or declined. KlickTipp's current record table, not the examples below, determines what to publish.
 
 ## Choose a route
 
 1. Identify the sending domain and obtain its current DNS record table from `get-sender-domain-dns-setup`. If KlickTipp tools are unavailable, ask the user to copy the record table from KlickTipp; do not infer values from the examples in this skill. Never ask for credentials.
 2. Identify who hosts the authoritative DNS zone. With shell access, inspect the domain's NS records (for example, `dig +short NS example.com`); otherwise use an available DNS lookup tool or ask the user where they manage DNS. Nameservers can differ from the registrar, and nameservers alone may not identify the account the user can edit. Confirm the editable zone before proceeding.
-3. Check for an already-connected provider integration or CLI. Prefer it for inspecting existing records and, with approval, making changes. If none is available and installation/configuration is possible, offer a suitable provider MCP server, official CLI, or API client; explain its source, access scope, credential handling, and what will be installed. Obtain explicit approval before installing or configuring it. Installing a tool does not authorize DNS changes.
-4. If no provider integration is connected and the user needs the optional KlickTipp mailserver service for this domain, also offer the KlickTipp-assisted mailserver setup form as a choice alongside setting up a provider tool or managing DNS themselves. Use this route only when the service is available to the account and domain; `dkimOnly` alone does not establish eligibility. If availability is not exposed by a KlickTipp tool, ask the user to confirm it in their KlickTipp domain settings rather than assume it. Link to `https://www.klicktipp.com/mailserver-domain-einrichten?mailserver_domain=DOMAIN_NAME`, replacing `DOMAIN_NAME` with the selected domain from KlickTipp, URL-encoded. Prefer a domain-specific link returned by KlickTipp if one becomes available. Do not put hoster credentials in URL parameters; the user logs in and enters them directly in the form, and the agent does not collect or submit them. This requests assisted mailserver setup, not generic DNS setup, and does not replace the remaining DNS steps.
+3. Check for an already-connected provider integration. Prefer it for inspecting existing records and, with approval, making changes. If none is connected and the provider offers an official integration the client can connect (the user signs in or enters keys there, never in chat), offer it; explain its source and access scope and obtain explicit approval before connecting it. Connecting an integration does not authorize DNS changes. This skill does not run provider CLIs or API clients and never reads provider credentials from the environment or local files.
+4. If no provider integration is connected and the user needs the optional KlickTipp mailserver service for this domain, also offer the KlickTipp-assisted mailserver setup form as a choice alongside connecting a provider integration or managing DNS themselves. Use this route only when the service is available to the account and domain; `dkimOnly` alone does not establish eligibility. If availability is not exposed by a KlickTipp tool, ask the user to confirm it in their KlickTipp domain settings rather than assume it. Link to `https://www.klicktipp.com/mailserver-domain-einrichten?mailserver_domain=DOMAIN_NAME`, replacing `DOMAIN_NAME` with the selected domain from KlickTipp, URL-encoded. Prefer a domain-specific link returned by KlickTipp if one becomes available. Do not put hoster credentials in URL parameters; the user logs in and enters them directly in the form, and the agent does not collect or submit them. This requests assisted mailserver setup, not generic DNS setup, and does not replace the remaining DNS steps.
 5. If direct access is unavailable or the user declines setup, guide them through the provider's DNS page using the exact host, type, value, TTL, and priority from KlickTipp. Have them inspect existing entries first and confirm the proposed changes before saving. Ask them to report back with non-secret record details or the verification result.
 
 ## Sources
@@ -73,8 +73,8 @@ The exact list is data-driven. Enterprise access only unlocks mail-server config
 
 Safety rules:
 
-- Never ask the user to paste an API token, password, or recovery code into chat. Provider access goes through the provider's own integration or CLI with its own interactive login; this skill never reads, stores or passes on provider credentials. Do not put secrets in example commands, shell history, chat, or project files.
-- Never install or configure a CLI, package manager, plugin, MCP server, or credential helper without explicit approval. State what will be installed, its source (and whether it is third-party), its access scope, and why it is needed.
+- Never ask the user to paste an API token, password, or recovery code into chat. Provider access goes only through an integration the user connects in the client, with its own sign-in; this skill never reads, stores or passes on provider credentials. Do not put secrets in example commands, shell history, chat, or project files.
+- Never install or configure a plugin or MCP server without explicit approval. State what will be installed, its source (and whether it is third-party), its access scope, and why it is needed.
 - Existing read-only access needs no repeated approval. Creating, replacing, or deleting DNS records always requires approval of the proposed changes.
 - Stop when a requested CNAME owner already has another record type; a CNAME cannot coexist with it.
 - When `_dmarc` already exists, validate and preserve the existing policy if valid; do not add another policy.
@@ -84,8 +84,8 @@ Safety rules:
 
 ## Provider-specific guidance
 
-When the provider is known and the task requires its DNS portal, API, CLI or integration details, read only its matching reference: [ALL-INKL](references/all-inkl.md), [IONOS (1&1)](references/ionos.md), [Cloudflare](references/cloudflare.md), [STRATO](references/strato.md), [GoDaddy](references/godaddy.md), [Hetzner](references/hetzner.md). For a read-only KlickTipp status check, do not load provider references.
+When the provider is known and the task requires its DNS portal or integration details, read only its matching reference: [ALL-INKL](references/all-inkl.md), [IONOS (1&1)](references/ionos.md), [Cloudflare](references/cloudflare.md), [STRATO](references/strato.md), [GoDaddy](references/godaddy.md), [Hetzner](references/hetzner.md). For a read-only KlickTipp status check, do not load provider references.
 
 ## Other providers
 
-Prefer an official scoped API, CLI, Terraform provider, or guided portal workflow. Inspect first, show the exact proposed records, obtain approval, and apply the generic workflow above. Do not attempt undocumented endpoints or portal automation; fall back to manual guidance.
+Prefer an already-connected official integration, otherwise the guided portal workflow. Inspect first, show the exact proposed records, obtain approval, and apply the generic workflow above. Do not attempt undocumented endpoints or portal automation; fall back to manual guidance.
