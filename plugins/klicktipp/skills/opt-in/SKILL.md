@@ -5,8 +5,8 @@ description: Opt-in-Prozesse eines KlickTipp-Kontos (in der App „Abonnentenlis
 
 # KlickTipp-Opt-in-Prozesse
 
-Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md), ihre veröffentlichten
-Verträge Wort für Wort in [references/contracts.md](references/contracts.md).
+Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md). Parameter und Grenzen
+jedes Werkzeugs liefert der Server selbst mit seiner Werkzeugliste.
 
 Dieser Skill gehört der **Bestätigungsmail** — Betreff, HTML- und Plain-Text. `newsletter` gehört der
 Newsletter samt Versand, `email` der Baustein-Editor des Newsletters. Wird ein Newsletter als Zweck der

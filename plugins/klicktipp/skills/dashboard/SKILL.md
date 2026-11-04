@@ -21,7 +21,7 @@ Read the relevant measurements first. Keep their units, time windows and denomin
 | A contact's actual tagging events | `get-contact-history` |
 | A saved statistics report | `get-statistics-report` |
 
-The published contracts of the statistics tools, word for word, are in [references/contracts.md](references/contracts.md).
+The server's own tool list carries the parameters and limits of every statistics tool.
 
 Use the same account and connector for comparisons. Record the retrieval time when a response has no server measurement timestamp. Paginate searches before calling the returned set complete. Missing fields are unavailable, never zero.
 

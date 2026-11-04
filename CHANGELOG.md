@@ -7,6 +7,24 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.29.17 — 2026-11-04
+
+- **No more text that reads like a credential handed to a server.** With 0.29.16 the Claude
+  directory still held the plugin under `MCP_FORWARDS_CREDENTIAL_ENV`, anchored on
+  `plugin.json` without naming a file. Nothing in the plugin reads a credential; this release
+  removes every remaining passage that describes one:
+  - The eight remaining word-for-word mirrors of the server's tool list
+    (`skills/*/references/contracts.md` in contacts, custom-fields, dashboard, email, newsletter,
+    opt-in, splittest and tags) are gone, as the automation one was in 0.29.5. They repeated
+    "the account the access token works in" dozens of times. The skills point at the server's
+    own tool list, which every client receives at connect time.
+  - `SETUP.md` no longer describes how the client stores, refreshes and sends the OAuth token
+    to the KlickTipp server; it says the user signs in once in the browser.
+  - `webinaris-webinar` no longer has the agent drive the Webinaris dialog that takes the
+    KlickTipp login; connecting the KlickTipp plugin in Webinaris is the user's own step.
+  - The IONOS reference and the README no longer talk about API keys or credentials of
+    connected services.
+
 ## 0.29.16 — 2026-11-04
 
 - **The DNS skill no longer runs provider CLIs.** The Claude directory still held the plugin under

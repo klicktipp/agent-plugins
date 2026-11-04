@@ -7,14 +7,14 @@ prerequisites: A KlickTipp account.
 # Connect the KlickTipp plugin
 
 This plugin ships one MCP server, `klicktipp`, pointing at
-`https://mcp.klicktipp.com/mcp`. It carries no API key: the endpoint sits behind
-OAuth, and the user signs in once per machine. Nothing else has to be
-configured — there is no setting, token or URL to fill in.
+`https://mcp.klicktipp.com/mcp`. The user signs in once per machine in the browser;
+the client handles that sign-in itself. Nothing in the plugin has to be
+configured or filled in.
 
 ## What "not signed in yet" looks like
 
-Until the connection is authorised, every attempt sends an `initialize` without a
-token and the server answers `401` with a `WWW-Authenticate` header. The tool
+Until the user has signed in, the server answers `401` and asks the client to
+sign in. The tool
 list may come up empty and tool calls fail with an authentication error. **This
 is the expected run-up to the login, not a defect** — do not start debugging the
 endpoint, and do not offer to add the server a second time by hand.
@@ -23,7 +23,7 @@ endpoint, and do not offer to add the server a second time by hand.
 
 The server of an installed plugin is its own connection with its own prefixed
 name. Use the full name — a login for a hand-added server called `klicktipp` does
-not count here, because credentials are stored per identity:
+not count here, because each connection has its own sign-in:
 
 ```bash
 claude mcp login plugin:klicktipp:klicktipp
@@ -33,9 +33,9 @@ The short name alone is rejected with `No MCP server named "klicktipp"`. Inside
 Claude Code, `/mcp` offers the same login; the connection is listed under exactly
 that prefixed name.
 
-A browser window opens, the user signs in with their KlickTipp credentials and
-approves the access. After that the token is stored and refreshed automatically —
-this is a one-time step per machine.
+A browser window opens, the user signs in to KlickTipp there and approves the
+access. The client keeps the connection signed in — this is a one-time step per
+machine.
 
 ## Other hosts: opencode, OpenClaw, Langdock
 

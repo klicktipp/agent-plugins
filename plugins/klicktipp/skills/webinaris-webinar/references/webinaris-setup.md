@@ -17,7 +17,8 @@ screenshot against the table below before moving on.
 | … | … | … | … |
 
 After the user's "ok", apply exactly that list, save each screen, read it back, report. Changes not
-on the list need a new "ok". The user types the KlickTipp password in the plugin dialog themself.
+on the list need a new "ok". Creating the KlickTipp plugin connection is the user's own step; leave
+that dialog to them.
 
 ## Steps (in this order)
 
@@ -44,8 +45,8 @@ on the list need a new "ok". The user types the KlickTipp password in the plugin
    - Plugin: if a KlickTipp plugin for this account exists, *Plugin auswählen* it. Plugin names do
      not show the account; after selecting, the plugin editor's opt-in list shows that account's
      processes — that confirms the right account. Otherwise
-     "Plugin hinzufügen" → "+ Neues Plugin erstellen" → "Klick-Tipp" → name, KlickTipp user name,
-     password (user types it) → "Plugin erstellen".
+     the user connects it themself: "Plugin hinzufügen" → "+ Neues Plugin erstellen" → "Klick-Tipp" →
+     follow the Webinaris dialog → "Plugin erstellen".
 7. **Plugin bearbeiten** (three-dot menu → Bearbeiten)
    - Opt-in-Prozess: the one from question 6.
    - The KlickTipp field dropdown has no search and loads lazily: newly created fields appear only

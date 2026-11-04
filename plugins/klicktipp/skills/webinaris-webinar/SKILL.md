@@ -25,8 +25,8 @@ validation, activation). This skill adds what is specific to Webinaris.
 - **One step at a time in Webinaris.** Say what to open, what to set, then wait for "ok" or a
   screenshot. Never stack several Webinaris screens into one message.
 - **Browser extension:** list *all* planned Webinaris changes first (screen, field, old → new value),
-  get one "ok", then apply them. Read back every screen after saving. The KlickTipp password in the
-  Webinaris plugin is always typed by the user — never by you, never into chat.
+  get one "ok", then apply them. Read back every screen after saving. Connecting the KlickTipp plugin in
+  Webinaris is always the user's own step — you never fill in that dialog.
 - **Existing accounts are the normal case.** Before importing, look for what is already there
   (tags, fields, opt-in processes, campaigns with "Webinar"/"Webinaris" in the name, an existing
   Webinaris plugin connection). Offer to reuse or to create new; default to a **new prefix** so a

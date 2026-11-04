@@ -11,8 +11,8 @@ auslösen, eine Kampagne oder Automation starten oder eine laufende ändern. Des
 sagen, was passieren wird, dann die Zustimmung, dann der Aufruf.**
 
 Die Werkzeuge im Einzelnen — wofür, was sie nicht tun, woran man sich stößt — stehen in
-[references/tools.md](references/tools.md); ihre veröffentlichten Verträge Wort für Wort in
-[references/contracts.md](references/contracts.md).
+[references/tools.md](references/tools.md). Parameter und Grenzen jedes Werkzeugs liefert der Server
+selbst mit seiner Werkzeugliste.
 
 Geht es um eine Kontaktliste als CSV oder Excel — einen Importplan, einen Umzug aus einem anderen
 System, einen hochgeladenen Export —, lies vor dem Einordnen der Zeilen oder dem Empfehlen eines

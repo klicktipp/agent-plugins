@@ -5,8 +5,8 @@ description: KlickTipp-Tags finden, anlegen, umbenennen, löschen und an Kontakt
 
 # KlickTipp-Tags
 
-Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md), ihre veröffentlichten
-Verträge Wort für Wort in [references/contracts.md](references/contracts.md).
+Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md). Parameter und Grenzen
+jedes Werkzeugs liefert der Server selbst mit seiner Werkzeugliste.
 
 Tags sind entweder **manuell** (bewusst angelegt und vergeben) oder von KlickTipp selbst gesetzt, wenn
 etwas passiert (Newsletter gesendet, geöffnet, geklickt, Formular, Kampagne). Nur manuelle lassen sich

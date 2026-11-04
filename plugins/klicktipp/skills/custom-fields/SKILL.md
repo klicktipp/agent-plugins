@@ -5,8 +5,8 @@ description: Eigene Felder eines KlickTipp-Kontos finden, anlegen, ändern und l
 
 # KlickTipp — eigene Felder
 
-Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md), ihre veröffentlichten
-Verträge Wort für Wort in [references/contracts.md](references/contracts.md).
+Die Werkzeuge im Einzelnen stehen in [references/tools.md](references/tools.md). Parameter und Grenzen
+jedes Werkzeugs liefert der Server selbst mit seiner Werkzeugliste.
 
 Such vor dem Anlegen nach dem gewünschten Namen und prüf plausible Definitionen. Die Suche trifft
 Namensteile; ein globales Feld (Vorname, Stadt …) deckt den Bedarf vielleicht schon.

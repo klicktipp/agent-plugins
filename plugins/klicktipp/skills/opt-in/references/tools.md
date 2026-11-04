@@ -1,7 +1,7 @@
 # Opt-in-Werkzeuge — Wofür, Nicht, Stolperer
 
-Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters, wie der Server ihn veröffentlicht,
-trägt [contracts.md](contracts.md); hier steht die Deutung. Der Ablauf steht in `../SKILL.md`.
+Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters liefert der Server selbst mit
+seiner Werkzeugliste; hier steht die Deutung. Der Ablauf steht in `../SKILL.md`.
 
 `R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht einen echten Empfänger oder eine
 Automation · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes Werkzeug nimmt optional

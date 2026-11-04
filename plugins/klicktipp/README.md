@@ -151,8 +151,8 @@ An automation's ID comes from `search-automations`, an email's or SMS's from `se
 
 | | |
 |---|---|
-| `get-account-settings` | the account's settings screen: feature switches, preview tag, email blacklist — only what the account may change, credentials only as set or not |
-| `update-account-settings` | change named settings only; one bad value refuses the whole call, and credentials cannot be set here |
+| `get-account-settings` | the account's settings screen: feature switches, preview tag, email blacklist — only what the account may change, connected services only as set up or not |
+| `update-account-settings` | change named settings only; one bad value refuses the whole call, and connected services cannot be set up here |
 
 **Automations** — the graph, its actions, the Masterclass templates and the
 messages an automation sends. Every write needs an inactive automation and its
