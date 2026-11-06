@@ -7,6 +7,16 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.30.0 — 2026-11-06
+
+- **`provenexpert-reviews`, a new skill.** It sets up a KlickTipp review campaign for ProvenExpert
+  through the native integration: personalised survey link after a purchase, a reminder until the
+  contact has rated, a thank-you mail for 4 or 5 stars and an improvement mail for any other
+  rating, plus an optional branch with Google review mails for Gmail/Googlemail contacts. The skill
+  connects ProvenExpert as a marketing tool, has a survey synced, checks its smart tags, imports
+  the ProvenExpert campaign template and wires it to those smart tags. The template link is the
+  production template of the test phase.
+
 ## 0.29.17 — 2026-11-04
 
 - **No more text that reads like a credential handed to a server.** With 0.29.16 the Claude

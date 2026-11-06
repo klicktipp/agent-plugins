@@ -76,6 +76,7 @@ These links always point at the latest release:
 | `opt-in` | [klicktipp-skill-opt-in.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-opt-in.zip) |
 | `splittest` | [klicktipp-skill-splittest.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-splittest.zip) |
 | `tags` | [klicktipp-skill-tags.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-tags.zip) |
+| `provenexpert-reviews` | [klicktipp-skill-provenexpert-reviews.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-provenexpert-reviews.zip) |
 | `webinaris-webinar` | [klicktipp-skill-webinaris-webinar.zip](https://github.com/klicktipp/agent-plugins/releases/latest/download/klicktipp-skill-webinaris-webinar.zip) |
 
 Upload each ZIP as it is, and in the skill's **Integrations** field
@@ -92,7 +93,7 @@ and give the Agent Builder this:
 Create an agent "KlickTipp". It works in the user's KlickTipp account through the
 KlickTipp integration. Attach the KlickTipp integration and the skills account-setup,
 automation, contacts, custom-fields, dashboard, dns-setup, email, email-template-generator,
-newsletter, opt-in, splittest, tags and webinaris-webinar.
+newsletter, opt-in, provenexpert-reviews, splittest, tags and webinaris-webinar.
 Instructions: Read the matching skill before the first KlickTipp tool call of a
 task. Never send a newsletter yourself: before prepare-newsletter-dispatch, show
 subject, audience, recipient estimate, sender and time. A person confirms the send

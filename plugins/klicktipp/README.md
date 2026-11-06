@@ -293,13 +293,19 @@ imports the Webinaris campaign template, adapts placeholders, reminder times and
 the live check to the account, guides the user through the matching Webinaris
 settings, and tests the result after activation.
 
+`skills/provenexpert-reviews` — sets up a ProvenExpert review campaign through
+the native integration: connects ProvenExpert, has a survey synced, imports the
+ProvenExpert campaign template and wires it to the survey's smart tags — survey
+link after a purchase, reminder, thank-you or improvement mail by rating, and an
+optional Google review branch for Gmail contacts.
+
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
 no layout.
 
 The tool-focused skills carry `references/` folders with the tools they use,
 their answer shapes and their pitfalls. `dns-setup` covers provider guidance
-directly. `account-setup`, `email`, `newsletter`, `splittest`, `dashboard`, `dns-setup` and `webinaris-webinar` are in English; the
+directly. `account-setup`, `email`, `newsletter`, `splittest`, `dashboard`, `dns-setup`, `webinaris-webinar` and `provenexpert-reviews` are in English; the
 others are in German, like the editor itself.
 
 **The server serves more than the skills describe.** Calendars, countdowns,

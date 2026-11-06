@@ -1,6 +1,6 @@
 {
   "name": "klicktipp",
-  "version": "0.29.17",
+  "version": "0.30.0",
   "description": "KlickTipp toolkit: write, review and prepare KlickTipp email newsletters — drafts, block-by-block content, audience, sender, test sends and the dispatch confirmation — build and change its automations from a blank draft or a template, manage contacts, tags, custom fields and the opt-in processes of the account with their confirmation email, and read the statistics of its sends, tags and automations, over the KlickTipp MCP server.",
   "author": {
     "name": "Klick-Tipp Limited",
@@ -28,7 +28,7 @@
   "interface": {
     "displayName": "KlickTipp",
     "shortDescription": "Write, review and prepare KlickTipp email newsletters block by block, and read the account's opt-in processes. The actual dispatch is always confirmed by a person in KlickTipp.",
-    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth). Create and review newsletters, edit email content block by block, manage split tests, contacts, tags, fields, opt-in processes and automations, and inspect their statistics. Newsletter dispatch and automation activation wait for a person to confirm. Thirteen skills ship with the plugin, including account-setup for a first usable setup, webinaris-webinar for Webinaris auto-webinar campaigns and dns-setup for sending-domain records, verification and provider-specific guidance. The KlickTipp server reads the required DNS records; changes at the DNS provider use a separately connected integration or guided portal steps.",
+    "longDescription": "Connects to the KlickTipp MCP server (https://mcp.klicktipp.com/mcp, OAuth). Create and review newsletters, edit email content block by block, manage split tests, contacts, tags, fields, opt-in processes and automations, and inspect their statistics. Newsletter dispatch and automation activation wait for a person to confirm. Fourteen skills ship with the plugin, including account-setup for a first usable setup, webinaris-webinar for Webinaris auto-webinar campaigns, provenexpert-reviews for ProvenExpert review campaigns and dns-setup for sending-domain records, verification and provider-specific guidance. The KlickTipp server reads the required DNS records; changes at the DNS provider use a separately connected integration or guided portal steps.",
     "developerName": "KlickTipp",
     "category": "Developer Tools",
     "capabilities": [
