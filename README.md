@@ -49,6 +49,8 @@ plugins/klicktipp/
 ├── skills/                        shipped with the plugin: account-setup, email, newsletter, splittest, dns-setup,
 │                                   automation, contacts, tags, custom-fields, opt-in, dashboard,
 │                                   email-template-generator, webinaris-webinar, provenexpert-reviews
+├── evals/                          the behaviour suite: `claude plugin eval` cases, graders and
+│                                   MCP mocks for the newsletter flow — see evals/README.md
 ├── SETUP.md                        walks the agent through the one-time OAuth login
 └── README.md
 ```

@@ -1,0 +1,1 @@
+- A newsletter is dispatched or its dispatch prepared.

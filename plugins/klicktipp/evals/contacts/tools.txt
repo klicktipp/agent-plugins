@@ -1,0 +1,17 @@
+add-contact-history-note
+delete-contact
+get-account-settings
+get-contact
+get-contact-history
+get-newsletter
+get-tag
+search-contacts
+search-duplicate-contacts
+subscribe-contact-via-opt-in-process
+tag-contact
+unsubscribe-contact
+untag-contact
+update-account-settings
+update-contact-email
+update-contact-values
+upsert-subscribed-contact

@@ -1,0 +1,9 @@
+get-account-statistics
+get-campaign-statistics
+get-contact-history
+get-newsletter
+get-statistics-report
+get-tag
+get-tag-statistics
+search-contacts
+search-newsletters

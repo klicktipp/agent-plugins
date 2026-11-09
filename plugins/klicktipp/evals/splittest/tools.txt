@@ -1,0 +1,14 @@
+add-newsletter-split-test-variant
+configure-newsletter-split-test
+create-newsletter-draft
+get-email-editor-content
+get-newsletter
+get-newsletter-split-test
+remove-newsletter-split-test-variant
+replace-email-editor-content-from-document
+replace-email-editor-content-from-email
+replace-email-editor-content-from-html
+send-newsletter-test
+update-email-editor-text
+update-newsletter-draft
+update-newsletter-split-test-variant

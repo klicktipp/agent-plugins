@@ -1,0 +1,10 @@
+create-manual-tag
+delete-manual-tag
+get-contact
+get-contact-history
+get-tag
+search-contacts
+search-tags
+tag-contact
+untag-contact
+update-manual-tag
