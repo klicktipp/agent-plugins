@@ -1,0 +1,7 @@
+create-custom-field
+delete-custom-field
+get-contact
+get-custom-field
+search-custom-fields
+update-contact-values
+update-custom-field

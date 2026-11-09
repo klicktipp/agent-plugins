@@ -1,0 +1,2 @@
+- A split test is configured on a newsletter that already exists, instead of at creation.
+- A newsletter is dispatched or its dispatch prepared.

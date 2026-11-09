@@ -320,6 +320,25 @@ for separately and the work on it is deferred, and the editor offers the block
 only inside an automation — so a newsletter cannot get one at all. Blocks that already exist
 stay readable, movable and removable.
 
+## Evals
+
+`evals/` holds a behaviour suite for the newsletter flow, run with
+[`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals): eight
+cases — six where the skills should fire, two where they should not — graded on
+the outcome, each one run both with and without the plugin so the headline
+number is the uplift the plugin buys.
+
+```bash
+cd plugins/klicktipp
+claude plugin eval . --ablation with-without --judge-model haiku --no-publish
+```
+
+No real account is touched: `evals/mocks/klicktipp/` stands in for the MCP
+server with a fictional account, and carries the saved `tools/list` of the
+production server so the mock answers with the real schemas. Details, the case
+table and how to refresh that list are in
+[evals/README.md](evals/README.md).
+
 ## Support
 
 support@klick-tipp.com ·

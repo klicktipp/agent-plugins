@@ -1,0 +1,1 @@
+- Any tool is called that writes: this skill is read-only.

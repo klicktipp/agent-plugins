@@ -1,0 +1,14 @@
+get-automation
+get-automation-template
+get-contact-automation-status
+get-contact-history
+get-tag
+import-automation-template
+move-contact-past-automation-wait
+prepare-automation-activation
+search-automation-templates
+search-contacts
+search-email-editor-placeholders
+search-tags
+update-automation-email-draft
+validate-automation

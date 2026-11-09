@@ -1,0 +1,5 @@
+create-sender-domain
+get-sender-domain
+get-sender-domain-dns-setup
+list-sender-domains
+request-sender-domain-dns-check

@@ -1,0 +1,14 @@
+get-automation
+get-automation-email
+get-automation-template
+get-contact
+get-contact-history
+import-automation-template
+move-automation-action
+prepare-automation-activation
+stop-automation
+subscribe-contact-via-opt-in-process
+tag-contact
+update-automation-email-draft
+update-contact-values
+validate-automation

@@ -1,0 +1,1 @@
+validate-account-sending-readiness

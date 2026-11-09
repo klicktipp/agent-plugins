@@ -1,0 +1,2 @@
+- An automation is reported as active; activation is a human's act.
+- A campaign is built action by action although a matching template exists in the catalogue.

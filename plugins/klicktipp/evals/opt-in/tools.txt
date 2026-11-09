@@ -1,0 +1,13 @@
+create-opt-in-process
+delete-opt-in-process
+get-opt-in-confirmation-email
+get-opt-in-confirmation-email-content
+get-opt-in-process
+get-opt-in-process-redirect-url
+preview-opt-in-confirmation-email
+search-email-editor-placeholders
+search-opt-in-processes
+send-opt-in-confirmation-email-test
+update-opt-in-confirmation-email
+update-opt-in-confirmation-email-content
+update-opt-in-process

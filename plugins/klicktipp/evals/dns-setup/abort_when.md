@@ -1,0 +1,1 @@
+- Credentials for a DNS provider are requested from the user.

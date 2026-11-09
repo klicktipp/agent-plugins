@@ -1,0 +1,2 @@
+- Content is published without the user having approved the content in a turn before it.
+- A content change is written at a contentRevision that was not read in this run.
