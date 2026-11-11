@@ -7,6 +7,14 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.31.1 — 2026-11-11
+
+- **`deliverability-check` no longer offers the Gmail placement test for a newsletter.**
+  `send-email-for-gmail-placement-preview` accepts published automation and notification emails
+  only, whatever its description calls a campaign. The skill now proposes only those as
+  candidates, says up front that a newsletter cannot be checked this way, and offers an
+  automation email from the same sending domain or a test send through `newsletter` instead.
+
 ## 0.31.0 — 2026-11-11
 
 - **Three new skills, taken over from the internal staging plugin.**

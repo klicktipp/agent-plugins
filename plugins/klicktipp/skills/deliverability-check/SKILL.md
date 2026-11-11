@@ -63,7 +63,7 @@ Put every rate in context: how many emails it is based on and which period it co
 | Switching an opt-in process mode | `opt-in` |
 | Passive-contact tag, blocklist, other account settings | `account-setup` |
 
-**Gmail placement test** (owned by this skill): `send-email-for-gmail-placement-preview` sends a real email to a Gmail seed inbox. Before offering it, confirm in the live tool contract which email types it accepts. Run it only after an explicit yes, then read `get-email-gmail-placement-preview-result`. The result covers this one email at Gmail only.
+**Gmail placement test** (owned by this skill): `send-email-for-gmail-placement-preview` sends a real email to a Gmail seed inbox. It accepts published automation and notification emails only, not newsletters, even where its description says "campaign". When offering it, propose only published automation or notification emails as candidates (find them with `search-emails` or the active automations read in step 6); never ask the customer to pick a newsletter for it. When the customer asks about a newsletter, say up front that the placement test cannot check newsletters, then offer an automation email from the same sender domain as an indicator, or a test send to the customer's own inboxes through `newsletter`. Do not point to an in-app placement feature unless a tool or knowledge-base article confirms it. Run the test only after an explicit yes, then read `get-email-gmail-placement-preview-result`. The result covers this one email at Gmail only.
 
 ## Stop
 
