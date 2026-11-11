@@ -299,13 +299,27 @@ ProvenExpert campaign template and wires it to the survey's smart tags — surve
 link after a purchase, reminder, thank-you or improvement mail by rating, and an
 optional Google review branch for Gmail contacts.
 
+`skills/company-context` — confirms which company or brand a piece of
+customer-facing copy is for, where its facts come from, and keeps a reusable
+company snapshot apart from one task's overrides. The skills that write copy ask
+it before new or rewritten text.
+
+`skills/signatures` — the reusable signatures of the account: content, sender
+profile, selection tags and business-card data, and whether a signature is ready
+to carry a send at all.
+
+`skills/deliverability-check` — a read-only diagnosis of an account's
+deliverability: sending readiness, domain records, sender identity, opt-in
+processes, bounces, complaints and unsubscribes, and what to fix first. It
+changes and sends nothing.
+
 `skills/email-template-generator` — writes the plain business emails that are
 not newsletters: cold outreach, support replies, follow-ups, declines. No HTML,
 no layout.
 
 The tool-focused skills carry `references/` folders with the tools they use,
 their answer shapes and their pitfalls. `dns-setup` covers provider guidance
-directly. `account-setup`, `email`, `newsletter`, `splittest`, `dashboard`, `dns-setup`, `webinaris-webinar` and `provenexpert-reviews` are in English; the
+directly. `account-setup`, `email`, `newsletter`, `splittest`, `dashboard`, `dns-setup`, `company-context`, `signatures`, `deliverability-check`, `webinaris-webinar` and `provenexpert-reviews` are in English; the
 others are in German, like the editor itself.
 
 **The server serves more than the skills describe.** Calendars, countdowns,

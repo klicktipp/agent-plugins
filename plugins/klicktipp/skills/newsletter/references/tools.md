@@ -23,9 +23,9 @@ identical call changes nothing.
 | `search-signatures` | `R` — usable signatures only unless `includeUnusable`; the order is **not** the tag priority. `signatureId: 0` for "pick by tags" is not an entry of this list. |
 | `send-newsletter-test` | Carries the **published** content — run `publish-newsletter-email-content` first, otherwise `newsletter_send_content_publish_required`. An address that is not yet a contact **becomes one and gets tagged**, and tagging starts automations. Newer draft changes produce a `warnings`: the test shows the older state. |
 | `prepare-newsletter-dispatch` | Does not send. Never say "sent" afterwards. |
-| `cancel-newsletter-dispatch` | Only while `canBeCancelled`. What is already out stays out. ⚠ not on production — there the way is the `scheduleUrl`. |
+| `cancel-newsletter-dispatch` | Only while `canBeCancelled`. What is already out stays out. If unavailable, use the `scheduleUrl`. |
 
-## Signatures — ⚠ not on production
+## Signatures
 
 `search-signatures` / `get-signature` deliver the candidates for `signatureId`. `create-signature`,
 `update-signature`, `replace-signature-content` and `configure-signature-delivery` write them.

@@ -7,6 +7,28 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.31.0 — 2026-11-11
+
+- **Three new skills, taken over from the internal staging plugin.**
+  - `company-context` confirms which company or brand a piece of customer-facing copy is for,
+    where its facts come from, and keeps a reusable company snapshot apart from one task's
+    overrides. The skills that write copy run its gate before new or rewritten text.
+  - `signatures` finds, inspects, creates, copies and updates the account's reusable email
+    signatures — content, sender profile, selection tags and business-card data — and says
+    whether a signature is ready to carry a send at all.
+  - `deliverability-check` reads an account and explains its deliverability: sending readiness,
+    domain records, sender identity, opt-in processes, bounces, complaints and unsubscribes, and
+    what to fix first. It changes and sends nothing.
+- **The existing skills follow the same staging revision.** `account-setup` now orders the setup
+  as domain, company context, signature, opt-in, contacts and reports an explicit
+  `setup_complete` / `setup_complete_activation_pending` / `setup_blocked` result; `automation`,
+  `contacts`, `custom-fields`, `dashboard`, `dns-setup`, `email`, `newsletter`, `opt-in`,
+  `splittest` and `tags` carry the matching revisions, including the `company-context` gate before
+  new customer-facing copy and a user confirmation before a destructive split-test variant
+  removal.
+- `account-setup` routes WordPress lead capture to a `manage-klicktipp-forms` skill, which this
+  plugin does not ship; that path is reported as blocked instead of substituted.
+
 ## 0.30.0 — 2026-11-06
 
 - **`provenexpert-reviews`, a new skill.** It sets up a KlickTipp review campaign for ProvenExpert

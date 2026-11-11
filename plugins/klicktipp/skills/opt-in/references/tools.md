@@ -1,67 +1,45 @@
-# Opt-in-Werkzeuge — Wofür, Nicht, Stolperer
+# Opt-in tools — what for, what not, pitfalls
 
-Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters liefert der Server selbst mit
-seiner Werkzeugliste; hier steht die Deutung. Der Ablauf steht in `../SKILL.md`.
+**This file does not repeat the tool descriptions.** The procedure is in `../SKILL.md`.
 
-`R` liest nur · `D` löscht oder ersetzt ohne Undo · `O` erreicht einen echten Empfänger oder eine
-Automation · `I` ein zweiter gleicher Aufruf ändert nichts mehr. Jedes Werkzeug nimmt optional
-`accountId`; weggelassen heißt das Konto des Zugangs.
+`R` reads only · `D` deletes or replaces without undo · `O` reaches a real recipient or an automation.
 
-| Werkzeug | | Wofür |
+| Tool | | What for |
 | --- | --- | --- |
-| `search-opt-in-processes` · `get-opt-in-process` | R | Opt-in-Prozesse (= Abonnentenlisten); volle Konfiguration nur im Detail. |
-| `create-opt-in-process` | | Einen Prozess anlegen, auf Wunsch als Kopie. Die Bestätigungsmail entsteht mit (`confirmationEmailId`). |
-| `update-opt-in-process` | I | Einstellungen schreiben; nur was übergeben wird. |
-| `delete-opt-in-process` | D | Löschen nimmt die Bestätigungsmail mit, die Kontakte bleiben. |
-| `get-opt-in-confirmation-email` · `update-opt-in-confirmation-email` | R / I | Betreff, Absender, Antwortadresse, CC/BCC, Domain — dazu `senderEmailOptions` und `senderDomainOptions`. |
-| `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content` | R / I | HTML und Plain, jeder ganz geschrieben. **Nicht die Baustein-Werkzeuge.** |
-| `preview-opt-in-confirmation-email` | R | Der gespeicherte Text als Bild, ohne Signatur, Bestätigungslink und Empfängerdaten. |
-| `send-opt-in-confirmation-email-test` | DO | Eine echte Testmail; eine unbekannte Adresse wird zum getaggten Kontakt. |
-| `get-opt-in-process-redirect-url` | R | Die Pending- oder Danke-Seite eines Kontakts. Persönliche Daten. |
+| `search-opt-in-processes` · `get-opt-in-process` | R | Processes (= subscription lists); full configuration only in the detail. |
+| `create-opt-in-process` | | A process; the confirmation email comes with it (`confirmationEmailId`). |
+| `update-opt-in-process` · `delete-opt-in-process` | D | Write settings; deleting takes the confirmation email, the contacts stay. |
+| `get-` / `update-opt-in-confirmation-email` | R / D | Subject, sender, reply-to, CC/BCC, domain, plus the permitted options. |
+| `get-` / `update-opt-in-confirmation-email-content` | R / D | HTML and plain, each written whole. Not the block tools. |
+| `preview-opt-in-confirmation-email` | R | The stored text, without signature, confirmation link or recipient data. |
+| `send-opt-in-confirmation-email-test` | DO | A real mail; an unknown address becomes a tagged contact. |
+| `get-opt-in-process-redirect-url` | R | One contact's pending or thank-you page. Personal data. |
 
 ### `search-opt-in-processes` · `get-opt-in-process`
-**Wofür:** ID, Name, Opt-in-Modus, Flags; das Detail zusätzlich Bestätigungsmail, Weiterleitungen,
-Löschung ausstehender Abonnenten, Labels, Notizen. **Stolperer:** Gelöschte fehlen in der Suche.
+Deleted processes are absent from the search.
 
 ### `create-opt-in-process`
-**Wofür:** einen Prozess anlegen — der Name ist Pflicht, alles andere wie beim Ändern.
-`copyFromOptInProcessId` kopiert einen bestehenden samt Mailtext; daneben übergebene Argumente
-gewinnen. **Stolperer:** `useForChangeEmail` gibt es hier nicht; zwei gleiche Aufrufe erzeugen zwei
-Prozesse oder scheitern am doppelten Namen.
+The name is required. `copyFromOptInProcessId` copies an existing process including its email text;
+arguments passed alongside win. `useForChangeEmail` does not exist here; two identical calls produce
+two processes or fail on the duplicate name.
 
 ### `update-opt-in-process`
-**Wofür:** Name, Opt-in-Modus, Weiterleitungen samt Parametern, erneutes Senden der Bestätigung,
-Löschung ausstehender Abonnenten, Labels, Notizen, die Rolle für E-Mail-Änderungen. **Stolperer:** Ein
-Aufruf ohne Feld wird abgewiesen. `metaLabels` ersetzt die Liste. Seiten- und UTM-Parameter wirken nur
-zusammen mit der URL ihrer Seite im selben Aufruf. `optInMode: "single"` meldet spätere Kontakte ohne
-Bestätigung an — frag. `useForChangeEmail: true` nimmt die Rolle dem Prozess weg, der sie hatte.
+Writes only what it receives; a call without a field is rejected. `metaLabels` replaces the list.
+`optInMode: "single"` subscribes later contacts without confirmation — ask. `useForChangeEmail: true`
+takes the role from whichever process had it; there is one per account.
 
-### `delete-opt-in-process`
-**Nicht:** die Kontakte — die bleiben angemeldet. **Stolperer:** Der Standard-Prozess lässt sich nicht
-löschen, und ein Prozess, auf den Formulare, Kampagnen oder andere Entitäten zeigen, wird mit deren
-Namen abgewiesen. `create-opt-in-process` legt einen neuen an, nicht *diesen* wieder.
+### `update-opt-in-confirmation-email`
+An **empty stored** sender or reply-to means "the account's current address"; writing exactly that
+address stores empty again — intended. Usually omit `senderDomain`; pass it only when
+`senderDomainOptions` offers a choice.
 
-### `get-opt-in-confirmation-email` · `update-opt-in-confirmation-email`
-**Stolperer:** Eine **leer gespeicherte** Absender- oder Antwortadresse heißt „die aktuelle Adresse
-des Kontos"; wer genau diese Adresse schreibt, speichert wieder leer — gewollt. Absender nur aus
-`senderEmailOptions`. `senderDomain` meist weglassen; nur übergeben, wenn `senderDomainOptions` eine
-Wahl anbietet.
-
-### `get-opt-in-confirmation-email-content` · `update-opt-in-confirmation-email-content`
-**Stolperer:** Beide Körper werden ganz geschrieben, nicht gepatcht; wer nur einen schreibt, lässt eine
-Mail zurück, die zwei Empfängern zwei Dinge sagt. Eine abgewiesene Schreibung trägt `stored: false`,
-und die Mail sagt weiter, was sie vorher sagte — bis auf dieses Flag verwechselbar mit einem Erfolg.
-
-### `preview-opt-in-confirmation-email` · `send-opt-in-confirmation-email-test`
-**Stolperer:** Die Vorschau zeigt den gespeicherten Text; Signatur, Bestätigungslink und Empfängerdaten
-kommen erst beim Versand dazu. Der Testversand ändert das Konto: eine Adresse, die noch kein Kontakt
-war, wird einer und bekommt einen Tag — und Taggen startet Automationen. Der Link im Test bestätigt
-niemanden.
+### `get-` / `update-opt-in-confirmation-email-content`
+Both bodies are written whole, not patched; writing only one leaves a mail that tells two recipients
+two things. A rejected write returns `stored: false` and the mail still says what it said before.
 
 ### `get-opt-in-process-redirect-url`
-**Wofür:** die Seite eines Kontakts per E-Mail-Adresse; `optInProcessId` weggelassen nimmt den
-Prozess, über den die Adresse sich angemeldet hat. Ohne eigene Seite kommt die von KlickTipp gehostete.
-**Stolperer:** Die Adresse ist Pflicht und bestimmt, über wen die Antwort ist. `redirectPage: pending`
-heißt „noch nicht bestätigt", nicht „falsch eingestellt" — auch bei bestätigten Kontakten, wenn der
-Prozess bei jeder Anmeldung erneut fragt. Die URL trägt ID, E-Mail, Liste, Schlüssel und
-Empfehlungslink — nie in ein Protokoll, eine Notiz oder einen Newsletter.
+Omitting `optInProcessId` takes the process the address subscribed through. Without an own page you
+get KlickTipp's hosted one. `redirectPage: pending` means the contact has not confirmed yet, not a
+misconfiguration — it also hits confirmed contacts when the process asks for confirmation on every
+subscription. The URL carries ID, email, list, key and referral link — never into a log, a note or a
+newsletter.

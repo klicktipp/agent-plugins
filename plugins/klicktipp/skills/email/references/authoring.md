@@ -102,7 +102,10 @@ just built is already a document — the block tools get there without the detou
    query without matches it returns unrelated photos. Look at what came back and say what it shows,
    instead of presenting it as a find. And **let the user choose**: the licence requires no
    attribution but restricts recognisable people — that is their decision.
-6. **`validate-email-editor-content`** before publishing — and pass the findings on instead of fixing silently.
+6. **`validate-email-editor-content`** after the design pass and before publishing — fix your own mistakes from
+   this pass, run it again, and pass the remaining findings on instead of fixing silently. Then
+   review the rendered `preview-email-editor` as described in "Checking and publishing" in the
+   skill: a clean check covers no copy, demo text, personalisation fallbacks or layout.
 
 **Where you do ask**, because it is not styling: before an import replaces existing content, before a
 block is removed, and when choosing a stock photo — its licence restricts recognisable people, and

@@ -1,6 +1,6 @@
 ---
-name: newsletter
-description: The shell around a KlickTipp newsletter's content — draft, subject, pre-header, audience, sender, test send, scheduling, dispatch. Use it whenever someone wants to create, "send out" or "finish" a newsletter, or asks who it would reach, because content alone sends nothing. Content is `email`, A/B tests are `splittest`.
+name: "newsletter"
+description: "The shell around a KlickTipp newsletter's content — draft, subject, pre-header, audience, sender, test send, scheduling, dispatch. Use it whenever someone wants to create, \"send out\" or \"finish\" a newsletter, or asks who it would reach, because content alone sends nothing. Content is `email`, A/B tests are `splittest`."
 ---
 
 # KlickTipp newsletter
@@ -20,6 +20,14 @@ Confirm them from a tool response or account URL; a staging label alone does not
 account. Load the live contract for the next required tool, reuse contracts already loaded, and
 search again only for a missing tool. A permission error does not identify a different environment.
 
+## Preflight an intended send
+
+Before a test, schedule or dispatch, read account sending readiness and the sender address, domain and signature path needed for this newsletter. Existing contacts prove an audience, not a usable sender path. If the chosen path is blocked, offer `dns-setup`, another live-confirmed usable path, or draft-only work. Never bypass or restart a product-enforced domain security wait.
+
+Before proposing new customer-facing copy or a visible sender presentation, confirm which company or brand the newsletter represents. Treat readable account data and verified sending domains as candidates. Use `company-context` for a reusable profile or confirm only the task brief when the user skips that profile. Use `signatures` after that handback for any new or changed identity, sign-off or footer.
+
+Pass the confirmed task context and any current design source to `email`. If no design source exists, let `email` resolve it once. Reading, previewing, correcting typos, publishing or dispatching already confirmed content does not reopen either gate.
+
 ## Agree on the brief first
 
 Match the user's stage.
@@ -34,8 +42,8 @@ Match the user's stage.
   tracking, header line, UTM campaign. Ask for one confirmation or corrections, and do not ask again
   for confirmed choices, including ones given in an earlier turn. Ask separately only about blocking decisions (ambiguous audience, missing
   call to action). Require copy approval before a draft only if the user asked to review it first.
-- **Choosing a design**: pass the message length, must-keep elements and desired look to skill
-  `email`. Prefer a layout whose sections suit the copy, so applying it does not require a long
+- **Choosing a design**: `email` owns the source choice, preview and application. Pass the message
+  length, must-keep elements, confirmed brand context and any existing design decision. Prefer a layout whose sections suit the copy, so applying it does not require a long
   sequence of removals. Show the actual template previews before the user chooses; a name or
   thumbnail alone is insufficient.
 - **A preliminary draft** is reported with its unresolved settings, never as ready to send.
@@ -54,11 +62,11 @@ Use customer language. Do not invent a personal sign-off.
 | 4 | Sender, reply-to, signature | `configure-newsletter-delivery` |
 | 4a | Check and publish | `validate-email-editor-content`, `preview-email-editor`, `publish-newsletter-email-content`, `preview-personalized-newsletter` |
 | 5 | Test send | `send-newsletter-test` |
-| 6 | Prepare activation | `prepare-newsletter-dispatch` |
+| 6 | Show the final review and stop for explicit approval | — |
+| 6a | Prepare the approved activation | `prepare-newsletter-dispatch` |
 | 7 | **A human confirms in the client dialog or KlickTipp app** | — |
 
-2–4 are free in order; 4a comes before 5 and 6, because both carry the published content; 1/6/7
-are fixed. Way back after 7: `cancel-newsletter-dispatch`.
+After the company-context handback or confirmed task brief, steps 2 and 3 are free in order. Step 4 may be inspected earlier, but its visible sender presentation or signature may change only after that context is confirmed. Step 4a comes before 5 and 6, because both carry the published content; 1/6/6a/7 are fixed. Way back after 7: `cancel-newsletter-dispatch`.
 
 ## 1 · Draft
 
@@ -154,14 +162,7 @@ sender details and `%Link:Unsubscribe%` itself (skill `email`). Before calling t
 read the signature with `get-signature` + `includeContent: true`. Flag a body whose tone does not
 match the signature wording, without changing a shared signature on your own.
 
-**Two things the server does not enforce when you write signature text:**
-
-- **Two fast ways to make contact in the imprint** (email plus phone or a contact form). Point it out
-  when only one is there; call it a common minimum standard, do not assess the legal position.
-- **Offer the transactional version actively.** An SOI confirmation email tolerates no unsubscribe
-  link. That is what `useInTransactionalEmails: true` with its own `transactionalHtml` is for, using
-  `%Link:SubscriberInfo%` instead of `%Link:Unsubscribe%` — the latter is rejected there. Ask before
-  the signature is finished. Placeholder rules → [references/tools.md](references/tools.md).
+Signature creation, content, address and contact-path readiness belong to `signatures`. Before selecting a signature, use that skill to inspect any missing requirements and a suitable transactional version when confirmation emails need the same identity.
 
 ## 4a · Check and publish
 
@@ -178,17 +179,18 @@ override instead of inventing a value.
   ineffective, report the limit instead of repeating the write. HTML
   import and its warnings → skill `email`.
 - For a draft or preview request, stop here.
+- **Before a test send or activation**, or when the user asks whether the newsletter is ready:
+  check content, sender, signature and audience, and report what each check found. Anything not
+  checked stays open; do not report it as clean.
 - **Publish** for a test, a dispatch or when asked: `publish-newsletter-email-content` with the latest
   `contentRevision`; report the returned status and revision. After later edits, republish before
   another test or dispatch; an ordinary draft edit does not itself require publication. Report
   publication warnings separately from blocking errors. For
   `WarningNoSubscriberInfoLinkInUsedSignature`, read the selected signature's HTML and plain text
   with `get-signature` + `includeContent: true`: the warning concerns the signature, not the email
-  body or a failed publication. Explain whether `%Link:SubscriberInfo%` is actually missing and
+  body or a failed publication. Check the placeholder against `signatures` and the live tool schema, then explain whether `%Link:SubscriberInfo%` is actually missing and
   that this warning alone does not block publication, a test or dispatch. Do not silently edit a shared default signature; its
-  replacement affects other emails. If the user wants the warning resolved, prepare a
-  content-preserving change to that signature (or an isolated replacement), show its wider effect,
-  then read back and recheck the result after the authorized change.
+  replacement affects other emails. If the user wants the warning resolved, hand the change to `signatures`, then recheck the newsletter after its verified readback.
 - **Per recipient**: `preview-personalized-newsletter` for a representative contact shows the
   published email with placeholders filled and the signature the dispatch picks for that contact.
   This is the check for the footer, not the validator. Display the returned HTML unchanged when the
@@ -201,8 +203,8 @@ override instead of inventing a value.
 named, or ask for one; that request authorizes the test after publication. Report the actual result
 and claim inbox delivery only if it is confirmed. A test request never leads to step 6.
 
-- **Announce the side effect first:** if the address is not a contact it becomes one and gets the
-  test-recipient tag — and tagging starts automations.
+- **Announce the side effect first:** a test send is a real email: an address that is not yet a contact becomes one and
+  gets tagged, which can start automations. Say so before sending, and send only to an address the user names. Name a concrete risk when live evidence confirms one; keep a qualified warning when the state is unknown; omit it when available evidence confirms no relevant active automation.
 - Audience and dispatch state are untouched. Propose this step actively before you so much as
   mention activation.
 - **What gets sent is the published content.** Run `publish-newsletter-email-content` first, otherwise the
@@ -218,24 +220,24 @@ for a separately requested dispatch or schedule.
 
 ## 6 · Activation
 
-**Final review first, every time.** Before a dispatch or schedule, show in one compact block: name,
-subject and pre-header, audience with its reach, sender and reply-to, signature path, tracking and
-header line, published content revision, preview result, call-to-action URL, timing. Flag
-placeholder or test URLs. Get explicit approval for exactly these values.
+**Hard stop before the tool.** Resolve the dispatch mode and timing first. `immediate` means send now. A scheduled dispatch requires the exact date, time and UTC offset; never infer missing timing.
+
+Show one complete final-review block from the current stored state: name, subject and pre-header, audience with reach, sender and reply-to, signature path, tracking and header line, published content revision, latest preview type and result, every button or call-to-action URL or `none`, and exact timing. Flag placeholder or test URLs. If any value is missing, stale or unresolved, stop and resolve it.
+
+Do not call `prepare-newsletter-dispatch` in the same turn as the final review. End the response and wait for a later user reply that explicitly approves the displayed values. An earlier send request, an announced future summary or the client's native confirmation dialog does not replace this approval. If any reviewed value changes, show the complete review again and obtain new approval.
 
 `prepare-newsletter-dispatch` checks the published content and recipient estimate, then requests
-confirmation through the client's native dialog. If the client cannot show that dialog, the tool
-refuses, sends nothing and returns `scheduleUrl`, the newsletter's schedule page where the human
-continues in KlickTipp. Do not
+confirmation through the client's native dialog. If that dialog is unavailable, the
+response may refuse with `newsletter_send_confirmation_unavailable` or `newsletter_send_not_confirmed` and provide
+`remediation: schedule_in_app` plus `scheduleUrl` for the human to continue in KlickTipp. Do not
 describe a short-lived confirmation URL as the normal path. A refusal leaves the newsletter a
 draft; a confirmed dialog may send or schedule it. Read the actual outcome and `deliveryStatus`
-before claiming either result.
+before claiming either result. The native confirmation is a second confirmation after the visible final review, not a replacement for it.
 
 Arguments: `newsletterId`, `mode` (`immediate` | `scheduled`), with `scheduled` also `scheduledAt`.
 
 Show the estimate, relevant warning and exact dispatch plan returned by the live tool. Use the
-native confirmation dialog when the client supports it; otherwise give the product-provided app
-link and explain the remaining human step. The response shape can differ between confirmation,
+native confirmation dialog when the client supports it. Whenever the response contains `scheduleUrl`, show it as a clickable link in the same response and explain the remaining human step; do not omit, paraphrase or invent it. The response shape can differ between confirmation,
 refusal and client fallback, so do not assume specific estimate fields exist. Scheduled or sent is
 reported only once `get-newsletter` + `deliveryStatus` confirms it.
 
@@ -278,7 +280,7 @@ a snippet of the wrong domain counts nothing. A split test has **one** set for a
 - **What is out stays out.** Say so, otherwise the person hears "nothing went out".
 - **Ask first.** Content, audience and sender remain; re-activate with `prepare-newsletter-dispatch`.
 - Same permission as releasing ("Email marketing manager").
-- **Not released on production yet** — there the path is the `scheduleUrl`.
+- **If the tool is unavailable**, the path is the `scheduleUrl`.
 
 ## Deleting
 

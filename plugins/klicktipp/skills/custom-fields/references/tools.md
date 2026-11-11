@@ -1,37 +1,27 @@
-# Feld-Werkzeuge — Wofür, Nicht, Stolperer
+# Custom-field tools — what for, what not, pitfalls
 
-Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters liefert der Server selbst mit
-seiner Werkzeugliste; hier steht die Deutung. Der Ablauf steht in `../SKILL.md`.
+**This file does not repeat the tool descriptions.** The procedure is in `../SKILL.md`.
 
-`R` liest nur · `D` löscht oder ersetzt ohne Undo · `I` ein zweiter gleicher Aufruf ändert nichts mehr.
+`R` reads only · `D` deletes or replaces without undo.
 
-| Werkzeug | | Wofür |
+| Tool | | What for |
 | --- | --- | --- |
-| `search-custom-fields` · `get-custom-field` | R | Definitionen mit Platzhalter, API-Schlüssel, Gruppe, Labels, Mehrwertigkeit. Nicht die Werte eines Kontakts. |
-| `create-custom-field` | | Eine Definition; speichert keinen Wert. Typ ist endgültig, `multiValue` weggelassen ist `true`. |
-| `update-custom-field` | D I | Name, Beschreibung, Gruppe, Labels, Notiz, `requestName`, `copyToFieldId`, und `multiValue` nur true → false. |
-| `delete-custom-field` | D | Die Definition und die Werte aller Kontakte darin. |
+| `search-custom-fields` · `get-custom-field` | R | Definitions with placeholder, API key, group, labels, multi-value. Not a contact's values. |
+| `create-custom-field` | | A definition; stores no value. Type is final, `multiValue` defaults to `true`. |
+| `update-custom-field` | D | Name, description, group, labels, note, `requestName`, `copyToFieldId`, and `multiValue` true→false only. |
+| `delete-custom-field` | D | The definition and every contact's value in it. |
 
 ### `search-custom-fields` · `get-custom-field`
-**Wofür:** Felddefinitionen; Filter `query`, `types` (z. B. `field-date`, `field-datetime`),
-`onlyWritable`. Eigene Felder zuerst (neueste oben), dann die globalen. **Nicht:** die Werte eines
-Kontakts (Skill `contacts`). **Stolperer:** Globale Felder tragen `isGlobal` und sind weder änderbar
-noch löschbar. `customFieldId` ist eine Zahl für ein eigenes Feld, ein Name wie `FirstName` für ein
-globales.
-
-### `create-custom-field`
-**Stolperer:** Der Datentyp ist endgültig. `multiValue` weggelassen heißt `true` (ein Wert je Abo) —
-für einen kontaktweiten Wert ausdrücklich `false`. Anlegen speichert keinen Wert; gib eine
-Beschreibung.
+Filters `query`, `types` (e.g. `field-date`, `field-datetime`), `onlyWritable`. Custom fields first
+(newest on top), then the global ones. Global fields carry `isGlobal` and can be neither changed nor
+deleted.
 
 ### `update-custom-field`
-**Stolperer:** Nur was übergeben wird, wird geschrieben; ein leerer String leert eine
-Texteinstellung. `metaLabels` ersetzt die ganze Liste. Eine Typänderung wird abgewiesen.
-`multiValue: false` löscht die zusätzlichen Werte je Abo und geht nie zurück. `requestName` ist der
-Schlüssel, den ein Kontakt in einer Anmelde-E-Mail als „Schlüssel = Wert" schreibt; teilen ihn zwei
-Felder, gewinnt das erste. `copyToFieldId` braucht einen verträglichen Typ. Das Ergebnis listet, was
-das Feld benutzt.
+Only what is passed is written; an empty string clears a text setting. `metaLabels` replaces the
+whole list. The data type is refused. `multiValue: false` deletes the extra per-subscription values
+and can never go back. `requestName` is the key a contact writes as "key = value" in a subscription
+email; two fields sharing one means the first wins. `copyToFieldId` needs a compatible type.
 
 ### `delete-custom-field`
-**Stolperer:** Vernichtet die Werte aller Kontakte, ohne Undo. Ein noch benutztes Feld wird mit
-Nennung der Nutzer abgewiesen. Der Platzhalter eines gelöschten Felds rendert leer.
+Destroys the values of all contacts, without undo. A field still used by forms or automations is
+refused with its users named. A deleted field's placeholder renders empty.

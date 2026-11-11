@@ -1,22 +1,23 @@
-# Aktionstypen: Werkzeug, Typ, Pflicht-Settings
+# Action types: tool, type, required settings
 
-Diese Tabelle ersetzt die Werkzeugbeschreibungen. Die kommen aus einer Vorlage und unterscheiden die
-Typen kaum — `tagging` sagt fast denselben Satz wie `untagging`. Was einen Typ ausmacht, steht hier.
+This table replaces the tool descriptions. Those are generated from a template and barely
+distinguish the types — `tagging` says almost the same sentence as `untagging`. What makes a type is
+here.
 
-Jedes `add-automation-…-action` hängt an mit: `automationId`, `revision`, `afterActionId`,
-`branch`, `settings`, optional `dryRun`. Jedes `update-automation-…-action` ändert nur die
-Settings, die es bekommt; weggelassene bleiben, und übergebene Listen **ersetzen** die bisherige.
+Every `add-automation-…-action` attaches with: `automationId`, `revision`, `afterActionId`,
+`branch`, `settings`, optionally `dryRun`. Every `update-automation-…-action` changes only the
+settings it is given; omitted ones stay, and lists that are passed **replace** the previous list.
 
-| Werkzeug (`add-automation-<art>-action` / `update-automation-<art>-action`) | Typ im Graphen | Pflicht in `settings` |
+| Tool (`add-automation-<kind>-action` / `update-automation-<kind>-action`) | Type in the graph | Required in `settings` |
 |---|---|---|
-| `update-automation-start-action` *(kein add)* | `start` | — |
+| `update-automation-start-action` *(no add)* | `start` | — |
 | `email` | `email` | `emailID` |
-| `sms` | `sms` | `emailID` ← **ein SMS-Entwurf** |
+| `sms` | `sms` | `emailID` ← **an SMS draft** |
 | `notification-email` | `notify by email` | `emailID`, `notifyReceiverEmail` |
-| `notification-sms` | `notify by sms` | `emailID`, `notifyReceiverEmail` ← eine Mobilnummer wie `+491701234567` |
+| `notification-sms` | `notify by sms` | `emailID`, `notifyReceiverEmail` |
 | `wait` | `wait` | `delayType` |
 | `decision` | `decision` | `segmentsOpAND`, `segments` |
-| `goal` | `goal` | `segmentsOpAND`, `segments` — wirkt in der **ganzen** Automation, siehe SKILL.md |
+| `goal` | `goal` | `segmentsOpAND`, `segments` — acts across the **whole** automation, see SKILL.md |
 | `tag` | `tagging` | `tagID` |
 | `untag` | `untagging` | `tagID` |
 | `set-field` | `setfield` | `customFieldID`, `customFieldOp` |
@@ -27,72 +28,70 @@ Settings, die es bekommt; weggelassene bleiben, und übergebene Listen **ersetze
 | `stop-automation` | `stop automation` | `campaignID` |
 | `split-test` | `splittest` | — |
 | `outbound` | `outbound` | `outboundID` |
+| `facebook-audience` | `facebook audience add` | `audienceID` |
+| `facebook-audience-removal` | `facebook audience remove` | `audienceID` |
 | `name-detection` | `detect name` | `customFieldID` |
 | `gender-detection` | `detect gender` | `customFieldID` |
+| `fullcontact` | `fullcontact` | — |
 | `unsubscribe` | `unsubscribe-contact` | — |
 
-Die Typen `facebook audience add`, `facebook audience remove`, `fullcontact` und
-`website_enrichment` haben über diese Verbindung **kein** Werkzeug. Eine im Editor gebaute
-Automation kann sie enthalten, und ein Lesen meldet sie; anlegen oder ändern lassen sie sich hier
-nicht.
+Website enrichment (`website_enrichment`) has **no** tool. An automation built in the editor can
+carry it and a read reports it; it cannot be created or changed, and
+`get-automation-editor-capabilities` therefore does not offer it in the first place.
 
-## `delayType` — die Werte einer Wartezeit
+## `delayType` — the values of a wait
 
 `immediately`, `seconds`, `minutes`, `hours`, `days`, `weeks`, `months`, `years`,
 `from field`, `customfield minutes`, `customfield hours`, `customfield days`, `customfield weeks`,
 `customfield months`, `customfield years`, `birthday`, `calendar`, `limiter`.
 
-Die Menge gehört in `delayTime` (−999 bis 999). „Warten – 3 Tage" ist also
+The amount goes into `delayTime` (−999 to 999). "Wait – 3 days" is therefore
 `{"delayType": "days", "delayTime": 3}`.
 
-Die `customfield …`-Werte und `from field` zählen **nicht ab dem Einstieg des Kontakts, sondern ab
-einem Datum in dessen Feld**; `delayField` nennt das Feld. Nur so trifft eine Kampagne für alle
-einen festen Termin, egal wann sie eingestiegen sind — deshalb darf `delayTime` hier negativ sein:
-`-24` mit `customfield hours` heißt 24 Stunden *vor* dem Termin. Wann das der richtige Weg ist und
-was sonst passiert, steht in SKILL.md unter BP‑2.
+The `customfield …` values and `from field` count **not from the contact's entry but from a date in
+that contact's field**; `delayField` names the field. Only that way does a campaign hit a fixed date
+for everyone, whenever they entered — which is why `delayTime` may be negative here: `-24` with
+`customfield hours` means 24 hours *before* the date. When this is the right way, and what else
+happens, is in SKILL.md under "Dated campaigns".
 
-Zwei Verhalten, die man erst sieht, wenn sie zuschlagen: ein so berechneter Zeitpunkt, der **schon
-vorbei** ist, wartet nicht, er ist fällig — mehrere Erinnerungen laufen dann in einem Zug durch. Und
-ein Feld **ohne gültiges Datum** wartet auch nicht, sondern geht sofort weiter, für jede betroffene
-Wartezeit.
+Two behaviours you do not see until they bite: a moment computed this way that has **already
+passed** does not wait, it is due — several reminders then run through in one go. And a field
+**without a valid date** does not wait either but continues immediately, for every wait affected.
 
-## Bedingungen (`decision`, `goal`)
+## Conditions (`decision`, `goal`)
 
-`segments` ist die Liste der Bedingungen, `segmentsOpAND` sagt, ob sie mit UND oder ODER verbunden
-sind. Eine Bedingung besteht aus Operator, `field` und `value`:
+`segments` is the list of conditions, `segmentsOpAND` says whether they are joined with AND or OR. A
+condition consists of an operator, `field` and `value`:
 
-- Den **Operator** aus `get-automation-editor-capabilities` → `conditionOperators` nehmen. Nicht raten.
-- Bei Tag- und Nachrichtenbedingungen ist `field` die **Smart-Tag-ID**, nicht die Objekt-ID. Für
-  „E-Mail geöffnet" oder „Link geklickt" liefert `get-automation-email` die Smart-Tags der Nachricht.
-- Wo ein Operator kein Feld braucht, ist `field` `0`.
-- Bei Tag-Bedingungen ist `value` der Zeitraum; `0` heißt „irgendwann".
-- Gespeicherte Segmente gehören mit ihrem Selektor in `value2`.
-- Für die Datumsoperatoren `is before` / `is after` ist `value` **relativ zu jetzt** und wird wie
-  `strtotime` gelesen: `+24 hours`, `+1 day`, `-2 weeks`. So fragst du „liegt das Datum in diesem
-  Feld noch mehr als 24 Stunden vor uns" — die Bedingung, mit der eine Terminkampagne Späteinsteiger
-  an vergangenen Erinnerungen vorbeiführt.
+- Take the **operator** from `get-automation-editor-capabilities` → `conditionOperators`. Do not guess.
+- For tag and message conditions, `field` is the **smart tag ID**, not the object ID. For "email
+  opened" or "link clicked", `get-automation-email` delivers the message's smart tags.
+- Where an operator needs no field, `field` is `0`.
+- For tag conditions, `value` is the time range; `0` means "at some point".
+- Saved segments go into `value2` with their selector.
+- For the date operators `is before` / `is after`, `value` is **relative to now** and read like
+  `strtotime`: `+24 hours`, `+1 day`, `-2 weeks`. That is how you ask "is the date in this field
+  still more than 24 hours ahead of us" — the condition with which a dated campaign routes late
+  entrants past reminders that have passed.
 
-## Der Rest der Familie
+## The rest of the family
 
-**Graph:** `get-automation` (Graph, IDs, Revision), `search-automations`, `validate-automation`,
-`create-automation-draft`, `update-automation-draft`, `delete-automation-draft`, `delete-automation`,
-`get-campaign-dependencies`, `delete-automation-action`, `move-automation-action`,
-`copy-automation-action`.
+**Graph:** `get-automation` (graph, IDs, revision), `search-automations`, `validate-automation`,
+`create-automation-draft`, `update-automation-draft`, `delete-automation-draft`,
+`delete-automation-action`, `move-automation-action`, `copy-automation-action`.
 
-**Nachrichten:** für Automations-E-Mails `get-automation-email`, `create-automation-email-draft`,
-`update-automation-email-draft`, `delete-automation-email-draft`, `copy-automation-email`,
-`send-automation-email-test`; dieselben für Benachrichtigungs-E-Mails (`…-notification-email…`,
-Kopie mit `copy-notification-email`, Test mit `send-notification-email-test`); für beide
-`preview-personalized-email`, `send-email-for-gmail-placement-preview` und
-`get-email-gmail-placement-preview-result`.
-SMS: `get-automation-sms`, `create-automation-sms-draft`, `update-automation-sms-draft`,
-`delete-automation-sms-draft`, `replace-automation-sms-content`, `copy-automation-sms`,
-`send-automation-sms-test`; dieselben für Benachrichtigungs-SMS (Kopie mit `copy-notification-sms`);
-für beide `check-sms-readiness`.
+**Messages:** `get-automation-email`, `create-automation-email-draft`,
+`update-automation-email-draft`, `delete-automation-email-draft`, the same four for
+`automation-sms`, `notification-email` and `notification-sms`,
+one tool per kind for copying, SMS text and test sends — `copy-automation-email` /
+`copy-notification-email`, `copy-automation-sms` / `copy-notification-sms`,
+`replace-automation-sms-content` / `replace-notification-sms-content`,
+`send-automation-email-test` / `send-notification-email-test`, `send-automation-sms-test` /
+`send-notification-sms-test` — plus `check-sms-readiness`, `preview-personalized-email`,
+`send-email-for-gmail-placement-preview`.
 
-**Betrieb:** `estimate-automation-audience`, `prepare-automation-activation`, `stop-automation`,
-`move-automation-contacts`, `get-contact-automation-status`, `move-contact-past-automation-wait`; die Zahlen (`get-automation-statistics`,
-`get-automation-waiting-contact-counts`, `get-automation-email-statistics`,
-`get-automation-sms-statistics`) beim Skill `dashboard`.
+**Operation:** `estimate-automation-audience`, `prepare-automation-activation`, `stop-automation`,
+`get-automation-waiting-contact-counts`, `get-automation-statistics`, `get-automation-email-statistics`,
+`move-automation-contacts`.
 
-**Nachschlagen:** `get-automation-editor-capabilities`, `search-automation-editor-references`.
+**Lookup:** `get-automation-editor-capabilities`, `search-automation-editor-references`.

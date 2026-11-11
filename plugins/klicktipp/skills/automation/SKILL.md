@@ -1,198 +1,173 @@
 ---
-name: automation
-description: Die Automationen (Kampagnen, Marketing Cockpit) eines KlickTipp-Kontos bauen, ändern und prüfen — Startbedingung, E-Mails, SMS, Wartezeiten, Entscheidungen, Tags, Ziele, Sprünge — oder eine aus einer fertigen Vorlage starten (Katalog der Business Automation Masterclass oder ein geteilter Vorlagen-Link). Nutze ihn, sobald es um einen Ablauf geht, eine mehrstufige Kampagne, eine Begrüßungsserie, ein Webinar oder einen Termin, eine Kampagnenvorlage oder „was passiert nach X" — und erst recht, wenn du gerade sagen wolltest, ein Teil davon gehe nur im Editor.
+name: "automation"
+description: "Build, change and check the automations (process flows, marketing cockpit) of a KlickTipp account — entry condition, emails, SMS, waits, decisions, tags, goals, jumps — or start one from a ready-made campaign template (Business Automation Masterclass catalogue, or a shared template link). Use it as soon as a flow, a multi-step campaign, a welcome series, a webinar or dated campaign, a campaign template, or \"what happens after X\" is involved — and especially when you were about to say that some part of it only works in the editor."
 ---
 
-# KlickTipp-Automationen
+# KlickTipp automations
 
-Jeder Schritt einer Automation hat ein Werkzeug — Start, E-Mail, SMS, Warten, Entscheidung, Tag,
-Ziel, Sprung, Benachrichtigung, Splittest, Ende. Sag nie „das geht nur im Editor". Die einzige
-Ausnahme: **Aktivieren** tut ein Mensch in KlickTipp, siehe Reihenfolge, Schritt 7.
+Every step of an automation has a tool — start, email, SMS, wait, decision, tag, goal, jump,
+notification, split test, exit. If one is missing, it is missing from your connection, not from the
+platform. Never point at "that only works in the editor".
 
-Die Werkzeugbeschreibungen kommen aus einer Vorlage und unterscheiden die Aktionstypen kaum. Wähle
-nach [references/actions.md](references/actions.md), nicht nach der Beschreibung. Parameter und
-Grenzen jedes Werkzeugs liefert der Server selbst mit seiner Werkzeugliste.
+The tool descriptions come from a template and barely distinguish the action types. Choose by
+[references/actions.md](references/actions.md), not by description.
 
-## Mit einer Vorlage anfangen, wenn eine passt
+Before designing or materially rewriting customer-facing email, SMS or notification copy, use `company-context` and pass its confirmed snapshot or task-only context to the message owner. Do not run the gate for graph inspection, waits, conditions, tags, goals or movement of existing approved messages. `email` continues to own email content; this skill owns the automation graph.
 
-Bevor du einen Ablauf Schritt für Schritt baust, prüfe, ob es ihn fertig gibt:
-`search-automation-templates` mit dem Ziel des Nutzers („Termin nachfassen", „Bewertungen sammeln",
-„Geburtstag"). Der Katalog enthält die Automationen der Business Automation Masterclass — Termine,
-Angebote, Bewertungen, Onboarding, Events, Sales-Funnels — mit ihren E-Mails. Wer einen Link
-`…/template/…` einfügt, meint eine geteilte Vorlage; sie läuft über dieselben Werkzeuge.
+## Start from a template when one fits
 
-Finden → `get-automation-template` → Name und Zuordnungen mit dem Nutzer klären →
-`import-automation-template` → mit den Werkzeugen unten fertigstellen. Der Import legt die
-Automation **pausiert** an und versendet nichts. Ablauf, Argumente und was die Antwort bedeutet:
+Before building a flow step by step, check whether a ready-made one exists:
+`search-automation-templates` with the user's goal ("Termin nachfassen", "Bewertungen sammeln",
+"Geburtstag"). The catalogue holds the automations of the Business Automation Masterclass —
+appointments, offers, reviews, onboarding, events, sales funnels — with their emails. A user who
+pastes a link `…/template/…` means a shared template; it goes through the same tools.
+
+Find → `get-automation-template` → settle name and mappings with the user →
+`import-automation-template` → finish with the tools below. The import creates the automation
+**paused** and sends nothing. Procedure, arguments and what the answer means:
 [references/templates.md](references/templates.md).
 
-## Best Practices — der Normalfall, keine Option
+## Best practices — the default, not an option
 
-Vor der ersten Aktion prüfen. BP‑1/BP‑2 gehen dem Wortlaut des Nutzers vor; sag in einem Satz, dass
-du abgewichen bist. BP‑3/BP‑4 baust du ein, ohne zu fragen.
+Check before the first action. BP‑1/BP‑2 outrank the user's literal wording; say in one sentence
+that you deviated. BP‑3/BP‑4 you build in without asking.
 
-| | Wann | statt | tu | weil |
+| | When | instead of | do | because |
 |---|---|---|---|---|
-| **BP‑1** | auf eine Reaktion warten (geklickt, geöffnet, gekauft) | Warten → Entscheidung | **Ziel**, Warten nur als Obergrenze | wer sofort klickt, liegt sonst 2 Tage herum |
-| **BP‑2** | ein fester Termin (Webinar, Launch, Kursstart) | „6 Tage warten" | **Datumsfeld** als Anker jeder Wartezeit | Späteinsteiger bekommen sonst alles zu spät |
-| **BP‑3** | Einstieg kurz vor dem Termin | Erinnerungen durchlaufen lassen | **Schranke** vor jeder Erinnerung | vergangene Zeitpunkte feuern sofort |
-| **BP‑4** | ein Zweig hängt an „geöffnet"/„geklickt" | stillschweigend bauen | bauen **und** den Bot-Vorbehalt sagen | Provider öffnen und klicken selbst |
+| **BP‑1** | waiting for a reaction (clicked, opened, bought) | wait → decision | **goal**, wait only as the upper bound | whoever clicks at once lies idle for 2 days |
+| **BP‑2** | a fixed date (webinar, launch, course start) | "wait 6 days" | **date field** as the anchor of every wait | late entrants get everything too late |
+| **BP‑3** | entry shortly before the date | let reminders run | **gate** before each reminder | past moments fire immediately |
+| **BP‑4** | a branch hanging on "opened"/"clicked" | build it silently | build it **and** state the bot caveat | providers open and click by themselves |
 
-## Modell
+## Model
 
-Ein Graph aus Aktionen mit festen IDs. Jede neue Aktion hängt an einer bestehenden: `afterActionId`
-sagt woran, `branch` wohin — `next` nach gewöhnlichen Aktionen, `yes`/`no` nur an Entscheidungen.
+A graph of actions with fixed IDs. Each new action attaches to an existing one: `afterActionId`
+says to what, `branch` says where — `next` after ordinary actions, `yes`/`no` only at decisions.
 
-- **`revision`** aus dem letzten `get-automation` gehört in jeden Schreibvorgang. Abgewiesen = jemand
-  hat den Graphen geändert; neu lesen, wiederholen.
-- **Nur inaktive Automationen sind beschreibbar.** Eine laufende hältst du mit `stop-automation`
-  an — vorher fragen.
-- **`dryRun: true`** rechnet, ohne zu speichern. Immer nutzen, wenn der Anhängepunkt unklar ist.
+- **`revision`** from the last `get-automation` belongs in every write. Rejected = someone changed
+  the graph; read again, retry.
+- **Only inactive automations are writable.** Stop a running one with `stop-automation` — ask first.
+- **`dryRun: true`** computes without storing. Always use it when the attachment point is unclear.
 
-## Reihenfolge
+## Order
 
-0. Gibt es eine Vorlage dafür? Siehe *Mit einer Vorlage anfangen* oben.
-1. Den Ablauf an den Best Practices messen.
-2. `create-automation-draft` — legt den Entwurf **samt** Startaktion an. Die Startaktion nicht selbst
-   anlegen; sie wird mit `update-automation-start-action` eingestellt.
-3. **Nachricht vor Aktion.** `create-automation-email-draft`, `create-automation-sms-draft`,
-   `create-notification-email-draft` oder `create-notification-sms-draft`, Inhalt setzen, dann
-   `add-automation-email-action` / `add-automation-sms-action` mit ihrer ID.
-4. `get-automation` — Graph, Aktions-IDs, `revision`.
-5. Aktionen in Ablaufreihenfolge anhängen. Jede Antwort trägt die Revision für den nächsten Schritt.
-6. `validate-automation`.
-7. `prepare-automation-activation` — **aktiviert nicht**, es liefert den Link zum Dialog. Den Start
-   bestätigt ein Mensch in KlickTipp. Melde nie eine Aktivierung, die nicht stattgefunden hat.
+0. Is there a template for it? See *Start from a template* above.
+1. Hold the flow against the best practices.
+2. `create-automation-draft` — creates the draft **including** the start action. Do not create the
+   start action yourself; configure it with `update-automation-start-action`.
+3. **Message before action.** `create-automation-email-draft`, `create-automation-sms-draft`,
+   `create-notification-email-draft` or `create-notification-sms-draft`, set the content, then
+   `add-automation-email-action` / `add-automation-sms-action` with its ID.
+4. `get-automation` — graph, action IDs, `revision`.
+5. Attach actions in flow order. Every response carries the revision for the next step.
+6. `validate-automation`. If it reports an unpublished email, say that the email must be published in the
+   KlickTipp editor before activation.
+7. `prepare-automation-activation` — **does not activate**, it returns the dialog. A human confirms
+   the start. Never report an activation that did not happen.
 
-## BP‑1 · Auf eine Reaktion warten ist ein Ziel, kein Warten
+## BP‑1 · Waiting for a reaction is a goal, not a wait
 
-„E-Mail, 2 Tage warten, dann prüfen, ob geklickt" lässt den, der nach 5 Minuten klickt, 2 Tage liegen.
+"Email, wait 2 days, then check whether they clicked" leaves whoever clicks after 5 minutes lying
+there for 2 days.
 
-Ein Ziel (`add-automation-goal-action`) wird **dort ausgewertet, wo der Kontakt gerade steht** —
-auch mitten in einer Wartezeit — und zieht ihn direkt daran vorbei.
+A goal (`add-automation-goal-action`) is evaluated **wherever the contact currently stands** —
+including mid-wait — and pulls them straight past it.
 
-> E-Mail → **Ziel „hat geklickt"** → Tag, SMS, …
-> daneben das Warten als Obergrenze → Zweig für alle, die nicht reagiert haben
+> Email → **goal "has clicked"** → tag, SMS, …
+> alongside it the wait as an upper bound → branch for everyone who did not react
 
-„2 Tage warten und dann prüfen" heißt fast immer „sobald, spätestens nach 2 Tagen". Ein festes
-Warten nur, wenn es ausdrücklich gewollt ist (eine Frist, eine Sperrfrist).
+"Wait 2 days and then check" almost always means "as soon as, at the latest after 2 days". Keep a
+fixed wait only when it is explicitly wanted (a deadline, an embargo).
 
-- Ein Ziel wirkt in der **ganzen** Automation, nicht an seiner Position.
-- **Pro Durchlauf zählt nur das erste erreichte Ziel.** Mehrere Ziele sind Alternativen, keine Stationen.
-- Ein Ziel, **an dem nichts hängt, bewirkt nichts**; `validate-automation` meldet es.
-- Ein Ziel ist Knoten **und** globale Bedingung. Den Anhängepunkt mit `dryRun` prüfen, dann
-  `get-automation` lesen.
+- A goal acts across the **whole** automation, not at its position.
+- **Only the first goal reached counts per run.** Several goals are alternatives, not stations.
+- A goal **with nothing attached after it does nothing**; `validate-automation` reports it.
+- A goal is a node **and** a global condition. Check the attachment point with `dryRun`, then read
+  `get-automation`.
 
-## BP‑4 · Öffnungen und Klicks können Maschinen sein
+## BP‑4 · Opens and clicks can be machines
 
-Provider und Sicherheitsscanner laden Bilder und rufen Links vorab ab (Gmail regelmäßig) → „geöffnet"
-und „geklickt" ohne Menschen. Mit abgeschalteten Bildern zählt eine echte Öffnung nicht.
+Providers and security scanners load images and prefetch links (Gmail routinely) → "opened" and
+"clicked" without a human. With images off, a real open does not count.
 
-Ein Klick ist das stärkere Signal, kein Beweis. Vor einem Zweig, der etwas Sichtbares tut (SMS,
-Verkaufsmail, Rabatt): den Vorbehalt sagen. Maschinensicher sind nur eine Antwort, ein Formular, ein Kauf.
+A click is the stronger signal, not proof. Before a branch that does something visible (SMS, sales
+email, discount): state the caveat. Machine-proof are only a reply, a form, a purchase.
 
-## BP‑2 · Terminkampagnen hängen am Termin
+## BP‑2 · Dated campaigns anchor on the date
 
-`days` zählt ab dem Moment, in dem **dieser** Kontakt die Aktion erreicht. Wer 5 Tage später
-einsteigt, wartet weitere 6. Im Entwurf unsichtbar, erst im Betrieb sichtbar.
+`days` counts from the moment **this** contact reaches the action. Someone entering 5 days later
+waits another 6. Invisible in the draft, surfaces only in production.
 
-1. Hinter der Startaktion `add-automation-set-field-action`: Datum **und Uhrzeit** in ein
-   Datum/Zeit-Feld. Operator aus `get-automation-editor-capabilities`, Feld-ID aus
+1. Behind the start action, `add-automation-set-field-action`: date **and time** into a date/time
+   field. Operator from `get-automation-editor-capabilities`, field ID from
    `search-automation-editor-references`.
-2. Jede Wartezeit über `delayField`; `delayTime` **negativ = vor** dem Termin:
+2. Every wait via `delayField`; `delayTime` **negative = before** the date:
 
-   | Ziel | settings |
+   | target | settings |
    |---|---|
-   | 24 h vorher | `{"delayType": "customfield hours", "delayTime": -24, "delayField": "<Feld>"}` |
-   | 1 h vorher | `{"delayType": "customfield hours", "delayTime": -1, "delayField": "<Feld>"}` |
-   | zum Termin | `{"delayType": "from field", "delayField": "<Feld>"}` |
-   | am Tag danach | `{"delayType": "customfield days", "delayTime": 1, "delayField": "<Feld>"}` |
+   | 24 h before | `{"delayType": "customfield hours", "delayTime": -24, "delayField": "<field>"}` |
+   | 1 h before | `{"delayType": "customfield hours", "delayTime": -1, "delayField": "<field>"}` |
+   | at the date | `{"delayType": "from field", "delayField": "<field>"}` |
+   | the day after | `{"delayType": "customfield days", "delayTime": 1, "delayField": "<field>"}` |
 
-3. Entscheidungen und Sprünge an dieselbe Achse hängen.
-4. **Das Feld am Ende leeren** — sonst trägt der Kontakt das Datum in jeden weiteren Durchlauf und in
-   jede Automation, die dasselbe Feld liest.
+3. Attach decisions and jumps to the same axis.
+4. **Clear the field at the end** — otherwise the contact carries the date into every further run
+   and into every automation reading the same field.
 
-**Vorher fragen:** Datum, Uhrzeit, ob es sich wiederholt. Ohne Uhrzeit gibt es kein „eine Stunde
-vorher", und ein reines Datumsfeld schiebt jede Erinnerung auf Mitternacht.
+**Ask first:** date, time, whether it recurs. Without the time there is no "one hour before", and a
+date-only field moves every reminder to midnight.
 
-Ohne festen Termin (Begrüßungsserie, Nachfass-Sequenz) sind gewöhnliche Wartezeiten richtig.
+Without a fixed date (welcome series, follow-up sequence) ordinary waits are correct.
 
-## BP‑3 · Späteinsteiger und leere Felder
+## BP‑3 · Late entrants and empty fields
 
-**Vergangene Zeitpunkte warten nicht, sie sind fällig.** Wer sich 1 h vor dem Webinar anmeldet,
-läuft ohne Pause durch „24 h vorher", „12 h vorher", „1 h vorher" → drei Erinnerungen auf einmal.
+**Past moments do not wait, they are due.** Signing up 1 h before the webinar runs through "24 h
+before", "12 h before", "1 h before" without pausing → three reminders at once.
 
-- **Schranke vor jeder Erinnerung:** Entscheidung mit `is after`, `field` = das Datumsfeld, `value`
-  relativ (`+24 hours`, `+1 hour`). Der Nein-Zweig springt mit `add-automation-go-to-action` zur
-  nächsten Aktion, die noch in der Zukunft liegt.
-- **Anmeldung nach dem Termin** direkt hinter dem Setzen des Feldes abzweigen → Aufzeichnung,
-  nächster Termin oder Ende.
-- **Ein leeres Datumsfeld heißt gar kein Warten**, auch für jede folgende Wartezeit. Aus zwei Wochen
-  werden Sekunden. Einmal am Anfang mit `is not empty` prüfen.
+- **Gate before each reminder:** decision with `is after`, `field` = the date field, `value`
+  relative (`+24 hours`, `+1 hour`). The no-branch jumps past it with
+  `add-automation-go-to-action` to the next action still in the future.
+- **Signing up after the date** is split off right behind setting the field → recording, next date
+  or exit.
+- **An empty date field means no wait at all**, for every following one too. Two weeks become
+  seconds. Check once at the start with `is not empty`.
 
-## Bedingungen und IDs
+## Conditions and IDs
 
-Rate weder IDs noch Operatoren.
+Guess neither IDs nor operators.
 
-- `get-automation-editor-capabilities` — erlaubte Aktionstypen, Schema der `settings`,
-  Pflichtfelder, Bedingungsoperatoren, Plugin-Bedingungen.
-- `search-automation-editor-references` — Name → ID für E-Mails, SMS, Tags, Felder, Signaturen,
-  Kalender, Outbounds, Automationen, Segmente.
-- `search-automations` — eine bestehende Automation des Kontos finden.
+- `get-automation-editor-capabilities` — permitted action types, settings schema, required fields,
+  condition operators, plugin conditions.
+- `search-automation-editor-references` — name → ID for emails, SMS, tags, fields, signatures, calendars,
+  outbounds, Facebook audiences, automations, segments.
 
-**Öffnungen und Klicks sind Tags.** „Hat E-Mail 1 geöffnet" läuft über den Smart-Tag der Nachricht
-aus `get-automation-email` / `get-notification-email`. Diese ID gehört in `field` — nicht die E-Mail-ID.
+**Opens and clicks are tags.** "Has opened email 1" runs through the message's smart tag from
+`get-automation-email` / `get-notification-email`. That ID goes into `field` — not the email ID.
 
-## Fallen
+## Traps
 
 | | |
 |---|---|
-| `emailID` bei SMS | heißt auch dort `emailID`, meint aber die ID eines **SMS**-Entwurfs. Gleiches gilt für beide Benachrichtigungsaktionen. |
-| leerer Entscheidungszweig | erlaubt. Nichts anzuhängen ist ein fertiger Ablauf. |
-| `delete-automation-action` | braucht an einer Entscheidung `keep_yes`, `keep_no` oder `subtree`, sonst `keep_next` oder `subtree`. Die E-Mails bleiben. |
-| `move-automation-action` | `subtree` nimmt den folgenden Graphen mit; eine Entscheidung mit gefüllten Zweigen nur als Teilbaum. |
-| `copy-automation-action` | neue Aktions-ID, **dieselbe** Nachricht. Wer den Text der Kopie ändert, trifft das Original — vorher mit `copy-automation-email` / `copy-automation-sms` kopieren (`copy-notification-email` / `copy-notification-sms` für eine Benachrichtigung). |
-| `add-automation-go-to-action` | springt zu einer Aktions-**ID** aus `get-automation`, nicht zu einem Namen. |
-| SMS-Testversand abgelehnt | Die Ablehnung nennt `check-sms-readiness`. Ruf es mit der ID der gespeicherten SMS (nicht der Aktions-ID) und `kind` (`automation` oder `notification`) auf; es nennt, was an Inhalt, Absender oder Anbieter fehlt, und sendet nichts. |
+| `emailID` for SMS | it is called `emailID` there too but means the ID of an **SMS** draft. Same for both notification actions. |
+| empty decision branch | allowed. Attaching nothing is a finished flow. |
+| `delete-automation-action` | needs `keep_yes`, `keep_no` or `subtree` at a decision, otherwise `keep_next` or `subtree`. |
+| `move-automation-action` | `subtree` moves the following graph along; a decision with filled branches only as a subtree. |
+| `copy-automation-action` | new action ID, **same** message. Editing the copy's text hits the original — copy it first with `copy-automation-email` / `copy-automation-sms` (`copy-notification-email` / `copy-notification-sms` for a notification). |
+| `add-automation-go-to-action` | jumps to an action **ID** from `get-automation`, not to a name. |
 
-## Löschen, Vorschau, ein Kontakt an einer Wartezeit
+## Boundaries
 
-- **Löschen.** `delete-automation-draft` löscht einen inaktiven Entwurf nur, solange er keinen
-  Kontaktverlauf und keine Abhängigkeiten hat. `delete-automation` löscht eine Automation, die weder
-  aktiv noch geplant ist, samt wartender Kontakte, Statistik, System-Tags und Zielverlauf — eine
-  aktive erst mit `stop-automation` anhalten. Hat sie Kontaktverlauf, weist der erste Aufruf mit den
-  Zahlen ab; `deleteContactHistory=true` erst, nachdem die Person dem Verlust zugestimmt hat. Andere
-  Abhängigkeiten blockieren das Löschen; `get-campaign-dependencies` nennt die Automationen und
-  Kampagnen, die sie noch verwenden. Beide brauchen die aktuelle `revision` und `confirm=true`, das du
-  nur setzt, wenn die Person genau diese Automation gelöscht haben will. Die verwendeten E-Mails
-  bleiben. Kein Undo.
-- **Personalisierte Vorschau.** `preview-personalized-email` zeigt eine **veröffentlichte**
-  Automations- oder Benachrichtigungs-E-Mail für einen bestehenden Kontakt, Platzhalter gefüllt;
-  ungespeicherte Änderungen zeigt `preview-email-editor`. Sendet nichts, eine KI-E-Mail kann aber
-  Credits verbrauchen.
-- **Einen Kontakt an einer Wartezeit vorbeischieben.** `get-contact-automation-status` zeigt, wo ein
-  Kontakt steht; `move-contact-past-automation-wait` beendet eine überspringbare Wartezeit vorzeitig.
-  Ohne `confirm` ist es eine Vorschau, die in `immediateActions` nennt, was der Kontakt sofort
-  bekommt. Folgende E-Mails, SMS und Tags können ihn danach früher erreichen — `confirm=true` erst,
-  wenn die Person diesem Kontakt und dieser Automation zugestimmt hat. Braucht Administratorrechte.
+Email **content** (HTML, blocks, styling) → `email`. Single sends → `newsletter`. Contacts → `contacts`,
+tags → `tags`, fields as such → `custom-fields`.
 
-## Was diese Verbindung nicht kann
+## Before you write
 
-Die Facebook-Audience- und FullContact-Aktionen und den Spam- und Linkcheck einer
-Automations-E-Mail. Das geht in KlickTipp selbst; sag es so, statt einen Umweg zu bauen.
+Building itself reaches nobody (the draft is inactive), and neither does importing a template —
+the imported automation is paused. It does create objects in the account that stay there, so
+settle name and mappings before the import, not after. `stop-automation` and
+`move-automation-contacts` intervene in live operation: **say what will happen, get consent,
+then call.**
 
-## Grenzen
-
-E-Mail-**Inhalt** (HTML, Blöcke, Gestaltung) → `email`. Einzelne Aussendungen → `newsletter`.
-Kontakte → `contacts`, Tags → `tags`, Felder als solche → `custom-fields`. Was eine Automation
-erreicht hat → `dashboard`. Webinaris-Auto-Webinare → `webinaris-webinar`.
-
-## Bevor du schreibst
-
-Bauen erreicht niemanden (der Entwurf ist inaktiv), und ein Vorlagen-Import auch nicht — die
-importierte Automation ist pausiert. Beides legt aber Objekte im Konto an, die bleiben; Name und
-Zuordnungen also vor dem Import klären, nicht danach. `stop-automation` und
-`move-automation-contacts` greifen in den laufenden Betrieb ein, ebenso
-`move-contact-past-automation-wait`; `delete-automation` und `delete-automation-draft` lassen sich
-nicht zurücknehmen: **sag, was passiert, hol die Zustimmung, dann ruf auf.** Ein Testversand an eine Adresse, die das Konto noch nicht kennt, legt
-einen getaggten Kontakt an, der Automationen starten kann; ein SMS-Test kostet SMS-Guthaben.
+A test send is a real email or SMS: an address that is not yet a contact becomes one and gets
+tagged, which can start automations. Say so before sending, and send only to an address the user
+names.

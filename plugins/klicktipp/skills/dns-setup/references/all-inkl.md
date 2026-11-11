@@ -1,17 +1,32 @@
 ## Provider: ALL-INKL
 
 In KAS, record names are relative to the zone (for example, `_dmarc` rather than `_dmarc.example.com`); the API's `zone_host` is the full domain with a trailing dot. ALL-INKL's CNAME guide requires a trailing dot on the target hostname. Check the actual field conventions before writing.
+KAS API credentials can control services beyond DNS, so use a restricted account when available.
 
 Sources:
 - [KAS DNS API](https://kasapi.kasserver.com/dokumentation/phpdoc/packages/API%20Funktionen.dns.html)
 - [CNAME guide](https://all-inkl.com/wichtig/anleitungen/kas/tools/dns-werkzeuge/cname_178.html)
 - [TXT guide](https://all-inkl.com/wichtig/anleitungen/kas/tools/dns-werkzeuge/txt-record_157.html)
 
-### Direct access
+### Local MCP (npx)
 
-This plugin brings no ALL-INKL integration and handles no KAS login. If the user already has a
-connected ALL-INKL integration, use it for reading and, with approval, for changes. Otherwise guide
-them through the website.
+Third-party MCP server: https://github.com/hl9020/mcp-all-inkl. It exposes DNS **and** other KAS administration actions; review its permissions and source with the user before offering it. It requires Node.js 22+, KAS API access, and local KAS credentials. `npx -y mcp-all-inkl` downloads and runs the package if it is not already cached; obtain installation approval first.
+
+For Claude Code or Codex, follow the server's linked setup instructions for the host in use. Have the user provide `KAS_LOGIN` and `KAS_PASSWORD` privately through their local configuration; do not ask them to type secrets into a command you execute or paste a credential-bearing configuration into chat. Check how the host stores MCP credentials before configuring it.
+
+### SOAP/PHP API
+
+ALL-INKL supports DNS writes through its KAS SOAP API when the customer's plan permits it.
+
+SOAP API:
+- Auth WSDL: https://kasapi.kasserver.com/soap/wsdl/KasAuth.wsdl
+- API WSDL: https://kasapi.kasserver.com/soap/wsdl/KasApi.wsdl
+- Functions: https://kasapi.kasserver.com/dokumentation/phpdoc/
+
+### Python/Go libraries
+
+Python: fetzerch/kasserver
+Go: https://go-acme.github.io/lego/dns/allinkl/
 
 ### Manual website guidance
 

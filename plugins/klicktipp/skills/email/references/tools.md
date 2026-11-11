@@ -11,7 +11,7 @@ between calls, the pitfalls, and what one tool means for another. The procedure 
 | | |
 |---|---|
 | `get-email-editor-content` | The three document projections exist only for drag-and-drop drafts, `publishedContent` always. Take the outline, not `content` — a quarter of the bytes. A style property the document does not carry is **absent** from the outline rather than empty: the editor applies defaults at render time. `writeBlockers` names states that allow reading but block every write. `importWarnings` applies to `replace-email-editor-content-from-html` only. |
-| `validate-email-editor-content` | Severity says what the **next** step does, not what the dispatch does. `publish-newsletter-email-content` refuses without `%Link:Unsubscribe%` (or `%User:Signature%`, which brings it) — so a missing unsubscribe link is a **lock**, while a missing `%Link:SubscriberInfo%` is a decision. `blockCount` distinguishes "found nothing" from "empty document". An unconfigured add-on cannot be fixed from here at all. |
+| `validate-email-editor-content` | Severity says what the **next** step does, not what the dispatch does. `publish-newsletter-email-content` refuses without `%Link:Unsubscribe%` (or `%User:Signature%`, which brings it) — so a missing unsubscribe link is a **lock**, while a missing `%Link:SubscriberInfo%` is a decision. `blockCount` distinguishes "found nothing" from "empty document"; `externalCheck` distinguishes "Beefree found nothing" from "Beefree was not asked or not reachable". An unconfigured add-on cannot be fixed from here at all. |
 | `publish-newsletter-email-content` | Takes no HTML, only the stored revision. `operation: unchanged` means the draft was already the dispatch content. Editor features the server may not publish on someone's behalf are rejected with the editor URL. |
 
 ## Filling a body — which of the three
@@ -54,7 +54,7 @@ content along. Kinds, fields, pitfalls and import cost → [`blocks.md`](blocks.
 `move-email-editor-block` · `remove-email-editor-block` work on every kind. **Remove and re-add is not a change** —
 typography, add-on configuration and the uuid are lost. See `../SKILL.md`.
 
-## Images — ⚠ not on production
+## Images
 
 "unknown tool" there is the pending release, not a defect.
 

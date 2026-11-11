@@ -12,6 +12,8 @@ Choose the intended connector and account before account-specific reads or write
 from a tool response or account URL. Load the live contract for the next needed tool and reuse it.
 Do not treat a staging label, an authorization error or a skill load as proof of account or version.
 
+Before proposing new subject lines, pre-headers or variant copy, use `company-context` and reuse its confirmed snapshot or task-only context. Do not run the gate for test configuration, result inspection, copying approved variants or lifecycle work. Content remains owned by `email` and newsletter lifecycle by `newsletter`.
+
 ## The sentence everything follows from
 
 **A split-test newsletter has no single email** — each variant *is* one.
@@ -112,7 +114,7 @@ omitted values stay, a call without a change is rejected. Only while the test ha
 
 **Two locks:** a **started** test no longer lets its variants be changed, and the **last** variant
 cannot be removed. `remove-newsletter-split-test-variant` deletes the email **with its content**, no undo — show label and
-subject from `splitTestVariants` first.
+subject from `splitTestVariants` and obtain the user's confirmation first.
 
 ## Reading
 
@@ -134,7 +136,7 @@ state the supported path; use the `appUrl` where the available tools do not supp
 Do not claim that every split-test action is limited to the interface.
 
 The observed `send-newsletter-test` contract describes `messageId` to select a split-test variant by
-its `emailId`; this path was not exercised in the read-only retest. A test still needs that variant's
+its `emailId`. A test still needs that variant's
 published content, an explicitly named recipient and disclosure of the real-mail/contact-tagging
 effect. Never call it during a read-only plan.
 Check the live contract before any action, because a skill cannot guarantee what a deployment offers.

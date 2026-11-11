@@ -54,6 +54,6 @@ to apply a change.
 
 `validate-email-editor-content` runs over the whole body in one call: images without alt text, buttons without
 a target, empty text blocks, never-configured add-ons, insufficient contrast, missing footer
-placeholders. Pass the findings on instead of fixing silently — pale text can be intended. An
+placeholders — and through Beefree unreachable links, heavy images or HTML and small fonts. Pass the findings on instead of fixing silently — pale text can be intended. An
 unconfigured add-on is the exception you cannot fix at all: the user makes that choice in the
 editor.

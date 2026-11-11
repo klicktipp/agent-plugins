@@ -1,38 +1,39 @@
-# Automationsvorlagen: finden, lesen, importieren
+# Automation templates: find, read, import
 
-Zwei Arten von Vorlagen, ein Werkzeugpaar für beide:
+Two kinds of templates, one pair of tools for both:
 
-| Quelle | Was der Nutzer hat | Was du als `templateLink` übergibst |
+| Source | What the user has | What you pass as `templateLink` |
 |---|---|---|
-| **Katalog** — die fertigen Automationen der Business Automation Masterclass (BAM), die KlickTipp mitbringt | nichts, oder einen Anwendungsfall („Termin nachfassen") | die `uri` aus `search-automation-templates`, z. B. `klicktipp://automation-templates/teve` |
-| **Geteilte Vorlage** — eine Vorlage, die ein anderes Konto veröffentlicht hat | einen Link `https://app.klicktipp.com/template/…` | den Link, wie er eingefügt wurde; Host, Schrägstrich am Ende und Zeilenumbrüche sind egal |
+| **Catalogue** — the ready-made automations of the Business Automation Masterclass (BAM), shipped with KlickTipp | nothing, or a use case ("Termin nachfassen") | the `uri` from `search-automation-templates`, e.g. `klicktipp://automation-templates/teve` |
+| **Shared template** — a template another account published | a link `https://app.klicktipp.com/template/…` | the link as pasted; host, trailing slash and line breaks do not matter |
 
-## Reihenfolge
+## Order
 
-1. **Finden.** `search-automation-templates` mit dem Ziel des Nutzers in seinen Worten als `query`
-   (Deutsch trifft am besten — der Katalog ist deutsch). Ohne `query` kommt alles; `module`
-   beschränkt auf ein Masterclass-Modul. Jeder Treffer trägt `description`, `startsWhenTagged`,
-   `emailSubjects`, `tagNames`, `customFieldNames` und `includedAutomations`. Wähle danach, nicht
-   nach dem Namen. Stell zwei oder drei Kandidaten mit je einem Satz vor, wenn die Wahl nicht
-   offensichtlich ist.
-2. **Lesen.** `get-automation-template` mit der uri oder dem Link. Die Antwort enthält:
-   - `objects` — jeden Tag, jedes Feld, jede E-Mail und jeden Outbound, den der Import mitbringt,
-     jeweils mit `suggestedExistingId`: dem gleichnamigen Objekt des Kontos, auf das der Import
-     standardmäßig abbildet. `''` heißt: standardmäßig eine Kopie.
-   - `smartImportAvailable` — ob dieses Konto Name, Präfix, Labels und Zuordnungen überhaupt wählen darf.
-   - `importable` / `refusal` — ob ein Import jetzt abgelehnt würde (etwa am Outbound-Limit) und warum.
-   - `notTransferable` — Bezüge, die der Import nicht übertragen kann, typischerweise eine
-     Startbedingung auf ein Formular oder einen API-Key des Herkunftskontos. Sie müssen nach dem
-     Import neu gesetzt werden; sag das vor dem Import.
-3. **Mit dem Nutzer klären**, nur was das Konto wählen kann (`smartImportAvailable`):
-   - den **Namen** der neuen Automation — fragen, nicht erfinden; Standard ist der Vorlagenname, und
-     ein schon vergebener Name wird abgelehnt;
-   - ein optionales **Präfix** für jedes angelegte Objekt, damit importierte Tags und E-Mails
-     erkennbar bleiben;
-   - **Zuordnungen**: für jeden Tag und jedes Feld ein bestehendes weiterverwenden oder eine Kopie
-     anlegen. Weiterverwenden zählt bei Tags und Feldern, mit denen das Konto schon arbeitet
-     (`per Du`, `Kunde`, Vorname).
-4. **Importieren.** `import-automation-template`:
+1. **Find.** `search-automation-templates` with the user's goal in their words as `query`
+   (German works best — the catalogue is German). Omit `query` to list everything; `module`
+   narrows to one Masterclass module. Each hit carries `description`, `startsWhenTagged`,
+   `emailSubjects`, `tagNames`, `customFieldNames` and `includedAutomations`. Pick by those, not
+   by the name. Present two or three candidates with one sentence each when the choice is not
+   obvious.
+2. **Read.** `get-automation-template` with the uri or link. It answers with:
+   - `objects` — every tag, custom field, email and outbound the import brings, each with
+     `suggestedExistingId`: the account's object of the same name the import maps it onto by
+     default. `''` means a copy is the default.
+   - `smartImportAvailable` — whether this account may choose the automation name, a prefix,
+     labels and mappings at all.
+   - `importable` / `refusal` — whether an import would be refused now (for instance the outbound
+     limit), and why.
+   - `notTransferable` — references the import cannot carry over, typically a start condition on a
+     form or an API key of the account the template came from. They have to be set again after the
+     import; say so before importing.
+3. **Settle with the user**, only what the account can choose (`smartImportAvailable`):
+   - the **name** of the new automation — ask, do not invent; the default is the template name and
+     a name already used is refused;
+   - an optional **prefix** for every created object, so the imported tags and emails stay
+     recognisable;
+   - **mappings**: for each tag and custom field, reuse an existing one or create a copy. Reusing
+     matters for tags and fields the account already works with (`per Du`, `Kunde`, first name).
+4. **Import.** `import-automation-template`:
 
    ```json
    {
@@ -46,27 +47,34 @@ Zwei Arten von Vorlagen, ein Werkzeugpaar für beide:
    }
    ```
 
-   Eine Zuordnung mit `useExistingId` verwendet dieses Objekt weiter; ohne wird das Objekt kopiert.
-   Nicht aufgeführte Objekte nehmen den Standard aus Schritt 2. **Ohne `mappings` wird alles
-   kopiert** — das ist der Standard des Dialogs bei ausgeschaltetem Smart-Import.
-5. **Berichten** aus der Antwort, nie aus dem Gedächtnis: `automationName` und `editUrl`, was
-   `created`, was `mapped`, was `failed` ist, und `notTransferable`.
-6. **Die Automation fertigstellen** mit den übrigen Werkzeugen dieses Skills — die importierte ist
-   eine gewöhnliche Automation. Die Startbedingung setzen, wo `notTransferable` sagt, dass sie nicht
-   übertragen werden konnte, Platzhaltertext in den E-Mails ersetzen (die Sales-Funnel-Vorlagen
-   tragen `[Was ist das Thema deines Angebots]` und Ähnliches), dann `validate-automation`.
+   A mapping with `useExistingId` reuses that object; without it the object is copied. Objects not
+   listed take the default from step 2. **Omitting `mappings` entirely copies everything** — that is
+   the dialog's default with smart import off.
+5. **Report** from the answer, never from memory: `automationName` and `editUrl`, what was
+   `created`, what was `mapped`, anything `failed`, and `notTransferable`.
+6. **Finish the automation** with the other tools of this skill — the imported one is an ordinary
+   automation. Set the start condition where `notTransferable` says it could not be carried over,
+   replace placeholder text in the emails (the sales-funnel templates carry `[Was ist das Thema
+   deines Angebots]` and the like), then `validate-automation`.
 
-## Was der Import ist und was nicht
+## What the import is and is not
 
-- **Er fügt hinzu, und es gibt kein Undo.** Jedes angelegte Objekt bleibt im Konto, in der Antwort
-  aufgeführt. Ein zweiter Aufruf importiert ein zweites Mal.
-- **Es wird nichts versendet.** Die Automationen werden **pausiert** angelegt — nicht gestartet.
-  Starten ist `prepare-automation-activation`, das ein Mensch in KlickTipp bestätigt.
-- **Abgelehnt, bevor etwas geschrieben wird**, wenn das Outbound-Limit überschritten würde, der Name
-  vergeben ist, eine Zuordnung auf ein Objekt zeigt, das das Konto nicht hat, oder zwei
-  Vorlagenobjekte auf dasselbe abgebildet werden. Die Ablehnung sagt, was; das beheben und erneut
-  aufrufen.
-- **Ohne Smart-Import** kann das Konto weder Name, Präfix, Labels noch Zuordnungen wählen; wer sie
-  übergibt, wird abgelehnt. Jedes Objekt wird dann mit dem Präfix `Importiert` kopiert, wie im Dialog.
-- Die E-Mails kommen mit ihrem Inhalt an: klassische E-Mails als HTML, Drag-and-Drop-E-Mails mit
-  ihrem Editor-Dokument. Platzhalter kopierter Felder werden auf die neuen Felder umgeschrieben.
+- **It is additive and there is no undo.** Every created object stays in the account, listed in
+  the answer. A second call imports a second time.
+- **Nothing is sent.** The automations are created **paused** — not started. Starting one is
+  `prepare-automation-activation`, which a person confirms in KlickTipp.
+- **Refused before anything is written** when the outbound limit would be exceeded, the name is
+  taken, a mapping points at an object the account does not have, or two template objects are
+  mapped onto the same one. The refusal says which; fix that and call again.
+- **Without smart import** the account cannot choose name, prefix, labels or mappings; passing any
+  of them is refused. Every object is then copied with the prefix `Importiert`, as in the dialog.
+- The emails arrive with their content: classic emails as HTML, drag-and-drop emails with their
+  editor document. Placeholders of copied custom fields are rewritten to the new fields.
+
+## Resources
+
+The catalogue is also published as MCP resources, for a person who wants to attach it rather than
+for you to call: `klicktipp://automation-templates` (the catalogue),
+`klicktipp://automation-templates/{code}` (the package manifest) and
+`klicktipp://automation-templates/{code}/emails/{file}` (one email's `.html`, `.json` or `.txt`).
+To choose and import, use the tools above — they work in every client.

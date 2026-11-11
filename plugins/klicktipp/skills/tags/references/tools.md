@@ -1,34 +1,24 @@
-# Tag-Werkzeuge — Wofür, Nicht, Stolperer
+# Tag tools — what for, what not, pitfalls
 
-Den vollständigen Wortlaut jeder Beschreibung und jedes Parameters liefert der Server selbst mit
-seiner Werkzeugliste; hier steht die Deutung. Der Ablauf steht in `../SKILL.md`.
+**This file does not repeat the tool descriptions.** The procedure is in `../SKILL.md`.
 
-`R` liest nur · `D` löscht ohne Undo · `O` erreicht eine Automation oder einen echten Empfänger · `I`
-ein zweiter gleicher Aufruf ändert nichts mehr.
+`R` reads only · `D` deletes without undo · `O` reaches an automation or a real recipient.
 
-| Werkzeug | | Wofür |
+| Tool | | What for |
 | --- | --- | --- |
-| `search-tags` · `get-tag` | R | Manuelle und Systemtags; das Detail mit Beschreibung, Trägerzahl, Auto-Abos. |
-| `create-manual-tag` · `update-manual-tag` | / I | Nur manuelle Tags: Name und Beschreibung. Keine Einstellung für Mehrdimensionalität. |
-| `delete-manual-tag` | D | Nimmt den Tag von allen Kontakten. |
-| `tag-contact` · `untag-contact` | O | Einen manuellen Tag an einem Kontakt an / ab, je `referenceId`. `approval` Pflicht. |
-
-### `search-tags` · `get-tag`
-**Wofür:** Tags mit Typ — manuell oder von KlickTipp gesetzt; Filter `query`, `type` (`tag`,
-`campaign-sent`, `email-opened` …), `onlyWritable`, `multiValue` (einmal je Abo oder einmal
-überhaupt), `systemRole` (`test-contact` markiert Testempfänger). **Stolperer:** Die Beschreibung
-steht nur im Detail. `get-tag` sagt, wie viele Kontakte den Tag tragen, wofür er steht, welche Entität
-hinter einem Systemtag steckt und welche Abos ein Zuweisen auslöst.
+| `search-tags` · `get-tag` | R | Manual and system tags alike; detail with description, holder count, auto-subscriptions. |
+| `create-manual-tag` · `update-manual-tag` | | Manual tags only: name and description. No setting for multi-value. |
+| `delete-manual-tag` | D | Takes the tag off every contact. |
+| `tag-contact` · `untag-contact` | O | One manual tag on/off for one contact, per `referenceId`. `approval` required. |
 
 ### `create-manual-tag` · `update-manual-tag` · `delete-manual-tag`
-**Stolperer:** Anlegen weist niemandem etwas zu; der Name ist eindeutig im Konto und darf keine reine
-Zahl sein; gib eine Beschreibung. Umbenennen bricht nichts (Referenz per ID), zeigt sich aber überall,
-wo der Name gelesen wird — das Ergebnis listet die Nutzer; Auto-Abo-Konfiguration und
-Mehrdimensionalität bleiben, wie sie sind. Löschen ist unumkehrbar; ein noch benutzter Tag wird mit
-Nennung der Nutzer abgewiesen. Systemtags sind unantastbar.
+Creating assigns nothing to anybody; the name is unique within the account and cannot be a number
+alone; give a description. Renaming breaks nothing (references run by ID) but shows everywhere the
+name is read — the result lists the users; auto-subscription configuration and single-value stay as
+they are. Deleting is irreversible; a tag still in use is rejected with its users named. System tags
+are untouchable.
 
 ### `tag-contact` · `untag-contact`
-**Stolperer:** Kann sofort Kampagnen, Autoresponder und Outbound-Events starten oder ändern —
-`approval: I_ACCEPT_AUTOMATION_EFFECTS`, nach Zustimmung. `referenceId` ist Default 0; bei einem
-mehrdimensionalen Tag die gemeinte Referenz vorher klären. Nur manuelle, existierende Tags des
-Kontos; unbekannte werden abgewiesen, nie angelegt. Entfernen meldet niemanden ab.
+Can start or change campaigns, autoresponders and outbound events immediately. `referenceId`
+defaults to 0; for a multidimensional tag establish the intended reference first. Removing a tag
+unsubscribes nobody.

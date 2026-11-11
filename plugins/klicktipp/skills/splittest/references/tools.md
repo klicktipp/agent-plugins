@@ -6,14 +6,7 @@ the order between calls, the pitfalls, and what one tool means for another. The 
 `../SKILL.md`. `R` reads only · `D` deletes
 without undo · `I` a second identical call changes nothing.
 
-**Released, but only from the next production release onwards.** All five are in the production
-allowlist; until that release is out, production keeps answering "unknown tool" — the state of the
-deployment, not a defect. On staging and locally they are there.
-
-They were **not** released while `create-newsletter-draft` already published its `splitTest`
-argument. That was a dead end: split test yes/no is irreversible in both directions, a fresh test has
-**one** variant and needs two — and the second came from exactly one of these tools. Anyone meeting
-that on an older deployment finds the newsletter only in the app; do not invent a detour.
+If a tool answers "unknown tool", this deployment lacks it; say so and point to the app — do not invent a detour.
 
 | Tool | | What for |
 | --- | --- | --- |
@@ -24,8 +17,7 @@ that on an older deployment finds the newsletter only in the app; do not invent 
 | `configure-newsletter-split-test` | I | Test size, duration, winner criterion. Not: whether it is a split test. |
 
 `send-newsletter-test` is a separate newsletter tool. The observed live contract describes
-`messageId` with the split-test variant's `emailId` to target one variant; this path was not
-exercised in the read-only retest. Read its current contract before use; it sends a real email to
+`messageId` with the split-test variant's `emailId` to target one variant. Read its current contract before use; it sends a real email to
 the specified address and can create and tag a contact. Do not generalize earlier
 unsupported-tool reports to every deployment.
 
