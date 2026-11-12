@@ -38,6 +38,7 @@ Both targets read the same `.mcp.json`.
 | `update-newsletter-draft` | name, internal note and audience of a draft |
 | `delete-newsletter-draft` | discard a draft |
 | `configure-newsletter-delivery` | sender name, sender address, reply address, signature |
+| `validate-newsletter-readiness` | whether one newsletter is ready for a test send or activation: content, what publishing would refuse, open requirements and the account's sending readiness — changes and sends nothing |
 | `send-newsletter-test` | test send to any address — the recipient becomes a tagged contact, which can start an automation; for a split test, one variant per call |
 | `send-newsletter` | send or schedule after the user confirms the recipient estimate in the client's dialog; a client without that dialog gets the schedule page instead |
 | `cancel-newsletter-dispatch` | take a running dispatch back — it does not unsend what already left |

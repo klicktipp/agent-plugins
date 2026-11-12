@@ -60,7 +60,7 @@ Use customer language. Do not invent a personal sign-off.
 | 3 | Subject, pre-header, audience | `update-newsletter-draft` |
 | 3a | *split test only:* variants | `add-` / `update-` / `remove-newsletter-split-test-variant` → skill `splittest` |
 | 4 | Sender, reply-to, signature | `configure-newsletter-delivery` |
-| 4a | Check and publish | `validate-email-editor-content`, `preview-email-editor`, `publish-newsletter-email-content`, `preview-personalized-newsletter` |
+| 4a | Check and publish | `validate-email-editor-content`, `preview-email-editor`, `publish-newsletter-email-content`, `preview-personalized-newsletter`; before 5 or 6: `validate-newsletter-readiness` |
 | 5 | Test send | `send-newsletter-test` |
 | 6 | Show the final review and stop for explicit approval | — |
 | 6a | Start the approved dispatch | `send-newsletter` |
@@ -180,8 +180,12 @@ override instead of inventing a value.
   import and its warnings → skill `email`.
 - For a draft or preview request, stop here.
 - **Before a test send or activation**, or when the user asks whether the newsletter is ready:
-  check content, sender, signature and audience, and report what each check found. Anything not
-  checked stays open; do not report it as clean.
+  `validate-newsletter-readiness` runs the content check, what publishing would refuse, the open test
+  and activation requirements and the account's sending readiness in one call. Report each part in
+  its own words, with the block where there is one. A part in `unavailable` did not run — say so
+  instead of reporting it clean. `ready: true` still covers nothing in `notChecked`: the preview
+  review above is not replaced by it. Keep `skipExternalCheck` as in the previous check unless the
+  user asks.
 - **Publish** for a test, a dispatch or when asked: `publish-newsletter-email-content` with the latest
   `contentRevision`; report the returned status and revision. After later edits, republish before
   another test or dispatch; an ordinary draft edit does not itself require publication. Report

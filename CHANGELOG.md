@@ -7,6 +7,18 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.33.1 — 2026-11-12
+
+- **New tool `validate-newsletter-readiness`.** One read-only call checks whether a newsletter
+  email is ready for a test send or activation: the draft content, what publishing would refuse
+  (unsubscribe and signature tags, link syntax, spam threshold, subject), the open test-send and
+  activation requirements, and the account's sending readiness. It changes, publishes and sends
+  nothing. Install this version together with the server release that publishes the tool.
+  - The `newsletter` skill uses it before a test send or activation: each part is reported in its
+    own words, a part that did not run is named instead of reported clean, and the preview review
+    stays, because `ready` covers nothing listed in `notChecked`.
+  - The newsletter tool notes and the plugin README list the tool.
+
 ## 0.33.0 — 2026-11-12
 
 Three tools were renamed on the server because the OpenAI marketplace scan found their names
