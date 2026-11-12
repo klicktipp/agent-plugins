@@ -108,6 +108,7 @@ activation refuse a split test everywhere, because none of them can pick an arm
 |---|---|
 | `search-contacts` · `get-contact` | find contacts by tag, field value or subscription, and read one |
 | `upsert-subscribed-contact` | add one contact by hand, subscribed at once and with its field values — the Add Contact screen |
+| `open-contact-import-upload` · `get-contact-import-upload-preview` · `prepare-contact-import` · `get-contact-import` · `import-contacts` | import a CSV contact list: the file goes through an upload window and never through the chat, KlickTipp validates it like an import in the app, and contacts are created only after the user approves opt-in process and tags |
 | `update-contact-values` | write field values on a contact that already exists |
 | `update-contact-email` | replace one email address of a contact; its status stays and nothing is confirmed |
 | `delete-contact` | delete a contact with both channels, its subscriptions, tags, values and history — no undo |

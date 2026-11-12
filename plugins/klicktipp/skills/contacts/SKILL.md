@@ -5,7 +5,7 @@ description: "Manage KlickTipp contacts, field values, subscription status, and 
 
 # KlickTipp contacts
 
-For a CSV or Excel contact list, import plan, migration, or uploaded contact export, read [references/contact-import.md](references/contact-import.md) before classifying rows or recommending an import path. It covers consent and suppression evidence, mapping review and the handover to the import in the KlickTipp app. For other contact tasks, leave that reference unloaded.
+For a CSV or Excel contact list, import plan, migration, or uploaded contact export, read [references/contact-import.md](references/contact-import.md) before classifying rows or recommending an import path. It covers consent and suppression evidence, the MCP CSV upload and mapping workflow, approval, and result checks. The MCP import takes CSV, not Excel directly. For other contact tasks, leave that reference unloaded.
 
 For address/reference questions, distinguish contact ID, digital ID, reference dataset and numeric referenceId. Several digital IDs can share a reference dataset. Report `referenceId: 0` as the returned numeric reference; do not label it contact-wide, universal or a particular address without independent mapping evidence. A tool's shorthand for 0 is insufficient to prove tag validity or address mapping.
 

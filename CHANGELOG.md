@@ -7,6 +7,19 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.33.2 — 2026-11-12
+
+- **Contact CSV import through MCP.** The server releases eight import tools (MCAEM-172): the
+  CSV goes from an upload window into KlickTipp without passing through the chat, is validated
+  like an import in the app, and contacts are created only by `import-contacts` after the user
+  approves the opt-in process, warning rows and tags. Install this version together with the
+  server release that publishes the tools.
+  - The `contacts` skill's import reference walks the workflow again instead of handing the
+    import over to the app: upload, preview, mapping the user confirms, preparation, validation,
+    approval, import and the read-back of a sample. It names the limits (40 MiB, 160,000 rows,
+    five open uploads, 24 hours) and the refusal of a file that is not UTF-8.
+  - The plugin README lists the import tools.
+
 ## 0.33.1 — 2026-11-12
 
 - **New tool `validate-newsletter-readiness`.** One read-only call checks whether a newsletter
