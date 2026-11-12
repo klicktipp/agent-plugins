@@ -9,6 +9,6 @@ prepare-automation-activation
 stop-automation
 subscribe-contact-via-opt-in-process
 tag-contact
-update-automation-email-draft
+update-automation-email
 update-contact-values
 validate-automation

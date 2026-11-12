@@ -21,7 +21,7 @@ template or campaign as the source.
 4. **Sender** — read every imported email with `get-automation-email` (`effectiveSender`). The
    import can leave an explicit sender on the emails that is not the one this account sends with.
    Set name, address and reply address to the account's sender (ask which one if there are
-   several) with `update-automation-email-draft`; `validate-automation` reports an unusable one as
+   several) with `update-automation-email`; `validate-automation` reports an unusable one as
    "email sender cannot send".
 
 ## Adapt (campaign is paused after import)

@@ -39,7 +39,7 @@ Both targets read the same `.mcp.json`.
 | `delete-newsletter-draft` | discard a draft |
 | `configure-newsletter-delivery` | sender name, sender address, reply address, signature |
 | `send-newsletter-test` | test send to any address — the recipient becomes a tagged contact, which can start an automation; for a split test, one variant per call |
-| `prepare-newsletter-dispatch` | send or schedule after the user confirms the recipient estimate in the client's dialog; a client without that dialog gets the schedule page instead |
+| `send-newsletter` | send or schedule after the user confirms the recipient estimate in the client's dialog; a client without that dialog gets the schedule page instead |
 | `cancel-newsletter-dispatch` | take a running dispatch back — it does not unsend what already left |
 
 **Signatures and sender domains**
@@ -190,7 +190,7 @@ Everything happens inside the KlickTipp account the login belongs to, or a
 subaccount that account may support. Read tools run without a prompt; every
 write tool is annotated so your agent asks first.
 
-**No newsletter goes out without a person's confirmation.** `prepare-newsletter-dispatch`
+**No newsletter goes out without a person's confirmation.** `send-newsletter`
 validates account, permission, content, audience and sender and asks the person
 to confirm the recipient estimate in the client's own dialog; no, cancel or no
 answer sends nothing. A client that cannot show the dialog is refused with the

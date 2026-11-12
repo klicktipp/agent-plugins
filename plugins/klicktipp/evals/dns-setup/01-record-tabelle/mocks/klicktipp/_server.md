@@ -133,9 +133,9 @@ Newly created drafts get ids `901`, `902`, … and start with
 (`"audienceMode": "all_contacts"`).
 
 `send-newsletter-test` succeeds for a single address and returns `{"sent": true, "recipient": …}`.
-`prepare-newsletter-dispatch` returns an estimate plus
-`"requiresHumanConfirmation": true` and `"confirmationLocation": "KlickTipp app"` — it never
-reports the newsletter as sent.
+`send-newsletter` asks for confirmation in the client's dialog, gets no answer and refuses with
+`newsletter_send_not_confirmed`, `"remediation": "schedule_in_app"` and a `scheduleUrl` — the
+newsletter stays a draft and is never reported as sent.
 
 `delete-newsletter-draft` succeeds only for a draft that has not been activated and
 returns `{"deleted": true}`; for `880`, which was sent, it answers

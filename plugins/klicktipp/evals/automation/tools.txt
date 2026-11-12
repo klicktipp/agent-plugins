@@ -51,7 +51,7 @@ send-notification-email-test
 stop-automation
 unsubscribe-contact
 update-automation-draft
-update-automation-email-draft
+update-automation-email
 update-automation-sms-draft
 update-automation-start-action
 validate-automation

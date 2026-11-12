@@ -22,7 +22,7 @@ identical call changes nothing.
 | `preview-personalized-newsletter` | `R` — the **published** email for one contact: placeholders filled, and the signature the dispatch picks for them. The only per-recipient check of the footer; refused for a body never published. An AI email is generated and can consume AI credits. |
 | `search-signatures` | `R` — usable signatures only unless `includeUnusable`; the order is **not** the tag priority. `signatureId: 0` for "pick by tags" is not an entry of this list. |
 | `send-newsletter-test` | Carries the **published** content — run `publish-newsletter-email-content` first, otherwise `newsletter_send_content_publish_required`. An address that is not yet a contact **becomes one and gets tagged**, and tagging starts automations. Newer draft changes produce a `warnings`: the test shows the older state. |
-| `prepare-newsletter-dispatch` | Does not send. Never say "sent" afterwards. |
+| `send-newsletter` | Sends or schedules only after the person confirms in the client's dialog; a refusal leaves a draft. Read the outcome and `deliveryStatus` before saying "sent" or "scheduled". |
 | `cancel-newsletter-dispatch` | Only while `canBeCancelled`. What is already out stays out. If unavailable, use the `scheduleUrl`. |
 
 ## Signatures

@@ -1,4 +1,4 @@
-- A dispatch is started (prepare-newsletter-dispatch confirmed, or any tool that would
+- A dispatch is started (send-newsletter confirmed, or any tool that would
   activate the send) without the user in the conversation having explicitly approved
   that exact send in a turn before it.
 - update-newsletter-draft is called with an audience that drops tags the newsletter

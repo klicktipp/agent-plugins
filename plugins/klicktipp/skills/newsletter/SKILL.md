@@ -63,7 +63,7 @@ Use customer language. Do not invent a personal sign-off.
 | 4a | Check and publish | `validate-email-editor-content`, `preview-email-editor`, `publish-newsletter-email-content`, `preview-personalized-newsletter` |
 | 5 | Test send | `send-newsletter-test` |
 | 6 | Show the final review and stop for explicit approval | — |
-| 6a | Prepare the approved activation | `prepare-newsletter-dispatch` |
+| 6a | Start the approved dispatch | `send-newsletter` |
 | 7 | **A human confirms in the client dialog or KlickTipp app** | — |
 
 After the company-context handback or confirmed task brief, steps 2 and 3 are free in order. Step 4 may be inspected earlier, but its visible sender presentation or signature may change only after that context is confirmed. Step 4a comes before 5 and 6, because both carry the published content; 1/6/6a/7 are fixed. Way back after 7: `cancel-newsletter-dispatch`.
@@ -224,9 +224,9 @@ for a separately requested dispatch or schedule.
 
 Show one complete final-review block from the current stored state: name, subject and pre-header, audience with reach, sender and reply-to, signature path, tracking and header line, published content revision, latest preview type and result, every button or call-to-action URL or `none`, and exact timing. Flag placeholder or test URLs. If any value is missing, stale or unresolved, stop and resolve it.
 
-Do not call `prepare-newsletter-dispatch` in the same turn as the final review. End the response and wait for a later user reply that explicitly approves the displayed values. An earlier send request, an announced future summary or the client's native confirmation dialog does not replace this approval. If any reviewed value changes, show the complete review again and obtain new approval.
+Do not call `send-newsletter` in the same turn as the final review. End the response and wait for a later user reply that explicitly approves the displayed values. An earlier send request, an announced future summary or the client's native confirmation dialog does not replace this approval. If any reviewed value changes, show the complete review again and obtain new approval.
 
-`prepare-newsletter-dispatch` checks the published content and recipient estimate, then requests
+`send-newsletter` checks the published content and recipient estimate, then requests
 confirmation through the client's native dialog. If that dialog is unavailable, the
 response may refuse with `newsletter_send_confirmation_unavailable` or `newsletter_send_not_confirmed` and provide
 `remediation: schedule_in_app` plus `scheduleUrl` for the human to continue in KlickTipp. Do not
@@ -278,7 +278,7 @@ a snippet of the wrong domain counts nothing. A split test has **one** set for a
 `deliveryStatus.canBeCancelled` is true.
 
 - **What is out stays out.** Say so, otherwise the person hears "nothing went out".
-- **Ask first.** Content, audience and sender remain; re-activate with `prepare-newsletter-dispatch`.
+- **Ask first.** Content, audience and sender remain; re-activate with `send-newsletter`.
 - Same permission as releasing ("Email marketing manager").
 - **If the tool is unavailable**, the path is the `scheduleUrl`.
 

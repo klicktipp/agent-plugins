@@ -95,7 +95,7 @@ KlickTipp integration. Attach the KlickTipp integration and the skills account-s
 automation, contacts, custom-fields, dashboard, dns-setup, email, email-template-generator,
 newsletter, opt-in, provenexpert-reviews, splittest, tags and webinaris-webinar.
 Instructions: Read the matching skill before the first KlickTipp tool call of a
-task. Never send a newsletter yourself: before prepare-newsletter-dispatch, show
+task. Never send a newsletter yourself: before send-newsletter, show
 subject, audience, recipient estimate, sender and time. A person confirms the send
 in the client's confirmation dialog; without one, the tool returns a link where the
 user continues in KlickTipp. Report sent or scheduled only once get-newsletter shows

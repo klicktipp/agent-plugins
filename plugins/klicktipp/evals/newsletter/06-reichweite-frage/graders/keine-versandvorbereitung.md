@@ -1,6 +1,6 @@
 ---
 type: tool_used
-tool: mcp__plugin_klicktipp_klicktipp__prepare-newsletter-dispatch
+tool: mcp__plugin_klicktipp_klicktipp__send-newsletter
 min: 0
 max: 0
 arm: both

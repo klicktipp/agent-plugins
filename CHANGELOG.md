@@ -7,6 +7,26 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.33.0 — 2026-11-12
+
+Three tools were renamed on the server because the OpenAI marketplace scan found their names
+inconsistent with what they do. Install this version together with the server release that
+carries the new names; against an older server the skills name tools it does not list yet.
+
+- **`prepare-newsletter-dispatch` is now `send-newsletter`.** Since DEV-11027 the tool sends or
+  schedules the newsletter once the person confirms the recipient estimate in the client's own
+  dialog; "prepare" understated that. The approval rules in the `newsletter` skill are unchanged.
+  - `SETUP.md` and the newsletter tool notes still said the tool never sends and returns a
+    confirmation URL. Both now describe the dialog, the refusal that leaves a draft and the
+    schedule page for clients without the dialog.
+  - The eval world's mock answer follows the real refusal (`newsletter_send_not_confirmed` with
+    `remediation: schedule_in_app`) instead of a confirmation in the KlickTipp app; every case's
+    `_server.md` is regenerated from it.
+- **`update-automation-email-draft` is now `update-automation-email`, and
+  `update-notification-email-draft` is now `update-notification-email`.** Both also change emails
+  that active automations use, so "draft" was wrong. The `automation`, `provenexpert-reviews` and
+  `webinaris-webinar` references and the eval tool lists use the new names.
+
 ## 0.32.1 — 2026-11-12
 
 - **The eval suite's `_tools.json` no longer ships with the plugin.** 0.32.0 cut it to the 183

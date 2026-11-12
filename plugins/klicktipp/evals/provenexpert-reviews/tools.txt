@@ -10,5 +10,5 @@ search-automation-templates
 search-contacts
 search-email-editor-placeholders
 search-tags
-update-automation-email-draft
+update-automation-email
 validate-automation

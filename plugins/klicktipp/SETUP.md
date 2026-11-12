@@ -87,12 +87,13 @@ claude mcp remove klicktipp --scope user
 
 Tools that write reach a live customer account.
 
-**No tool sends a newsletter.** `prepare-newsletter-dispatch` only prepares the
-dispatch and returns a short-lived single-use confirmation URL. Hand that URL to
-the user along with what confirming it will do — subject, who receives it (mode
-`all_contacts` means every active contact of the account), the recipient
-estimate, sender and moment. Opening and confirming it is theirs to do, and that
-step cannot be taken back.
+**No newsletter goes out without a person's confirmation.** `send-newsletter`
+sends or schedules only after the person confirms the recipient estimate in the
+client's own dialog; no, cancel or no answer sends nothing. Before the call,
+show what confirming will do — subject, who receives it (mode `all_contacts`
+means every active contact of the account), the recipient estimate, sender and
+moment. A client without that dialog gets the newsletter's schedule page, where
+the person sends it in KlickTipp. A sent newsletter cannot be taken back.
 
 Four writes have no undo. Say what they cost before calling them:
 

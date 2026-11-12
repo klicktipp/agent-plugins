@@ -7,7 +7,7 @@ update-newsletter-draft
 configure-newsletter-delivery
 validate-account-sending-readiness
 send-newsletter-test
-prepare-newsletter-dispatch
+send-newsletter
 cancel-newsletter-dispatch
 search-tags
 get-tag

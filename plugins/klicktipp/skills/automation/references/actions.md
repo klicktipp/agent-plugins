@@ -81,7 +81,7 @@ condition consists of an operator, `field` and `value`:
 `delete-automation-action`, `move-automation-action`, `copy-automation-action`.
 
 **Messages:** `get-automation-email`, `create-automation-email-draft`,
-`update-automation-email-draft`, `delete-automation-email-draft`, the same four for
+`update-automation-email`, `delete-automation-email-draft`, the same four for
 `automation-sms`, `notification-email` and `notification-sms`,
 one tool per kind for copying, SMS text and test sends — `copy-automation-email` /
 `copy-notification-email`, `copy-automation-sms` / `copy-notification-sms`,

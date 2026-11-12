@@ -55,7 +55,7 @@ request and reminder still names the template's survey, and **no check reports i
    `plugin is not finished`, `plugin is finished`, `plugin is in progress`; value `0` (any time).
    Five decisions, the goal and the start. Rename the steps afterwards (drop the "SETZEN …" part).
 2. **Start** — action tag AND "is active email subscriber" AND add `plugin is not finished`. All three.
-3. **Mails** — order per mail: subject first (`update-automation-email-draft`), then content, then
+3. **Mails** — order per mail: subject first (`update-automation-email`), then content, then
    publish; a subject change after the content edit makes the publish refuse with
    `newsletter_content_changed`. Request and reminder: replace the survey link in the linked
    paragraph "Jetzt bewerten" with the user's `%Link:Redirect(<id>)%` from
