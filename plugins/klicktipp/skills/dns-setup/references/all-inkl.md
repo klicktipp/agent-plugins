@@ -8,11 +8,13 @@ Sources:
 - [CNAME guide](https://all-inkl.com/wichtig/anleitungen/kas/tools/dns-werkzeuge/cname_178.html)
 - [TXT guide](https://all-inkl.com/wichtig/anleitungen/kas/tools/dns-werkzeuge/txt-record_157.html)
 
-### Local MCP (npx)
+### Connected integrations
 
-Third-party MCP server: https://github.com/hl9020/mcp-all-inkl. It exposes DNS **and** other KAS administration actions; review its permissions and source with the user before offering it. It requires Node.js 22+, KAS API access, and local KAS credentials. `npx -y mcp-all-inkl` downloads and runs the package if it is not already cached; obtain installation approval first.
-
-For Claude Code or Codex, follow the server's linked setup instructions for the host in use. Have the user provide `KAS_LOGIN` and `KAS_PASSWORD` privately through their local configuration; do not ask them to type secrets into a command you execute or paste a credential-bearing configuration into chat. Check how the host stores MCP credentials before configuring it.
+Use an ALL-INKL integration the client already has connected, and have the user authorize
+the intended zone in ALL-INKL itself. Do not install a third-party package for this and do
+not read KAS credentials from the user's environment, files or local configuration: KAS
+API access controls services well beyond DNS. Where no integration is connected, the
+portal below is the path.
 
 ### SOAP/PHP API
 

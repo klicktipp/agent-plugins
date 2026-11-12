@@ -8,7 +8,9 @@ account is shared, so the groups agree about ids, tags and counts.
 
 Layout it reads, below plugins/klicktipp/evals/:
     mocks/world.md              the fictional account, shared by every group
-    mocks/klicktipp/_tools.json the tools/list the groups use, shared (not written here)
+    mocks/klicktipp/_tools.json the tools/list the groups use, when tools/refresh-tools.py
+                                has written it (it is not committed); the tool names in
+                                tools.txt are checked against it only when it is there
     <group>/tools.txt           one tool name per line
     <group>/abort_when.md       the conditions that end a run, one per '- ' line
 
@@ -26,14 +28,19 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent / "plugins" / "klicktipp" / "evals"
 check = "--check" in sys.argv[1:]
-known = {t["name"] for t in json.loads((root / "mocks" / "klicktipp" / "_tools.json").read_text())["tools"]}
+catalogue = root / "mocks" / "klicktipp" / "_tools.json"
+known = (
+    {t["name"] for t in json.loads(catalogue.read_text())["tools"]}
+    if catalogue.exists()
+    else None
+)
 world = (root / "mocks" / "world.md").read_text().strip()
 
 stale, written, groups = [], 0, 0
 for tools_file in sorted(root.glob("*/tools.txt")):
     group = tools_file.parent
     tools = [t.strip() for t in tools_file.read_text().split() if t.strip()]
-    unknown = [t for t in tools if t not in known]
+    unknown = [t for t in tools if known is not None and t not in known]
     if unknown:
         sys.exit(f"{tools_file}: not production tools: {', '.join(unknown)}")
     abort = (group / "abort_when.md").read_text().strip()
@@ -54,4 +61,5 @@ for tools_file in sorted(root.glob("*/tools.txt")):
 
 if check and stale:
     sys.exit("out of date, re-run tools/build-mocks.py:\n  " + "\n  ".join(stale))
-print(f"{groups} group(s), {written} mock(s) written", file=sys.stderr)
+note = "" if known is not None else " (tool names unchecked: run tools/refresh-tools.py first)"
+print(f"{groups} group(s), {written} mock(s) written{note}", file=sys.stderr)

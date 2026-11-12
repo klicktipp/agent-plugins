@@ -71,25 +71,29 @@ what the eval run reads stays in it.
 would be expensive in production — a dispatch without approval, an audience that silently
 drops tags, a write to a contact nobody approved, an automation reported as active.
 
-`mocks/klicktipp/_tools.json` is the saved `tools/list` of the **production** server,
-cut to the 183 tools the groups actually mock — the union of every `<group>/tools.txt` —
-with their real descriptions and input schemas. Without it the mock serves a permissive
-placeholder schema and the model has to guess the arguments it should accept. Rebuild it
-after a KlickTipp release:
+`mocks/klicktipp/_tools.json` is the saved `tools/list` of the **production** server. It
+is **not committed**, and the suite runs without it: a mocked tool then carries a
+permissive placeholder schema and the model has to guess the arguments it should accept.
+Write it before a run that should see the real descriptions and schemas:
 
 ```bash
-python3 tools/refresh-tools.py
+python3 tools/refresh-tools.py              # 183 tools, 467 KiB, local only
+python3 tools/refresh-tools.py --no-output-schema   # half that, response shapes guessed
 ```
 
 It reads the published tool catalogue, because `https://mcp.klicktipp.com/mcp` answers
-`tools/list` only behind OAuth, and it exits 1 when a name in a `tools.txt` is no longer
-in that catalogue. Two limits keep the file small. `claude plugin eval` caps a single
-mock file at 1 MiB and scores every case 0 when it is exceeded. The plugin directory
-inspects every file a plugin ships and refuses what it cannot read in full — at 892 KiB,
-all 361 tools with their output schemas, it did. Filtering to the mocked tools and
-leaving the output schemas out brings it to 233 KiB; `--with-output-schema` puts them
-back for a local run, at roughly double the size, and the agent mock otherwise invents
-its response shapes from `world.md` and the tool description.
+`tools/list` only behind OAuth; it writes only the tools the groups mock — the union of
+every `<group>/tools.txt` — and exits 1 when a `tools.txt` names a tool the catalogue no
+longer has. `build-mocks.py` checks the names against it when it is there and says so
+when it is not. `claude plugin eval` caps a single mock file at 1 MiB and scores every
+case 0 when it is exceeded, which is what the cap in the script guards.
+
+The file stays out of the repository because it mirrors the server's tool list word for
+word. In 133 of its parameter descriptions the server explains which account a call
+applies to by naming the OAuth grant the call is made under, and a scanner reading that
+in a shipped file takes the plugin for something that handles credentials. It does not:
+the endpoint is behind OAuth and the client holds the sign-in. The mirrored
+`contracts.md` files left the skills in 0.29.17 over the same wording.
 
 Two things that catalogue caught: the suite mocked `validate-newsletter-readiness`, which
 does not exist on production, and the ids in `world.md` were prefixed slugs where the real

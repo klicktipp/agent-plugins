@@ -7,6 +7,26 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.32.1 — 2026-11-12
+
+- **The eval suite's `_tools.json` no longer ships with the plugin.** 0.32.0 cut it to the 183
+  mocked tools so the directory could read it; read, it was held for a different reason. The file
+  is a word-for-word mirror of the server's tool list, and 133 of its parameter descriptions say
+  "omit for the account the access token works in" — which the directory reads as the plugin
+  handling a credential. That is the same text that left the skills' `contracts.md` files in
+  0.29.17, so it leaves the repository the same way. Nothing in the plugin reads a credential.
+  - The suite runs without the file: a mocked tool carries the permissive placeholder schema.
+  - `tools/refresh-tools.py` writes it on demand for a local run, with output schemas again
+    (467 KiB, under the 1 MiB `claude plugin eval` caps per mock file), and `evals/.gitignore`
+    keeps it out of the repository.
+  - `tools/build-mocks.py` checks the names in each `tools.txt` against it when it is there and
+    says that it could not when it is not.
+- **`dns-setup` no longer points at a third-party package that reads KAS credentials.** The
+  ALL-INKL reference offered `npx -y mcp-all-inkl`, a community MCP server fetched at run time
+  and fed `KAS_LOGIN` and `KAS_PASSWORD` from the user's local configuration — not the host's
+  own vendor, and KAS access reaches well beyond DNS. The reference now uses a connected
+  ALL-INKL integration or the portal.
+
 ## 0.32.0 — 2026-11-12
 
 Everything the plugin directory held 0.31.1 for. The directory accepts files, frontmatter keys
