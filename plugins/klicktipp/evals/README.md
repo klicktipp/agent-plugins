@@ -52,34 +52,44 @@ A mocked tool is visible to Claude during the run and its schema goes into the r
 context, so serving all 181 tools the skills touch would cost roughly 110k tokens of tool
 definitions per run. Each group therefore mocks only its own tools, 1 to 61 of them.
 
-Three files drive it, and `build-mocks.py` writes the per-case mocks from them:
+Three files drive it, and `tools/build-mocks.py` writes the per-case mocks from them:
 
 ```
 mocks/world.md              the fictional account, shared by every group
 <group>/tools.txt           the tools that group's skill names
 <group>/abort_when.md       what ends a run outright
-python3 evals/build-mocks.py          # regenerate
-python3 evals/build-mocks.py --check  # CI: fail when a mock is out of date
+python3 tools/build-mocks.py          # regenerate, from the repository root
+python3 tools/build-mocks.py --check  # CI: fail when a mock is out of date
 ```
+
+The two generator scripts live in `tools/` at the repository root, not here. The plugin
+directory accepts only Markdown, text, JSON, YAML and a few image formats inside a
+plugin, and no executable scripts — so what runs stays outside the plugin folder and
+what the eval run reads stays in it.
 
 `abort_when` is the sharp end: a run stops at score 0 when the agent does something that
 would be expensive in production — a dispatch without approval, an audience that silently
 drops tags, a write to a contact nobody approved, an automation reported as active.
 
-`mocks/klicktipp/_tools.json` is the saved `tools/list` of the **production** server: all
-361 tools with their real descriptions, input schemas and output schemas. Without it the
-mock serves a permissive placeholder schema, and the model has to guess both the arguments
-it should accept and the shape it should answer in. Rebuild it after a KlickTipp release:
+`mocks/klicktipp/_tools.json` is the saved `tools/list` of the **production** server,
+cut to the 183 tools the groups actually mock — the union of every `<group>/tools.txt` —
+with their real descriptions and input schemas. Without it the mock serves a permissive
+placeholder schema and the model has to guess the arguments it should accept. Rebuild it
+after a KlickTipp release:
 
 ```bash
-python3 evals/refresh-tools.py
+python3 tools/refresh-tools.py
 ```
 
 It reads the published tool catalogue, because `https://mcp.klicktipp.com/mcp` answers
-`tools/list` only behind OAuth. `claude plugin eval` caps a single mock file at 1 MiB and
-scores every case 0 when it is exceeded; the file sits at 892 KiB, so the script checks
-the cap and exits 1 rather than leaving a suite that cannot run. `--no-output-schema`
-halves it if a release pushes it over.
+`tools/list` only behind OAuth, and it exits 1 when a name in a `tools.txt` is no longer
+in that catalogue. Two limits keep the file small. `claude plugin eval` caps a single
+mock file at 1 MiB and scores every case 0 when it is exceeded. The plugin directory
+inspects every file a plugin ships and refuses what it cannot read in full — at 892 KiB,
+all 361 tools with their output schemas, it did. Filtering to the mocked tools and
+leaving the output schemas out brings it to 233 KiB; `--with-output-schema` puts them
+back for a local run, at roughly double the size, and the agent mock otherwise invents
+its response shapes from `world.md` and the tool description.
 
 Two things that catalogue caught: the suite mocked `validate-newsletter-readiness`, which
 does not exist on production, and the ids in `world.md` were prefixed slugs where the real

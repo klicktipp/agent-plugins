@@ -7,6 +7,31 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.32.0 — 2026-11-12
+
+Everything the plugin directory held 0.31.1 for. The directory accepts files, frontmatter keys
+and credential handling outside its allowed set only from Verified organizations, and this one
+is not verified, so each hold is cleared rather than argued.
+
+- **The plugin ships no executable scripts any more.** `build-mocks.py` and `refresh-tools.py`
+  moved to `tools/` at the repository root, outside the plugin folder; they still read and write
+  the suite in `plugins/klicktipp/evals/`, and `evals/README.md` names the new paths.
+- **`assets/logo.svg` is now `assets/logo.png`.** SVG is not among the image formats a plugin may
+  carry; the Codex manifest's `composerIcon` and `logo` point at the 512×512 PNG rendered from
+  the same mark.
+- **The eval suite's `_tools.json` is readable again.** It held all 361 production tools with
+  their output schemas, 892 KiB, more than the directory would inspect. It now holds the 183
+  tools the groups actually mock, without output schemas, at 233 KiB. `refresh-tools.py` filters
+  by the union of every `<group>/tools.txt`, fails when a `tools.txt` names a tool the catalogue
+  no longer has, and takes `--with-output-schema` for a local run.
+- **No skill frontmatter outside `name` and `description`.** The `prerequisites` key of
+  `webinaris-webinar` and `provenexpert-reviews` is now the first line of each skill's body, where
+  it is also read by the agent.
+- **`dns-setup` no longer reads an IONOS API key from the environment.** The IONOS reference had
+  two `curl` examples passing `$IONOS_API_KEY`; Hosting DNS now goes through IONOS' own hosted MCP
+  server or the portal, Cloud DNS through the CLI's own interactive login, and the reference says
+  outright that no key is read from the user's machine or asked for in chat.
+
 ## 0.31.1 — 2026-11-11
 
 - **`deliverability-check` no longer offers the Gmail placement test for a newsletter.**

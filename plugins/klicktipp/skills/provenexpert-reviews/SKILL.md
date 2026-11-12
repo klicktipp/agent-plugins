@@ -1,10 +1,13 @@
 ---
 name: provenexpert-reviews
 description: Sets up a KlickTipp review campaign for ProvenExpert through the native integration — personalised survey link after a purchase, reminder until the contact has rated, thank-you mail for 4 or 5 stars, improvement mail for other ratings, optionally Google review mails for Gmail contacts — by connecting ProvenExpert as a marketing tool, syncing a ProvenExpert survey, importing the ProvenExpert campaign template and wiring it to the survey's smart tags. Use when the user mentions ProvenExpert together with KlickTipp, wants to collect ratings or feedback after a purchase, service or project, or asks why ProvenExpert ratings do not arrive in KlickTipp, even if they only say "I use ProvenExpert and want reviews after a sale".
-prerequisites: "A ProvenExpert account (any plan), a KlickTipp account the plugin is signed in to, a double opt-in process, and a purchase tag set by a shop, payment provider or another campaign"
 ---
 
 # ProvenExpert review campaign
+
+**Prerequisites:** a ProvenExpert account (any plan), a KlickTipp account the plugin is signed
+in to, a double opt-in process, and a purchase tag set by a shop, payment provider or another
+campaign. Check them before starting and name any that is missing.
 
 One ProvenExpert survey = one campaign. Each survey gets its own import with its own prefix. The
 Masterclass review templates (BK 1–4+, SKB, NLA) only send a portal link and never learn the

@@ -1,10 +1,13 @@
 ---
 name: webinaris-webinar
 description: Sets up a complete KlickTipp campaign for a Webinaris auto-webinar — confirmation, reminders, a "we are live" mail for latecomers, a thank-you or missed-you mail with the recording, rebooking — by importing the Webinaris campaign template, adapting it to the account, and guiding the user through the matching Webinaris settings. Use when the user mentions Webinaris, an auto-webinar or evergreen webinar together with KlickTipp, or webinar reminders and follow-ups, even if they only say "I use Webinaris and want a campaign for it".
-prerequisites: "A Webinaris account with an auto-webinar, a KlickTipp account the plugin is signed in to, and a double opt-in process in it"
 ---
 
 # Webinaris webinar campaign
+
+**Prerequisites:** a Webinaris account with an auto-webinar, a KlickTipp account the plugin is
+signed in to, and a double opt-in process in it. Check them before starting and name any that is
+missing.
 
 One webinar = one campaign. Each webinar gets its own import with its own prefix. Never build the
 old pattern of several follow-up campaigns.

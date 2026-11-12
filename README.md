@@ -37,6 +37,7 @@ carries a prompt that has the host set both up itself —
 .claude-plugin/marketplace.json     the marketplace this repository is, for Claude Code
 .agents/plugins/marketplace.json    the same, where Codex looks for it
 CHANGELOG.md                        one entry per released version, and the release notes
+tools/                              the eval suite's generator scripts, outside the plugin
 SETUP_OPENCODE.md                   the same server and skills in opencode, set up by prompt
 SETUP_OPENCLAW.md                   the same in OpenClaw
 SETUP_LANGDOCK.md                   the same from a Langdock workspace — these three stay out of
@@ -45,13 +46,15 @@ plugins/klicktipp/
 ├── .claude-plugin/plugin.json      manifest for Claude
 ├── .codex-plugin/plugin.json       manifest for Codex/ChatGPT, kept at the same version
 ├── .mcp.json                       the MCP server — both manifests read this one file
-├── assets/logo.svg
+├── assets/logo.png
 ├── skills/                        shipped with the plugin: account-setup, email, newsletter, splittest, dns-setup,
 │                                   automation, contacts, tags, custom-fields, opt-in, dashboard,
 │                                   company-context, signatures, deliverability-check,
 │                                   email-template-generator, webinaris-webinar, provenexpert-reviews
 ├── evals/                          the behaviour suite: `claude plugin eval` cases, graders and
 │                                   MCP mocks for the newsletter flow — see evals/README.md
+│                                   (its two generator scripts live in tools/ at the root,
+│                                   because a plugin ships no executable scripts)
 ├── SETUP.md                        walks the agent through the one-time OAuth login
 └── README.md
 ```

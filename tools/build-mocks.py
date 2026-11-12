@@ -6,22 +6,25 @@ into the run's context. Serving all 181 tools the skills touch would cost ~110k 
 tool definitions per run, so each skill group mocks only its own tools. The fictional
 account is shared, so the groups agree about ids, tags and counts.
 
-Layout this reads:
+Layout it reads, below plugins/klicktipp/evals/:
     mocks/world.md              the fictional account, shared by every group
-    mocks/klicktipp/_tools.json the production tools/list, shared (not written here)
+    mocks/klicktipp/_tools.json the tools/list the groups use, shared (not written here)
     <group>/tools.txt           one tool name per line
     <group>/abort_when.md       the conditions that end a run, one per '- ' line
 
 and writes <group>/<case>/mocks/klicktipp/_server.md for every case in the group.
 
-    python3 evals/build-mocks.py [--check]
+    python3 tools/build-mocks.py [--check]
+
+This script lives outside the plugin folder on purpose: the plugin directory accepts
+Markdown, text, JSON, YAML and a few image formats there, and no executable scripts.
 
 --check exits 1 when a file on disk differs from what would be written, for CI.
 """
 import json, sys
 from pathlib import Path
 
-root = Path(__file__).parent
+root = Path(__file__).resolve().parent.parent / "plugins" / "klicktipp" / "evals"
 check = "--check" in sys.argv[1:]
 known = {t["name"] for t in json.loads((root / "mocks" / "klicktipp" / "_tools.json").read_text())["tools"]}
 world = (root / "mocks" / "world.md").read_text().strip()
@@ -50,5 +53,5 @@ for tools_file in sorted(root.glob("*/tools.txt")):
         written += 1
 
 if check and stale:
-    sys.exit("out of date, re-run build-mocks.py:\n  " + "\n  ".join(stale))
+    sys.exit("out of date, re-run tools/build-mocks.py:\n  " + "\n  ".join(stale))
 print(f"{groups} group(s), {written} mock(s) written", file=sys.stderr)
