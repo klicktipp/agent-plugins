@@ -7,6 +7,15 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.33.3 — 2026-11-13
+
+- **`assets/logo.png` is now the official KlickTipp favicon.** The icon was a white cursor and
+  white waves on a filled orange tile; it is now the brand's own mark — orange waves, a dark blue
+  cursor — rendered at 512×512 from `KlickTipp-Favicon-colored-945px.svg` with a transparent
+  background. The path is unchanged, so the Codex manifest's `composerIcon` and `logo` keep
+  pointing at it. The SVG stays out of the repository: SVG is not among the image formats a
+  plugin may carry.
+
 ## 0.33.2 — 2026-11-12
 
 - **Contact CSV import through MCP.** The server releases eight import tools (MCAEM-172): the
