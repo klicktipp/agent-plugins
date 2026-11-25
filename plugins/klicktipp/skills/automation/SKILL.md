@@ -31,11 +31,16 @@ Find → `get-automation-template` → settle name and mappings with the user �
   one that only another template starts: ask the question that decides between them before
   importing, recommend one — also when the user names or links all of them. "Import all" is not a
   recommendation; import several only after the user said they have each situation.
-- Templates where one sets the tag the other starts on: import both and map that tag to the same
-  one.
-- After the import, in the same report: how a contact enters, every limit `settings.notes` lists
-  (for example one open offer per contact), and the offer of a test run with a test contact before
-  real contacts get the start tag.
+- Templates where one sets the tag the other starts on, or fills a field the other waits for (one
+  sets "Kunde seit", the other sends on its anniversary): import both and map the shared tags and
+  fields to the same ones.
+- After the import, check the plain text of every imported classic email: read it with
+  `get-email-editor-rich-text-content`; if `plain` still names a field ID of the template, call
+  `replace-email-editor-rich-text-content` with `html` and `contentRevision` as read and without
+  `plain`, and say which emails you fixed (details: templates.md, step 6). Then, in the
+  same report: how a contact enters, every limit `settings.notes` lists (for example one open
+  offer per contact), and the offer of a test run with a test contact before real contacts get the
+  start tag.
 
 ## Best practices — the default, not an option
 
@@ -174,7 +179,8 @@ availability and price first, a check for empty results, a pilot contact whose f
 
 ## Boundaries
 
-Email **content** (HTML, blocks, styling) → `email`. Single sends → `newsletter`. Contacts → `contacts`,
+Email **content** (HTML, blocks, styling) → `email`, except regenerating an imported email's plain
+text (templates.md, step 6). Single sends → `newsletter`. Contacts → `contacts`,
 tags → `tags`, fields as such → `custom-fields`.
 
 ## Before you write

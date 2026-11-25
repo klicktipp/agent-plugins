@@ -31,6 +31,7 @@ get-automation-template
 get-automation-waiting-contact-counts
 get-campaign-dependencies
 get-contact-automation-status
+get-email-editor-rich-text-content
 get-email-gmail-placement-preview-result
 get-notification-email
 import-automation-template
@@ -41,6 +42,7 @@ prepare-automation-activation
 preview-email-editor
 preview-personalized-email
 replace-automation-sms-content
+replace-email-editor-rich-text-content
 search-automation-editor-references
 search-automation-templates
 search-automations

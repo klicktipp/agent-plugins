@@ -77,6 +77,7 @@ tools:
   - get-custom-field
   - get-email-editor-content
   - get-email-editor-display-condition-capabilities
+  - get-email-editor-rich-text-content
   - get-email-gmail-placement-preview-result
   - get-newsletter
   - get-newsletter-split-test
@@ -119,6 +120,7 @@ tools:
   - replace-email-editor-content-from-email
   - replace-email-editor-content-from-html
   - replace-email-editor-content-from-template
+  - replace-email-editor-rich-text-content
   - replace-signature-content
   - request-sender-domain-dns-check
   - search-automation-editor-references
@@ -374,3 +376,48 @@ shared by two imported templates arrives the second time as `Angebot geöffnet_1
 - `25` "ANK - AngebotsNachfassKampagne" — paused, start tag `302`.
 - Custom fields `35` "Angebot 1 (PDF)" (url), `36` "Förmliche Anrede" (text). Tags `301`, `302`
   manual, 0 contacts.
+
+## Birthday and anniversary templates (Masterclass module 7)
+
+`search-automation-templates` with a birthday or anniversary query ("Geburtstag", "Jubiläum",
+"Kundenbindung") returns these four, each with `description`, `startsWhenTagged`, `tagNames`,
+`customFieldNames`, `includedAutomations: []`:
+
+| uri | name | description | starts on |
+|---|---|---|---|
+| `klicktipp://automation-templates/dazu` | DaZu - Setzt Datum der Zusammenarbeit | Helper, sends nothing: when tag "Kunde" is set and field "Kunde seit (Datum der Zusammenarbeit)" is empty, writes TODAY's date there and 0 into "Jahre der Zusammenarbeit (vollendet)" | tag "Kunde" (set within the last 24 h) |
+| `klicktipp://automation-templates/jubzu` | JubZu - Jubiläum der Zusammenarbeit | On every anniversary of "Kunde seit" adds 1 to "Jahre der Zusammenarbeit (vollendet)" and mails at 3, 5 and 10 years | tag "Kunde" AND "Kunde seit" not empty |
+| `klicktipp://automation-templates/geballg` | GebAllg - Geburtstag Allgemein | Birthday greeting to every active contact with first name and a plausible birthday, Du or Sie | birthday field filled |
+| `klicktipp://automation-templates/gebsel` | GebSel - Geburtstag Selektiert | Birthday greeting by customer class A/B/C/partner, gift order to a supplier for A customers; do not run together with GebAllg | tag "A-Kunde", "B-Kunde", "C-Kunde" or "Kooperationspartner" |
+
+`get-automation-template` answers `smartImportAvailable: true`, `importable: true`,
+`notTransferable: []`, and `objects` with `suggestedExistingId: ''` for every object (the
+account has none of these names). Template object ids:
+- DaZu: tag "Kunde" `k1`, field "Kunde seit (Datum der Zusammenarbeit)" `d1` (date), field
+  "Jahre der Zusammenarbeit (vollendet)" `d2` (number).
+- JubZu: tag "Kunde" `k1`, fields `d1`, `d2` as above, field "Heute (Datum für Jubiläumsmail)"
+  `d3`, rich-text emails `e31` "JubZu - 3 Jähriges Jubiläum", `e32` "… 5 …", `e33` "… 10 …".
+- GebAllg: tag "per Du" `g1`, field "SSFTU | Liebe Anrede (liebe*r Vorname)" `g2`, field
+  "Förmliche Anrede" `g3`, rich-text emails `e41` "GebAllg - Geburtstag per Du", `e42` "… per Du
+  ohne Anrede", `e43` "… per Sie", `e44` "… per Sie ohne Anrede".
+- GebSel: tags `g1`, "A-Kunde" `a1`, "B-Kunde" `a2`, "C-Kunde" `a3`, "Kooperationspartner" `a4`,
+  field "Geschenk-Termin" `g4`, notification email `e51`, six rich-text emails.
+`settings.notes` of DaZu says: "Bestandskunden: „Kunde seit“ (echtes Datum) und „Jahre“
+(vollendete Jahre) selbst importieren, bevor sie den Tag „Kunde“ bekommen."
+
+`import-automation-template` creates the automation PAUSED with ids `40`, `41`, … and new
+tags `410`, `411`, … and fields `420`, `421`, … With an `objectPrefix` every created tag
+and field carries the prefix. An object listed in `mappings` with `useExistingId` is reused
+instead of copied; without that it is copied — so JubZu imported after DaZu with a prefix
+and no mapping starts on a different "Kunde" tag and reads a different "Kunde seit" field
+than DaZu writes. Mapping tag `k1` onto an existing tag (for example `101` "Bestandskunden")
+makes DaZu and JubZu start on that tag.
+
+Imported rich-text emails get ids `4500`, `4501`, … `get-email-editor-rich-text-content`
+returns for each imported GebAllg and JubZu email: `html` with the NEW field placeholders
+(`%Subscriber:CustomField420%` …), `plain` still with the TEMPLATE's field ids
+(`%Subscriber:CustomFieldg2%`, `%Subscriber:CustomFieldd3%` …), `plainSource: "custom"`,
+`contentRevision: "c1"`. `replace-email-editor-rich-text-content` with `html` and
+`contentRevision` and WITHOUT `plain` answers `plainSource: "derived"` and a plain text with
+the new ids; `warnings: []`. GebSel and DaZu emails have no field placeholders in the plain
+text.

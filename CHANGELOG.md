@@ -7,6 +7,25 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.36.5 — 2026-11-25
+
+- **Template imports keep linked templates on the same fields and repair the plain text of
+  imported emails** (MCAEM-241, Masterclass birthday and anniversary templates).
+  - When one template fills a field another reads (DaZu sets "Kunde seit", JubZu sends on its
+    anniversary), the `automation` skill imports both and maps the shared tag and fields to
+    the same objects.
+  - Before copying a tag or field, the skill looks for an existing one under another name
+    ("Käufer", "Bestandskunden") and asks. For a template that writes today's date, it asks
+    where existing contacts get their real value and says it has to be imported first.
+  - After an import it reads every classic email's plain text and, where it still names a
+    field ID of the template, has it regenerated from the HTML; it says which emails it fixed.
+    The template reference now states that the default for unlisted objects is the
+    same-named object, not always a copy.
+- Two new automation eval cases (08, 09) and a birthday and anniversary section in
+  `evals/mocks/world.md`; `get-email-editor-rich-text-content` and
+  `replace-email-editor-rich-text-content` are now in `evals/automation/tools.txt`, so the
+  suite mocks them. Mocks regenerated.
+
 ## 0.36.4 — 2026-11-25
 
 - **No command in the plugin downloads code and runs it.** The directory's policy review

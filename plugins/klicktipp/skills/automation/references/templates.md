@@ -38,8 +38,13 @@ Two kinds of templates, one pair of tools for both:
      recognisable;
    - **mappings**: for each tag and custom field, reuse an existing one or create a copy. Reusing
      matters for tags and fields the account already works with (`per Du`, `Kunde`, first name).
-   - **templates that belong together** — one sets the tag the other starts on: in the second
-     import, map that tag with `useExistingId` to the tag the first import created. Otherwise it is
+     The account may hold the same meaning under another name ("Käufer", "Bestandskunde"): look
+     with `search-tags` / `search-custom-fields` and ask before copying. A template that fills a
+     date field itself (DaZu sets "Kunde seit") writes today's date: ask where existing contacts get
+     their real value, which has to be imported first (skill `contacts`).
+   - **templates that belong together** — one sets the tag the other starts on, or fills a field
+     the other's start condition or waits read: in the second import, map that tag and those
+     fields with `useExistingId` to the ones the first import created. Otherwise it is
      copied (with a prefix always) and the second automation never starts. Without smart import,
      read both with `get-automation` afterwards and set the second one's start tag with
      `update-automation-start-action`.
@@ -58,8 +63,9 @@ Two kinds of templates, one pair of tools for both:
    ```
 
    A mapping with `useExistingId` reuses that object; without it the object is copied. Objects not
-   listed take the default from step 2. **Omitting `mappings` entirely copies everything** — that is
-   the dialog's default with smart import off.
+   listed — and all objects when `mappings` is omitted — take the default from step 2: the
+   same-named object where `suggestedExistingId` is set, otherwise a copy. To copy everything, list
+   every object without `useExistingId`.
 5. **Report** from the answer, never from memory: `automationName` and `editUrl`, what was
    `created`, what was `mapped`, anything `failed`, and `notTransferable`.
 6. **Finish the automation** with the other tools of this skill — the imported one is an ordinary
@@ -68,6 +74,14 @@ Two kinds of templates, one pair of tools for both:
    deines Angebots]` and the like) with the user's real values — sales address, phone, URLs; from
    `company-context` if confirmed, otherwise ask — then `validate-automation`. Check the start
    condition with `get-automation` even when `notTransferable` is empty (see below). Then:
+   - **Check every imported email's plain text.** The import rewrites field placeholders only in
+     the HTML. For each classic (rich-text) email, read it with `get-email-editor-rich-text-content`;
+     if `plain` still names a field ID from the template's `objects` (`incomingId`), call
+     `replace-email-editor-rich-text-content` with `html` and `contentRevision` exactly as read and
+     without `plain`. The answer's `plainSource` `derived` means the plain text is now generated
+     from the HTML; `custom` means the account maintains its plain text itself: tell the user to fix
+     it in the editor. In drag-and-drop emails, have each old `incomingId` placeholder replaced with the new
+     field's (from `created` / `mapped`) via skill `email`. Say which emails you fixed.
    - Read `settings.notes` from `get-automation` and tell the user how a contact enters (start tag,
      required fields) and which limits the notes name.
    - Offer one test run before real contacts get the start tag: after the user has activated the
@@ -88,8 +102,7 @@ Two kinds of templates, one pair of tools for both:
   of them is refused. Every object is then copied with the prefix `Importiert`, as in the dialog.
 - The emails arrive with their content: classic emails as HTML, drag-and-drop emails with their
   editor document. Placeholders of copied custom fields are rewritten only in the HTML of classic
-  emails. In plain-text parts and drag-and-drop emails, look for the template's old field IDs
-  (from `objects`) and have them replaced via skill `email`.
+  (rich-text) emails, not in their plain text and not in drag-and-drop emails; step 6 fixes both.
 - An email referenced only in the start condition, not in an email action, does not come along;
   the condition then points at nothing.
 - Smart links come along with their URL; a click counts only if the email link matches it exactly.
