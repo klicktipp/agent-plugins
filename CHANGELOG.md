@@ -7,6 +7,22 @@ repository.
 The production plugin takes changes from the internal staging plugin where applicable.
 This repository has its own version tags; each published version has its own entry here.
 
+## 0.36.5 — 2026-11-26
+
+- **Resubmission after the directory review rejected 0.32.2 for a tool annotation** (MCAEM-234).
+  OpenAI asked for `destructiveHint: true` on `update-automation-gender-detection-action`,
+  because the update overwrites stored settings. The annotations come from the KlickTipp
+  server, not from this package: the server now marks that tool and 37 more with the same
+  pattern as destructive — every `update-automation-*-action`, the `configure-*` delivery,
+  trigger and split-test tools, the `update-email-editor-*-style` tools,
+  `update-saved-email-template`, `move-automation-action` and `move-email-editor-block`.
+  Additive writes (`create-*`, `add-*`, `copy-*`) stay non-destructive. A server-side test
+  now fails for any overwriting tool that is not marked destructive.
+- **`newsletter/references/tools.md`: a split test found by `search-newsletters` names its
+  variants.** The search result now carries `splitTestVariants` with each variant's `emailId`
+  and `editorUrl`; before, a split test had neither an email ID nor a content link there, and
+  an agent searched the same name again and again (54 times in one run) looking for one.
+
 ## 0.36.4 — 2026-11-25
 
 - **No command in the plugin downloads code and runs it.** The directory's policy review
