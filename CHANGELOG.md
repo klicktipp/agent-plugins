@@ -22,6 +22,10 @@ This repository has its own version tags; each published version has its own ent
   variants.** The search result now carries `splitTestVariants` with each variant's `emailId`
   and `editorUrl`; before, a split test had neither an email ID nor a content link there, and
   an agent searched the same name again and again (54 times in one run) looking for one.
+- **`account-setup` is for an open setup only.** Its description no longer offers "the first
+  safe newsletter test": an agent asked for a newsletter in an account whose sender domain and
+  company profile were set up read the setup skill anyway and checked the setup again. It now
+  sends such a request to the specialist skill directly.
 
 ## 0.36.4 — 2026-11-25
 

@@ -1,6 +1,6 @@
 ---
 name: "account-setup"
-description: "Guide or assess initial KlickTipp account setup, sending readiness and the first safe newsletter test; explain a product-confirmed upgrade path when the selected account lacks MCP access. Use for onboarding, “KlickTipp einrichten”, readiness questions or continuing setup. Route named objects to their specialist skills."
+description: "Guide or assess initial KlickTipp account setup and sending readiness; explain a product-confirmed upgrade path when the selected account lacks MCP access. Use for onboarding, “KlickTipp einrichten”, readiness questions or continuing an open setup. Not for creating a newsletter, email or campaign in an account whose sender domain and company profile are already set up: use the specialist skill directly."
 ---
 
 # KlickTipp account setup
